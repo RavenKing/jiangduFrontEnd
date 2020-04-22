@@ -8,12 +8,11 @@
         @click="setMenuCollapseStatus()"
       ></i>
     </div>
-    <div class="nav-main">wl-ui: 精美易用的复杂前端组件解决方案</div>
+    <div class="nav-main"></div>
     <!-- 右侧操作区 -->
     <div class="nav-handle-box">
-      <i class="iconfont icon-github-outline nav-icon nav-handle-item" @click="goToGithub()"></i>
+      <!-- <i class="iconfont icon-github-outline nav-icon nav-handle-item" @click="goToGithub()"></i> -->
       <!-- 消息按钮 -->
-      <i class="nav-icon nav-handle-item el-icon-bell" @click="notYetOpened()"></i>
       <!-- 全屏按钮 -->
       <i class="nav-icon nav-handle-item el-icon-rank" @click="handleFullScreen()"></i>
       <!-- 用户名 -->
@@ -101,8 +100,8 @@ export default {
   height: $header-height;
   padding: $header-padding;
   line-height: $header-height - ($header-padding * 2);
-  background: $header-background;
-  color: $header-color;
+  background: #3E4246;
+  color:white;
   box-shadow: #c1c0c0 1px 4px 5px 2px;
   box-sizing: border-box;
 

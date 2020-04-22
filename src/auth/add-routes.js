@@ -29,6 +29,7 @@ function addUserRouter(data) {
     if (!item.url) return;
     try {
       let routerItem = {
+        icon:item.icon,
         path: item.url, // 路由路径名
         name: item.id, // 命名路由 用于配合菜单简洁跳转
         meta: {

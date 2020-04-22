@@ -8,7 +8,16 @@ function getMenuDataApi(data) {
     data
   });
 }
+function getSelectDataApi(data)
+{
+  return request({
+    url: "/Api/GetSelectData",
+    method: 'post',
+    data
+  });
+}
 
 export {
-  getMenuDataApi, // 1获取菜单数据接口
+  getMenuDataApi,
+  getSelectDataApi // 1获取菜单数据接口
 }

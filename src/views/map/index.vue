@@ -1,5 +1,5 @@
 <template>
-  <baidu-map class="map" center="北京"></baidu-map>
+  <baidu-map class="map" center="上海"></baidu-map>
 </template>
 <style>
 .map {

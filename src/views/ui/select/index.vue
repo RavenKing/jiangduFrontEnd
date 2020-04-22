@@ -39,29 +39,21 @@
 </template>
 
 <script>
+
+import { getSelectDataApi } from "@/api/menu"; // 导入获取用户菜单接口
+
 export default {
   name: "wl-select",
   data() {
+    var selectData=[];
+    console.log(selectData);
+    selectData=getSelectDataApi().then((test)=>{
+      this.data=test.data.data;
+//this.data =test.data;
+     });
     return {
       value: [], // 选中值
-      data: [
-        {
-          id: 1,
-          name: "海边"
-        },
-        {
-          id: 2,
-          name: "森林"
-        },
-        {
-          id: 3,
-          name: "草原"
-        },
-        {
-          id: 4,
-          name: "古城"
-        }
-      ], // 数据
+      data:[{id:1,name:"11"},{id:2,name:"121"}] , // 数据
       props: {
         label: "name",
         value: "id"

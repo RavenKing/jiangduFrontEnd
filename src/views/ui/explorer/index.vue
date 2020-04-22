@@ -2,7 +2,6 @@
   <wl-container>
     <wlExplorer
       ref="wl-explorer-cpt"
-      :headerDropdown="headerHandle"
       :columns="file_table_columns"
       :all-path="all_folder_list"
       :is-folder-fn="isFolderFn"
@@ -86,7 +85,7 @@ export default {
       headerHandle: [{ name: "权限", command: "auth" }], // 头部按钮更多操作-自定义权限
       file_table_columns: [
         {
-          label: "名称",
+          label: "档案号",
           prop: "Name",
           minWidth: 120
         },
@@ -99,15 +98,15 @@ export default {
           }
         },
         {
-          label: "类型",
+          label: "家地编号",
           align: "center",
           width: 90,
-          formatter(row) {
+            formatter(row) {
             return row.Type === 1 ? "文件夹" : row.SuffixName;
           }
         },
         {
-          label: "大小",
+          label: "地籍编号",
           minWidth: 90,
           align: "center",
           formatter(row) {
@@ -126,7 +125,7 @@ export default {
           }
         },
         {
-          label: "创建日期",
+          label: "地产名称",
           align: "center",
           width: 120,
           formatter(row) {
@@ -134,7 +133,7 @@ export default {
           }
         },
         {
-          label: "作者",
+          label: "省/自治区",
           minWidth: 100,
           align: "center",
           formatter(row) {
@@ -142,7 +141,35 @@ export default {
           }
         },
         {
-          label: "描述",
+          label: "盟市",
+          minWidth: 100,
+          formatter(row) {
+            return row.Describe || "-";
+          }
+        },
+        {
+          label: "街道地址",
+          minWidth: 100,
+          formatter(row) {
+            return row.Describe || "-";
+          }
+        },
+        {
+          label: "面积",
+          minWidth: 100,
+          formatter(row) {
+            return row.Describe || "-";
+          }
+        },
+        {
+          label: "实际用途",
+          minWidth: 100,
+          formatter(row) {
+            return row.Describe || "-";
+          }
+        },
+        {
+          label: "操作",
           minWidth: 100,
           formatter(row) {
             return row.Describe || "-";

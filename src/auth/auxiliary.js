@@ -1,6 +1,5 @@
-
 import { localGet } from "@/util/storage";
-import { isAfter } from "@/util/time";
+//import { isAfter } from "@/util/time";
 import store from "@/store";
 
 // 导入全局配置项
@@ -28,13 +27,15 @@ function payloadAtob(context) {
   return JSON.parse(decodedData);
 }
 
-/**
- * 检验jwt是否过期
- * @param {*} context 需要解析的内容
- */
+// /**
+//  * 检验jwt是否过期
+//  * @param {*} context 需要解析的内容
+//  */
 function isLoginExpired(context) {
-  let exp = payloadAtob(context).exp;
-  return isAfter(new Date(), exp)
+  console.log(context);
+  // let exp = payloadAtob(context).exp;
+  // return isAfter(new Date(), exp)
+  return false;
   // 比较jwt签发的过期时间与本地时间
 }
 

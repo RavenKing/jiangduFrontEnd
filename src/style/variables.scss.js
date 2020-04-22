@@ -1,16 +1,16 @@
 module.exports = {
     // 头部样式变量
     'header_height': '60px',
-    'header_background': '#ededed',
-    'header_color': '#2a3f54',
+    'header_background': '#3E4246',
+    'header_color': 'white',
     'header_padding': `15px`,
     // 左侧菜单样式变量
-    'menu_background': '#2a3f54',
-    'menu_color': `#fff`,
-    'menu_active_color': `#ffd04b`,
+    'menu_background': 'white',
+    'menu_color': `black`,
+    'menu_active_color': `#75ADBF`,
     'menu_width': `180px`,
     // 主视图区样式变量
-    'main_base_color': `#f2f3f3`,
+    'main_base_color': `white`,
     // 页面标签页样式
     'main_body_padding': '10px',
     // 样式

@@ -2,9 +2,24 @@ import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";
 import store from "./store";
-
+ import BaiduMap from 'vue-baidu-map';
+import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap-vue/dist/bootstrap-vue.css'
+import SuiVue from 'semantic-ui-vue';
+import 'semantic-ui-css/semantic.min.css';
+Vue.use(SuiVue);
+//Install BootstrapVue
+Vue.use(BootstrapVue)
+//Optionally install the BootstrapVue icon components plugin
+Vue.use(IconsPlugin)
 Vue.config.productionTip = false;
 
+//import baidu
+Vue.use(BaiduMap, {
+  // ak 是在百度地图开发者平台申请的密钥 详见 http://lbsyun.baidu.com/apiconsole/key */
+  ak: 'vWGxcQlbdPyDTihpzGpiVeXcha5fdmea'
+})
 
 // 按需导入element-ui
 import "./plugins/element.js";

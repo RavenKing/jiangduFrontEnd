@@ -17,13 +17,7 @@
     </div>
     <!-- 网站默认脚部信息 -->
     <footer class="wlui-footer">
-      本站只用于个人开发者学习浏览 ·
-      <a
-        class="beianhao"
-        rel="nofollow"
-        href="http://www.beian.miit.gov.cn/"
-        target="_blank"
-      >豫ICP备20007340号</a>
+      Copyright@2018 www.xxx.cn All Rights Reserved 上海奉贤人民政府 ICP 备案： 沪05003300号
     </footer>
   </div>
 </template>
@@ -71,12 +65,12 @@ export default {
   .wlui-footer {
     text-align: center;
     font-size: 14px;
-    background: #ebeef5;
+    background: #2e2f30;
     line-height: 26px;
-    color: #909399;
+    color:white;
     border-radius: 2px;
     > .beianhao {
-      color: #909399;
+      color: white;
     }
   }
 }

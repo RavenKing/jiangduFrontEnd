@@ -5,7 +5,7 @@
         class="the-menu-logo"
         @click="gotoIndex()"
         :key="is_collapse"
-      >{{is_collapse?'WL':'wl-admin'}}</div>
+      >{{is_collapse?'JH':'jinhui'}}</div>
     </transition>
     <div class="the-menu-scroll" ref="the-menu-scroll">
       <el-menu
@@ -28,6 +28,8 @@
             :index="item.url"
             @click="goto(item)"
           >
+          
+            <i  :class="item.icon"></i>
             <span class="menu-item-title">{{item.title}}</span>
           </el-menu-item>
         </el-submenu>
@@ -129,7 +131,7 @@ export default {
 
 <style lang="scss">
 .the-menu-box {
-  background: $menu-background;
+  background: white;
   .el-menu--collapse {
     width: 64px;
   }
@@ -142,7 +144,7 @@ export default {
     line-height: 60px;
     font-size: 18px;
     font-weight: 600;
-    color: #fff;
+    color: black;
     cursor: pointer;
   }
 
