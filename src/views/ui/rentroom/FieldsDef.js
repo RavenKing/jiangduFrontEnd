@@ -32,25 +32,25 @@ export default [
   },
   {
     name: "address",
-    sortField: "group_id",
-    title: '<i class="grey sitemap icon"></i>盟市',
+    sortField: "address",
+    title: '<i class="white sitemap icon"></i>房屋地址',
     width: "15%"
   },
   {
-    name: "group.description",
-    sortField: "group_id",
-    title: '<i class="grey sitemap icon"></i>旗县区',
+    name: "usage1",
+    sortField: "usage1",
+    title: '<i class="grey sitemap icon"></i>房屋用途',
     width: "15%"
   },
   {
-    name: "group.description",
-    sortField: "group_id",
-    title: '<i class="grey sitemap icon"></i>街道地址',
+    name: "age",
+    sortField: "age",
+    title: '<i class="grey sitemap icon"></i>建造年代',
     width: "15%"
   },
   {
-    name: "group.description",
-    sortField: "group_id",
+    name: "space",
+    sortField: "space",
     title: '<i class="grey sitemap icon"></i>面积',
     width: "15%"
   },

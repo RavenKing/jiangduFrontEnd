@@ -13,63 +13,6 @@
         <sui-button content="删除" icon="delete red" /> -->
         <sui-button content="导出" v-on:click="exportToExcel" icon="file green" />
     </div>
-    <div class="filterBiaoDan">
-        <sui-form>
-            <sui-form-fields inline>
-                <label> 家地编号</label>
-                <sui-form-field>
-                    <input type="text" placeholder="请选择" v-model="filterString.jiadi" />
-                </sui-form-field>
-                <label> 地籍编号</label>
-                <sui-form-field>
-                    <input type="text" placeholder="请选择" v-model="filterString.diji" />
-                </sui-form-field>
-            </sui-form-fields>
-            <sui-form-fields inline>
-                <label> 核准用途</label>
-                <sui-form-field>
-                    <input type="text" placeholder="请选择" v-model="filterString.hezhunyongtu" />
-                </sui-form-field>
-                <label> 实际用途</label>
-                <sui-form-field>
-                    <input type="text" placeholder="请选择" v-model="filterString.shijiyongtu" />
-                </sui-form-field>
-                <label> 所属单位</label>
-                <sui-form-field>
-                    <select class="ui fluid dropdown">
-                        <option value="">State</option>
-                    </select>
-                </sui-form-field>
-                <label> 国有资产</label>
-                <sui-form-field>
-                    <input type="text" placeholder="请选择" v-model="filterString.guoyouzichan" />
-                </sui-form-field>
-            </sui-form-fields>
-            <sui-form-fields inline>
-                <label> 起止时间</label>
-                <sui-form-field>
-                    <input type="text" placeholder="请选择" v-model="filterString.hezhunyongtu" />
-                </sui-form-field>
-                <label> 至</label>
-                <sui-form-field>
-                    <input type="text" placeholder="请选择" v-model="filterString.shijiyongtu" />
-                </sui-form-field>
-                <label> 面积</label>
-                <sui-form-field>
-                    <select class="ui fluid dropdown">
-                        <option value="">State</option>
-                    </select>
-                </sui-form-field>
-                <label> 至</label>
-                <sui-form-field>
-                    <input type="text" placeholder="请选择" v-model="filterString.guoyouzichan" />
-                </sui-form-field>
-            </sui-form-fields>
-        </sui-form>
-
-        <sui-button positive content="查询" v-on:click="submit" />
-        <sui-button content="重置" />
-    </div>
     <div class="vue2Table">
         <vuetable ref="vuetable" :api-mode="false" :data="localData" :fields="fields" :sort-order="sortOrder" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
             <div slot="action" slot-scope="props">
@@ -90,11 +33,11 @@
         <sui-modal class="modal2" v-model="open">
             <sui-modal-header>{{modelTitle}}</sui-modal-header>
             <sui-modal-content image>
-                <form-create ref='formComponent'></form-create>
+                <unit-form ref='formComponent'></unit-form>
             </sui-modal-content>
             <sui-modal-actions>
                 
-                <sui-button negative @click.native="toggle">
+                <sui-button  negative @click.native="closeModal">
                     取消
                 </sui-button>
                 <sui-button v-if="modalMode !== 'check'" positive @click.native="toggle">
@@ -108,7 +51,7 @@
 
 <script>
 import dialogBar from '@/components/MDialog'
-import FormCreate from "@/components/createForm";
+import UnitForm from "@/components/unitForm";
 import Vuetable from "vuetable-2/src/components/Vuetable";
 import VuetablePagination from "vuetable-2/src/components/VuetablePagination";
 import VuetablePaginationInfo from "vuetable-2/src/components/VuetablePaginationInfo";
@@ -117,10 +60,10 @@ import {
     export_json_to_excel
 } from "@/util/Export2Excel";
 import {
-    getRoomDataApi,
-    createRoomApi,
-    updateRoomApi,
-    deleteRoomApi
+    getUnitApi,
+    createUnitApi,
+    updateUnitApi,
+    deleteUnitApi
 } from "@/api/roomDataAPI";
 export default {
     name: "MyVuetable",
@@ -129,7 +72,7 @@ export default {
         Vuetable,
         VuetablePagination,
         VuetablePaginationInfo,
-        FormCreate
+        UnitForm
     },
     data() {
         return {
@@ -137,10 +80,6 @@ export default {
             modelTitle: "",
             modalMode: "create",
             open: false,
-            filterString: {
-                jiadi: "",
-                diji: ""
-            },
             deleteTarget: "",
             loading: true,
             localData: [],
@@ -164,31 +103,31 @@ export default {
         },
         clickConfirmDelete() {
             this.loading = true;
-            deleteRoomApi(this.deleteTarget).then((result) => {
-                this.refreshRooms();
+            deleteUnitApi(this.deleteTarget).then((result) => {
+                this.refreshUnits();
                 console.log(result)
             });
         },
         viewSomeThing(data, type) {
-            this.$refs.formComponent.singleRoom = data;
+            this.$refs.formComponent.singleUnit = data;
             //修改
             if (type == "modify") {
                 //查看
                 this.$refs.formComponent.disabled = false;
-                this.modelTitle = "修改Room";
+                this.modelTitle = "修改单位";
                 this.modalMode = "edit";
                 this.open = !this.open;
             } else if (type == "check") {
                 this.$refs.formComponent.disabled = true;
                 this.modalMode = "check";
-                this.modelTitle = "查看Room";
+                this.modelTitle = "查看单位";
                 this.open = !this.open;
             } else {
                 console.log("delete");
             }
         },
         exportToExcel() {
-            let headers = ['id', 'room_id', 'cert_id', 'owner', 'address', 'room_name', 'usage', 'space', 'optional', 'age', 'build_date', 'origin_value', 'room_value', 'dep', 'net_value', 'dep_rate', 'internal_info', 'cur_status'];
+            let headers = ['id', 'name', 'enumber', 'level', 'level_num'];
             const filtedData = this.formatJson(headers, this.localData.data);
             export_json_to_excel({
                 header: headers,
@@ -202,17 +141,19 @@ export default {
         deleteRoom(data) {
             this.sendVal = true;
             this.deleteTarget = {
-                text: "是否要删除" + data.room_id + "(" + data.room_name + ")?",
+                text: "是否要删除" + data.name + "(" + data.enumber + ")?",
                 id: data.id
             };
             // this.loading = true;
             // deleteRoomApi(data).then((result) => {
-            //     this.refreshRooms();
+            //     this.refreshUnits();
             //     console.log(result)
             // });
         },
-        refreshRooms() {
-            getRoomDataApi().then((data) => {
+        refreshUnits() {
+            this.loading = true;
+
+            getUnitApi().then((data) => {
                 console.log(data);
                 this.loading = false;
                 this.localData = {
@@ -230,46 +171,30 @@ export default {
         },
         createRoomModel() {
             // show create Model
-            this.modelTitle = "创建Room"
+            this.modelTitle = "创建单位"
             this.modalMode = "create";
             this.open = true;
-            this.$refs.formComponent.singleRoom = {
-                roomid: "",
-                certid: "",
-                owner: "",
-                address: "",
-                roomname: "",
-                usage: "",
-                space: "",
-                optional: "",
-                age: "",
-                build_date: "",
-                origin_value: "",
-                room_value: "",
-                dep: "",
-                net_value: "",
-                dep_rate: "",
-                internal_info: "",
-                cur_status: ""
+            this.$refs.formComponent.singleUnit = {
+                name: "",
+                enumber: "",
+                level: "",
+                level_num: ""
             };
         },
         toggle() {
             this.open = !this.open;
             this.loading = true;
-            let formdata = this.$refs.formComponent.singleRoom;
-            if (formdata.space == "") {
-                formdata.space = null;
-            }
-            if (formdata.usage == "") {
-                formdata.usage = null
-            }
+            let formdata = this.$refs.formComponent.singleUnit;
+
             if (this.modalMode == "create") {
-                createRoomApi(this.$refs.formComponent.singleRoom).then((result) => {
+                createUnitApi(formdata).then((result) => {
                     console.log(result);
                     this.loading = false;
+                    this.refreshUnits();
+
                 });
             } else if (this.modalMode == "edit") {
-                updateRoomApi(this.$refs.formComponent.singleRoom).then((result) => {
+                updateUnitApi(formdata).then((result) => {
                     console.log(result);
                     this.loading = false;
                 });
@@ -289,14 +214,14 @@ export default {
         onChangePage(page) {
             this.$refs.vuetable.changePage(page);
         },
-                closeModal:function()
+        closeModal:function()
         {
             this.open=false;
         }
 
     },
     created() {
-        getRoomDataApi().then((data) => {
+        getUnitApi().then((data) => {
             //this.localData = data.data.data;
             this.loading = false;
             this.localData = {
@@ -319,7 +244,6 @@ export default {
 .ui.positive.button {
     background-color: #75ADBF !important;
 }
-
 .ui.modal {
     top: auto;
     left: auto;

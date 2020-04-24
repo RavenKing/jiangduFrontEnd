@@ -7,7 +7,7 @@ const menus = [{
         title: "系统首页",
         name: "系统首页",
         url: "/ui/gantt",
-        icon:"el-icon-home"
+        icon:"el-icon-star-on"
       },
       {
         id: "3-2",
@@ -18,9 +18,10 @@ const menus = [{
       },
       {
         id: "3-8",
-        title: "工作流流程图",
-        name: "工作流流程图",
-        url: "/ui/workflow"
+        title: "租赁房屋",
+        name: "租赁房屋",
+        url: "/ui/rentroom",
+        icon:"el-icon-star-on"
       },
       // {
       //   id: "3-3",
@@ -41,17 +42,20 @@ const menus = [{
       }, */
       {
         id: "3-6",
-        title: "树形下拉框",
-        url: "/ui/select"
+        title: "单位管理",
+        url: "/ui/unit",
+        icon:"el-icon-star-on"
       },
       {
         id: "3-7",
-        title: "省市县三级联动",
-        url: "/ui/ssx"
+        title: "员工管理",
+        url: "/ui/employee",
+        icon:"el-icon-star-on"
       }, {
         id: "3-28",
         title: "baidu地图",
-        url: "/map"
+        url: "/map",
+        icon:"el-icon-star-on"
       },
     ]
   },

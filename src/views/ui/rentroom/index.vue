@@ -93,7 +93,6 @@
                 <form-create ref='formComponent'></form-create>
             </sui-modal-content>
             <sui-modal-actions>
-                
                 <sui-button negative @click.native="toggle">
                     取消
                 </sui-button>
@@ -117,10 +116,10 @@ import {
     export_json_to_excel
 } from "@/util/Export2Excel";
 import {
-    getRoomDataApi,
-    createRoomApi,
-    updateRoomApi,
-    deleteRoomApi
+    getRentRoomDataApi,
+    createRentRoomApi,
+    updateRentRoomApi,
+    deleteRentRoomApi
 } from "@/api/roomDataAPI";
 export default {
     name: "MyVuetable",
@@ -164,7 +163,7 @@ export default {
         },
         clickConfirmDelete() {
             this.loading = true;
-            deleteRoomApi(this.deleteTarget).then((result) => {
+            deleteRentRoomApi(this.deleteTarget).then((result) => {
                 this.refreshRooms();
                 console.log(result)
             });
@@ -212,7 +211,7 @@ export default {
             // });
         },
         refreshRooms() {
-            getRoomDataApi().then((data) => {
+            getRentRoomDataApi().then((data) => {
                 console.log(data);
                 this.loading = false;
                 this.localData = {
@@ -264,12 +263,12 @@ export default {
                 formdata.usage = null
             }
             if (this.modalMode == "create") {
-                createRoomApi(this.$refs.formComponent.singleRoom).then((result) => {
+                createRentRoomApi(this.$refs.formComponent.singleRoom).then((result) => {
                     console.log(result);
                     this.loading = false;
                 });
             } else if (this.modalMode == "edit") {
-                updateRoomApi(this.$refs.formComponent.singleRoom).then((result) => {
+                updateRentRoomApi(this.$refs.formComponent.singleRoom).then((result) => {
                     console.log(result);
                     this.loading = false;
                 });
@@ -289,14 +288,13 @@ export default {
         onChangePage(page) {
             this.$refs.vuetable.changePage(page);
         },
-                closeModal:function()
-        {
-            this.open=false;
+        closeModal: function () {
+            this.open = false;
         }
 
     },
     created() {
-        getRoomDataApi().then((data) => {
+        getRentRoomDataApi().then((data) => {
             //this.localData = data.data.data;
             this.loading = false;
             this.localData = {
@@ -323,7 +321,7 @@ export default {
 .ui.modal {
     top: auto;
     left: auto;
-    height:auto!important;
+    height: auto !important;
 }
 
 .ui.table thead th {

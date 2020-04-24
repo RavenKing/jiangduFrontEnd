@@ -3,36 +3,36 @@
     <sui-form>
         <sui-form-fields>
             <sui-form-field>
-                <label>Room</label>
-                <sui-input placeholder="roomid" v-model="singleRoom.room_id" :disabled="disabled"/>
+                <label>房屋id</label>
+                <sui-input placeholder="房屋id" v-model="singleRoom.room_id" :disabled="disabled"/>
             </sui-form-field>
             <sui-form-field>
-                <label>certid</label>
-                <sui-input placeholder="certid" v-model="singleRoom.cert_id" :disabled="disabled"/>
-            </sui-form-field>
-        </sui-form-fields>
-        <sui-form-fields>
-            <sui-form-field>
-                <label>owner</label>
-                <sui-input placeholder="owner" v-model="singleRoom.owner" :disabled="disabled"/>
-            </sui-form-field>
-            <sui-form-field>
-                <label>address</label>
-                <sui-input placeholder="address" v-model="singleRoom.address" :disabled="disabled"/>
-            </sui-form-field>
-            <sui-form-field>
-                <label>roomname</label>
-                <sui-input placeholder="roomname" v-model="singleRoom.room_name" :disabled="disabled"/>
+                <label>权证号</label>
+                <sui-input placeholder="权证号" v-model="singleRoom.cert_id" :disabled="disabled"/>
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields>
             <sui-form-field>
-                <label>usage</label>
-                <sui-input placeholder="usage" v-model="singleRoom.usage" :disabled="disabled" />
+                <label>权证人</label>
+                <sui-input placeholder="权证人" v-model="singleRoom.owner" :disabled="disabled"/>
             </sui-form-field>
             <sui-form-field>
-                <label>space</label>
-                <sui-input placeholder="space" v-model="singleRoom.space" :disabled="disabled"/>
+                <label>房屋地址</label>
+                <sui-input placeholder="房屋地址" v-model="singleRoom.address" :disabled="disabled"/>
+            </sui-form-field>
+            <sui-form-field>
+                <label>房屋名称</label>
+                <sui-input placeholder="房屋名称" v-model="singleRoom.room_name" :disabled="disabled"/>
+            </sui-form-field>
+        </sui-form-fields>
+        <sui-form-fields>
+            <sui-form-field>
+                <label>房屋用途</label>
+                <sui-input placeholder="房屋用途" v-model="singleRoom.usage" :disabled="disabled" />
+            </sui-form-field>
+            <sui-form-field>
+                <label>房屋面积</label>
+                <sui-input placeholder="房屋面积" v-model="singleRoom.space" :disabled="disabled"/>
             </sui-form-field>
             <sui-form-field>
                 <label>optional</label>
@@ -41,40 +41,40 @@
         </sui-form-fields>
         <sui-form-fields>
             <sui-form-field>
-                <label>build_date</label>
-                <sui-input placeholder="build_date" v-model="singleRoom.build_date" :disabled="disabled"/>
+                <label>建造年代</label>
+                <sui-input placeholder="建造年代" v-model="singleRoom.build_date" :disabled="disabled"/>
             </sui-form-field>
             <sui-form-field>
-                <label>origin_value</label>
-                <sui-input placeholder="origin_value" v-model="singleRoom.origin_value" :disabled="disabled"/>
+                <label>账面原值</label>
+                <sui-input placeholder="账面原值" v-model="singleRoom.origin_value" :disabled="disabled"/>
             </sui-form-field>
             <sui-form-field>
-                <label>room_value</label>
-                <sui-input placeholder="room_value" v-model="singleRoom.room_value" :disabled="disabled"/>
-            </sui-form-field>
-        </sui-form-fields>
-        <sui-form-fields>
-            <sui-form-field>
-                <label>dep</label>
-                <sui-input placeholder="dep" v-model="singleRoom.dep" :disabled="disabled"/>
-            </sui-form-field>
-            <sui-form-field>
-                <label>net_value</label>
-                <sui-input placeholder="net_value" v-model="singleRoom.net_value" :disabled="disabled"/>
-            </sui-form-field>
-            <sui-form-field>
-                <label>optional</label>
-                <sui-input placeholder="dep_rate" v-model="singleRoom.dep_rate" :disabled="disabled"/>
+                <label>房屋价格</label>
+                <sui-input placeholder="房屋价格" v-model="singleRoom.room_value" :disabled="disabled"/>
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields>
             <sui-form-field>
-                <label>internal_info</label>
-                <sui-input placeholder="internal_info" v-model="singleRoom.internal_info" :disabled="disabled"/>
+                <label>累计折旧</label>
+                <sui-input placeholder="累计折旧" v-model="singleRoom.dep" :disabled="disabled"/>
             </sui-form-field>
             <sui-form-field>
-                <label>cur_status</label>
-                <sui-input placeholder="cur_status" v-model="singleRoom.cur_status" :disabled="disabled"/>
+                <label>净值</label>
+                <sui-input placeholder="净值" v-model="singleRoom.net_value" :disabled="disabled"/>
+            </sui-form-field>
+            <sui-form-field>
+                <label>年折旧率</label>
+                <sui-input placeholder="年折旧率" v-model="singleRoom.dep_rate" :disabled="disabled"/>
+            </sui-form-field>
+        </sui-form-fields>
+        <sui-form-fields>
+            <sui-form-field>
+                <label>房屋内部信息</label>
+                <sui-input placeholder="房屋内部信息" v-model="singleRoom.internal_info" :disabled="disabled"/>
+            </sui-form-field>
+            <sui-form-field>
+                <label>房屋现状</label>
+                <sui-input placeholder="房屋现状" v-model="singleRoom.cur_status" :disabled="disabled"/>
             </sui-form-field>
         </sui-form-fields>
         
