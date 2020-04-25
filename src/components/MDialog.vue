@@ -95,7 +95,7 @@ export default {
         z-index: 9999;
         .dialog-container{
             width: 500px;
-            height: 380px;
+            height: 180px;
             background: #ffffff;
             position: absolute;
             top: 50%;
@@ -159,7 +159,7 @@ export default {
                     }
                 }
                 .danger-btn{
-                    background: #EF8C8C;
+                    background: red;
                     &:hover{
                         background: rgb(224, 135, 135);
                     }

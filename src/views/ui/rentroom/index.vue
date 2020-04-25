@@ -233,11 +233,11 @@ export default {
             this.modalMode = "create";
             this.open = true;
             this.$refs.formComponent.singleRoom = {
-                roomid: "",
-                certid: "",
+                room_id: "",
+                cert_id: "",
                 owner: "",
                 address: "",
-                roomname: "",
+                room_name: "",
                 usage: "",
                 space: "",
                 optional: "",

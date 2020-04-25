@@ -2,13 +2,7 @@ const menus = [{
     id: "3",
     title: '系统功能',
     icon: "el-icon-monitor",
-    children: [{
-        id: "3-1",
-        title: "系统首页",
-        name: "系统首页",
-        url: "/ui/gantt",
-        icon:"el-icon-star-on"
-      },
+    children: [
       {
         id: "3-2",
         title: "资产管理",
