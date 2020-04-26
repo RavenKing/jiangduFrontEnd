@@ -8,7 +8,7 @@ const constantsJinhui = {
     rentRoomGetAPI:hostname+'/listrentroom',
     roomRentCreateAPI:hostname+'/createrentroom',
     deleteRentRoomAPI:hostname+'/delrentroom',
-    updateRentRoomApi:hostname+'/editrentroom',
+    updateRentRoomAPI:hostname+'/editrentroom',
     unitGetApi:hostname+'/listunit',
     unitCreateApi:hostname+'/createunit',
     deleteUnitApi:hostname+'/delunit',

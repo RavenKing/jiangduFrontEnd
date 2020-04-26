@@ -28,7 +28,7 @@
         </div>
     </div>
     <dialog-bar v-model="sendVal" type="danger" title="是否要删除" :content="deleteTarget.text" v-on:cancel="clickCancel()" @danger="clickConfirmDelete()" @confirm="clickConfirmDelete()" dangerText="确认删除"></dialog-bar>
-
+    <dialog-bar v-model="tokenMessage.tokenExpired" type="danger" :title="tokenMessage.text" :content="tokenMessage.content" :dangerText="tokenMessage.dangerText"></dialog-bar>
     <div>
         <sui-modal class="modal2" v-model="open">
             <sui-modal-header>{{modelTitle}}</sui-modal-header>
@@ -36,8 +36,8 @@
                 <employee-form ref='formComponent'></employee-form>
             </sui-modal-content>
             <sui-modal-actions>
-                
-                <sui-button  negative @click.native="closeModal">
+
+                <sui-button negative @click.native="closeModal">
                     取消
                 </sui-button>
                 <sui-button v-if="modalMode !== 'check'" positive @click.native="toggle">
@@ -80,6 +80,9 @@ export default {
             modelTitle: "",
             modalMode: "create",
             open: false,
+            tokenMessage: {
+                tokenExpired: false
+            },
             deleteTarget: "",
             loading: true,
             localData: [],
@@ -211,14 +214,25 @@ export default {
         onChangePage(page) {
             this.$refs.vuetable.changePage(page);
         },
-        closeModal:function()
-        {
-            this.open=false;
+        closeModal: function () {
+            this.open = false;
         }
 
     },
     created() {
         getEmployeeApi().then((data) => {
+            if (data.code == 2) {
+
+                this.tokenMessage.tokenExpired = true;
+                this.tokenMessage.text="token过期了";
+                this.tokenMessage.dangerText="重新登陆";
+                this.tokenMessage.content="请重新登陆";
+                //token 过期
+                return;
+            } else if (data.token == 1) {
+                return;
+                // backend error
+            }
             //this.localData = data.data.data;
             this.loading = false;
             this.localData = {
@@ -241,16 +255,19 @@ export default {
 .ui.positive.button {
     background-color: #75ADBF !important;
 }
+
 .ui.modal {
     top: auto;
     left: auto;
-    height:auto!important;
+    height: auto !important;
 }
 
 .ui.table thead th {
     padding: 2px !important;
     background-color: #75ADBF !important;
     color: white !important;
+    font-size: 15px;
+    height: 80px !important
 }
 
 .ui.blue.table {

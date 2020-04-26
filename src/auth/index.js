@@ -6,12 +6,17 @@ import { localGet, localDel } from "@/util/storage"; // 导入存储函数
 import { isLoginExpired, monitoringVisibilityChange } from './auxiliary'; // 导入jwt过期校验函数,监测浏览器tab页切换立即校验账号函数
 import addUserRouter from './add-routes'; // 导入异步插入路由函数
 import global from '@/global/index';
-
+import {
+  getUnitApi,
+} from "@/api/roomDataAPI";
 const project_key = global.project_key;
 // 登记全局路由守卫
 function registerRouteGuard() {
   router.beforeEach((to, from, next) => {
     // 检查是否存在登录状态
+
+
+
     let local_auth = localGet(project_key, true);
     // 存在登陆状态
     if (local_auth && local_auth != 'undefined') {
@@ -35,6 +40,19 @@ function registerRouteGuard() {
             addUserRouter(_menu);
             // 整理菜单数据
             store.dispatch('menu/setUserMenu', _menu)
+
+            getUnitApi().then((test)=>{
+              if(test.data.code==2)
+              {
+                store.dispatch('app/setToken', '')
+                localDel(project_key);
+                next({
+                  path: "/login"
+                });
+                return;
+              }
+              
+            });
             next({ ...to, replace: true });
           })
           .catch();

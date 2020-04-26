@@ -32,10 +32,10 @@ function payloadAtob(context) {
 //  * @param {*} context 需要解析的内容
 //  */
 function isLoginExpired(context) {
-  console.log(context);
+  console.log(context)
+  return false;
   // let exp = payloadAtob(context).exp;
   // return isAfter(new Date(), exp)
-  return false;
   // 比较jwt签发的过期时间与本地时间
 }
 

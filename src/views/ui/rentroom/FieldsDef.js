@@ -37,32 +37,26 @@ export default [
     width: "15%"
   },
   {
-    name: "usage1",
-    sortField: "usage1",
-    title: '<i class="grey sitemap icon"></i>房屋用途',
+    name: "usage",
+    sortField: "usage",
+    title: '<i class="white sitemap icon"></i>房屋用途',
     width: "15%"
   },
   {
     name: "age",
     sortField: "age",
-    title: '<i class="grey sitemap icon"></i>建造年代',
+    title: '<i class="white sitemap icon"></i>建造年代',
     width: "15%"
   },
   {
     name: "space",
     sortField: "space",
-    title: '<i class="grey sitemap icon"></i>面积',
-    width: "15%"
-  },
-  {
-    name: "group.description",
-    sortField: "group_id",
-    title: '<i class="grey sitemap icon"></i>实际用途',
+    title: '<i class="white sitemap icon"></i>建筑面积',
     width: "15%"
   },
   {
     name: "action",
-    title: '<i class="grey heterosexual icon"></i>操作',
+    title: '<i class="white heterosexual icon"></i>操作',
     titleClass: "center aligned",
     dataClass: "center aligned",
     width: "15%"

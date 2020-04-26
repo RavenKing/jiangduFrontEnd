@@ -3,22 +3,22 @@
     <sui-form>
         <sui-form-fields>
             <sui-form-field>
-                <label>name</label>
-                <sui-input placeholder="name" v-model="singleUnit.name" :disabled="disabled"/>
+                <label>单位名称</label>
+                <sui-input placeholder="单位名称" v-model="singleUnit.name" :disabled="disabled"/>
             </sui-form-field>
             <sui-form-field>
-                <label>enumber</label>
-                <sui-input placeholder="enumber" v-model="singleUnit.enumber" :disabled="disabled"/>
+                <label>单位人数</label>
+                <sui-input placeholder="单位人数" v-model="singleUnit.enumber" :disabled="disabled"/>
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields>
             <sui-form-field>
-                <label>level</label>
-                <sui-input placeholder="level" v-model="singleUnit.level" :disabled="disabled"/>
+                <label>单位级别</label>
+                <sui-input placeholder="单位级别" v-model="singleUnit.level" :disabled="disabled"/>
             </sui-form-field>
             <sui-form-field>
-                <label>level_num</label>
-                <sui-input placeholder="level_num" v-model="singleUnit.level_num" :disabled="disabled"/>
+                <label>各个级别人数</label>
+                <sui-input placeholder="各个级别人数" v-model="singleUnit.level_num" :disabled="disabled"/>
             </sui-form-field>
         </sui-form-fields>
     </sui-form>

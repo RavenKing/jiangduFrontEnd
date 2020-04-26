@@ -93,8 +93,8 @@
                 <form-create ref='formComponent'></form-create>
             </sui-modal-content>
             <sui-modal-actions>
-                
-                <sui-button negative @click.native="toggle">
+
+                <sui-button negative @click.native="closeModal">
                     取消
                 </sui-button>
                 <sui-button v-if="modalMode !== 'check'" positive @click.native="toggle">
@@ -188,7 +188,7 @@ export default {
             }
         },
         exportToExcel() {
-            let headers = ['id', 'room_id', 'cert_id', 'owner', 'address', 'room_name', 'usage', 'space', 'optional', 'age', 'build_date', 'origin_value', 'room_value', 'dep', 'net_value', 'dep_rate', 'internal_info', 'cur_status'];
+            let headers = ['id', 'room_id', 'certid', 'owner', 'address', 'roomname', 'usage', 'space', 'optional', 'age', 'build_date', 'origin_value', 'room_value', 'dep', 'net_value', 'dep_rate', 'internal_info', 'cur_status'];
             const filtedData = this.formatJson(headers, this.localData.data);
             export_json_to_excel({
                 header: headers,
@@ -235,15 +235,15 @@ export default {
             this.open = true;
             this.$refs.formComponent.singleRoom = {
                 room_id: "",
-                cert_id: "",
+                certid: "",
                 owner: "",
                 address: "",
-                room_name: "",
+                roomname: "",
                 usage: "",
                 space: "",
                 optional: "",
                 age: "",
-                build_date: "",
+                built_date: "",
                 origin_value: "",
                 room_value: "",
                 dep: "",
@@ -289,9 +289,8 @@ export default {
         onChangePage(page) {
             this.$refs.vuetable.changePage(page);
         },
-                closeModal:function()
-        {
-            this.open=false;
+        closeModal: function () {
+            this.open = false;
         }
 
     },
@@ -323,13 +322,15 @@ export default {
 .ui.modal {
     top: auto;
     left: auto;
-    height:auto!important;
+    height: auto !important;
 }
 
 .ui.table thead th {
     padding: 2px !important;
     background-color: #75ADBF !important;
     color: white !important;
+    font-size: 15px;
+    height:80px !important
 }
 
 .ui.blue.table {

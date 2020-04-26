@@ -1,25 +1,31 @@
 export default [
   {
     name: "name",
-    title: '<i class="white user outline icon"></i>name',
+    title: '<i class="white user outline icon"></i>名称',
     width: "20%",
-    sortField: "name"
+    sortField: "name",
+    titleClass: "center aligned",
+    dataClass: "center aligned",
   },
   {
     name: "job",
-    title: '<i class="address card icon"></i>job',
+    title: '<i class="white address card icon"></i>职位',
     width: "20%",
-    sortField: "job"
+    sortField: "job",
+    titleClass: "center aligned",
+    dataClass: "center aligned",
   },
   {
     name: "level",
     sortField: "level",
-    title: '<i class="white sitemap icon"></i>level',
-    width: "15%"
+    title: '<i class="white sitemap icon"></i>级别',
+    width: "15%",
+    titleClass: "center aligned",
+    dataClass: "center aligned",
   },
   {
     name: "action",
-    title: '<i class="grey heterosexual icon"></i>操作',
+    title: '<i class="white heterosexual icon"></i>操作',
     titleClass: "center aligned",
     dataClass: "center aligned",
     width: "15%"

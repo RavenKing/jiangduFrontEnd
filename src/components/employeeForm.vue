@@ -3,18 +3,18 @@
     <sui-form>
         <sui-form-fields>
             <sui-form-field>
-                <label>name</label>
-                <sui-input placeholder="name" v-model="singleEmployee.name" :disabled="disabled"/>
+                <label>名称</label>
+                <sui-input placeholder="名称" v-model="singleEmployee.name" :disabled="disabled"/>
             </sui-form-field>
             <sui-form-field>
-                <label>job</label>
-                <sui-input placeholder="job" v-model="singleEmployee.job" :disabled="disabled"/>
+                <label>职位</label>
+                <sui-input placeholder="职位" v-model="singleEmployee.job" :disabled="disabled"/>
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields>
             <sui-form-field>
-                <label>level</label>
-                <sui-input placeholder="level" v-model="singleEmployee.level" :disabled="disabled"/>
+                <label>级别</label>
+                <sui-input placeholder="级别" v-model="singleEmployee.level" :disabled="disabled"/>
             </sui-form-field>
         </sui-form-fields>
     </sui-form>

@@ -254,8 +254,13 @@ export default {
     padding: 2px !important;
     background-color: #75ADBF !important;
     color: white !important;
+    font-size: 15px;
+    height:80px !important
 }
-
+.map {
+  width: 100%;
+  height: 400px;
+}
 .ui.blue.table {
     border-top: 0px !important;
 }

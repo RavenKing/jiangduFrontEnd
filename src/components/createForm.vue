@@ -8,7 +8,7 @@
             </sui-form-field>
             <sui-form-field>
                 <label>权证号</label>
-                <sui-input placeholder="权证号" v-model="singleRoom.cert_id" :disabled="disabled"/>
+                <sui-input placeholder="权证号" v-model="singleRoom.certid" :disabled="disabled"/>
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields>
@@ -22,7 +22,7 @@
             </sui-form-field>
             <sui-form-field>
                 <label>房屋名称</label>
-                <sui-input placeholder="房屋名称" v-model="singleRoom.room_name" :disabled="disabled"/>
+                <sui-input placeholder="房屋名称" v-model="singleRoom.roomname" :disabled="disabled"/>
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields>
@@ -42,7 +42,7 @@
         <sui-form-fields>
             <sui-form-field>
                 <label>建造年代</label>
-                <sui-input placeholder="建造年代" v-model="singleRoom.build_date" :disabled="disabled"/>
+                <sui-input placeholder="建造年代" v-model="singleRoom.built_date" :disabled="disabled"/>
             </sui-form-field>
             <sui-form-field>
                 <label>账面原值</label>
