@@ -1,109 +1,111 @@
 <template lang="html">
-<div>
+<wl-container>
     <div>
+        <div>
 
-        <sui-dimmer :active="loading" inverted>
-            <sui-loader content="Loading..." />
-        </sui-dimmer>
+            <sui-dimmer :active="loading" inverted>
+                <sui-loader content="Loading..." />
+            </sui-dimmer>
 
-    </div>
-    <div class="filterBiaoDan">
-        <sui-button content="添加" @click.native="createRoomModel" icon="add green" />
-        <!-- <sui-button content="修改" icon="edit yellow" />
+        </div>
+        <div class="filterBiaoDan">
+            <sui-button content="添加" @click.native="createRoomModel" icon="add green" />
+            <!-- <sui-button content="修改" icon="edit yellow" />
         <sui-button content="删除" icon="delete red" /> -->
-        <sui-button content="导出" v-on:click="exportToExcel" icon="file green" />
-    </div>
-    <div class="filterBiaoDan">
-        <sui-form>
-            <sui-form-fields inline>
-                <label> 家地编号</label>
-                <sui-form-field>
-                    <input type="text" placeholder="请选择" v-model="filterString.jiadi" />
-                </sui-form-field>
-                <label> 地籍编号</label>
-                <sui-form-field>
-                    <input type="text" placeholder="请选择" v-model="filterString.diji" />
-                </sui-form-field>
-            </sui-form-fields>
-            <sui-form-fields inline>
-                <label> 核准用途</label>
-                <sui-form-field>
-                    <input type="text" placeholder="请选择" v-model="filterString.hezhunyongtu" />
-                </sui-form-field>
-                <label> 实际用途</label>
-                <sui-form-field>
-                    <input type="text" placeholder="请选择" v-model="filterString.shijiyongtu" />
-                </sui-form-field>
-                <label> 所属单位</label>
-                <sui-form-field>
-                    <select class="ui fluid dropdown">
-                        <option value="">State</option>
-                    </select>
-                </sui-form-field>
-                <label> 国有资产</label>
-                <sui-form-field>
-                    <input type="text" placeholder="请选择" v-model="filterString.guoyouzichan" />
-                </sui-form-field>
-            </sui-form-fields>
-            <sui-form-fields inline>
-                <label> 起止时间</label>
-                <sui-form-field>
-                    <input type="text" placeholder="请选择" v-model="filterString.hezhunyongtu" />
-                </sui-form-field>
-                <label> 至</label>
-                <sui-form-field>
-                    <input type="text" placeholder="请选择" v-model="filterString.shijiyongtu" />
-                </sui-form-field>
-                <label> 面积</label>
-                <sui-form-field>
-                    <select class="ui fluid dropdown">
-                        <option value="">State</option>
-                    </select>
-                </sui-form-field>
-                <label> 至</label>
-                <sui-form-field>
-                    <input type="text" placeholder="请选择" v-model="filterString.guoyouzichan" />
-                </sui-form-field>
-            </sui-form-fields>
-        </sui-form>
+            <sui-button content="导出" v-on:click="exportToExcel" icon="file green" />
+        </div>
+        <div class="filterBiaoDan">
+            <sui-form>
+                <sui-form-fields inline>
+                    <label> 家地编号</label>
+                    <sui-form-field>
+                        <input type="text" placeholder="请选择" v-model="filterString.jiadi" />
+                    </sui-form-field>
+                    <label> 地籍编号</label>
+                    <sui-form-field>
+                        <input type="text" placeholder="请选择" v-model="filterString.diji" />
+                    </sui-form-field>
+                </sui-form-fields>
+                <sui-form-fields inline>
+                    <label> 核准用途</label>
+                    <sui-form-field>
+                        <input type="text" placeholder="请选择" v-model="filterString.hezhunyongtu" />
+                    </sui-form-field>
+                    <label> 实际用途</label>
+                    <sui-form-field>
+                        <input type="text" placeholder="请选择" v-model="filterString.shijiyongtu" />
+                    </sui-form-field>
+                    <label> 所属单位</label>
+                    <sui-form-field>
+                        <select class="ui fluid dropdown">
+                            <option value="">State</option>
+                        </select>
+                    </sui-form-field>
+                    <label> 国有资产</label>
+                    <sui-form-field>
+                        <input type="text" placeholder="请选择" v-model="filterString.guoyouzichan" />
+                    </sui-form-field>
+                </sui-form-fields>
+                <sui-form-fields inline>
+                    <label> 起止时间</label>
+                    <sui-form-field>
+                        <input type="text" placeholder="请选择" v-model="filterString.hezhunyongtu" />
+                    </sui-form-field>
+                    <label> 至</label>
+                    <sui-form-field>
+                        <input type="text" placeholder="请选择" v-model="filterString.shijiyongtu" />
+                    </sui-form-field>
+                    <label> 面积</label>
+                    <sui-form-field>
+                        <select class="ui fluid dropdown">
+                            <option value="">State</option>
+                        </select>
+                    </sui-form-field>
+                    <label> 至</label>
+                    <sui-form-field>
+                        <input type="text" placeholder="请选择" v-model="filterString.guoyouzichan" />
+                    </sui-form-field>
+                </sui-form-fields>
+            </sui-form>
 
-        <sui-button positive content="查询" v-on:click="submit" />
-        <sui-button content="重置" />
-    </div>
-    <div class="vue2Table">
-        <vuetable ref="vuetable" :api-mode="false" :data="localData" :fields="fields" :sort-order="sortOrder" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
-            <div slot="action" slot-scope="props">
-                <sui-button positive content="查看" v-on:click="viewSomeThing(props.rowData,'check')" />
-                <sui-button content="修改" v-on:click="viewSomeThing(props.rowData,'modify')" />
-                <sui-button content="删除" v-on:click="deleteRoom(props.rowData)" />
+            <sui-button positive content="查询" v-on:click="submit" />
+            <sui-button content="重置" />
+        </div>
+        <div class="vue2Table">
+            <vuetable ref="vuetable" :api-mode="false" :data="localData" :fields="fields" :sort-order="sortOrder" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
+                <div slot="action" slot-scope="props">
+                    <sui-button positive content="查看" v-on:click="viewSomeThing(props.rowData,'check')" />
+                    <sui-button content="修改" v-on:click="viewSomeThing(props.rowData,'modify')" />
+                    <sui-button content="删除" v-on:click="deleteRoom(props.rowData)" />
 
+                </div>
+            </vuetable>
+            <div class="pagination ui basic segment grid">
+                <vuetable-pagination-info ref="paginationInfo"></vuetable-pagination-info>
+                <vuetable-pagination ref="pagination" @vuetable-pagination:change-page="onChangePage"></vuetable-pagination>
             </div>
-        </vuetable>
-        <div class="pagination ui basic segment grid">
-            <vuetable-pagination-info ref="paginationInfo"></vuetable-pagination-info>
-            <vuetable-pagination ref="pagination" @vuetable-pagination:change-page="onChangePage"></vuetable-pagination>
+        </div>
+        <dialog-bar v-model="sendVal" type="danger" title="是否要删除" :content="deleteTarget.text" v-on:cancel="clickCancel()" @danger="clickConfirmDelete()" @confirm="clickConfirmDelete()" dangerText="确认删除"></dialog-bar>
+
+        <div>
+            <sui-modal class="modal2" v-model="open">
+                <sui-modal-header>{{modelTitle}}</sui-modal-header>
+                <sui-modal-content image>
+                    <form-create ref='formComponent'></form-create>
+                </sui-modal-content>
+                <sui-modal-actions>
+
+                    <sui-button negative @click.native="closeModal">
+                        取消
+                    </sui-button>
+                    <sui-button v-if="modalMode !== 'check'" positive @click.native="toggle">
+                        提交
+                    </sui-button>
+                </sui-modal-actions>
+            </sui-modal>
         </div>
     </div>
-    <dialog-bar v-model="sendVal" type="danger" title="是否要删除" :content="deleteTarget.text" v-on:cancel="clickCancel()" @danger="clickConfirmDelete()" @confirm="clickConfirmDelete()" dangerText="确认删除"></dialog-bar>
-
-    <div>
-        <sui-modal class="modal2" v-model="open">
-            <sui-modal-header>{{modelTitle}}</sui-modal-header>
-            <sui-modal-content image>
-                <form-create ref='formComponent'></form-create>
-            </sui-modal-content>
-            <sui-modal-actions>
-
-                <sui-button negative @click.native="closeModal">
-                    取消
-                </sui-button>
-                <sui-button v-if="modalMode !== 'check'" positive @click.native="toggle">
-                    提交
-                </sui-button>
-            </sui-modal-actions>
-        </sui-modal>
-    </div>
-</div>
+</wl-container>
 </template>
 
 <script>
@@ -330,7 +332,7 @@ export default {
     background-color: #75ADBF !important;
     color: white !important;
     font-size: 15px;
-    height:80px !important
+    height: 80px !important
 }
 
 .ui.blue.table {

@@ -1,4 +1,5 @@
 <template lang="html">
+<wl-container>
 <div>
     <div>
 
@@ -47,6 +48,7 @@
         </sui-modal>
     </div>
 </div>
+</wl-container>
 </template>
 
 <script>
