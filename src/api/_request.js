@@ -2,8 +2,8 @@ import Axios from "axios";
 
 // 定义axios配置 
 const http = Axios.create({
-  baseURL: '', // api的base_url
-  withCredentials: true, // 开启跨域身份凭证
+  baseURL: '/api', // api的base_url
+  //withCredentials: true, // 开启跨域身份凭证
   method: "post",
   headers: {
     "Content-Type": "application/json;charset=UTF-8"

@@ -14,9 +14,6 @@ const project_key = global.project_key;
 function registerRouteGuard() {
   router.beforeEach((to, from, next) => {
     // 检查是否存在登录状态
-
-
-
     let local_auth = localGet(project_key, true);
     // 存在登陆状态
     if (local_auth && local_auth != 'undefined') {

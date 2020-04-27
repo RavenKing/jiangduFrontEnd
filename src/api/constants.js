@@ -1,4 +1,4 @@
-const hostname= "http://118.190.204.202:9002";
+const hostname= "";
 const constantsJinhui = {
     LoginURL:hostname+"/login",
     roomGetAPI:hostname+"/listroom",

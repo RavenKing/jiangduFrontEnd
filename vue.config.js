@@ -1,6 +1,7 @@
 
 // const port = 6668; // dev port
 let styleVariables = require('./src/style/variables.scss.js');
+const port = 9527 // dev port
 
 module.exports = {
   /* crossorigin: 'anonymous', // htmlWebpackPlugin
@@ -13,6 +14,39 @@ module.exports = {
       errors: true
     },
   }, */
+  devServer:{
+    port: port,
+    open: true,
+    overlay: {
+      warnings: false,
+      errors: true
+    },
+    proxy: {
+      // change xxx-api/login => mock/login
+      // detail: https://cli.vuejs.org/config/#devserver-proxy
+      "/api": {
+        // target: `http://127.0.0.1:${port}/mock`,
+        target: 'http://118.190.204.202:9002',
+        // target: 'https://corp-support.cn',
+        changeOrigin: true,
+        secure: false,
+        pathRewrite: {
+          "^/api": ''
+        }
+      },
+      [process.env.VUE_APP_BASE_API_TERMINAL]: {
+        // target: 'http://118.190.204.202:8010',
+        target: 'http://118.190.204.202:9002',
+        // target: 'https://corp-support.cn',
+        changeOrigin: true,
+        secure: false,
+        pathRewrite: {
+          ['^' + process.env.VUE_APP_BASE_API_TERMINAL]: ''
+        }
+      }
+    }
+    // after: require('./mock/mock-server.js')
+  },
   css: {
     loaderOptions: {
       sass: {
