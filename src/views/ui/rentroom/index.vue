@@ -25,6 +25,7 @@
                     <sui-button positive content="查看" v-on:click="viewSomeThing(props.rowData,'check')" />
                     <sui-button content="修改" v-on:click="viewSomeThing(props.rowData,'modify')" />
                     <sui-button content="删除" v-on:click="deleteRoom(props.rowData)" />
+                    <sui-button content="创建合同" v-on:click="openContractModal(props.rowData)" />
 
                 </div>
             </vuetable>
@@ -51,6 +52,22 @@
                 </sui-modal-actions>
             </sui-modal>
         </div>
+        <div>
+            <sui-modal class="modal2" v-model="contractForm.open">
+                <sui-modal-header>{{contractForm.title}}</sui-modal-header>
+                <sui-modal-content image>
+                    <contract-form ref='formComponentContract'></contract-form>
+                </sui-modal-content>
+                <sui-modal-actions>
+                    <sui-button negative @click.native="closeModal">
+                        取消
+                    </sui-button>
+                    <sui-button positive @click.native="createRentContract">
+                        提交
+                    </sui-button>
+                </sui-modal-actions>
+            </sui-modal>
+        </div>
     </div>
 </wl-container>
 </template>
@@ -62,6 +79,7 @@ import Vuetable from "vuetable-2/src/components/Vuetable";
 import VuetablePagination from "vuetable-2/src/components/VuetablePagination";
 import VuetablePaginationInfo from "vuetable-2/src/components/VuetablePaginationInfo";
 import FieldsDef from "./FieldsDef.js";
+import contractForm from "@/components/rentContractForm";
 import {
     export_json_to_excel
 } from "@/util/Export2Excel";
@@ -69,7 +87,8 @@ import {
     getRentRoomDataApi,
     createRentRoomApi,
     updateRentRoomApi,
-    deleteRentRoomApi
+    deleteRentRoomApi,
+    createLoanContractApi
 } from "@/api/roomDataAPI";
 export default {
     name: "MyVuetable",
@@ -78,7 +97,9 @@ export default {
         Vuetable,
         VuetablePagination,
         VuetablePaginationInfo,
-        'rentroom-form': RentRoomForm
+        'rentroom-form': RentRoomForm,
+        'contract-form': contractForm
+
     },
     data() {
         return {
@@ -97,7 +118,17 @@ export default {
             sortOrder: [{
                 field: "email",
                 direction: "asc"
-            }]
+            }],
+            contractForm: {
+                open: false,
+                title: "createForm",
+                room_id: "",
+                amt: 0,
+                owner: "",
+                rentunit: "",
+                starttime: "",
+                endtime: ""
+            }
         };
     },
 
@@ -117,6 +148,27 @@ export default {
                 this.refreshRooms();
                 console.log(result)
             });
+        },
+        openContractModal(rowData) {
+            this.contractForm.open = true;
+            this.contractForm.room_id = rowData.room_id;
+            this.$refs.formComponentContract.singleContract = this.contractForm;
+        },
+        createRentContract: function () {
+            createLoanContractApi(this.$refs.formComponentContract.singleContract).then(() => {
+                this.$refs.formComponentContract.singleContract = {
+                    open: false,
+                    title: "createForm",
+                    room_id: "",
+                    amt: 0,
+                    owner: "",
+                    rentunit: "",
+                    starttime: "",
+                    endtime: ""
+                }
+                this.contractForm.open = false;
+            });
+
         },
         viewSomeThing(data, type) {
             this.$refs.formComponent.singleRoom = data;
@@ -240,6 +292,7 @@ export default {
         },
         closeModal: function () {
             this.open = false;
+            this.contractForm.open = false;
         }
 
     },

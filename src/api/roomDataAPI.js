@@ -199,6 +199,26 @@ function deleteEmployeeApi(data)
         data: data
     });
 }
+function createRentContractApi(data)
+{    
+    let local_auth = localGet(global.project_key, true);
+    data.token=local_auth;
+    return request({
+        url: constants.createRentContractApi,
+        method: 'post',
+        data: data
+    });
+}
+function createLoanContractApi(data)
+{    
+    let local_auth = localGet(global.project_key, true);
+    data.token=local_auth;
+    return request({
+        url: constants.createLoanContractApi,
+        method: 'post',
+        data: data
+    });
+}
 
 
 export {
@@ -217,5 +237,7 @@ export {
     getEmployeeApi,
     createEmployeeApi,
     updateEmployeeApi,
-    deleteEmployeeApi
+    deleteEmployeeApi,
+    createRentContractApi,
+    createLoanContractApi
 }

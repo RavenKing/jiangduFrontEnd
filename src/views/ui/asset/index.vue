@@ -77,7 +77,7 @@
                     <sui-button positive content="查看" v-on:click="viewSomeThing(props.rowData,'check')" />
                     <sui-button content="修改" v-on:click="viewSomeThing(props.rowData,'modify')" />
                     <sui-button content="删除" v-on:click="deleteRoom(props.rowData)" />
-
+                    <sui-button content="创建合同" v-on:click="openContractModal(props.rowData)" />
                 </div>
             </vuetable>
             <div class="pagination ui basic segment grid">
@@ -94,11 +94,27 @@
                     <form-create ref='formComponent'></form-create>
                 </sui-modal-content>
                 <sui-modal-actions>
-
                     <sui-button negative @click.native="closeModal">
                         取消
                     </sui-button>
                     <sui-button v-if="modalMode !== 'check'" positive @click.native="toggle">
+                        提交
+                    </sui-button>
+                </sui-modal-actions>
+            </sui-modal>
+        </div>
+
+        <div>
+            <sui-modal class="modal2" v-model="contractForm.open">
+                <sui-modal-header>{{contractForm.title}}</sui-modal-header>
+                <sui-modal-content image>
+                    <contract-form ref='formComponentContract'></contract-form>
+                </sui-modal-content>
+                <sui-modal-actions>
+                    <sui-button negative @click.native="closeModal">
+                        取消
+                    </sui-button>
+                    <sui-button positive @click.native="createRentContract">
                         提交
                     </sui-button>
                 </sui-modal-actions>
@@ -111,6 +127,7 @@
 <script>
 import dialogBar from '@/components/MDialog'
 import FormCreate from "@/components/createForm";
+import contractForm from "@/components/rentContractForm";
 import Vuetable from "vuetable-2/src/components/Vuetable";
 import VuetablePagination from "vuetable-2/src/components/VuetablePagination";
 import VuetablePaginationInfo from "vuetable-2/src/components/VuetablePaginationInfo";
@@ -122,7 +139,8 @@ import {
     getRoomDataApi,
     createRoomApi,
     updateRoomApi,
-    deleteRoomApi
+    deleteRoomApi,
+    createRentContractApi
 } from "@/api/roomDataAPI";
 export default {
     name: "MyVuetable",
@@ -131,7 +149,8 @@ export default {
         Vuetable,
         VuetablePagination,
         VuetablePaginationInfo,
-        FormCreate
+        FormCreate,
+        'contract-form': contractForm
     },
     data() {
         return {
@@ -150,7 +169,17 @@ export default {
             sortOrder: [{
                 field: "email",
                 direction: "asc"
-            }]
+            }],
+            contractForm: {
+                open: false,
+                title: "createForm",
+                room_id: "",
+                amt: 0,
+                owner: "",
+                rentunit: "",
+                starttime: "",
+                endtime: ""
+            }
         };
     },
 
@@ -170,6 +199,22 @@ export default {
                 this.refreshRooms();
                 console.log(result)
             });
+        },
+        createRentContract: function () {
+            createRentContractApi(this.$refs.formComponentContract.singleContract).then(() => {
+                this.$refs.formComponentContract.singleContract = {
+                    open: false,
+                    title: "createForm",
+                    room_id: "",
+                    amt: 0,
+                    owner: "",
+                    rentunit: "",
+                    starttime: "",
+                    endtime: ""
+                }
+                this.contractForm.open=false;
+            });
+
         },
         viewSomeThing(data, type) {
             this.$refs.formComponent.singleRoom = data;
@@ -230,6 +275,14 @@ export default {
                 }
             });
         },
+        openContractModal(rowData) {
+            this.contractForm.open = true;
+            this.contractForm.room_id = rowData.room_id;
+            this.$refs.formComponentContract.singleContract = this.contractForm;
+        },
+        // assignRentRoom(rowData){
+        //     console.log(rowData);
+        // },
         createRoomModel() {
             // show create Model
             this.modelTitle = "创建Room"
@@ -293,6 +346,7 @@ export default {
         },
         closeModal: function () {
             this.open = false;
+            this.contractForm.open = false;
         }
 
     },
