@@ -9,15 +9,14 @@
 
     </div>
     <div class="filterBiaoDan">
-        <sui-button content="添加" @click.native="createRoomModel" icon="add green" />
         <!-- <sui-button content="修改" icon="edit yellow" />
         <sui-button content="删除" icon="delete red" /> -->
-        <sui-button content="导出" v-on:click="exportToExcel" icon="file green" />
+        <!-- <sui-button content="导出" v-on:click="exportToExcel" icon="file green" /> --> -->
     </div>
     <div class="vue2Table">
         <vuetable ref="vuetable" :api-mode="false" :data="localData" :fields="fields" :sort-order="sortOrder" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
-            <div slot="action" slot-scope="props">
-                <sui-button content="删除" v-on:click="deleteRoom(props.rowData)" />
+            <div slot="action">
+                <!-- <sui-button content="删除" v-on:click="deleteRoom(props.rowData)" /> -->
 
             </div>
         </vuetable>
