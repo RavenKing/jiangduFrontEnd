@@ -67,7 +67,6 @@
                     </sui-form-field>
                 </sui-form-fields>
             </sui-form>
-
             <sui-button positive content="查询" v-on:click="submit" />
             <sui-button content="重置" />
         </div>
@@ -103,7 +102,6 @@
                 </sui-modal-actions>
             </sui-modal>
         </div>
-
         <div>
             <sui-modal class="modal2" v-model="contractForm.open">
                 <sui-modal-header>{{contractForm.title}}</sui-modal-header>
@@ -140,7 +138,8 @@ import {
     createRoomApi,
     updateRoomApi,
     deleteRoomApi,
-    createRentContractApi
+    createRentContractApi,
+    //getRentRoomContractListApi
 } from "@/api/roomDataAPI";
 export default {
     name: "MyVuetable",
@@ -179,6 +178,9 @@ export default {
                 rentunit: "",
                 starttime: "",
                 endtime: ""
+            },
+            contractList: {
+                open: false
             }
         };
     },
@@ -193,6 +195,15 @@ export default {
                 }
             }))
         },
+        // openContractList(rowData) {
+        //     this.contractList.open = true;
+        //     this.contractList.room_id = rowData.room_id;
+        //     this.loading = true;
+        //     getRentRoomContractListApi(rowData).then((result) => {
+        //         this.loading = false;
+        //         this.contractList.dataList = result;
+        //     })
+        // },
         clickConfirmDelete() {
             this.loading = true;
             deleteRoomApi(this.deleteTarget).then((result) => {
@@ -212,7 +223,7 @@ export default {
                     starttime: "",
                     endtime: ""
                 }
-                this.contractForm.open=false;
+                this.contractForm.open = false;
             });
 
         },

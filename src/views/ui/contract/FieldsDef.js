@@ -1,0 +1,50 @@
+export default [
+  {
+    name: "rentowner",
+    title: '<i class="white user outline icon"></i>rentowner',
+    width: "20%",
+    height:"100px",
+    sortField: "rentowner",
+    titleClass: "center aligned",
+    dataClass: "center aligned",
+  },
+  {
+    name: "rentunit",
+    title: '<i class="address card icon"></i>rentunit',
+    width: "20%",
+    sortField: "cert_id",
+    titleClass: "center aligned",
+    dataClass: "center aligned",
+  },
+  {
+    name: "rent_mobile",
+    sortField: "enumber",
+    title: '<i class="white sitemap icon"></i>手机号',
+    width: "15%",
+    titleClass: "center aligned",
+    dataClass: "center aligned",
+  },
+  {
+    name: "starttime",
+    sortField: "level",
+    title: '<i class="white sitemap icon"></i>开始时间',
+    width: "15%",
+    titleClass: "center aligned",
+    dataClass: "center aligned",
+  },
+  {
+    name: "endtime",
+    sortField: "level",
+    title: '<i class="white sitemap icon"></i>结束时间',
+    width: "15%",
+    titleClass: "center aligned",
+    dataClass: "center aligned",
+  },
+  {
+    name: "action",
+    title: '<i class="white heterosexual icon"></i>操作',
+    titleClass: "center aligned",
+    dataClass: "center aligned",
+    width: "15%"
+  },
+];

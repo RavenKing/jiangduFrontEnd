@@ -219,7 +219,27 @@ function createLoanContractApi(data)
         data: data
     });
 }
-
+function getRentRoomContractListApi(data)
+{
+    let local_auth = localGet(global.project_key, true);
+    data.token=local_auth;
+    return request({
+        url: constants.listRentRoomApi,
+        method: 'post',
+        data: data
+    });
+}
+function getRoomContractListApi()
+{
+    let local_auth = localGet(global.project_key, true);
+    var data={token:""};
+     data.token=local_auth;
+    return request({
+        url: constants.listLoanRoomApi,
+        method: 'post',
+        data: data
+    });
+}
 
 export {
     getRoomDataApi,
@@ -239,5 +259,7 @@ export {
     updateEmployeeApi,
     deleteEmployeeApi,
     createRentContractApi,
-    createLoanContractApi
+    createLoanContractApi,
+    getRentRoomContractListApi,
+    getRoomContractListApi
 }

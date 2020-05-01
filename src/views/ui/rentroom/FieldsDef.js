@@ -59,6 +59,6 @@ export default [
     title: '<i class="white heterosexual icon"></i>操作',
     titleClass: "center aligned",
     dataClass: "center aligned",
-    width: "20%"
+    width: "30%"
   },
 ];
