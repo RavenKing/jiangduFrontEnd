@@ -17,12 +17,12 @@ const menus = [{
         url: "/ui/rentroom",
         icon:"el-icon-star-on"
       },
-      {
-        id: "3-3",
-        title: "BIM三维模型",
-        name: "BIM三维模型",
-        url: "/ui/bim"
-      },
+      // {
+      //   id: "3-3",
+      //   title: "BIM三维模型",
+      //   name: "BIM三维模型",
+      //   url: "/ui/bim"
+      // },
       {
         id: "3-4",
         title: "合同管理",
