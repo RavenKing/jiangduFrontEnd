@@ -77,6 +77,8 @@
                     <sui-button content="修改" v-on:click="viewSomeThing(props.rowData,'modify')" />
                     <sui-button content="删除" v-on:click="deleteRoom(props.rowData)" />
                     <sui-button content="创建合同" v-on:click="openContractModal(props.rowData)" />
+                    <sui-button content="分配房屋" v-on:click="openAssignModal(props.rowData)" />
+                    <sui-button content="分配房屋列表" v-on:click="openAssignList(props.rowData)" />
                 </div>
             </vuetable>
             <div class="pagination ui basic segment grid">
@@ -104,7 +106,7 @@
         </div>
         <div>
             <sui-modal class="modal2" v-model="contractForm.open">
-                <sui-modal-header>{{contractForm.title}}</sui-modal-header>
+                <sui-modal-header>创建合同  </sui-modal-header>
                 <sui-modal-content image>
                     <contract-form ref='formComponentContract'></contract-form>
                 </sui-modal-content>
@@ -118,6 +120,46 @@
                 </sui-modal-actions>
             </sui-modal>
         </div>
+        <div>
+            <sui-modal class="modal2" v-model="assignForm.open">
+                <sui-modal-header>分配房屋</sui-modal-header>
+                <sui-modal-content image>
+                    <assign-form ref='formComponentAssign'></assign-form>
+                </sui-modal-content>
+                <sui-modal-actions>
+                    <sui-button negative @click.native="closeModal">
+                        取消
+                    </sui-button>
+                    <sui-button positive @click.native="createAssignment">
+                        提交
+                    </sui-button>
+                </sui-modal-actions>
+            </sui-modal>
+        </div>
+        <div>
+            <sui-modal class="modal2" v-model="assignList.open">
+                <sui-modal-header>分配房屋列表</sui-modal-header>
+                <sui-modal-content image>
+                    <div class="vue2Table">
+                        <vuetable ref="vuetable" :api-mode="false" :data="assignList.data" :fields="listField" :sort-order="sortOrder" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
+                            <div slot="action" slot-scope="props">
+                                <sui-button content="删除" v-on:click="deleteRoom(props.rowData)" />
+                            </div>
+                        </vuetable>
+                        <div class="pagination ui basic segment grid">
+                            <vuetable-pagination-info ref="paginationInfo"></vuetable-pagination-info>
+                            <vuetable-pagination ref="pagination" @vuetable-pagination:change-page="onChangePage"></vuetable-pagination>
+                        </div>
+                    </div>
+                </sui-modal-content>
+                <sui-modal-actions>
+                    <sui-button negative @click.native="closeModal">
+                        取消
+                    </sui-button>
+
+                </sui-modal-actions>
+            </sui-modal>
+        </div>
     </div>
 </wl-container>
 </template>
@@ -126,10 +168,12 @@
 import dialogBar from '@/components/MDialog'
 import FormCreate from "@/components/createForm";
 import contractForm from "@/components/rentContractForm";
+import assignForm from "@/components/assignForm";
 import Vuetable from "vuetable-2/src/components/Vuetable";
 import VuetablePagination from "vuetable-2/src/components/VuetablePagination";
 import VuetablePaginationInfo from "vuetable-2/src/components/VuetablePaginationInfo";
 import FieldsDef from "./FieldsDef.js";
+import FieldsDefList from "./FieldsDefList.js";
 import {
     export_json_to_excel
 } from "@/util/Export2Excel";
@@ -139,6 +183,8 @@ import {
     updateRoomApi,
     deleteRoomApi,
     createRentContractApi,
+    createAssignmentApi,
+    getAssignRoomList
     //getRentRoomContractListApi
 } from "@/api/roomDataAPI";
 export default {
@@ -149,7 +195,8 @@ export default {
         VuetablePagination,
         VuetablePaginationInfo,
         FormCreate,
-        'contract-form': contractForm
+        'contract-form': contractForm,
+        'assign-form': assignForm
     },
     data() {
         return {
@@ -161,14 +208,22 @@ export default {
                 jiadi: "",
                 diji: ""
             },
+            assignForm: {
+                open: false
+            },
             deleteTarget: "",
             loading: true,
             localData: [],
+            listField:FieldsDefList,
             fields: FieldsDef,
             sortOrder: [{
                 field: "email",
                 direction: "asc"
             }],
+            assignList: {
+                open: false,
+                data: []
+            },
             contractForm: {
                 open: false,
                 title: "createForm",
@@ -195,6 +250,14 @@ export default {
                 }
             }))
         },
+        openAssignList(rowData) {
+            this.assignList.open = true;
+            getAssignRoomList(rowData).then((result) => {
+                this.assignList.data = result.data;
+                console.log(result);
+            })
+
+        },
         // openContractList(rowData) {
         //     this.contractList.open = true;
         //     this.contractList.room_id = rowData.room_id;
@@ -204,6 +267,21 @@ export default {
         //         this.contractList.dataList = result;
         //     })
         // },
+        openAssignModal(rowData) {
+            console.log(rowData);
+            this.assignForm.open = true;
+            var data = {
+                room_id: rowData.room_id
+            }
+            this.$refs.formComponentAssign.singleAssignment = data;
+        },
+        createAssignment() {
+            this.loading = true;
+            this.assignForm.open = false;
+            createAssignmentApi(this.$refs.formComponentAssign.singleAssignment).then(() => {
+                this.loading = false;
+            });
+        },
         clickConfirmDelete() {
             this.loading = true;
             deleteRoomApi(this.deleteTarget).then((result) => {
@@ -357,7 +435,10 @@ export default {
         },
         closeModal: function () {
             this.open = false;
+            this.assignForm.open=false;
             this.contractForm.open = false;
+            this.assignList.open = false;
+
         }
 
     },

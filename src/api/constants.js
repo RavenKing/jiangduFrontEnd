@@ -19,8 +19,9 @@ const constantsJinhui = {
     updateEmployeeApi:hostname+'/editemployee',
     createRentContractApi:hostname+'createrentcontract',
     createLoanContractApi:hostname+'createloancontract',
-    listRentRoomApi:hostname+'listrentroomassignment',
-    listLoanRoomApi:hostname+'/listrentcontract'
-
+    deleteContractApi:hostname+'/delrentcontract',
+    listRoomAssignmentApi:hostname+'listroomassignment',
+    listLoanRoomApi:hostname+'/listrentcontract',
+    createAssignmentApi:hostname+'/assignroom',
 }
 export default constantsJinhui;

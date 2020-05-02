@@ -3,26 +3,26 @@
     <sui-form>
         <sui-form-fields>
             <sui-form-field>
-                <label>starttime</label>
-                <sui-input placeholder="starttime" v-model="singleContract.starttime" :disabled="disabled"/>
+                <label>起始时间</label>
+                <sui-input placeholder="起始时间" v-model="singleContract.starttime" :disabled="disabled"/>
             </sui-form-field>
             <sui-form-field>
-                <label>endtime</label>
-                <sui-input placeholder="endtime" v-model="singleContract.endtime" :disabled="disabled"/>
+                <label>结束时间</label>
+                <sui-input placeholder="结束时间" v-model="singleContract.endtime" :disabled="disabled"/>
             </sui-form-field>
             <sui-form-field>
-                <label>rentunit</label>
-                <sui-input placeholder="rentunit" v-model="singleContract.rentunit" :disabled="disabled"/>
+                <label>出租单位</label>
+                <sui-input placeholder="出租单位" v-model="singleContract.rentunit" :disabled="disabled"/>
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields>
             <sui-form-field>
-                <label>owner</label>
-                <sui-input placeholder="owner" v-model="singleContract.owner" :disabled="disabled" />
+                <label>负责人</label>
+                <sui-input placeholder="负责人" v-model="singleContract.owner" :disabled="disabled" />
             </sui-form-field>
             <sui-form-field>
-                <label>amt</label>
-                <sui-input placeholder="amt" v-model="singleContract.amt" :disabled="disabled"/>
+                <label>金额</label>
+                <sui-input placeholder="金额" v-model="singleContract.amt" :disabled="disabled"/>
             </sui-form-field>
         </sui-form-fields>      
     </sui-form>

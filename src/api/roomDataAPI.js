@@ -240,7 +240,39 @@ function getRoomContractListApi()
         data: data
     });
 }
+function createAssignmentApi(data)
+{
+    let local_auth = localGet(global.project_key, true);
+    data.token=local_auth;
+    return request({
+        url: constants.createAssignmentApi,
+        method: 'post',
+        data: data
+    });
 
+}
+function getAssignRoomList(data)
+{  
+    
+    let local_auth = localGet(global.project_key, true);
+    data.token=local_auth;
+    return request({
+        url: constants.listRoomAssignmentApi,
+        method: 'post',
+        data: data
+    });
+
+}
+function deleteContractApi(data)
+{
+    let local_auth = localGet(global.project_key, true);
+    data.token=local_auth;
+    return request({
+        url: constants.deleteContractApi,
+        method: 'post',
+        data: data
+    });
+}
 export {
     getRoomDataApi,
     createRoomApi,
@@ -261,5 +293,8 @@ export {
     createRentContractApi,
     createLoanContractApi,
     getRentRoomContractListApi,
-    getRoomContractListApi
+    getRoomContractListApi,
+    createAssignmentApi,
+    getAssignRoomList,
+    deleteContractApi
 }
