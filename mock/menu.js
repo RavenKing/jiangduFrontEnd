@@ -7,15 +7,13 @@ const menus = [{
         id: "3-2",
         title: "资产管理",
         name: "资产管理",
-        url: "/ui/asset",
-        icon:"el-icon-edit"
+        url: "/ui/asset"
       },
       {
         id: "3-8",
         title: "租赁房屋",
         name: "租赁房屋",
-        url: "/ui/rentroom",
-        icon:"el-icon-star-on"
+        url: "/ui/rentroom"
       },
       // {
       //   id: "3-3",
@@ -25,10 +23,15 @@ const menus = [{
       // },
       {
         id: "3-4",
-        title: "合同管理",
-        name: "合同管理",
-        url: "/ui/contract",
-        icon:"el-icon-star-on"
+        title: "出租合同",
+        name: "出租合同",
+        url: "/ui/contract"
+      },
+      {
+        id: "3-5",
+        title: "租赁合同",
+        name: "租赁合同",
+        url: "/ui/loancontract"
       },
       /* {
         id: "3-5",
@@ -38,19 +41,16 @@ const menus = [{
       {
         id: "3-6",
         title: "单位管理",
-        url: "/ui/unit",
-        icon:"el-icon-star-on"
+        url: "/ui/unit"
       },
       {
         id: "3-7",
         title: "员工管理",
-        url: "/ui/employee",
-        icon:"el-icon-star-on"
+        url: "/ui/employee"
       }, {
         id: "3-28",
         title: "baidu地图",
-        url: "/map",
-        icon:"el-icon-star-on"
+        url: "/map"
       },
     ]
   },

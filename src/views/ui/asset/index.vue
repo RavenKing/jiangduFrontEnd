@@ -73,10 +73,10 @@
         <div class="vue2Table">
             <vuetable ref="vuetable" :api-mode="false" :data="localData" :fields="fields" :sort-order="sortOrder" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
                 <div slot="action" slot-scope="props">
-                    <sui-button positive content="查看" v-on:click="viewSomeThing(props.rowData,'check')" />
-                    <sui-button content="修改" v-on:click="viewSomeThing(props.rowData,'modify')" />
+                    <!-- <sui-button positive content="查看" v-on:click="viewSomeThing(props.rowData,'check')" /> -->
+                    <sui-button positive content="编辑" v-on:click="viewSomeThing(props.rowData,'modify')" />
                     <sui-button content="删除" v-on:click="deleteRoom(props.rowData)" />
-                    <sui-button content="创建合同" v-on:click="openContractModal(props.rowData)" />
+                    <!-- <sui-button content="创建合同" v-on:click="openContractModal(props.rowData)" /> -->
                     <sui-button content="分配房屋" v-on:click="openAssignModal(props.rowData)" />
                     <sui-button content="分配房屋列表" v-on:click="openAssignList(props.rowData)" />
                 </div>
@@ -92,29 +92,15 @@
             <sui-modal class="modal2" v-model="open">
                 <sui-modal-header>{{modelTitle}}</sui-modal-header>
                 <sui-modal-content image>
-                    <form-create ref='formComponent'></form-create>
+                    <div>
+                    <form-create ref='formComponent'></form-create> 
+                    </div>
                 </sui-modal-content>
                 <sui-modal-actions>
                     <sui-button negative @click.native="closeModal">
                         取消
                     </sui-button>
                     <sui-button v-if="modalMode !== 'check'" positive @click.native="toggle">
-                        提交
-                    </sui-button>
-                </sui-modal-actions>
-            </sui-modal>
-        </div>
-        <div>
-            <sui-modal class="modal2" v-model="contractForm.open">
-                <sui-modal-header>创建合同  </sui-modal-header>
-                <sui-modal-content image>
-                    <contract-form ref='formComponentContract'></contract-form>
-                </sui-modal-content>
-                <sui-modal-actions>
-                    <sui-button negative @click.native="closeModal">
-                        取消
-                    </sui-button>
-                    <sui-button positive @click.native="createRentContract">
                         提交
                     </sui-button>
                 </sui-modal-actions>
@@ -167,7 +153,6 @@
 <script>
 import dialogBar from '@/components/MDialog'
 import FormCreate from "@/components/createForm";
-import contractForm from "@/components/rentContractForm";
 import assignForm from "@/components/assignForm";
 import Vuetable from "vuetable-2/src/components/Vuetable";
 import VuetablePagination from "vuetable-2/src/components/VuetablePagination";
@@ -195,7 +180,6 @@ export default {
         VuetablePagination,
         VuetablePaginationInfo,
         FormCreate,
-        'contract-form': contractForm,
         'assign-form': assignForm
     },
     data() {
@@ -214,7 +198,7 @@ export default {
             deleteTarget: "",
             loading: true,
             localData: [],
-            listField:FieldsDefList,
+            listField: FieldsDefList,
             fields: FieldsDef,
             sortOrder: [{
                 field: "email",
@@ -311,7 +295,7 @@ export default {
             if (type == "modify") {
                 //查看
                 this.$refs.formComponent.disabled = false;
-                this.modelTitle = "修改Room";
+                this.modelTitle = "编辑房屋";
                 this.modalMode = "edit";
                 this.open = !this.open;
             } else if (type == "check") {
@@ -374,7 +358,7 @@ export default {
         // },
         createRoomModel() {
             // show create Model
-            this.modelTitle = "创建Room"
+            this.modelTitle = "创建房屋"
             this.modalMode = "create";
             this.open = true;
             this.$refs.formComponent.singleRoom = {
@@ -435,7 +419,7 @@ export default {
         },
         closeModal: function () {
             this.open = false;
-            this.assignForm.open=false;
+            this.assignForm.open = false;
             this.contractForm.open = false;
             this.assignList.open = false;
 

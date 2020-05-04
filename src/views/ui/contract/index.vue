@@ -9,9 +9,8 @@
 
         </div>
         <div class="filterBiaoDan">
-            <!-- <sui-button content="修改" icon="edit yellow" />
-        <sui-button content="删除" icon="delete red" /> -->
-            <!-- <sui-button content="导出" v-on:click="exportToExcel" icon="file green" /> --> -->
+            <sui-button content="创建合同" icon="edit yellow" v-on:click="openContractForm" />
+            <!-- <sui-button content="导出" v-on:click="exportToExcel" icon="file green" />  -->
         </div>
         <div class="vue2Table">
             <vuetable ref="vuetable" :api-mode="false" :data="localData" :fields="fields" :sort-order="sortOrder" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
@@ -43,6 +42,23 @@
                 </sui-modal-actions>
             </sui-modal>
         </div>
+
+        <div>
+            <sui-modal class="modal2" v-model="contractForm.open">
+                <sui-modal-header>创建合同 </sui-modal-header>
+                <sui-modal-content image>
+                    <contract-form ref='formComponentContract'></contract-form>
+                </sui-modal-content>
+                <sui-modal-actions>
+                    <sui-button negative @click.native="closeModal">
+                        取消
+                    </sui-button>
+                    <sui-button positive @click.native="createContract">
+                        提交
+                    </sui-button>
+                </sui-modal-actions>
+            </sui-modal>
+        </div>
     </div>
 </wl-container>
 </template>
@@ -50,6 +66,7 @@
 <script>
 import dialogBar from '@/components/MDialog'
 import UnitForm from "@/components/unitForm";
+import contractForm from "@/components/rentContractForm";
 import Vuetable from "vuetable-2/src/components/Vuetable";
 import VuetablePagination from "vuetable-2/src/components/VuetablePagination";
 import VuetablePaginationInfo from "vuetable-2/src/components/VuetablePaginationInfo";
@@ -58,8 +75,10 @@ import {
     export_json_to_excel
 } from "@/util/Export2Excel";
 import {
-    getRoomContractListApi,
-    deleteContractApi
+    getRentRoomContractListApi,
+    deleteRentContractApi,
+    createRentContractApi
+
 } from "@/api/roomDataAPI";
 export default {
     name: "MyVuetable",
@@ -68,11 +87,22 @@ export default {
         Vuetable,
         VuetablePagination,
         VuetablePaginationInfo,
-        UnitForm
+        UnitForm,
+        'contract-form': contractForm
     },
     data() {
         return {
             sendVal: false,
+            contractForm: {
+                open: false,
+                title: "createForm",
+                room_id: "",
+                amt: 0,
+                owner: "",
+                rentunit: "",
+                starttime: "",
+                endtime: ""
+            },
             modelTitle: "",
             modalMode: "create",
             open: false,
@@ -88,6 +118,26 @@ export default {
     },
 
     methods: {
+        openContractForm: function () {
+            this.contractForm.open = true
+        },
+
+        createContract: function () {
+            createRentContractApi(this.$refs.formComponentContract.singleContract).then(() => {
+                this.$refs.formComponentContract.singleContract = {
+                    open: false,
+                    title: "createForm",
+                    room_id: "",
+                    amt: 0,
+                    owner: "",
+                    rentunit: "",
+                    starttime: "",
+                    endtime: ""
+                }
+                this.contractForm.open = false;
+            });
+
+        },
         formatJson(filterVal, jsonData) {
             return jsonData.map(v => filterVal.map(j => {
                 if (j === 'timestamp') {
@@ -99,7 +149,7 @@ export default {
         },
         clickConfirmDelete() {
             this.loading = true;
-            deleteContractApi(this.deleteTarget).then((result) => {
+            deleteRentContractApi(this.deleteTarget).then((result) => {
                 this.refreshUnits();
                 console.log(result)
             });
@@ -148,8 +198,7 @@ export default {
         },
         refreshUnits() {
             this.loading = true;
-
-            getRoomContractListApi().then((data) => {
+            getRentRoomContractListApi().then((data) => {
                 console.log(data);
                 this.loading = false;
                 this.localData = {
@@ -212,11 +261,12 @@ export default {
         },
         closeModal: function () {
             this.open = false;
+            this.contractForm.open=false;
         }
 
     },
     created() {
-        getRoomContractListApi().then((data) => {
+        getRentRoomContractListApi().then((data) => {
             //this.localData = data.data.data;
             this.loading = false;
             this.localData = {

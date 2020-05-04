@@ -219,23 +219,25 @@ function createLoanContractApi(data)
         data: data
     });
 }
-function getRentRoomContractListApi(data)
+function getRentRoomContractListApi()
 {
     let local_auth = localGet(global.project_key, true);
+    var data={token:null};
     data.token=local_auth;
+    console.log(constants.listRentRoomContractApi);
     return request({
-        url: constants.listRentRoomApi,
+        url: constants.listRentRoomContractApi,
         method: 'post',
         data: data
     });
 }
-function getRoomContractListApi()
+function getLoanRoomContractListApi()
 {
     let local_auth = localGet(global.project_key, true);
     var data={token:""};
      data.token=local_auth;
     return request({
-        url: constants.listLoanRoomApi,
+        url: constants.listLoanRoomContractApi,
         method: 'post',
         data: data
     });
@@ -263,16 +265,27 @@ function getAssignRoomList(data)
     });
 
 }
-function deleteContractApi(data)
+function deleteRentContractApi(data)
 {
     let local_auth = localGet(global.project_key, true);
     data.token=local_auth;
     return request({
-        url: constants.deleteContractApi,
+        url: constants.deleteRentContractApi,
         method: 'post',
         data: data
     });
 }
+function deleteLoanContractApi(data)
+{
+    let local_auth = localGet(global.project_key, true);
+    data.token=local_auth;
+    return request({
+        url: constants.deleteLoanContractApi,
+        method: 'post',
+        data: data
+    });
+}
+
 export {
     getRoomDataApi,
     createRoomApi,
@@ -293,8 +306,9 @@ export {
     createRentContractApi,
     createLoanContractApi,
     getRentRoomContractListApi,
-    getRoomContractListApi,
+    getLoanRoomContractListApi,
     createAssignmentApi,
     getAssignRoomList,
-    deleteContractApi
+    deleteRentContractApi,
+    deleteLoanContractApi
 }
