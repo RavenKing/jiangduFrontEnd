@@ -1,7 +1,7 @@
 export default [
   {
     name: "rentowner",
-    title: '<i class="white user outline icon"></i>rentowner',
+    title: '<i class="white user outline icon"></i>出租人',
     width: "20%",
     height:"100px",
     sortField: "rentowner",
@@ -10,7 +10,7 @@ export default [
   },
   {
     name: "rentunit",
-    title: '<i class="address card icon"></i>rentunit',
+    title: '<i class="address card icon"></i>出租单位',
     width: "20%",
     sortField: "cert_id",
     titleClass: "center aligned",

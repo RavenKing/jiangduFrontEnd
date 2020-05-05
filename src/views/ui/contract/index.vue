@@ -44,7 +44,7 @@
         </div>
 
         <div>
-            <sui-modal class="modal2" v-model="contractForm.open">
+            <sui-modal class="modalForm" v-model="contractForm.open">
                 <sui-modal-header>创建合同 </sui-modal-header>
                 <sui-modal-content image>
                     <contract-form ref='formComponentContract'></contract-form>
@@ -121,8 +121,21 @@ export default {
         openContractForm: function () {
             this.contractForm.open = true
         },
+        formatDate(timeDate){
+            const year = new Intl.DateTimeFormat('en', { year: 'numeric'}).format(timeDate)
+            const month = new Intl.DateTimeFormat('en', {  month: '2-digit' }).format(timeDate)
+            const day = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(timeDate)
+            return year.toString()+month.toString()+day.toString();
+        },
 
         createContract: function () {
+
+            var postdata =this.$refs.formComponentContract.singleContract; 
+            postdata.starttime=this.formatDate(postdata.starttime); 
+            postdata.endtime=this.formatDate(postdata.endtime);
+            postdata.rent_amt=parseInt(postdata.amt);
+            postdata.rentowner=postdata.owner;
+            postdata.rent_mobile=postdata.mobile;
             createRentContractApi(this.$refs.formComponentContract.singleContract).then(() => {
                 this.$refs.formComponentContract.singleContract = {
                     open: false,
@@ -293,7 +306,15 @@ export default {
 .ui.modal {
     top: auto;
     left: auto;
-    height: auto !important;
+    height:auto !important;
+    min-height: 500px !important;
+}
+.ui.modal>.actions{
+    position:fixed; 
+    bottom:0;
+    right:0;
+    border:0px !important;
+    background: white !important;
 }
 
 .ui.table thead th {

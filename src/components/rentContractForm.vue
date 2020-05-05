@@ -3,17 +3,16 @@
     <sui-form>
         <sui-form-fields>
             <sui-form-field>
-
-                <label>选择房屋</label>
+                <label>选择</label>
                 <sui-dropdown placeholder="选择房屋" selection :options="options" v-model="singleContract.room_id" />
             </sui-form-field>
             <sui-form-field>
-                <label>起始时间</label>
-                <sui-input placeholder="起始时间" v-model="singleContract.starttime" :disabled="disabled" />
+                <label>起始</label>
+                <datepicker :value="singleContract.starttime" v-model="singleContract.starttime" :language="lang['zh']"></datepicker>
             </sui-form-field>
             <sui-form-field>
                 <label>结束时间</label>
-                <sui-input placeholder="结束时间" v-model="singleContract.endtime" :disabled="disabled" />
+                <datepicker :value="singleContract.endtime" v-model="singleContract.endtime" :language="lang['zh']"></datepicker>
             </sui-form-field>
             <sui-form-field>
                 <label>出租单位</label>
@@ -21,6 +20,10 @@
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields>
+            <sui-form-field>
+                <label>手机号</label>
+                <sui-input placeholder="手机号" v-model="singleContract.mobile" :disabled="disabled"  />
+            </sui-form-field>
             <sui-form-field>
                 <label>负责人</label>
                 <sui-input placeholder="负责人" v-model="singleContract.owner" :disabled="disabled" />
@@ -35,13 +38,19 @@
 </template>
 
 <script>
+import Datepicker from 'vuejs-datepicker';
+import * as lang from "vuejs-datepicker/src/locale";
 import {
     getRoomDataApi
 } from "@/api/roomDataAPI";
 export default {
     name: 'rentroom-contract',
+    components: {
+        Datepicker
+    },
     data() {
         return {
+            lang: lang,
             disabled: false,
             options: [],
             singleContract: {

@@ -291,10 +291,19 @@ export default {
     background-color: #75ADBF !important;
 }
 
+
 .ui.modal {
     top: auto;
     left: auto;
-    height: auto !important;
+    height:auto !important;
+    min-height: 500px !important;
+}
+.ui.modal>.actions{
+    position:fixed; 
+    bottom:0;
+    right:0;
+    border:0px !important;
+    background: white !important;
 }
 
 .ui.table thead th {
