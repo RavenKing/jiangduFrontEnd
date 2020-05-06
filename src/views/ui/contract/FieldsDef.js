@@ -1,7 +1,7 @@
 export default [
   {
     name: "rentowner",
-    title: '<i class="white user outline icon"></i>出租人',
+    title: '出租人',
     width: "20%",
     height:"100px",
     sortField: "rentowner",
@@ -10,7 +10,7 @@ export default [
   },
   {
     name: "rentunit",
-    title: '<i class="address card icon"></i>出租单位',
+    title: '出租单位',
     width: "20%",
     sortField: "cert_id",
     titleClass: "center aligned",
@@ -19,7 +19,7 @@ export default [
   {
     name: "rent_mobile",
     sortField: "enumber",
-    title: '<i class="white sitemap icon"></i>手机号',
+    title: '手机号',
     width: "15%",
     titleClass: "center aligned",
     dataClass: "center aligned",
@@ -27,7 +27,7 @@ export default [
   {
     name: "starttime",
     sortField: "level",
-    title: '<i class="white sitemap icon"></i>开始时间',
+    title: '开始时间',
     width: "15%",
     titleClass: "center aligned",
     dataClass: "center aligned",
@@ -35,14 +35,14 @@ export default [
   {
     name: "endtime",
     sortField: "level",
-    title: '<i class="white sitemap icon"></i>结束时间',
+    title: '结束时间',
     width: "15%",
     titleClass: "center aligned",
     dataClass: "center aligned",
   },
   {
     name: "action",
-    title: '<i class="white heterosexual icon"></i>操作',
+    title: '操作',
     titleClass: "center aligned",
     dataClass: "center aligned",
     width: "15%"

@@ -15,6 +15,12 @@ const menus = [{
         name: "租赁房屋",
         url: "/ui/rentroom"
       },
+      {
+        id: "3-3",
+        title: "分配楼层",
+        name: "分配楼层",
+        url: "/ui/gantt"
+      },
       // {
       //   id: "3-3",
       //   title: "BIM三维模型",

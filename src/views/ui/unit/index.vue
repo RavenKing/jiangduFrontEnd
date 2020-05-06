@@ -1,53 +1,57 @@
 <template lang="html">
 <wl-container>
-<div>
     <div>
+        <div>
 
-        <sui-dimmer :active="loading" inverted>
-            <sui-loader content="Loading..." />
-        </sui-dimmer>
+            <sui-dimmer :active="loading" inverted>
+                <sui-loader content="Loading..." />
+            </sui-dimmer>
 
-    </div>
-    <div class="filterBiaoDan">
-        <sui-button content="添加" @click.native="createRoomModel" icon="add green" />
-        <!-- <sui-button content="修改" icon="edit yellow" />
+        </div>
+        <div class="filterBiaoDan">
+            <sui-button content="添加" @click.native="createRoomModel" icon="add green" />
+            <!-- <sui-button content="修改" icon="edit yellow" />
         <sui-button content="删除" icon="delete red" /> -->
-        <sui-button content="导出" v-on:click="exportToExcel" icon="file green" />
-    </div>
-    <div class="vue2Table">
-        <vuetable ref="vuetable" :api-mode="false" :data="localData" :fields="fields" :sort-order="sortOrder" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
-            <div slot="action" slot-scope="props">
-                <sui-button positive content="查看" v-on:click="viewSomeThing(props.rowData,'check')" />
-                <sui-button content="修改" v-on:click="viewSomeThing(props.rowData,'modify')" />
-                <sui-button content="删除" v-on:click="deleteRoom(props.rowData)" />
+            <sui-button content="导出" v-on:click="exportToExcel" icon="file green" />
+        </div>
 
+        <div class="wl-gantt-demo">
+            <wlGantt :data="data" default-expand-all ></wlGantt>
+        </div>
+        <div class="vue2Table">
+            <vuetable ref="vuetable" :api-mode="false" :data="localData" :fields="fields" :sort-order="sortOrder" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
+                <div slot="action" slot-scope="props">
+                    <sui-button positive content="查看" v-on:click="viewSomeThing(props.rowData,'check')" />
+                    <sui-button content="修改" v-on:click="viewSomeThing(props.rowData,'modify')" />
+                    <sui-button content="删除" v-on:click="deleteRoom(props.rowData)" />
+
+                </div>
+            </vuetable>
+            <div class="pagination ui basic segment grid">
+                <vuetable-pagination-info ref="paginationInfo"></vuetable-pagination-info>
+                <vuetable-pagination ref="pagination" @vuetable-pagination:change-page="onChangePage"></vuetable-pagination>
             </div>
-        </vuetable>
-        <div class="pagination ui basic segment grid">
-            <vuetable-pagination-info ref="paginationInfo"></vuetable-pagination-info>
-            <vuetable-pagination ref="pagination" @vuetable-pagination:change-page="onChangePage"></vuetable-pagination>
+        </div>
+        <dialog-bar v-model="sendVal" type="danger" title="是否要删除" :content="deleteTarget.text" v-on:cancel="clickCancel()" @danger="clickConfirmDelete()" @confirm="clickConfirmDelete()" dangerText="确认删除"></dialog-bar>
+
+        <div>
+            <sui-modal class="modal2" v-model="open">
+                <sui-modal-header>{{modelTitle}}</sui-modal-header>
+                <sui-modal-content image>
+                    <unit-form ref='formComponent'></unit-form>
+                </sui-modal-content>
+                <sui-modal-actions>
+
+                    <sui-button negative @click.native="closeModal">
+                        取消
+                    </sui-button>
+                    <sui-button v-if="modalMode !== 'check'" positive @click.native="toggle">
+                        提交
+                    </sui-button>
+                </sui-modal-actions>
+            </sui-modal>
         </div>
     </div>
-    <dialog-bar v-model="sendVal" type="danger" title="是否要删除" :content="deleteTarget.text" v-on:cancel="clickCancel()" @danger="clickConfirmDelete()" @confirm="clickConfirmDelete()" dangerText="确认删除"></dialog-bar>
-
-    <div>
-        <sui-modal class="modal2" v-model="open">
-            <sui-modal-header>{{modelTitle}}</sui-modal-header>
-            <sui-modal-content image>
-                <unit-form ref='formComponent'></unit-form>
-            </sui-modal-content>
-            <sui-modal-actions>
-                
-                <sui-button  negative @click.native="closeModal">
-                    取消
-                </sui-button>
-                <sui-button v-if="modalMode !== 'check'" positive @click.native="toggle">
-                    提交
-                </sui-button>
-            </sui-modal-actions>
-        </sui-modal>
-    </div>
-</div>
 </wl-container>
 </template>
 
@@ -89,7 +93,13 @@ export default {
             sortOrder: [{
                 field: "email",
                 direction: "asc"
-            }]
+            }],
+            data: [
+                {
+                    id: "2",
+                    name: "租房子"
+                }
+            ]
         };
     },
 
@@ -216,9 +226,8 @@ export default {
         onChangePage(page) {
             this.$refs.vuetable.changePage(page);
         },
-        closeModal:function()
-        {
-            this.open=false;
+        closeModal: function () {
+            this.open = false;
         }
 
     },
@@ -246,10 +255,11 @@ export default {
 .ui.positive.button {
     background-color: #75ADBF !important;
 }
+
 .ui.modal {
     top: auto;
     left: auto;
-    height:auto!important;
+    height: auto !important;
 }
 
 .ui.table thead th {
@@ -257,12 +267,14 @@ export default {
     background-color: #75ADBF !important;
     color: white !important;
     font-size: 15px;
-    height:80px !important
+    height: 80px !important
 }
+
 .map {
-  width: 100%;
-  height: 400px;
+    width: 100%;
+    height: 400px;
 }
+
 .ui.blue.table {
     border-top: 0px !important;
 }

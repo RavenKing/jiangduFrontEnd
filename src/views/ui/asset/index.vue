@@ -17,53 +17,33 @@
         <div class="filterBiaoDan">
             <sui-form>
                 <sui-form-fields inline>
-                    <label> 家地编号</label>
+                    <label> 房屋ID</label>
                     <sui-form-field>
                         <input type="text" placeholder="请选择" v-model="filterString.jiadi" />
                     </sui-form-field>
-                    <label> 地籍编号</label>
+                    <label> 权证号</label>
                     <sui-form-field>
                         <input type="text" placeholder="请选择" v-model="filterString.diji" />
                     </sui-form-field>
                 </sui-form-fields>
                 <sui-form-fields inline>
-                    <label> 核准用途</label>
+                    <label> 使用面积</label>
                     <sui-form-field>
                         <input type="text" placeholder="请选择" v-model="filterString.hezhunyongtu" />
                     </sui-form-field>
-                    <label> 实际用途</label>
+                    <label> 至</label>
                     <sui-form-field>
                         <input type="text" placeholder="请选择" v-model="filterString.shijiyongtu" />
-                    </sui-form-field>
-                    <label> 所属单位</label>
-                    <sui-form-field>
-                        <select class="ui fluid dropdown">
-                            <option value="">State</option>
-                        </select>
-                    </sui-form-field>
-                    <label> 国有资产</label>
-                    <sui-form-field>
-                        <input type="text" placeholder="请选择" v-model="filterString.guoyouzichan" />
                     </sui-form-field>
                 </sui-form-fields>
                 <sui-form-fields inline>
-                    <label> 起止时间</label>
+                    <label> 产证面积</label>
                     <sui-form-field>
                         <input type="text" placeholder="请选择" v-model="filterString.hezhunyongtu" />
                     </sui-form-field>
                     <label> 至</label>
                     <sui-form-field>
                         <input type="text" placeholder="请选择" v-model="filterString.shijiyongtu" />
-                    </sui-form-field>
-                    <label> 面积</label>
-                    <sui-form-field>
-                        <select class="ui fluid dropdown">
-                            <option value="">State</option>
-                        </select>
-                    </sui-form-field>
-                    <label> 至</label>
-                    <sui-form-field>
-                        <input type="text" placeholder="请选择" v-model="filterString.guoyouzichan" />
                     </sui-form-field>
                 </sui-form-fields>
             </sui-form>
@@ -93,7 +73,7 @@
                 <sui-modal-header>{{modelTitle}}</sui-modal-header>
                 <sui-modal-content image>
                     <div>
-                    <form-create ref='formComponent'></form-create> 
+                        <form-create ref='formComponent'></form-create>
                     </div>
                 </sui-modal-content>
                 <sui-modal-actions>

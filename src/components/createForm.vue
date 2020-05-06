@@ -78,20 +78,20 @@
                 <sui-input placeholder="房屋现状" v-model="singleRoom.cur_status" :disabled="disabled" />
             </sui-form-field>
         </sui-form-fields>
-                <sui-form-fields>
+        <sui-form-fields>
             <sui-form-field>
                 <label>地址经度</label>
-                <sui-input placeholder="" v-model="point.lng" :disabled="disabled" v-on:change="testAlert"/>
+                <sui-input placeholder="" v-model="point.lng" :disabled="disabled" v-on:change="testAlert" />
             </sui-form-field>
             <sui-form-field>
                 <label>地址维度</label>
-                <sui-input placeholder="" v-model="point.lat" :disabled="disabled"/>
+                <sui-input placeholder="" v-model="point.lat" :disabled="disabled" />
             </sui-form-field>
         </sui-form-fields>
-        <baidu-map class="map" :center="{lng: singleRoom.lon, lat: singleRoom.lat}" :zoom="15">
+        <baidu-map class="map" :center="{lng: singleRoom.lon, lat: singleRoom.lat}" :zoom="13">
             <bm-navigation anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-navigation>
             <bm-marker :position="point" :dragging="true" animation="BMAP_ANIMATION_BOUNCE" @dragend="dragend">
-                <bm-label content="我爱北京天安门" :labelStyle="{color: 'red', fontSize : '24px'}" :offset="{width: -35, height: 30}" />
+                <bm-label content="拖拽" :labelStyle="{color: 'red', fontSize : '24px'}" />
             </bm-marker>
         </baidu-map>
     </sui-form>
@@ -105,8 +105,8 @@ export default {
         return {
             disabled: false,
             point: {
-                lng: 121.468322,
-                lat: 30.924587
+                lng:  121.547967,
+                lat: 30.879141
             },
             singleRoom: {
                 roomid: "",
@@ -132,15 +132,17 @@ export default {
         };
     },
     methods: {
-        testAlert(event){console.log(event)},
+        testAlert(event) {
+            console.log(event)
+        },
         createRoom() {
             console.log(this.singleRoom.roomid);
         },
         dragend(e) {
             console.log(e.point);
             console.log(this.point);
-            this.singleRoom.lat=this.point.lat;
-            this.singleRoom.lon=this.point.lng;
+            this.singleRoom.lat = this.point.lat;
+            this.singleRoom.lon = this.point.lng;
         }
 
     }
@@ -148,6 +150,14 @@ export default {
 </script>
 
 <style>
+.BMap_cpyCtrl {
+    display: none;
+}
+
+.anchorBL {
+    display: none;
+}
+
 .map {
     width: 100%;
     height: 400px;
