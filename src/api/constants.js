@@ -25,5 +25,6 @@ const constantsJinhui = {
     listRentRoomContractApi:hostname+'/listrentcontract',
     listLoanRoomContractApi:hostname+'/listloancontract',
     createAssignmentApi:hostname+'/assignroom',
+    baiduMapCheck:"http://api.map.baidu.com/geoconv/v1/?from=1&to=5&ak=vWGxcQlbdPyDTihpzGpiVeXcha5fdmea"
 }
 export default constantsJinhui;

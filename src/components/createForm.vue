@@ -81,19 +81,13 @@
         <sui-form-fields>
             <sui-form-field>
                 <label>地址经度</label>
-                <sui-input placeholder="" v-model="point.lng" :disabled="disabled" v-on:change="testAlert" />
+                <sui-input placeholder="" v-model="singleRoom.lon" :disabled="disabled" v-on:change="testAlert" />
             </sui-form-field>
             <sui-form-field>
                 <label>地址维度</label>
-                <sui-input placeholder="" v-model="point.lat" :disabled="disabled" />
+                <sui-input placeholder="" v-model="singleRoom.lat" :disabled="disabled" />
             </sui-form-field>
         </sui-form-fields>
-        <baidu-map class="map" :center="{lng: singleRoom.lon, lat: singleRoom.lat}" :zoom="13">
-            <bm-navigation anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-navigation>
-            <bm-marker :position="point" :dragging="true" animation="BMAP_ANIMATION_BOUNCE" @dragend="dragend">
-                <bm-label content="拖拽" :labelStyle="{color: 'red', fontSize : '24px'}" />
-            </bm-marker>
-        </baidu-map>
     </sui-form>
 </div>
 </template>
@@ -104,10 +98,8 @@ export default {
     data() {
         return {
             disabled: false,
-            point: {
-                lng:  121.547967,
-                lat: 30.879141
-            },
+            point: {},
+            zoomlevel: 14,
             singleRoom: {
                 roomid: "",
                 certid: "",
@@ -122,8 +114,6 @@ export default {
                 origin_value: "",
                 room_value: "",
                 dep: "",
-                lat: 30.924587,
-                lon: 121.468322,
                 net_value: "",
                 dep_rate: "",
                 internal_info: "",
@@ -141,10 +131,19 @@ export default {
         dragend(e) {
             console.log(e.point);
             console.log(this.point);
-            this.singleRoom.lat = this.point.lat;
-            this.singleRoom.lon = this.point.lng;
+            this.point.lng = e.point.lng;
+            this.point.lat = e.point.lat;
+            this.singleRoom.lat = e.point.lat;
+            this.singleRoom.lon = e.point.lng;
         }
 
+    },
+    created() {
+        console.log("create");
+        this.point = {
+            lng: 121.547967,
+            lat: 30.879141
+        }
     }
 };
 </script>

@@ -2,13 +2,18 @@
 <wl-container>
     <div>
         <div>
-
             <sui-dimmer :active="loading" inverted>
                 <sui-loader content="Loading..." />
             </sui-dimmer>
-
+        </div>
+        <div is="sui-divider" horizontal>
+            <h4 is="sui-header">
+                <i class="tag icon"></i>
+                基本信息列表
+            </h4>
         </div>
         <div class="filterBiaoDan">
+
             <sui-button content="添加" @click.native="createRoomModel" icon="add green" />
             <!-- <sui-button content="修改" icon="edit yellow" />
         <sui-button content="删除" icon="delete red" /> -->
@@ -56,9 +61,9 @@
                     <!-- <sui-button positive content="查看" v-on:click="viewSomeThing(props.rowData,'check')" /> -->
                     <sui-button positive content="编辑" v-on:click="viewSomeThing(props.rowData,'modify')" />
                     <sui-button content="删除" v-on:click="deleteRoom(props.rowData)" />
-                    <!-- <sui-button content="创建合同" v-on:click="openContractModal(props.rowData)" /> -->
+                    <sui-button positive content="定位地址" v-on:click="showMapF(props.rowData)" />
                     <sui-button content="分配房屋" v-on:click="openAssignModal(props.rowData)" />
-                    <sui-button content="分配房屋列表" v-on:click="openAssignList(props.rowData)" />
+                    <!-- <sui-button content="分配房屋列表" v-on:click="openAssignList(props.rowData)" /> -->
                 </div>
             </vuetable>
             <div class="pagination ui basic segment grid">
@@ -71,7 +76,7 @@
         <div>
             <sui-modal class="modal2" v-model="open">
                 <sui-modal-header>{{modelTitle}}</sui-modal-header>
-                <sui-modal-content image>
+                <sui-modal-content>
                     <div>
                         <form-create ref='formComponent'></form-create>
                     </div>
@@ -102,30 +107,47 @@
                 </sui-modal-actions>
             </sui-modal>
         </div>
-        <div>
-            <sui-modal class="modal2" v-model="assignList.open">
-                <sui-modal-header>分配房屋列表</sui-modal-header>
-                <sui-modal-content image>
-                    <div class="vue2Table">
-                        <vuetable ref="vuetable" :api-mode="false" :data="assignList.data" :fields="listField" :sort-order="sortOrder" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
-                            <div slot="action" slot-scope="props">
-                                <sui-button content="删除" v-on:click="deleteRoom(props.rowData)" />
-                            </div>
-                        </vuetable>
-                        <div class="pagination ui basic segment grid">
-                            <vuetable-pagination-info ref="paginationInfo"></vuetable-pagination-info>
-                            <vuetable-pagination ref="pagination" @vuetable-pagination:change-page="onChangePage"></vuetable-pagination>
-                        </div>
-                    </div>
-                </sui-modal-content>
-                <sui-modal-actions>
-                    <sui-button negative @click.native="closeModal">
-                        取消
-                    </sui-button>
 
-                </sui-modal-actions>
-            </sui-modal>
+        <div v-show="showMap">
+            <div is="sui-divider" horizontal>
+                <h4 is="sui-header">
+                    <i class="tag icon"></i>
+                    地址选取({{selectedRoom.roomname}})
+                </h4>
+            </div>
+
+            <baidu-map class="map" :center="point" :zoom="15">
+                <bm-navigation anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-navigation>
+                <bm-marker :position="point" :dragging="true" animation="BMAP_ANIMATION_BOUNCE" @dragend="dragend">
+                </bm-marker>
+            </baidu-map>
         </div>
+        <div v-show="assignList.open">
+            <div is="sui-divider" horizontal>
+                <h4 is="sui-header">
+                    <i class="tag icon"></i>
+                    分配房屋({{assignForm.roomname}})
+                </h4>
+            </div>
+            <div class="buttonBuildingFloor">
+                <sui-button positive @click.native="openAssignModal(null)">
+                    创建楼
+                </sui-button>
+                <sui-button positive @click.native="openAssignModal(null)">
+                    创建楼层
+                </sui-button>
+            </div>
+            <sui-tab>
+                <sui-tab-pane v-for="todo in todos" v-bind:key="todo.id" title="todo.id">
+                    <h3>HTML</h3>
+                    <p>
+                        {{todo.text}}
+                    </p>
+                    <a href="https://developer.mozilla.org/en-US/docs/Web/HTML">developer.mozilla.org</a>
+                </sui-tab-pane>
+            </sui-tab>
+        </div>
+
     </div>
 </wl-container>
 </template>
@@ -142,6 +164,10 @@ import FieldsDefList from "./FieldsDefList.js";
 import {
     export_json_to_excel
 } from "@/util/Export2Excel";
+// import {
+//     getMapLonAndLat
+//     //getRentRoomContractListApi
+// } from "@/api/utilApi";
 import {
     getRoomDataApi,
     createRoomApi,
@@ -172,12 +198,17 @@ export default {
                 jiadi: "",
                 diji: ""
             },
+            showMap: false,
+            point: {},
             assignForm: {
-                open: false
+                open: false,
+                room_id: "",
+                roomname: ""
             },
             deleteTarget: "",
             loading: true,
             localData: [],
+            selectedRoom: {},
             listField: FieldsDefList,
             fields: FieldsDef,
             sortOrder: [{
@@ -188,19 +219,20 @@ export default {
                 open: false,
                 data: []
             },
-            contractForm: {
-                open: false,
-                title: "createForm",
-                room_id: "",
-                amt: 0,
-                owner: "",
-                rentunit: "",
-                starttime: "",
-                endtime: ""
-            },
-            contractList: {
-                open: false
-            }
+            unitList: [],
+            todos: [{
+                    id: 1,
+                    text: 'Learn JavaScript'
+                },
+                {
+                    id: 2,
+                    text: 'Learn Vue'
+                },
+                {
+                    id: 3,
+                    text: 'Build something awesome'
+                }
+            ]
         };
     },
 
@@ -222,6 +254,32 @@ export default {
             })
 
         },
+        showMapF: function (data) {
+            this.assignList.open = false;
+            this.selectedRoom = data;
+            this.showMap = true;
+          //  this.loading = true;
+
+            this.point = {
+                lng: data.lon,
+                lat: data.lat
+            }
+            // getMapLonAndLat(this.point).then((data) => {
+            //     this.point = {
+            //         lng: data.result.x[0],
+            //         lat: data.result.y[0]
+            //     }
+            // })
+        },
+        dragend: function (e) {
+            this.loading = true;
+            this.selectedRoom.lon = e.point.lng;
+            this.selectedRoom.lat = e.point.lat;
+            updateRoomApi(this.selectedRoom).then((result) => {
+                console.log(result);
+                this.loading = false;
+            });
+        },
         // openContractList(rowData) {
         //     this.contractList.open = true;
         //     this.contractList.room_id = rowData.room_id;
@@ -232,12 +290,16 @@ export default {
         //     })
         // },
         openAssignModal(rowData) {
-            console.log(rowData);
-            this.assignForm.open = true;
-            var data = {
-                room_id: rowData.room_id
+            this.assignList.open = true;
+            if (rowData !== undefined) {
+                this.assignForm.room_id = rowData.room_id;
+                this.assignForm.roomname = rowData.roomname;
+                this.showMap = false;
             }
-            this.$refs.formComponentAssign.singleAssignment = data;
+            console.log(rowData.room_id);
+            console.log(this.selectedRoom.room_id);
+
+            this.$refs.formComponentAssign.singleAssignment = this.assignForm;
         },
         createAssignment() {
             this.loading = true;
@@ -274,12 +336,31 @@ export default {
             //修改
             if (type == "modify") {
                 //查看
-                this.$refs.formComponent.disabled = false;
                 this.modelTitle = "编辑房屋";
                 this.modalMode = "edit";
                 this.open = !this.open;
+                console.log(data.lat);
+                console.log(data.lon);
+                if (this.$refs.formComponent.zoomlevel == 14) {
+                    this.$refs.formComponent.zoomlevel = 13;
+                }
+                if (data.lat === null) {
+
+                    this.$refs.formComponent.point = {
+                        lng: 121.547967,
+                        lat: 30.879141
+                    }
+                } else {
+                    this.point = {
+                        lng: data.lon,
+                        lat: data.lat
+                    }
+                    this.$refs.formComponent.point = {
+                        lng: data.lon,
+                        lat: data.lat
+                    }
+                }
             } else if (type == "check") {
-                this.$refs.formComponent.disabled = true;
                 this.modalMode = "check";
                 this.modelTitle = "查看Room";
                 this.open = !this.open;
@@ -305,11 +386,6 @@ export default {
                 text: "是否要删除" + data.room_id + "(" + data.roomname + ")?",
                 id: data.id
             };
-            // this.loading = true;
-            // deleteRoomApi(data).then((result) => {
-            //     this.refreshRooms();
-            //     console.log(result)
-            // });
         },
         refreshRooms() {
             getRoomDataApi().then((data) => {
@@ -400,11 +476,9 @@ export default {
         closeModal: function () {
             this.open = false;
             this.assignForm.open = false;
-            this.contractForm.open = false;
             this.assignList.open = false;
 
         }
-
     },
     created() {
         getRoomDataApi().then((data) => {
@@ -455,6 +529,10 @@ export default {
 
 .vue2Table {
     margin: 20px;
+}
+
+.buttonBuildingFloor {
+    margin: 10px
 }
 
 .pagination {
