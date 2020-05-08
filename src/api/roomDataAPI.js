@@ -53,6 +53,16 @@ function deleteRoomApi(data)
         data: data
     });
 }
+function deleteBuildingApi(data)
+{
+    let local_auth = localGet(global.project_key, true);
+    data.token=local_auth;
+    return request({
+        url: constants.deleteBuildingApi,
+        method: 'post',
+        data: data
+    });
+}
 function getRentRoomDataApi()
 {
     let local_auth = localGet(global.project_key, true);
@@ -341,5 +351,6 @@ export {
     deleteLoanContractApi,
     createBuildingApi,
     getBuildingListApi,
+    deleteBuildingApi,
     createBuildingFloorApi
 }

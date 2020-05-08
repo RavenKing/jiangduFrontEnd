@@ -28,6 +28,7 @@ const constantsJinhui = {
     baiduMapCheck:"http://api.map.baidu.com/geoconv/v1/?from=1&to=5&ak=vWGxcQlbdPyDTihpzGpiVeXcha5fdmea",
     createBuildingApi:hostname+"/assignroombuilding",
     listBuildingApi:hostname+"/listroombuilding",
-    createBuildingFloorApi:hostname+"/generatebuildingfloor"
+    createBuildingFloorApi:hostname+"/generatebuildingfloor",
+    deleteBuildingApi:hostname+"/removeroombuilding"
 }
 export default constantsJinhui;

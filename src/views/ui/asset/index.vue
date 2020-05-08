@@ -160,7 +160,21 @@
                     地址选取({{selectedRoom.roomname}})
                 </h4>
             </div>
-
+            <sui-form>
+                <sui-form-fields inline>
+                    <label> 经度</label>
+                    <sui-form-field>
+                        <input type="text" placeholder="请选择" v-model="point.lng" />
+                    </sui-form-field>
+                    <label> 维度</label>
+                    <sui-form-field>
+                        <input type="text" placeholder="请选择" v-model="point.lat" />
+                    </sui-form-field>
+                </sui-form-fields>
+            </sui-form>
+            <sui-button positive @click.native="manualUpdateGeo">
+                提交
+            </sui-button>
             <baidu-map class="map" :center="point" :zoom="15">
                 <bm-navigation anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-navigation>
                 <bm-marker :position="point" :dragging="true" animation="BMAP_ANIMATION_BOUNCE" @dragend="dragend">
@@ -185,7 +199,17 @@
             <div class="tabNew">
                 <sui-tab ref="tab" :key="componentKey" @change="handleTabChange">
                     <sui-tab-pane v-for="building in assignList.buildings" v-bind:key="building.id" :title="building.name">
-                        <p>简介:{{building.detail}}</p>
+                        <p>简介:{{building.detail}}
+                            <sui-button negative @click.native="deleteBuilding(building)">
+                                删除此楼
+                            </sui-button>
+                        </p>
+                        <div is="sui-divider" horizontal>
+                            <h4 is="sui-header">
+                                <i class="tag icon"></i>
+                                楼层信息
+                            </h4>
+                        </div>
                         <sui-item-group divided>
                             <sui-item>
 
@@ -248,7 +272,8 @@ import {
     createBuildingApi,
     getBuildingListApi,
     createBuildingFloorApi,
-    createAssignmentApi
+    createAssignmentApi,
+    deleteBuildingApi
 } from "@/api/roomDataAPI";
 export default {
     name: "MyVuetable",
@@ -375,10 +400,23 @@ export default {
         },
         dragend: function (e) {
             this.loading = true;
-            this.selectedRoom.lon = e.point.lng;
-            this.selectedRoom.lat = e.point.lat;
-            updateRoomApi(this.selectedRoom).then((result) => {
-                console.log(result);
+            alert("what")
+            if (e == undefined) {
+                this.selectedRoom.lon = this.point.lng;
+                this.selectedRoom.lat = this.point.lat;
+            } else {
+                this.selectedRoom.lon = e.point.lng;
+                this.selectedRoom.lat = e.point.lat;
+            }
+            updateRoomApi(this.selectedRoom).then(() => {
+                this.loading = false;
+            });
+        },
+        manualUpdateGeo: function () {
+            this.loading = true;
+            this.selectedRoom.lon = this.point.lng;
+            this.selectedRoom.lat = this.point.lat;
+            updateRoomApi(this.selectedRoom).then(() => {
                 this.loading = false;
             });
         },
@@ -413,11 +451,19 @@ export default {
 
         },
         clickConfirmDelete() {
-            this.loading = true;
-            deleteRoomApi(this.deleteTarget).then((result) => {
-                this.refreshRooms();
-                console.log(result)
-            });
+            if (this.deleteTarget.type == "Room") {
+                this.loading = true;
+                deleteRoomApi(this.deleteTarget).then(() => {
+                    this.refreshRooms();
+                });
+            } else {
+                this.loading = true;
+                deleteBuildingApi(this.deleteTarget).then(() => {
+                    this.getBuildingSection();
+
+                });
+            }
+
         },
         createBuilding: function () {
             this.$refs.formComponentBuilding.singleBuilding.room_id = this.selectedRoom.room_id;
@@ -480,7 +526,16 @@ export default {
             this.sendVal = true;
             this.deleteTarget = {
                 text: "是否要删除" + data.room_id + "(" + data.roomname + ")?",
-                id: data.id
+                id: data.id,
+                type: "Room"
+            };
+        },
+        deleteBuilding(building) {
+            this.sendVal = true;
+            this.deleteTarget = {
+                text: "是否要删除" + building.name + "(" + building.id + ")?",
+                id: building.id,
+                type: "Building"
             };
         },
         refreshRooms() {
