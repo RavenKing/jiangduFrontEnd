@@ -3,35 +3,49 @@
     <sui-form>
         <sui-form-fields>
             <sui-form-field>
-                <label>unit_id</label>
-                <sui-input placeholder="unit_id" v-model="singleAssignment.unit_id" :disabled="disabled"/>
+                <label>选择处级</label>
+                <sui-dropdown placeholder="选择处级" selection :options="options" v-model="singleAssignment.unit_id" />
             </sui-form-field>
             <sui-form-field>
-                <label>space</label>
-                <sui-input placeholder="space" v-model="singleAssignment.space" :disabled="disabled"/>
+                <label>面积</label>
+                <sui-input placeholder="面积" v-model="singleAssignment.space" />
             </sui-form-field>
-            
+
         </sui-form-fields>
     </sui-form>
 </div>
 </template>
 
 <script>
+import {
+    getUnitApi
+} from "@/api/roomDataAPI";
 export default {
     name: 'assign-contract',
     data() {
         return {
-            disabled:false,
+            options: [],
             singleAssignment: {
-                open:false,
-                title:"createForm",
-                room_id:""
-            }   
+                open: false,
+                title: "createForm",
+                room_id: ""
+            }
         };
     },
-    methods:{
-      createRoom(){console.log(this.singleAssignment.roomid);}
+    methods: {},
+    created() {
+        getUnitApi().then((data) => {
+            //this.localData = data.data.data;
+            console.log(data.data.data);
+            data.data.data.map((one) => {
+                this.options.push({
+                    text: one.name,
+                    value: one.id,
+                })
+            });
 
+            console.log(this.options);
+        });
     }
 };
 </script>

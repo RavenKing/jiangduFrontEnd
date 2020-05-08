@@ -285,7 +285,35 @@ function deleteLoanContractApi(data)
         data: data
     });
 }
-
+function createBuildingApi(data)
+{
+    let local_auth = localGet(global.project_key, true);
+    data.token=local_auth;
+    return request({
+        url: constants.createBuildingApi,
+        method: 'post',
+        data: data
+    });
+}
+function getBuildingListApi(data){
+    let local_auth = localGet(global.project_key, true);
+    data.token=local_auth;
+    return request({
+        url: constants.listBuildingApi,
+        method: 'post',
+        data: data
+    });
+}
+function createBuildingFloorApi(data)
+{
+    let local_auth = localGet(global.project_key, true);
+    data.token=local_auth;
+    return request({
+        url: constants.createBuildingFloorApi,
+        method: 'post',
+        data: data
+    });
+}
 export {
     getRoomDataApi,
     createRoomApi,
@@ -310,5 +338,8 @@ export {
     createAssignmentApi,
     getAssignRoomList,
     deleteRentContractApi,
-    deleteLoanContractApi
+    deleteLoanContractApi,
+    createBuildingApi,
+    getBuildingListApi,
+    createBuildingFloorApi
 }

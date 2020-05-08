@@ -3,18 +3,12 @@
     <sui-form>
         <sui-form-fields>
             <sui-form-field>
-                <label>单位名称</label>
-                <sui-input placeholder="单位名称" v-model="singleBuilding.building_id" :disabled="disabled"/>
+                <label>名称</label>
+                <sui-input placeholder="名称" v-model="singleBuilding.name" :disabled="disabled" />
             </sui-form-field>
             <sui-form-field>
-                <label>单位人数</label>
-                <sui-input placeholder="单位人数" v-model="singleBuilding.upper" :disabled="disabled"/>
-            </sui-form-field>
-        </sui-form-fields>
-        <sui-form-fields>
-            <sui-form-field>
-                <label>单位级别</label>
-                <sui-input placeholder="单位级别" v-model="singleBuilding.lower" :disabled="disabled"/>
+                <label>描述</label>
+                <sui-input placeholder="描述" v-model="singleBuilding.detail" :disabled="disabled" />
             </sui-form-field>
         </sui-form-fields>
     </sui-form>
@@ -26,16 +20,13 @@ export default {
     name: 'building-form',
     data() {
         return {
-            disabled:false,
+            disabled: false,
             singleBuilding: {
-                building_id: "",
-                upper: "",
-                lower: "",
-                level_num: ""              
+                name: "",
+                detail: ""
             }
         };
     },
-    methods:{
-    }
+    methods: {}
 };
 </script>

@@ -13,7 +13,6 @@
             </h4>
         </div>
         <div class="filterBiaoDan">
-
             <sui-button content="添加" @click.native="createRoomModel" icon="add green" />
             <!-- <sui-button content="修改" icon="edit yellow" />
         <sui-button content="删除" icon="delete red" /> -->
@@ -56,13 +55,13 @@
             <sui-button content="重置" />
         </div>
         <div class="vue2Table">
-            <vuetable ref="vuetable" :api-mode="false" :data="localData" :fields="fields" :sort-order="sortOrder" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
+            <vuetable ref="vuetable" :api-mode="false" :data="localData" :fields="fields" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
                 <div slot="action" slot-scope="props">
                     <!-- <sui-button positive content="查看" v-on:click="viewSomeThing(props.rowData,'check')" /> -->
                     <sui-button positive content="编辑" v-on:click="viewSomeThing(props.rowData,'modify')" />
                     <sui-button content="删除" v-on:click="deleteRoom(props.rowData)" />
                     <sui-button positive content="定位地址" v-on:click="showMapF(props.rowData)" />
-                    <sui-button content="分配房屋" v-on:click="openAssignModal(props.rowData)" />
+                    <sui-button content="分配房屋" v-on:click="openAssignSection(props.rowData)" />
                     <!-- <sui-button content="分配房屋列表" v-on:click="openAssignList(props.rowData)" /> -->
                 </div>
             </vuetable>
@@ -92,10 +91,40 @@
             </sui-modal>
         </div>
         <div>
-            <sui-modal class="modal2" v-model="assignForm.open">
-                <sui-modal-header>分配房屋</sui-modal-header>
+            <sui-modal class="modal2" v-model="buildingForm.open">
+                <sui-modal-header>创建楼</sui-modal-header>
                 <sui-modal-content image>
-                    <assign-form ref='formComponentAssign'></assign-form>
+                    <building-form ref='formComponentBuilding'></building-form>
+                </sui-modal-content>
+                <sui-modal-actions>
+                    <sui-button negative @click.native="closeModal">
+                        取消
+                    </sui-button>
+                    <sui-button positive @click.native="createBuilding">
+                        提交
+                    </sui-button>
+                </sui-modal-actions>
+            </sui-modal>
+        </div>
+        <div>
+            <sui-modal class="modal2" v-model="buildingImage.open">
+                <sui-modal-header>放大图</sui-modal-header>
+                <sui-modal-content image>
+                    <sui-image src="https://dss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=4034879928,1229713244&fm=26&gp=0.jpg" size="medium" centered />
+                </sui-modal-content>
+                <sui-modal-actions>
+                    <sui-button negative @click.native="closeModal">
+                        取消
+                    </sui-button>
+                </sui-modal-actions>
+            </sui-modal>
+        </div>
+        <div>
+            <sui-modal class="modal2" v-model="assignForm.open">
+                <sui-modal-header>分配楼层</sui-modal-header>
+                <sui-modal-content image>
+                    <assign-form ref='formComponentAssign'>
+                    </assign-form>
                 </sui-modal-content>
                 <sui-modal-actions>
                     <sui-button negative @click.native="closeModal">
@@ -107,7 +136,23 @@
                 </sui-modal-actions>
             </sui-modal>
         </div>
-
+        <div>
+            <sui-modal class="modal2" v-model="buildingFloorForm.open">
+                <sui-modal-header>创建楼层</sui-modal-header>
+                <sui-modal-content image>
+                    <buildingFloor-form ref='formComponentBuildingFloor'>
+                    </buildingFloor-form>
+                </sui-modal-content>
+                <sui-modal-actions>
+                    <sui-button negative @click.native="closeModal">
+                        取消
+                    </sui-button>
+                    <sui-button positive @click.native="createBuildingFloor">
+                        提交
+                    </sui-button>
+                </sui-modal-actions>
+            </sui-modal>
+        </div>
         <div v-show="showMap">
             <div is="sui-divider" horizontal>
                 <h4 is="sui-header">
@@ -126,41 +171,68 @@
             <div is="sui-divider" horizontal>
                 <h4 is="sui-header">
                     <i class="tag icon"></i>
-                    分配房屋({{assignForm.roomname}})
+                    分配房屋({{selectedRoom.roomname}})
                 </h4>
             </div>
             <div class="buttonBuildingFloor">
-                <sui-button positive @click.native="openAssignModal(null)">
+                <sui-button positive @click.native="openBuildingModal()">
                     创建楼
                 </sui-button>
-                <sui-button positive @click.native="openAssignModal(null)">
+                <sui-button positive @click.native="openBuildingFloorModel()">
                     创建楼层
                 </sui-button>
             </div>
-            <sui-tab>
-                <sui-tab-pane v-for="todo in todos" v-bind:key="todo.id" title="todo.id">
-                    <h3>HTML</h3>
-                    <p>
-                        {{todo.text}}
-                    </p>
-                    <a href="https://developer.mozilla.org/en-US/docs/Web/HTML">developer.mozilla.org</a>
-                </sui-tab-pane>
-            </sui-tab>
-        </div>
+            <div class="tabNew">
+                <sui-tab ref="tab" :key="componentKey" @change="handleTabChange">
+                    <sui-tab-pane v-for="building in assignList.buildings" v-bind:key="building.id" :title="building.name">
+                        <p>简介:{{building.detail}}</p>
+                        <sui-item-group divided>
+                            <sui-item>
 
+                                <sui-statistic horizontal size="huge">
+                                    <sui-statistic-value>
+                                        第一层这一层很大：
+                                    </sui-statistic-value>
+                                    <sui-statistic-value>
+                                        2,204
+                                    </sui-statistic-value>
+                                    <sui-statistic-label>
+                                        平米
+                                    </sui-statistic-label>
+                                </sui-statistic>
+                                <sui-button @click.native="openAssignModal(building)">
+                                    分配
+                                </sui-button>
+                                <sui-button @click.native="openImageModal()">
+                                    楼层图
+                                </sui-button>
+
+                            </sui-item>
+                            <sui-item>
+                                这层给Kevin</sui-item>
+                            <sui-item>
+                                测试</sui-item>
+                        </sui-item-group>
+                    </sui-tab-pane>
+                </sui-tab>
+            </div>
+        </div>
     </div>
+
 </wl-container>
 </template>
 
 <script>
 import dialogBar from '@/components/MDialog'
 import FormCreate from "@/components/createForm";
-import assignForm from "@/components/assignForm";
+import BuildingFloorForm from "@/components/buildingFloorForm"
 import Vuetable from "vuetable-2/src/components/Vuetable";
 import VuetablePagination from "vuetable-2/src/components/VuetablePagination";
 import VuetablePaginationInfo from "vuetable-2/src/components/VuetablePaginationInfo";
 import FieldsDef from "./FieldsDef.js";
 import FieldsDefList from "./FieldsDefList.js";
+import BuildingForm from "@/components/buildingForm";
+import AssignForm from "@/components/assignForm";
 import {
     export_json_to_excel
 } from "@/util/Export2Excel";
@@ -173,10 +245,10 @@ import {
     createRoomApi,
     updateRoomApi,
     deleteRoomApi,
-    createRentContractApi,
-    createAssignmentApi,
-    getAssignRoomList
-    //getRentRoomContractListApi
+    createBuildingApi,
+    getBuildingListApi,
+    createBuildingFloorApi,
+    createAssignmentApi
 } from "@/api/roomDataAPI";
 export default {
     name: "MyVuetable",
@@ -186,7 +258,9 @@ export default {
         VuetablePagination,
         VuetablePaginationInfo,
         FormCreate,
-        'assign-form': assignForm
+        'building-form': BuildingForm,
+        'buildingFloor-form': BuildingFloorForm,
+        'assign-form': AssignForm
     },
     data() {
         return {
@@ -198,45 +272,77 @@ export default {
                 jiadi: "",
                 diji: ""
             },
+            componentKey: 1,
             showMap: false,
             point: {},
+            buildingFloorForm: {
+                open: false
+            },
+            buildingImage: {
+                open: false
+            },
             assignForm: {
                 open: false,
                 room_id: "",
-                roomname: ""
+                roomname: "",
+                building_id: null
             },
+            selectedBuildingID: null,
             deleteTarget: "",
             loading: true,
             localData: [],
             selectedRoom: {},
             listField: FieldsDefList,
             fields: FieldsDef,
-            sortOrder: [{
-                field: "email",
-                direction: "asc"
-            }],
             assignList: {
                 open: false,
-                data: []
+                buildings: [{
+                    id: "123",
+                    name: "cool",
+                    detal: "cool"
+                }]
             },
-            unitList: [],
-            todos: [{
-                    id: 1,
-                    text: 'Learn JavaScript'
-                },
-                {
-                    id: 2,
-                    text: 'Learn Vue'
-                },
-                {
-                    id: 3,
-                    text: 'Build something awesome'
-                }
-            ]
+            buildingForm: {
+                open: false
+            }
         };
     },
 
     methods: {
+        openImageModal() {
+            this.buildingImage.open = true;
+        },
+        createAssignment() {
+            this.loading = true;
+            let data = this.$refs.formComponentAssign.singleAssignment;
+            data.room_id = this.assignForm.room_id;
+            data.building_id = this.assignForm.building_id;
+            data.floor_id = this.assignForm.floor_id;
+            createAssignmentApi(data).then((result) => {
+                this.loading = false;
+                console.log(result);
+            })
+
+        },
+        openAssignModal(building) {
+            this.assignForm.room_id = building.room_id;
+            this.assignForm.building_id = building.id;
+            this.assignForm.floor_id = 1;
+            //TODO floor_id
+            this.assignForm.open = true;
+        },
+
+        openBuildingFloorModel() {
+            this.buildingFloorForm.open = true;
+        },
+        createBuildingFloor() {
+            this.loading = true;
+            this.$refs.formComponentBuildingFloor.singleBuildingFloor.building_id = this.selectedBuildingID;
+            createBuildingFloorApi(this.$refs.formComponentBuildingFloor.singleBuildingFloor).then(() => {
+                this.loading = false;
+                this.buildingFloorForm.open = false;
+            })
+        },
         formatJson(filterVal, jsonData) {
             return jsonData.map(v => filterVal.map(j => {
                 if (j === 'timestamp') {
@@ -246,30 +352,26 @@ export default {
                 }
             }))
         },
-        openAssignList(rowData) {
-            this.assignList.open = true;
-            getAssignRoomList(rowData).then((result) => {
-                this.assignList.data = result.data;
-                console.log(result);
-            })
-
-        },
         showMapF: function (data) {
             this.assignList.open = false;
             this.selectedRoom = data;
             this.showMap = true;
-          //  this.loading = true;
+            //  this.loading = true;
 
             this.point = {
                 lng: data.lon,
                 lat: data.lat
             }
-            // getMapLonAndLat(this.point).then((data) => {
-            //     this.point = {
-            //         lng: data.result.x[0],
-            //         lat: data.result.y[0]
-            //     }
-            // })
+        },
+        handleTabChange: function (e, activePane) {
+            console.log(activePane.title);
+            this.assignList.buildings.map((building) => {
+                if (building.name == activePane.title) {
+                    this.selectedBuildingID = building.id;
+                }
+                console.log(this.selectedBuildingID);
+            });
+
         },
         dragend: function (e) {
             this.loading = true;
@@ -280,33 +382,35 @@ export default {
                 this.loading = false;
             });
         },
-        // openContractList(rowData) {
-        //     this.contractList.open = true;
-        //     this.contractList.room_id = rowData.room_id;
-        //     this.loading = true;
-        //     getRentRoomContractListApi(rowData).then((result) => {
-        //         this.loading = false;
-        //         this.contractList.dataList = result;
-        //     })
-        // },
-        openAssignModal(rowData) {
-            this.assignList.open = true;
-            if (rowData !== undefined) {
-                this.assignForm.room_id = rowData.room_id;
-                this.assignForm.roomname = rowData.roomname;
-                this.showMap = false;
-            }
-            console.log(rowData.room_id);
-            console.log(this.selectedRoom.room_id);
-
-            this.$refs.formComponentAssign.singleAssignment = this.assignForm;
-        },
-        createAssignment() {
+        openAssignSection(rowData) {
             this.loading = true;
-            this.assignForm.open = false;
-            createAssignmentApi(this.$refs.formComponentAssign.singleAssignment).then(() => {
+            this.assignList.open = true;
+            this.showMap = false;
+            this.selectedRoom = rowData;
+            this.getBuildingSection();
+        },
+        getBuildingSection() {
+            let data = {};
+            data.room_id = this.selectedRoom.room_id;
+            // get room
+            getBuildingListApi(data).then((result) => {
                 this.loading = false;
+                //get floor
+                this.assignList.buildings = [];
+                this.assignList.buildings = result.data.data;
+                this.assignList.buildings.map((building) => {
+                    this.getBuildingFloorSection(building);
+                })
+                if (this.assignList.buildings.length > 0) {
+                    this.selectedBuildingID = this.assignList.buildings[0].id;
+                }
+                this.componentKey += 1;
             });
+        },
+        getBuildingFloorSection(building) {
+
+            console.log(building);
+
         },
         clickConfirmDelete() {
             this.loading = true;
@@ -315,21 +419,14 @@ export default {
                 console.log(result)
             });
         },
-        createRentContract: function () {
-            createRentContractApi(this.$refs.formComponentContract.singleContract).then(() => {
-                this.$refs.formComponentContract.singleContract = {
-                    open: false,
-                    title: "createForm",
-                    room_id: "",
-                    amt: 0,
-                    owner: "",
-                    rentunit: "",
-                    starttime: "",
-                    endtime: ""
-                }
-                this.contractForm.open = false;
-            });
-
+        createBuilding: function () {
+            this.$refs.formComponentBuilding.singleBuilding.room_id = this.selectedRoom.room_id;
+            this.loading = true;
+            createBuildingApi(this.$refs.formComponentBuilding.singleBuilding).then((result) => {
+                this.buildingForm.open = false;
+                this.getBuildingSection();
+                console.log(result);
+            })
         },
         viewSomeThing(data, type) {
             this.$refs.formComponent.singleRoom = data;
@@ -345,7 +442,6 @@ export default {
                     this.$refs.formComponent.zoomlevel = 13;
                 }
                 if (data.lat === null) {
-
                     this.$refs.formComponent.point = {
                         lng: 121.547967,
                         lat: 30.879141
@@ -404,11 +500,6 @@ export default {
                 }
             });
         },
-        openContractModal(rowData) {
-            this.contractForm.open = true;
-            this.contractForm.room_id = rowData.room_id;
-            this.$refs.formComponentContract.singleContract = this.contractForm;
-        },
         // assignRentRoom(rowData){
         //     console.log(rowData);
         // },
@@ -460,6 +551,9 @@ export default {
             }
 
         },
+        openBuildingModal() {
+            this.buildingForm.open = true;
+        },
         openRoom(value) {
             console.log(value);
         },
@@ -476,8 +570,9 @@ export default {
         closeModal: function () {
             this.open = false;
             this.assignForm.open = false;
-            this.assignList.open = false;
-
+            this.buildingForm.open = false;
+            this.buildingFloorForm.open = false;
+            this.buildingImage.open = false;
         }
     },
     created() {
@@ -503,6 +598,12 @@ export default {
 <style>
 .ui.positive.button {
     background-color: #75ADBF !important;
+}
+
+.wl-viewer {
+    height: 90%;
+    width: 90%;
+    margin: 4% auto 0;
 }
 
 .ui.modal {
@@ -537,6 +638,11 @@ export default {
 
 .pagination {
     margin-top: 1rem;
+}
+
+.tabNew {
+    margin-left: 20px;
+    margin-right: 20px;
 }
 
 .vuetable-head-wrapper table.vuetable th.sortable {
