@@ -1,6 +1,6 @@
 <template>
 <wl-container class="wlui-login" :use-scroll="false">
-  <div class="header">
+  <div class="headerNew">
       <div class="logoTitle">党政机关房地产管理信息平台</div>
     </div>
     <b-container class="bv-example-row">
@@ -114,7 +114,7 @@ export default {
   color:white;
   font-size: 2em;
 }
-.header {
+.headerNew {
   overflow: hidden;
   background-color: rgb(49, 48, 48);
   color:white;
