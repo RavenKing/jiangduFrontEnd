@@ -110,7 +110,17 @@
             <sui-modal class="modal2" v-model="buildingImage.open">
                 <sui-modal-header>放大图</sui-modal-header>
                 <sui-modal-content image>
-                    <sui-image src="https://dss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=4034879928,1229713244&fm=26&gp=0.jpg" size="medium" centered />
+
+                    <sui-item-group divided>
+                        <sui-item>
+                            <input type="file" placeholder="上传Cad图" />
+                        </sui-item>
+                        <sui-item>
+                            <sui-image src="https://dss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=4034879928,1229713244&fm=26&gp=0.jpg" size="medium" centered />
+                        </sui-item>
+
+                    </sui-item-group>
+
                 </sui-modal-content>
                 <sui-modal-actions>
                     <sui-button negative @click.native="closeModal">
@@ -211,31 +221,29 @@
                             </h4>
                         </div>
                         <sui-item-group divided>
-                            <sui-item>
+                            <sui-item v-for="floor in building.floors" v-bind:key="floor.id">
 
                                 <sui-statistic horizontal size="huge">
                                     <sui-statistic-value>
-                                        第一层这一层很大：
+                                        {{floor.detail}}
                                     </sui-statistic-value>
                                     <sui-statistic-value>
-                                        2,204
+                                        {{floor.name}}
                                     </sui-statistic-value>
                                     <sui-statistic-label>
-                                        平米
+                                        {{floor.created_on}}
+                                    </sui-statistic-label>
+                                    <sui-statistic-label>
+                                        状态： {{floor.status}}
                                     </sui-statistic-label>
                                 </sui-statistic>
-                                <sui-button @click.native="openAssignModal(building)">
+                                <sui-button @click.native="openAssignModal(building,floor)">
                                     分配
                                 </sui-button>
                                 <sui-button @click.native="openImageModal()">
                                     楼层图
                                 </sui-button>
-
                             </sui-item>
-                            <sui-item>
-                                这层给Kevin</sui-item>
-                            <sui-item>
-                                测试</sui-item>
                         </sui-item-group>
                     </sui-tab-pane>
                 </sui-tab>
@@ -273,7 +281,8 @@ import {
     getBuildingListApi,
     createBuildingFloorApi,
     createAssignmentApi,
-    deleteBuildingApi
+    deleteBuildingApi,
+    getBuildingFloorApi
 } from "@/api/roomDataAPI";
 export default {
     name: "MyVuetable",
@@ -345,14 +354,15 @@ export default {
             data.floor_id = this.assignForm.floor_id;
             createAssignmentApi(data).then((result) => {
                 this.loading = false;
+                this.assignForm.open = false;
                 console.log(result);
             })
 
         },
-        openAssignModal(building) {
+        openAssignModal(building, floor) {
             this.assignForm.room_id = building.room_id;
             this.assignForm.building_id = building.id;
-            this.assignForm.floor_id = 1;
+            this.assignForm.floor_id = floor.id;
             //TODO floor_id
             this.assignForm.open = true;
         },
@@ -446,9 +456,14 @@ export default {
             });
         },
         getBuildingFloorSection(building) {
-
-            console.log(building);
-
+            var data = {
+                building_id: building.id
+            }
+            //console.log(data);
+            getBuildingFloorApi(data).then((result) => {
+                building.floors = result.data.data;
+                this.componentKey += 1;
+            })
         },
         clickConfirmDelete() {
             if (this.deleteTarget.type == "Room") {
@@ -472,6 +487,10 @@ export default {
                 this.buildingForm.open = false;
                 this.getBuildingSection();
                 console.log(result);
+                this.$refs.formComponentBuilding.building_id = this.assignList.buildings.length
+                createBuildingFloor(this.$refs.formComponentBuilding.singleBuilding).then((result) => {
+                    console.log(result)
+                });
             })
         },
         viewSomeThing(data, type) {

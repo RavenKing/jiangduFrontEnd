@@ -314,6 +314,15 @@ function getBuildingListApi(data){
         data: data
     });
 }
+function getBuildingFloorApi(data){
+    let local_auth = localGet(global.project_key, true);
+    data.token=local_auth;
+    return request({
+        url: constants.listBuildingFloorApi,
+        method: 'post',
+        data: data
+    });
+}
 function createBuildingFloorApi(data)
 {
     let local_auth = localGet(global.project_key, true);
@@ -352,5 +361,6 @@ export {
     createBuildingApi,
     getBuildingListApi,
     deleteBuildingApi,
-    createBuildingFloorApi
+    createBuildingFloorApi,
+    getBuildingFloorApi
 }
