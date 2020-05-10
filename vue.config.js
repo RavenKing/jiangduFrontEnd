@@ -34,14 +34,14 @@ module.exports = {
           "^/api": ''
         }
       },
-      [process.env.VUE_APP_BASE_API_TERMINAL]: {
+      "/load/upload": {
         // target: 'http://118.190.204.202:8010',
-        target: 'http://118.190.204.202:9002',
+        target: 'http://118.190.204.202:9003',
         // target: 'https://corp-support.cn',
         changeOrigin: true,
         secure: false,
         pathRewrite: {
-          ['^' + process.env.VUE_APP_BASE_API_TERMINAL]: ''
+          "^/load": ''
         }
       }
     }

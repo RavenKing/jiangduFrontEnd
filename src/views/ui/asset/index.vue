@@ -107,16 +107,16 @@
             </sui-modal>
         </div>
         <div>
-            <sui-modal class="modal2" v-model="buildingImage.open">
+            <sui-modal class="modal2" v-model="buildingImage.open" :key="imgeComponentKey">
                 <sui-modal-header>放大图</sui-modal-header>
                 <sui-modal-content image>
 
                     <sui-item-group divided>
                         <sui-item>
-                            <input type="file" placeholder="上传Cad图" />
+                            <input type="file" placeholder="上传Cad图" @change="uploadFile" />
                         </sui-item>
                         <sui-item>
-                            <sui-image src="https://dss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=4034879928,1229713244&fm=26&gp=0.jpg" size="medium" centered />
+                            <sui-image :src="selectedFloor.url" size="medium" centered />
                         </sui-item>
 
                     </sui-item-group>
@@ -202,9 +202,6 @@
                 <sui-button positive @click.native="openBuildingModal()">
                     创建楼
                 </sui-button>
-                <sui-button positive @click.native="openBuildingFloorModel()">
-                    创建楼层
-                </sui-button>
             </div>
             <div class="tabNew">
                 <sui-tab ref="tab" :key="componentKey" @change="handleTabChange">
@@ -240,7 +237,7 @@
                                 <sui-button @click.native="openAssignModal(building,floor)">
                                     分配
                                 </sui-button>
-                                <sui-button @click.native="openImageModal()">
+                                <sui-button @click.native="openImageModal(floor)">
                                     楼层图
                                 </sui-button>
                             </sui-item>
@@ -268,10 +265,10 @@ import AssignForm from "@/components/assignForm";
 import {
     export_json_to_excel
 } from "@/util/Export2Excel";
-// import {
-//     getMapLonAndLat
-//     //getRentRoomContractListApi
-// } from "@/api/utilApi";
+import {
+    uploadFileApi
+    //getRentRoomContractListApi
+} from "@/api/utilApi";
 import {
     getRoomDataApi,
     createRoomApi,
@@ -282,7 +279,8 @@ import {
     createBuildingFloorApi,
     createAssignmentApi,
     deleteBuildingApi,
-    getBuildingFloorApi
+    getBuildingFloorApi,
+    updateFloorApi
 } from "@/api/roomDataAPI";
 export default {
     name: "MyVuetable",
@@ -326,8 +324,12 @@ export default {
             loading: true,
             localData: [],
             selectedRoom: {},
+            selectedFloor: {
+                url: "test"
+            },
             listField: FieldsDefList,
             fields: FieldsDef,
+            imgeComponentKey: 1,
             assignList: {
                 open: false,
                 buildings: [{
@@ -343,7 +345,9 @@ export default {
     },
 
     methods: {
-        openImageModal() {
+        openImageModal(floor) {
+            this.selectedFloor = floor;
+            this.selectedFloor.url = "http://118.190.204.202:9003/getoss?key=" + this.selectedFloor.cadfile
             this.buildingImage.open = true;
         },
         createAssignment() {
@@ -370,10 +374,9 @@ export default {
         openBuildingFloorModel() {
             this.buildingFloorForm.open = true;
         },
-        createBuildingFloor() {
+        createBuildingFloor(data) {
             this.loading = true;
-            this.$refs.formComponentBuildingFloor.singleBuildingFloor.building_id = this.selectedBuildingID;
-            createBuildingFloorApi(this.$refs.formComponentBuildingFloor.singleBuildingFloor).then(() => {
+            createBuildingFloorApi(data).then(() => {
                 this.loading = false;
                 this.buildingFloorForm.open = false;
             })
@@ -418,7 +421,7 @@ export default {
                 this.selectedRoom.lon = e.point.lng;
                 this.selectedRoom.lat = e.point.lat;
             }
-            updateRoomApi(this.selectedRoom).then(() => {
+            RoomApi(this.selectedRoom).then(() => {
                 this.loading = false;
             });
         },
@@ -487,8 +490,8 @@ export default {
                 this.buildingForm.open = false;
                 this.getBuildingSection();
                 console.log(result);
-                this.$refs.formComponentBuilding.building_id = this.assignList.buildings.length
-                createBuildingFloor(this.$refs.formComponentBuilding.singleBuilding).then((result) => {
+                this.$refs.formComponentBuilding.singleBuilding.building_id = result.data.data;
+                this.createBuildingFloor(this.$refs.formComponentBuilding.singleBuilding).then((result) => {
                     console.log(result)
                 });
             })
@@ -647,8 +650,31 @@ export default {
             this.buildingForm.open = false;
             this.buildingFloorForm.open = false;
             this.buildingImage.open = false;
-        }
+        },
+        uploadFile: function (e) {
+            let formData = new FormData();
+            this.loading = true;
+            this.buildingImage.open = false;
+            formData.append('ossfile', e.target.files[0]);
+            uploadFileApi(formData).then((result) => {
+                this.updateFloorInfo(result);
+                //uppdate file ppath
+
+            });
+        },
+        updateFloorInfo(result) {
+            this.selectedFloor.cadfile = result.data.data;
+            updateFloorApi(this.selectedFloor).then((result) => {
+                this.loading = false;
+                this.$notify({
+                    group: 'foo',
+                    title: '成功上传',
+                    text: '成功上传'
+                });
+            });
+        },
     },
+
     created() {
         getRoomDataApi().then((data) => {
             //this.localData = data.data.data;

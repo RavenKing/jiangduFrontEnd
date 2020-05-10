@@ -30,6 +30,9 @@ const constantsJinhui = {
     listBuildingApi:hostname+"/listroombuilding",
     createBuildingFloorApi:hostname+"/generatebuildingfloor",
     deleteBuildingApi:hostname+"/removeroombuilding",
-    listBuildingFloorApi:hostname+"listbuildingfloor"
+    listBuildingFloorApi:hostname+"listbuildingfloor",
+    uploadUrlApi:hostname+"/upload",
+    getOSSURLApi:hostname+"/getoss",
+    updateFloorApi:hostname+"/editbuildingfloor"
 }
 export default constantsJinhui;

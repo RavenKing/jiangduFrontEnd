@@ -1,6 +1,9 @@
 import request from "./_request";
 import constants from "./constants";
-import global from "@/global/index"
+import global from "@/global/index";
+import Axios from "axios";
+
+
 import {
     localGet
 } from "@/util/storage"; // 导入存储函数
@@ -19,8 +22,29 @@ function getMapLonAndLat(data) {
         data: newFormData
     });
 }
+function uploadFileApi(formData)
+{
+      const http = Axios.create({
+        baseURL: '/load', // api的base_url
+        //withCredentials: true, // 开启跨域身份凭证
+        method: "post",
+        headers: {
+            headers:{'Content-Type':'multipart/form-data'}
+        },
+        timeout: 5000 // request timeout
+      });
+    return http.post(constants.uploadUrlApi,formData);
+}
+function getFileOSSApi(data)
+{
 
+    return request({
+            url:constants.getOSSURLApi+"?key"+data,
+            method:'get'
+    });
+}
 export {
     getMapLonAndLat,
-   
+    uploadFileApi,
+    getFileOSSApi
 }

@@ -8,6 +8,8 @@ import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import SuiVue from 'semantic-ui-vue';
 import 'semantic-ui-css/semantic.min.css';
+import Notifications from 'vue-notification'
+
 Vue.use(SuiVue);
 //Install BootstrapVue
 Vue.use(BootstrapVue)
@@ -20,6 +22,7 @@ Vue.use(BaiduMap, {
   // ak 是在百度地图开发者平台申请的密钥 详见 http://lbsyun.baidu.com/apiconsole/key */
   ak: 'vWGxcQlbdPyDTihpzGpiVeXcha5fdmea'
 })
+Vue.use(Notifications)
 
 // 按需导入element-ui
 import "./plugins/element.js";

@@ -333,6 +333,17 @@ function createBuildingFloorApi(data)
         data: data
     });
 }
+function updateFloorApi(data)
+{
+    let local_auth = localGet(global.project_key, true);
+    data.token=local_auth;
+    return request({
+        url: constants.updateFloorApi,
+        method: 'post',
+        data: data
+    });
+}
+
 export {
     getRoomDataApi,
     createRoomApi,
@@ -362,5 +373,6 @@ export {
     getBuildingListApi,
     deleteBuildingApi,
     createBuildingFloorApi,
-    getBuildingFloorApi
+    getBuildingFloorApi,
+    updateFloorApi
 }
