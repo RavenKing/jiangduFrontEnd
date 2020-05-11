@@ -19,9 +19,9 @@
         <div class="vue2Table">
             <vuetable ref="vuetable" :api-mode="false" :data="localData" :fields="fields" :sort-order="sortOrder" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
                 <div slot="action" slot-scope="props">
-                    <sui-button positive content="查看" v-on:click="viewSomeThing(props.rowData,'check')" />
-                    <sui-button content="修改" v-on:click="viewSomeThing(props.rowData,'modify')" />
-                    <sui-button content="删除" v-on:click="deleteRoom(props.rowData)" />
+                    <!-- <sui-button positive content="查看" v-on:click="viewSomeThing(props.rowData,'check')" /> -->
+                    <sui-button positive content="修改" v-on:click="viewSomeThing(props.rowData,'modify')" />
+                    <sui-button negative content="删除" v-on:click="deleteRoom(props.rowData)" />
                     <sui-button content="创建合同" v-on:click="openContractModal(props.rowData)" />
 
                 </div>

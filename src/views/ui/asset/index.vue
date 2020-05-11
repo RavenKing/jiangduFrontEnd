@@ -59,9 +59,9 @@
                 <div slot="action" slot-scope="props">
                     <!-- <sui-button positive content="查看" v-on:click="viewSomeThing(props.rowData,'check')" /> -->
                     <sui-button positive content="编辑" v-on:click="viewSomeThing(props.rowData,'modify')" />
-                    <sui-button content="删除" v-on:click="deleteRoom(props.rowData)" />
-                    <sui-button positive content="定位地址" v-on:click="showMapF(props.rowData)" />
-                    <sui-button content="分配房屋" v-on:click="openAssignSection(props.rowData)" />
+                    <sui-button negative content="删除" v-on:click="deleteRoom(props.rowData)" />
+                    <sui-button positive content="定位" v-on:click="showMapF(props.rowData)" />
+                    <sui-button content="分配" v-on:click="openAssignSection(props.rowData)" />
                     <!-- <sui-button content="分配房屋列表" v-on:click="openAssignList(props.rowData)" /> -->
                 </div>
             </vuetable>
@@ -167,7 +167,7 @@
             <div is="sui-divider" horizontal>
                 <h4 is="sui-header">
                     <i class="tag icon"></i>
-                    地址选取({{selectedRoom.roomname}})
+                    定位({{selectedRoom.roomname}})
                 </h4>
             </div>
             <sui-form>
@@ -180,11 +180,12 @@
                     <sui-form-field>
                         <input type="text" placeholder="请选择" v-model="point.lat" />
                     </sui-form-field>
+                    <sui-button positive @click.native.prevent="manualUpdateGeo">
+                        提交
+                    </sui-button>
                 </sui-form-fields>
             </sui-form>
-            <sui-button positive @click.native="manualUpdateGeo">
-                提交
-            </sui-button>
+
             <baidu-map class="map" :center="point" :zoom="15">
                 <bm-navigation anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-navigation>
                 <bm-marker :position="point" :dragging="true" animation="BMAP_ANIMATION_BOUNCE" @dragend="dragend">
@@ -227,12 +228,6 @@
                                     <sui-statistic-value>
                                         {{floor.name}}
                                     </sui-statistic-value>
-                                    <sui-statistic-label>
-                                        {{floor.created_on}}
-                                    </sui-statistic-label>
-                                    <sui-statistic-label>
-                                        状态： {{floor.status}}
-                                    </sui-statistic-label>
                                 </sui-statistic>
                                 <sui-button @click.native="openAssignModal(building,floor)">
                                     分配
@@ -395,7 +390,10 @@ export default {
             this.selectedRoom = data;
             this.showMap = true;
             //  this.loading = true;
-
+            if (data.lon == "" && data.lat == "") {
+                data.lon = 121.5747;
+                data.lat = 30.8475;
+            }
             this.point = {
                 lng: data.lon,
                 lat: data.lat

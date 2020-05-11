@@ -7,7 +7,7 @@ export default [
     dataClass: 'center aligned',
   },
   {
-    name: "cert_id",
+    name: "certid",
     title: '权证号',
     width: "10%",
     titleClass: 'center aligned',
@@ -35,7 +35,7 @@ export default [
     dataClass: 'center aligned',
   },
   {
-    name: "usage",
+    name: "usage1",
     title: '房屋用途',
     width: "10%",
     titleClass: 'center aligned',

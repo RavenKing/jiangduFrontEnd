@@ -2,56 +2,33 @@ import VuetableFieldSwitch from './VuetableFieldSwitch.vue'
 
 export default [
   {
-    name: VuetableFieldSwitch,
-    title: '档案号',
-    titleClass: 'center aligned',
-    dataClass: 'left aligned',
-    switch: {
-      // label: 'Male?',
-      label: (data) => data.name,
-      field: (data) => data.gender === 'M',
-    }
+    name: "roomname",
+    title: '房屋名称',
+    width: "15%"
   },
   {
-    name: "room_id",
-    title: '房屋id',
-    width: "20%",
-    sortField: "usage1"
-  },
-  {
-    name: "cert_id",
+    name: "certid",
     title: '权证号',
     width: "20%",
-    sortField: "cert_id"
   },
   {
     name: "owner",
-    sortField: "owner",
     title: '权证人',
     width: "15%"
   },
   {
     name: "address",
-    sortField: "address",
     title: '房屋地址',
     width: "15%"
   },
   {
-    name: "usage",
-    sortField: "usage",
+    name: "usage1",
     title: '房屋用途',
     width: "15%"
   },
   {
-    name: "age",
-    sortField: "age",
-    title: '建造年代',
-    width: "15%"
-  },
-  {
     name: "space",
-    sortField: "space",
-    title: '建筑面积',
+    title: '房屋面积',
     width: "15%"
   },
   {

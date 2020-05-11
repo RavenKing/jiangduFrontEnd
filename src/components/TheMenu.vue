@@ -5,7 +5,7 @@
         class="the-menu-logo"
         @click="gotoIndex()"
         :key="is_collapse"
-      >{{is_collapse?'JH':'jinhui'}}</div>
+      >{{is_collapse?'JH':'机关局房屋管理系统'}}</div>
     </transition>
     <div class="the-menu-scroll" ref="the-menu-scroll">
       <el-menu
