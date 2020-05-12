@@ -440,7 +440,7 @@ export default {
         },
         getBuildingSection() {
             let data = {};
-            data.room_id = this.selectedRoom.room_id;
+            data.room_id = this.selectedRoom.id;
             // get room
             getBuildingListApi(data).then((result) => {
                 this.loading = false;
@@ -482,7 +482,7 @@ export default {
 
         },
         createBuilding: function () {
-            this.$refs.formComponentBuilding.singleBuilding.room_id = this.selectedRoom.room_id;
+            this.$refs.formComponentBuilding.singleBuilding.room_id = this.selectedRoom.id;
             this.loading = true;
             createBuildingApi(this.$refs.formComponentBuilding.singleBuilding).then((result) => {
                 this.buildingForm.open = false;
