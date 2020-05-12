@@ -107,16 +107,16 @@
             </sui-modal>
         </div>
         <div>
-            <sui-modal class="modal2" v-model="buildingImage.open" :key="imgeComponentKey">
+            <sui-modal class="imageModal" v-model="buildingImage.open" :key="imgeComponentKey">
                 <sui-modal-header>放大图</sui-modal-header>
                 <sui-modal-content image>
 
                     <sui-item-group divided>
-                        <sui-item>
-                            <input type="file" placeholder="上传Cad图" @change="uploadFile" />
+                        <sui-item class="imageModal">
+                            <pdf :src="this.selectedFloor.url" style="display: inline-block; width:700px" />
                         </sui-item>
                         <sui-item>
-                            <sui-image :src="selectedFloor.url" size="medium" centered />
+                            <input type="file" placeholder="上传Cad图" @change="uploadFile" />
                         </sui-item>
 
                     </sui-item-group>
@@ -257,11 +257,14 @@ import FieldsDef from "./FieldsDef.js";
 import FieldsDefList from "./FieldsDefList.js";
 import BuildingForm from "@/components/buildingForm";
 import AssignForm from "@/components/assignForm";
+import pdf from 'vue-pdf'
+
 import {
     export_json_to_excel
 } from "@/util/Export2Excel";
 import {
-    uploadFileApi
+    uploadFileApi,
+    getFileOSSApi
     //getRentRoomContractListApi
 } from "@/api/utilApi";
 import {
@@ -280,6 +283,7 @@ import {
 export default {
     name: "MyVuetable",
     components: {
+        pdf,
         'dialog-bar': dialogBar,
         Vuetable,
         VuetablePagination,
@@ -342,8 +346,11 @@ export default {
     methods: {
         openImageModal(floor) {
             this.selectedFloor = floor;
-            this.selectedFloor.url = "http://118.190.204.202:9003/getoss?key=" + this.selectedFloor.cadfile
-            this.buildingImage.open = true;
+            // this.selectedFloor.url = "http://118.190.204.202:9003/getoss?key=" + this.selectedFloor.cadfile
+            getFileOSSApi(this.selectedFloor.cadfile).then((file) => {
+                this.selectedFloor.url = file;
+                this.buildingImage.open = true;
+            });
         },
         createAssignment() {
             this.loading = true;
@@ -411,7 +418,7 @@ export default {
         },
         dragend: function (e) {
             this.loading = true;
-           // alert("what")
+            // alert("what")
             if (e == undefined) {
                 this.selectedRoom.lon = this.point.lng;
                 this.selectedRoom.lat = this.point.lat;
@@ -701,19 +708,25 @@ export default {
     margin: 4% auto 0;
 }
 
+.imageModal {
+    height: 600px;
+}
+
 .ui.modal {
     top: auto;
     left: auto;
-    height:auto !important;
+    height: auto !important;
     min-height: 500px !important;
 }
-.ui.modal>.actions{
-    position:fixed; 
-    bottom:0;
-    right:0;
-    border:0px !important;
+
+.ui.modal>.actions {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    border: 0px !important;
     background: white !important;
 }
+
 .ui.table thead th {
     padding: 2px !important;
     background-color: #75ADBF !important;

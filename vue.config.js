@@ -34,7 +34,7 @@ module.exports = {
           "^/api": ''
         }
       },
-      "/load/upload": {
+      "/load": {
         // target: 'http://118.190.204.202:8010',
         target: 'http://118.190.204.202:9003',
         // target: 'https://corp-support.cn',

@@ -37,11 +37,16 @@ function uploadFileApi(formData)
 }
 function getFileOSSApi(data)
 {
-
-    return request({
-            url:constants.getOSSURLApi+"?key"+data,
-            method:'get'
-    });
+    const http = Axios.create({
+        baseURL: '/load', // api的base_url
+        //withCredentials: true, // 开启跨域身份凭证
+        method: "get",
+        headers: {
+            headers:{'Content-Type':'multipart/form-data'}
+        },
+        timeout: 5000 // request timeout
+      });
+    return http.get(constants.getOSSURLApi+"?key="+data,{ responseType: 'arraybuffer' });
 }
 export {
     getMapLonAndLat,
