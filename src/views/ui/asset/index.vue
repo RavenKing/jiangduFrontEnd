@@ -205,7 +205,7 @@
                 </sui-button>
             </div>
             <div class="tabNew">
-                <sui-tab ref="tab" :key="componentKey" @change="handleTabChange">
+                <sui-tab ref="tab" :key="componentKey" @change="handleTabChange" :menu="{ vertical: true, fluid: true, tabular: true }">
                     <sui-tab-pane v-for="building in assignList.buildings" v-bind:key="building.id" :title="building.name">
                         <p>简介:{{building.detail}}
                             <sui-button negative @click.native="deleteBuilding(building)">
@@ -487,11 +487,8 @@ export default {
             createBuildingApi(this.$refs.formComponentBuilding.singleBuilding).then((result) => {
                 this.buildingForm.open = false;
                 this.getBuildingSection();
-                console.log(result);
                 this.$refs.formComponentBuilding.singleBuilding.building_id = result.data.data;
-                this.createBuildingFloor(this.$refs.formComponentBuilding.singleBuilding).then((result) => {
-                    console.log(result)
-                });
+                this.createBuildingFloor(this.$refs.formComponentBuilding.singleBuilding);
             })
         },
         viewSomeThing(data, type) {
@@ -707,9 +704,16 @@ export default {
 .ui.modal {
     top: auto;
     left: auto;
-    height: auto !important;
+    height:auto !important;
+    min-height: 500px !important;
 }
-
+.ui.modal>.actions{
+    position:fixed; 
+    bottom:0;
+    right:0;
+    border:0px !important;
+    background: white !important;
+}
 .ui.table thead th {
     padding: 2px !important;
     background-color: #75ADBF !important;
