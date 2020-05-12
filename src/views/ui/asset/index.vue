@@ -411,7 +411,7 @@ export default {
         },
         dragend: function (e) {
             this.loading = true;
-            alert("what")
+           // alert("what")
             if (e == undefined) {
                 this.selectedRoom.lon = this.point.lng;
                 this.selectedRoom.lat = this.point.lat;
@@ -419,7 +419,7 @@ export default {
                 this.selectedRoom.lon = e.point.lng;
                 this.selectedRoom.lat = e.point.lat;
             }
-            RoomApi(this.selectedRoom).then(() => {
+            updateRoomApi(this.selectedRoom).then(() => {
                 this.loading = false;
             });
         },
