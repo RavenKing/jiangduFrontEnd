@@ -345,11 +345,13 @@ export default {
 
     methods: {
         openImageModal(floor) {
+            this.loading=true;
             this.selectedFloor = floor;
             // this.selectedFloor.url = "http://118.190.204.202:9003/getoss?key=" + this.selectedFloor.cadfile
             getFileOSSApi(this.selectedFloor.cadfile).then((file) => {
                 this.selectedFloor.url = file;
                 this.buildingImage.open = true;
+                this.loading=false; 
             });
         },
         createAssignment() {
