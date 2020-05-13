@@ -47,7 +47,7 @@
             <sui-modal class="modal2" v-model="contractForm.open">
                 <sui-modal-header>创建合同 </sui-modal-header>
                 <sui-modal-content image>
-                    <contract-form ref='formComponentContract'></contract-form>
+                    <contract-form ref='formComponentContract' :key="componentKey"></contract-form>
                 </sui-modal-content>
                 <sui-modal-actions>
                     <sui-button negative @click.native="closeModal">
@@ -103,6 +103,7 @@ export default {
                 starttime: "",
                 endtime: ""
             },
+            componentKey: 1,
             modelTitle: "",
             modalMode: "create",
             open: false,
@@ -119,6 +120,9 @@ export default {
 
     methods: {
         openContractForm: function () {
+            console.log(this.$refs.formComponentContract.type);
+            this.$refs.formComponentContract.type = "RentRoom";
+            this.$refs.formComponentContract.updateData();
             this.contractForm.open = true
         },
 
@@ -262,7 +266,7 @@ export default {
         },
         closeModal: function () {
             this.open = false;
-            this.contractForm.open=false;
+            this.contractForm.open = false;
         }
 
     },
@@ -291,18 +295,18 @@ export default {
     background-color: #75ADBF !important;
 }
 
-
 .ui.modal {
     top: auto;
     left: auto;
-    height:auto !important;
+    height: auto !important;
     min-height: 500px !important;
 }
-.ui.modal>.actions{
-    position:fixed; 
-    bottom:0;
-    right:0;
-    border:0px !important;
+
+.ui.modal>.actions {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    border: 0px !important;
     background: white !important;
 }
 

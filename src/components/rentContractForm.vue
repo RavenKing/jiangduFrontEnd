@@ -22,7 +22,7 @@
         <sui-form-fields>
             <sui-form-field>
                 <label>手机号</label>
-                <sui-input placeholder="手机号" v-model="singleContract.mobile" :disabled="disabled"  />
+                <sui-input placeholder="手机号" v-model="singleContract.mobile" :disabled="disabled" />
             </sui-form-field>
             <sui-form-field>
                 <label>负责人</label>
@@ -41,7 +41,8 @@
 import Datepicker from 'vuejs-datepicker';
 import * as lang from "vuejs-datepicker/src/locale";
 import {
-    getRoomDataApi
+    getRoomDataApi,
+    getRentRoomDataApi
 } from "@/api/roomDataAPI";
 export default {
     name: 'rentroom-contract',
@@ -52,6 +53,7 @@ export default {
         return {
             lang: lang,
             disabled: false,
+            type: 'Room',
             options: [],
             singleContract: {
                 open: false,
@@ -65,20 +67,64 @@ export default {
             }
         };
     },
-    methods: {},
-    created() {
-        getRoomDataApi().then((data) => {
-            //this.localData = data.data.data;
-            console.log(data.data.data);
-            data.data.data.map((one) => {
-                this.options.push({
-                    text: one.roomname,
-                    value: one.room_id,
-                })
+    methods: {
+        updateData() {
+            if (this.type == 'Room') {
+                console.log(this.type);
+                getRoomDataApi().then((data) => {
+                    //this.localData = data.data.data;
+                    data.data.data.map((one) => {
+                        this.options.push({
+                            text: one.roomname,
+                            value: one.room_id,
+                        })
+                    });
+                });
+            } else {
+                getRentRoomDataApi().then((data) => {
+                    //this.localData = data.data.data;
+                    this.options = [];
+
+                    data.data.data.map((one) => {
+                        this.options.push({
+                            text: one.roomname,
+                            value: one.room_id,
+                        })
+                    });
+                });
+
+            }
+        }
+    },
+    mounted() {
+        if (this.type == 'Room') {
+            console.log(this.type);
+            getRoomDataApi().then((data) => {
+                //this.localData = data.data.data;
+                console.log(data.data.data);
+                data.data.data.map((one) => {
+                    this.options.push({
+                        text: one.roomname,
+                        value: one.room_id,
+                    })
+                });
+            });
+        } else {
+            getRentRoomDataApi().then((data) => {
+                //this.localData = data.data.data;
+                console.log(data.data.data);
+                data.data.data.map((one) => {
+                    this.options.push({
+                        text: one.roomname,
+                        value: one.room_id,
+                    })
+                });
             });
 
-            console.log(this.options);
-        });
+        }
+    },
+    created() {
+
     }
 };
 </script>

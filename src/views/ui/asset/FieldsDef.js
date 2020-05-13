@@ -49,13 +49,6 @@ export default [
     dataClass: 'center aligned',
   },
   {
-    name: "age",
-    title: '建造年代',
-    width: "5%",
-    titleClass: 'center aligned',
-    dataClass: 'center aligned',
-  },
-  {
     name: "action",
     title: '操作',
     titleClass: "center aligned",

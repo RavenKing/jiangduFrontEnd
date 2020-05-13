@@ -163,34 +163,43 @@
                 </sui-modal-actions>
             </sui-modal>
         </div>
-        <div v-show="showMap">
-            <div is="sui-divider" horizontal>
-                <h4 is="sui-header">
-                    <i class="tag icon"></i>
-                    定位({{selectedRoom.roomname}})
-                </h4>
-            </div>
-            <sui-form>
-                <sui-form-fields inline>
-                    <label> 经度</label>
-                    <sui-form-field>
-                        <input type="text" placeholder="请选择" v-model="point.lng" />
-                    </sui-form-field>
-                    <label> 维度</label>
-                    <sui-form-field>
-                        <input type="text" placeholder="请选择" v-model="point.lat" />
-                    </sui-form-field>
-                    <sui-button positive @click.native.prevent="manualUpdateGeo">
+
+        <div>
+            <sui-modal class="modal2" v-model="showMap">
+                <sui-modal-header>创建楼层</sui-modal-header>
+                <sui-modal-content>
+                    <div class="imageForm">  
+                    <sui-form>
+                        <sui-form-fields inline>
+                            <label> 经度</label>
+                            <sui-form-field>
+                                <input type="text" placeholder="请选择" v-model="point.lng" />
+                            </sui-form-field>
+                            <label> 维度</label>
+                            <sui-form-field>
+                                <input type="text" placeholder="请选择" v-model="point.lat" />
+                            </sui-form-field>
+                        </sui-form-fields>
+                    </sui-form>
+                    </div>
+                    <baidu-map class="map" :center="point" :zoom="15">
+                        <bm-navigation anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-navigation>
+                        <bm-marker :position="point" :dragging="true" animation="BMAP_ANIMATION_BOUNCE" @dragend="dragend">
+                        </bm-marker>
+                    </baidu-map>
+                </sui-modal-content>
+                <sui-modal-actions>
+                    <sui-button negative @click.native="closeModal">
+                        取消
+                    </sui-button>
+                    <sui-button positive @click.native="manualUpdateGeo">
                         提交
                     </sui-button>
-                </sui-form-fields>
-            </sui-form>
+                </sui-modal-actions>
+            </sui-modal>
+        </div>
 
-            <baidu-map class="map" :center="point" :zoom="15">
-                <bm-navigation anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-navigation>
-                <bm-marker :position="point" :dragging="true" animation="BMAP_ANIMATION_BOUNCE" @dragend="dragend">
-                </bm-marker>
-            </baidu-map>
+        <div v-show="showMap">
         </div>
         <div v-show="assignList.open">
             <div is="sui-divider" horizontal>
@@ -345,13 +354,13 @@ export default {
 
     methods: {
         openImageModal(floor) {
-            this.loading=true;
+            this.loading = true;
             this.selectedFloor = floor;
             // this.selectedFloor.url = "http://118.190.204.202:9003/getoss?key=" + this.selectedFloor.cadfile
             getFileOSSApi(this.selectedFloor.cadfile).then((file) => {
                 this.selectedFloor.url = file;
                 this.buildingImage.open = true;
-                this.loading=false; 
+                this.loading = false;
             });
         },
         createAssignment() {
@@ -400,8 +409,8 @@ export default {
             this.showMap = true;
             //  this.loading = true;
             if (data.lon == "" && data.lat == "") {
-                data.lon = 121.5747;
-                data.lat = 30.8475;
+                data.lon = 121.468322;
+                data.lat = 30.924587;
             }
             this.point = {
                 lng: data.lon,
@@ -437,6 +446,7 @@ export default {
             this.selectedRoom.lon = this.point.lng;
             this.selectedRoom.lat = this.point.lat;
             updateRoomApi(this.selectedRoom).then(() => {
+                this.showMap=false;
                 this.loading = false;
             });
         },
@@ -654,6 +664,7 @@ export default {
             this.buildingForm.open = false;
             this.buildingFloorForm.open = false;
             this.buildingImage.open = false;
+            this.showMap=false;
         },
         uploadFile: function (e) {
             let formData = new FormData();
@@ -703,7 +714,11 @@ export default {
 .ui.positive.button {
     background-color: #75ADBF !important;
 }
+.imageForm{
+    display:block;
+    width:100%;
 
+}
 .wl-viewer {
     height: 90%;
     width: 90%;
