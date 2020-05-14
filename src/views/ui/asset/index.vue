@@ -203,6 +203,9 @@
             <sui-modal class="modal2" v-model="assignList.open">
                 <sui-modal-header>分配房屋</sui-modal-header>
                 <sui-modal-content>
+                    <sui-button positive @click.native="openBuildingModal">
+                        创建楼
+                    </sui-button>
                     <sui-grid :columns="2" relaxed="very">
                         <sui-grid-column>
                             <div>
@@ -246,56 +249,6 @@
             </sui-modal>
         </div>
 
-        <div v-show="assignList.open">
-
-            <!-- <div is="sui-divider" horizontal>
-                <h4 is="sui-header">
-                    <i class="tag icon"></i>
-                    分配房屋({{selectedRoom.roomname}})
-                </h4>
-            </div>
-            <div class="buttonBuildingFloor">
-                <sui-button positive @click.native="openBuildingModal()">
-                    创建楼
-                </sui-button>
-            </div>
-            <div class="tabNew">
-                <sui-tab ref="tab" :key="componentKey" @change="handleTabChange" :menu="{ vertical: true, fluid: true, tabular: true }">
-                    <sui-tab-pane v-for="building in assignList.buildings" v-bind:key="building.id" :title="building.name">
-                        <p>简介:{{building.detail}}
-                            <sui-button negative @click.native="deleteBuilding(building)">
-                                删除此楼
-                            </sui-button>
-                        </p>
-                        <div is="sui-divider" horizontal>
-                            <h4 is="sui-header">
-                                <i class="tag icon"></i>
-                                楼层信息
-                            </h4>
-                        </div>
-                        <sui-item-group divided>
-                            <sui-item v-for="floor in building.floors" v-bind:key="floor.id">
-
-                                <sui-statistic horizontal size="huge">
-                                    <sui-statistic-value>
-                                        {{floor.detail}}
-                                    </sui-statistic-value>
-                                    <sui-statistic-value>
-                                        {{floor.name}}
-                                    </sui-statistic-value>
-                                </sui-statistic>
-                                <sui-button @click.native="openAssignModal(building,floor)">
-                                    分配
-                                </sui-button>
-                                <sui-button @click.native="openImageModal(floor)">
-                                    楼层图
-                                </sui-button>
-                            </sui-item>
-                        </sui-item-group>
-                    </sui-tab-pane>
-                </sui-tab>
-            </div> -->
-        </div>
     </div>
 
 </wl-container>
@@ -369,6 +322,7 @@ export default {
             buildingFloorForm: {
                 open: false
             },
+            singleBuilding: {},
             buildingImage: {
                 open: false
             },
@@ -514,6 +468,13 @@ export default {
             createBuildingFloorApi(data).then(() => {
                 this.loading = false;
                 this.buildingFloorForm.open = false;
+                this.$refs.formComponentBuilding.singleBuilding = {
+                    room_id: this.selectedRoom.id,
+                    name: "",
+                    upper: "",
+                    lower: "",
+                    detail: ""
+                };
             })
         },
         formatJson(filterVal, jsonData) {
@@ -785,6 +746,7 @@ export default {
 
         },
         openBuildingModal() {
+            this.assignList.open = false;
             this.buildingForm.open = true;
         },
         openRoom(value) {
