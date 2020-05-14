@@ -113,7 +113,7 @@
 
                     <sui-item-group divided>
                         <sui-item class="imageModal">
-                            <pdf :src="this.selectedFloor.url" style="display: inline-block; width:700px" />
+                            <pdf :src="this.assignList.selectedFloor.url" style="display: inline-block; width:700px" />
                         </sui-item>
                         <sui-item>
                             <input type="file" placeholder="上传Cad图" @change="uploadFile" />
@@ -123,7 +123,7 @@
 
                 </sui-modal-content>
                 <sui-modal-actions>
-                    <sui-button negative @click.native="closeModal">
+                    <sui-button negative @click.native="closeImageModal">
                         取消
                     </sui-button>
                 </sui-modal-actions>
@@ -137,7 +137,7 @@
                     </assign-form>
                 </sui-modal-content>
                 <sui-modal-actions>
-                    <sui-button negative @click.native="closeModal">
+                    <sui-button negative @click.native="closeAssignModal">
                         取消
                     </sui-button>
                     <sui-button positive @click.native="createAssignment">
@@ -168,19 +168,19 @@
             <sui-modal class="modal2" v-model="showMap">
                 <sui-modal-header>创建楼层</sui-modal-header>
                 <sui-modal-content>
-                    <div class="imageForm">  
-                    <sui-form>
-                        <sui-form-fields inline>
-                            <label> 经度</label>
-                            <sui-form-field>
-                                <input type="text" placeholder="请选择" v-model="point.lng" />
-                            </sui-form-field>
-                            <label> 维度</label>
-                            <sui-form-field>
-                                <input type="text" placeholder="请选择" v-model="point.lat" />
-                            </sui-form-field>
-                        </sui-form-fields>
-                    </sui-form>
+                    <div class="imageForm">
+                        <sui-form>
+                            <sui-form-fields inline>
+                                <label> 经度</label>
+                                <sui-form-field>
+                                    <input type="text" placeholder="请选择" v-model="point.lng" />
+                                </sui-form-field>
+                                <label> 维度</label>
+                                <sui-form-field>
+                                    <input type="text" placeholder="请选择" v-model="point.lat" />
+                                </sui-form-field>
+                            </sui-form-fields>
+                        </sui-form>
                     </div>
                     <baidu-map class="map" :center="point" :zoom="15">
                         <bm-navigation anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-navigation>
@@ -199,10 +199,56 @@
             </sui-modal>
         </div>
 
-        <div v-show="showMap">
+        <div>
+            <sui-modal class="modal2" v-model="assignList.open">
+                <sui-modal-header>分配房屋</sui-modal-header>
+                <sui-modal-content>
+                    <sui-grid :columns="2" relaxed="very">
+                        <sui-grid-column>
+                            <div>
+                                <vue-tree-list @click="onClick" @change-name="onChangeName" @delete-node="onDel" @add-node="onAddNode" :model="tree" default-tree-node-name="new node" default-leaf-node-name="new leaf" v-bind:default-expanded="false">
+                                    <span class="icon" slot="addTreeNodeIcon">📂</span>
+                                    <span class="icon" slot="addLeafNodeIcon">＋</span>
+                                    <span class="icon" slot="editNodeIcon">📃</span>
+                                    <span class="icon" slot="delNodeIcon">✂️</span>
+                                    <span class="icon" slot="leafNodeIcon">
+                                        <sui-icon name="home" /></span>
+                                    <span class="icon" slot="treeNodeIcon">
+                                        <sui-icon name="building outline" /></span>
+                                </vue-tree-list>
+                            </div>
+                        </sui-grid-column>
+                        <sui-grid-column>
+                            <sui-statistic horizontal size="huge">
+                                <sui-statistic-value>
+                                    {{assignList.selectedFloor.name}}
+                                </sui-statistic-value>
+                            </sui-statistic>
+                            <div v-show="assignList.selectedBuilding">
+                                <sui-button @click.native="openAssignModal(assignList.selectedBuilding,assignList.selectedFloor)">
+                                    分配
+                                </sui-button>
+                                <sui-button @click.native="openImageModal()">
+                                    楼层图
+                                </sui-button>
+                            </div>
+                        </sui-grid-column>
+                    </sui-grid>
+                </sui-modal-content>
+                <sui-modal-actions>
+                    <sui-button negative @click.native="closeModal">
+                        取消
+                    </sui-button>
+                    <sui-button positive @click.native="manualUpdateGeo">
+                        提交
+                    </sui-button>
+                </sui-modal-actions>
+            </sui-modal>
         </div>
+
         <div v-show="assignList.open">
-            <div is="sui-divider" horizontal>
+
+            <!-- <div is="sui-divider" horizontal>
                 <h4 is="sui-header">
                     <i class="tag icon"></i>
                     分配房屋({{selectedRoom.roomname}})
@@ -248,7 +294,7 @@
                         </sui-item-group>
                     </sui-tab-pane>
                 </sui-tab>
-            </div>
+            </div> -->
         </div>
     </div>
 
@@ -267,7 +313,11 @@ import FieldsDefList from "./FieldsDefList.js";
 import BuildingForm from "@/components/buildingForm";
 import AssignForm from "@/components/assignForm";
 import pdf from 'vue-pdf'
-
+import {
+    VueTreeList,
+    Tree,
+    TreeNode
+} from 'vue-tree-list'
 import {
     export_json_to_excel
 } from "@/util/Export2Excel";
@@ -292,6 +342,7 @@ import {
 export default {
     name: "MyVuetable",
     components: {
+        VueTreeList,
         pdf,
         'dialog-bar': dialogBar,
         Vuetable,
@@ -332,36 +383,106 @@ export default {
             loading: true,
             localData: [],
             selectedRoom: {},
-            selectedFloor: {
-                url: "test"
-            },
             listField: FieldsDefList,
             fields: FieldsDef,
             imgeComponentKey: 1,
             assignList: {
                 open: false,
-                buildings: [{
-                    id: "123",
-                    name: "cool",
-                    detal: "cool"
-                }]
+                buildings: [],
+                selectedBuilding: {},
+                selectedFloor: {}
             },
             buildingForm: {
                 open: false
-            }
+            },
+            treeData: [],
+            tree: new Tree([{
+                    name: 'Node 1',
+                    id: 1,
+                    pid: 0,
+                    dragDisabled: true,
+                    addTreeNodeDisabled: true,
+                    addLeafNodeDisabled: true,
+                    editNodeDisabled: false,
+                    delNodeDisabled: false,
+                    children: [{
+                        name: 'Node 1-2',
+                        id: 2,
+                        isLeaf: true,
+                        pid: 1
+                    }]
+                },
+                {
+                    name: 'Node 2',
+                    id: 3,
+                    pid: 0,
+                    disabled: true
+                },
+                {
+                    name: 'Node 3',
+                    id: 4,
+                    pid: 0
+                }
+            ])
         };
     },
 
     methods: {
-        openImageModal(floor) {
+
+        //tree
+        onDel(node) {
+            console.log(node)
+            node.remove()
+        },
+
+        onChangeName(params) {
+            console.log(params)
+        },
+
+        onAddNode(params) {
+            console.log(params)
+        },
+
+        onClick(params) {
+            if (params.floor_id == undefined) {
+                this.assignList.selectedBuilding = params;
+            } else {
+                this.assignList.selectedFloor = params;
+                this.treeData.map((building) => {
+                    if (building.id == params.pid) {
+                        this.assignList.selectedBuilding = building;
+                    }
+                })
+            }
+            console.log(this.assignList.selectedBuilding.name);
+            console.log(this.assignList.selectedFloor.name);
+
+        },
+
+        addNode() {
+            var node = new TreeNode({
+                name: 'new node',
+                isLeaf: false
+            })
+            if (!this.data.children) this.data.children = []
+            this.data.addChildren(node)
+        },
+
+        //end of tree
+        openImageModal() {
             this.loading = true;
-            this.selectedFloor = floor;
-            // this.selectedFloor.url = "http://118.190.204.202:9003/getoss?key=" + this.selectedFloor.cadfile
-            getFileOSSApi(this.selectedFloor.cadfile).then((file) => {
-                this.selectedFloor.url = file;
+            this.assignList.open = false;
+            if (this.assignList.selectedFloor.cadfile != null) {
+                getFileOSSApi(this.assignList.selectedFloor.cadfile).then((file) => {
+                    this.assignList.selectedFloor.url = file;
+                    this.buildingImage.open = true;
+                    this.loading = false;
+                });
+            } else {
                 this.buildingImage.open = true;
                 this.loading = false;
-            });
+            }
+
         },
         createAssignment() {
             this.loading = true;
@@ -371,7 +492,7 @@ export default {
             data.floor_id = this.assignForm.floor_id;
             createAssignmentApi(data).then((result) => {
                 this.loading = false;
-                this.assignForm.open = false;
+                this.closeAssignModal();
                 console.log(result);
             })
 
@@ -382,6 +503,7 @@ export default {
             this.assignForm.floor_id = floor.id;
             //TODO floor_id
             this.assignForm.open = true;
+            this.assignList.open = false;
         },
 
         openBuildingFloorModel() {
@@ -446,15 +568,16 @@ export default {
             this.selectedRoom.lon = this.point.lng;
             this.selectedRoom.lat = this.point.lat;
             updateRoomApi(this.selectedRoom).then(() => {
-                this.showMap=false;
                 this.loading = false;
             });
         },
         openAssignSection(rowData) {
             this.loading = true;
-            this.assignList.open = true;
-            this.showMap = false;
             this.selectedRoom = rowData;
+            this.assignList.selectedBuilding = false;
+            this.assignList.selectedFloor = {
+                url: ""
+            };
             this.getBuildingSection();
         },
         getBuildingSection() {
@@ -466,13 +589,25 @@ export default {
                 //get floor
                 this.assignList.buildings = [];
                 this.assignList.buildings = result.data.data;
+                let root = [];
                 this.assignList.buildings.map((building) => {
+                    building.building_id = building.id;
+                    building.pid = 0;
+                    building.dragDisabled = true;
+                    building.addTreeNodeDisabled = true;
+                    building.addLeafNodeDisabled = true;
+                    building.editNodeDisabled = true;
+                    building.delNodeDisabled = true;
+                    building.children = [];
+                    root.push(building);
                     this.getBuildingFloorSection(building);
                 })
                 if (this.assignList.buildings.length > 0) {
                     this.selectedBuildingID = this.assignList.buildings[0].id;
                 }
-                this.componentKey += 1;
+                this.treeData = root;
+                this.assignList.open = true;
+
             });
         },
         getBuildingFloorSection(building) {
@@ -482,7 +617,14 @@ export default {
             //console.log(data);
             getBuildingFloorApi(data).then((result) => {
                 building.floors = result.data.data;
+                building.floors.map((floor) => {
+                    floor.pid = building.id;
+                    floor.isLeaf = true;
+                    floor.floor_id = floor.id;
+                    building.children.push(floor)
+                });
                 this.componentKey += 1;
+                this.tree = new Tree(this.treeData);
             })
         },
         clickConfirmDelete() {
@@ -660,26 +802,30 @@ export default {
         },
         closeModal: function () {
             this.open = false;
-            this.assignForm.open = false;
+            // /this.assignForm.open = false;
             this.buildingForm.open = false;
             this.buildingFloorForm.open = false;
             this.buildingImage.open = false;
-            this.showMap=false;
+            this.showMap = false;
+            this.assignList.open = false;
         },
         uploadFile: function (e) {
             let formData = new FormData();
             this.loading = true;
             this.buildingImage.open = false;
-            formData.append('ossfile', e.target.files[0]);
-            uploadFileApi(formData).then((result) => {
-                this.updateFloorInfo(result);
-                //uppdate file ppath
+            if (e.target.files[0] != undefined) {
+                formData.append('ossfile', e.target.files[0]);
+                uploadFileApi(formData).then((result) => {
+                    this.updateFloorInfo(result);
+                    this.closeImageModal();
+                    //uppdate file ppath
+                });
+            }
 
-            });
         },
         updateFloorInfo(result) {
-            this.selectedFloor.cadfile = result.data.data;
-            updateFloorApi(this.selectedFloor).then((result) => {
+            this.assignList.selectedFloor.cadfile = result.data.data;
+            updateFloorApi(this.assignList.selectedFloor).then((result) => {
                 this.loading = false;
                 this.$notify({
                     group: 'foo',
@@ -688,6 +834,15 @@ export default {
                 });
             });
         },
+        closeImageModal() {
+            this.buildingImage.open = false;
+            this.assignList.open = true;
+        },
+        closeAssignModal() {
+            this.assignForm.open = false;
+            this.assignList.open = true;
+        }
+
     },
 
     created() {
@@ -714,11 +869,13 @@ export default {
 .ui.positive.button {
     background-color: #75ADBF !important;
 }
-.imageForm{
-    display:block;
-    width:100%;
+
+.imageForm {
+    display: block;
+    width: 100%;
 
 }
+
 .wl-viewer {
     height: 90%;
     width: 90%;
