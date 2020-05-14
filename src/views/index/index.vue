@@ -1,26 +1,52 @@
 <template>
-  <wl-container class="wlui-index" :use-scroll="false">
-    <div class="wlui-logo">
-      <img
-        class="wlui-logo-img"
-        src="@/assets/images/wlui-logo-lang.jpg"
-        alt="wl-ui logo"
-        title="wl-ui 精美易用的复杂前端组件解决方案"
-      />
-      <h1 class="wlui-logo-title">南桥金汇万岁</h1>
-      <h2 class="wlui-logo-subtitle">Beautiful and easy-to-use complex front-end component solutions</h2>
-    </div>
-  </wl-container>
+
+  <div class="dashboard-editor-container">
+    <!-- <panel-group @handleSetLineChartData="handleSetLineChartData" /> -->
+
+<!--     <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
+      <line-chart :chart-data="lineChartData" />
+    </el-row> -->
+    <el-col :xs="24" :sm="24" :lg="8">
+        <div class="chart-wrapper">
+          <bar-chart />
+        </div>
+    </el-col>
+
+     
+    <div>
+      <todo-list />  
+      <!-- <pie-chart /> -->
+    </div>      
+    
+
+
+
+  </div>
 </template>
+
 
 <script>
 import { mapGetters, mapActions } from "vuex"; 
+import PanelGroup from './components/PanelGroup'
+import BarChart from './components/BarChart'
+import PieChart from './components/PieChart'
+import TodoList from './components/TodoList'
+import BoxCard from './components/BoxCard'
 
 export default {
-  computed: {
-    // 导入vuex菜单数据，菜单折叠状态
-    ...mapGetters(["menu_list"])
+  name: 'DashboardAdmin',
+  components: {
+    // GithubCorner,
+    // PanelGroup,
+    BarChart,
+    PieChart,
+    TodoList,
+    BoxCard
   },
+  // computed: {
+  //   // 导入vuex菜单数据，菜单折叠状态
+  //   ...mapGetters(["menu_list"])
+  // },
   methods: {
     /**
      * 路由跳转
@@ -37,6 +63,28 @@ export default {
 };
 </script>
 
+<style lang="scss" scoped>
+.dashboard-editor-container {
+  padding: 32px;
+  background-color: rgb(240, 242, 245);
+  position: relative;
+
+  .github-corner {
+    position: absolute;
+    top: 0px;
+    border: 0;
+    right: 0;
+  }
+
+  .chart-wrapper {
+    background: #fff;
+    padding: 16px 16px 0;
+    margin-bottom: 32px;
+  }
+}
+</style>
+
+<!-- 
 <style lang="scss">
 .wlui-index {
   .wlui-logo {
@@ -74,6 +122,6 @@ export default {
       padding: 10px;
       color: #c0c4cc;
     }
-  }
+  } -->
 }
 </style>
