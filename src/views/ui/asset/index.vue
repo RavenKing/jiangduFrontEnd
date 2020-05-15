@@ -466,10 +466,10 @@ export default {
         createBuildingFloor(data) {
             this.loading = true;
             createBuildingFloorApi(data).then(() => {
-                this.loading = false;
+                this.loading = false;ti
                 this.buildingFloorForm.open = false;
                 this.$refs.formComponentBuilding.singleBuilding = {
-                    room_id: this.selectedRoom.id,
+                    room_id: this.selectedRappoom.id,
                     name: "",
                     upper: "",
                     lower: "",
@@ -535,6 +535,7 @@ export default {
         openAssignSection(rowData) {
             this.loading = true;
             this.selectedRoom = rowData;
+             this.tree=new Tree([]);
             this.assignList.selectedBuilding = false;
             this.assignList.selectedFloor = {
                 url: ""
