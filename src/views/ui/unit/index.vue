@@ -167,6 +167,28 @@ export default {
 
             getUnitApi().then((data) => {
                 console.log(data);
+
+                var res_data = data.data.data
+            var parent_data = []
+            var son_data = []
+            var filtered_data = []
+            for (var i = res_data.length - 1; i >= 0; i--) {
+                if(res_data[i]["parent_id"] == 0)
+                    parent_data.push(res_data[i])
+                else
+                    son_data.push(res_data[i])
+            }
+            for (var i = parent_data.length - 1; i >= 0; i--) {
+                filtered_data.push(parent_data[i])
+                for (var j = son_data.length - 1; j >= 0; j--) {
+                    if(son_data[j]["parent_id"] == parent_data[i]["id"])
+                        filtered_data.push(son_data[j])
+                }
+            }
+
+
+
+
                 this.loading = false;
                 this.localData = {
                     total: 16,
@@ -177,7 +199,7 @@ export default {
                     prev_page_url: null,
                     from: 1,
                     to: 5,
-                    data: data.data.data
+                    data: filtered_data
                 }
             });
         },
