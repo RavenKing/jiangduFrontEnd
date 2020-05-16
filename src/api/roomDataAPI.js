@@ -131,6 +131,8 @@ function createUnitApi(data)
 {
     let local_auth = localGet(global.project_key, true);
       data.token=local_auth;
+      data['pid'] = 4
+      console.log(data)
       return request({
           url: constants.unitCreateApi,
           method: 'post',
