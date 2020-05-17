@@ -21,9 +21,9 @@
         <div class="vue2Table">
             <vuetable ref="vuetable" :api-mode="false" :data="localData" :fields="fields" :sort-order="sortOrder" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
                 <div slot="action" slot-scope="props">
-                    <sui-button positive content="查看" v-on:click="viewSomeThing(props.rowData,'check')" />
-                    <sui-button content="修改" v-on:click="viewSomeThing(props.rowData,'modify')" />
-                    <sui-button content="删除" v-on:click="deleteRoom(props.rowData)" />
+                    <sui-button v-if="props.rowData.status!=99" positive content="查看" v-on:click="viewSomeThing(props.rowData,'check')" />
+                    <sui-button v-if="props.rowData.status!=99" content="修改" v-on:click="viewSomeThing(props.rowData,'modify')" />
+                    <sui-button v-if="props.rowData.status!=99" content="删除" v-on:click="deleteRoom(props.rowData)" />
 
                 </div>
             </vuetable>
@@ -179,6 +179,12 @@ export default {
                     son_data.push(res_data[i])
             }
             for (var i = parent_data.length - 1; i >= 0; i--) {
+                var abstract_parent = JSON.parse(JSON.stringify(parent_data[i]))
+                for (var j = son_data.length - 1; j >= 0; j--) {
+                    if(son_data[j]["parent_id"] == abstract_parent["id"])
+                        abstract_parent["enumber"] = parseInt(abstract_parent["enumber"]) + parseInt(son_data[j]["enumber"])
+                }
+                filtered_data.push(abstract_parent)
                 filtered_data.push(parent_data[i])
                 for (var j = son_data.length - 1; j >= 0; j--) {
                     if(son_data[j]["parent_id"] == parent_data[i]["id"])
@@ -268,6 +274,13 @@ export default {
                     son_data.push(res_data[i])
             }
             for (var i = parent_data.length - 1; i >= 0; i--) {
+                var abstract_parent = JSON.parse(JSON.stringify(parent_data[i]))
+                abstract_parent["status"] = 99
+                for (var j = son_data.length - 1; j >= 0; j--) {
+                    if(son_data[j]["parent_id"] == abstract_parent["id"])
+                        abstract_parent["enumber"] = parseInt(abstract_parent["enumber"]) + parseInt(son_data[j]["enumber"])
+                }
+                filtered_data.push(abstract_parent)
                 filtered_data.push(parent_data[i])
                 for (var j = son_data.length - 1; j >= 0; j--) {
                     if(son_data[j]["parent_id"] == parent_data[i]["id"])
