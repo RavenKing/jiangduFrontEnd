@@ -6,7 +6,7 @@ export default [
     height:"100px",
     sortField: "name",
     titleClass: "center aligned",
-    dataClass: "center aligned",
+    dataClass: "aligned",
   },
   {
     name: "level_num",
@@ -36,7 +36,7 @@ export default [
     name: "action",
     title: '操作',
     titleClass: "center aligned",
-    dataClass: "center aligned",
+    dataClass: "",
     width: "15%"
   },
 ];
