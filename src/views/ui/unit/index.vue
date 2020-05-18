@@ -16,15 +16,19 @@
         </div>
 
         <div class="wl-gantt-demo">
-            <wlGantt :data="data" default-expand-all ></wlGantt>
+            <wlGantt :data="data" default-expand-all></wlGantt>
         </div>
         <div class="vue2Table">
-            <vuetable ref="vuetable" :api-mode="false" :data="localData" :fields="fields" :sort-order="sortOrder" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData" >
-                <div slot="action" slot-scope="props" align="left">
-                    <sui-button v-if="props.rowData.status!=99" positive content="查看" v-on:click="viewSomeThing(props.rowData,'check')" />
-                    <sui-button v-if="props.rowData.status!=99" content="修改" v-on:click="viewSomeThing(props.rowData,'modify')" />
-                    <sui-button v-if="props.rowData.status!=99" content="删除" v-on:click="deleteRoom(props.rowData)" />
-
+            <vuetable ref="vuetable" :api-mode="false" :data="localData" :fields="fields" :sort-order="sortOrder" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
+                <div slot="name" slot-scope="props">
+                    <div :class="props.rowData.status!=99?'center aligned':'' ">
+                        {{props.rowData.name}}
+                    </div>
+                </div>
+                <div slot="action" slot-scope="props">
+                        <sui-button v-if="props.rowData.status!=99" positive content="查看" v-on:click="viewSomeThing(props.rowData,'check')" />
+                        <sui-button v-if="props.rowData.status!=99" content="修改" v-on:click="viewSomeThing(props.rowData,'modify')" />
+                        <sui-button v-if="props.rowData.status!=99" content="删除" v-on:click="deleteRoom(props.rowData)" />
                 </div>
             </vuetable>
             <div class="pagination ui basic segment grid">
@@ -94,12 +98,10 @@ export default {
                 field: "email",
                 direction: "asc"
             }],
-            data: [
-                {
-                    id: "2",
-                    name: "租房子"
-                }
-            ]
+            data: [{
+                id: "2",
+                name: "租房子"
+            }]
         };
     },
 
@@ -169,31 +171,28 @@ export default {
                 console.log(data);
 
                 var res_data = data.data.data
-            var parent_data = []
-            var son_data = []
-            var filtered_data = []
-            for (var i = res_data.length - 1; i >= 0; i--) {
-                if(res_data[i]["parent_id"] == 0)
-                    parent_data.push(res_data[i])
-                else
-                    son_data.push(res_data[i])
-            }
-            for (var i = parent_data.length - 1; i >= 0; i--) {
-                var abstract_parent = JSON.parse(JSON.stringify(parent_data[i]))
-                for (var j = son_data.length - 1; j >= 0; j--) {
-                    if(son_data[j]["parent_id"] == abstract_parent["id"])
-                        abstract_parent["enumber"] = parseInt(abstract_parent["enumber"]) + parseInt(son_data[j]["enumber"])
+                var parent_data = []
+                var son_data = []
+                var filtered_data = []
+                for (var i = res_data.length - 1; i >= 0; i--) {
+                    if (res_data[i]["parent_id"] == 0)
+                        parent_data.push(res_data[i])
+                    else
+                        son_data.push(res_data[i])
                 }
-                filtered_data.push(abstract_parent)
-                filtered_data.push(parent_data[i])
-                for (var j = son_data.length - 1; j >= 0; j--) {
-                    if(son_data[j]["parent_id"] == parent_data[i]["id"])
-                        filtered_data.push(son_data[j])
+                for (var i = parent_data.length - 1; i >= 0; i--) {
+                    var abstract_parent = JSON.parse(JSON.stringify(parent_data[i]))
+                    for (var j = son_data.length - 1; j >= 0; j--) {
+                        if (son_data[j]["parent_id"] == abstract_parent["id"])
+                            abstract_parent["enumber"] = parseInt(abstract_parent["enumber"]) + parseInt(son_data[j]["enumber"])
+                    }
+                    filtered_data.push(abstract_parent)
+                    filtered_data.push(parent_data[i])
+                    for (var j = son_data.length - 1; j >= 0; j--) {
+                        if (son_data[j]["parent_id"] == parent_data[i]["id"])
+                            filtered_data.push(son_data[j])
+                    }
                 }
-            }
-
-
-
 
                 this.loading = false;
                 this.localData = {
@@ -268,7 +267,7 @@ export default {
             var son_data = []
             var filtered_data = []
             for (var i = res_data.length - 1; i >= 0; i--) {
-                if(res_data[i]["parent_id"] == 0)
+                if (res_data[i]["parent_id"] == 0)
                     parent_data.push(res_data[i])
                 else
                     son_data.push(res_data[i])
@@ -277,13 +276,13 @@ export default {
                 var abstract_parent = JSON.parse(JSON.stringify(parent_data[i]))
                 abstract_parent["status"] = 99
                 for (var j = son_data.length - 1; j >= 0; j--) {
-                    if(son_data[j]["parent_id"] == abstract_parent["id"])
+                    if (son_data[j]["parent_id"] == abstract_parent["id"])
                         abstract_parent["enumber"] = parseInt(abstract_parent["enumber"]) + parseInt(son_data[j]["enumber"])
                 }
                 filtered_data.push(abstract_parent)
                 filtered_data.push(parent_data[i])
                 for (var j = son_data.length - 1; j >= 0; j--) {
-                    if(son_data[j]["parent_id"] == parent_data[i]["id"])
+                    if (son_data[j]["parent_id"] == parent_data[i]["id"])
                         filtered_data.push(son_data[j])
                 }
             }
