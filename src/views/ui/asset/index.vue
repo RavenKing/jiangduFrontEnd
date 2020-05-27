@@ -12,34 +12,9 @@
                 基本信息列表
             </h4>
         </div>
-        <div class="filterBiaoDan">
-            <sui-button content="添加" @click.native="createRoomModel" icon="add green" />
-            <!-- <sui-button content="修改" icon="edit yellow" />
-        <sui-button content="删除" icon="delete red" /> -->
-            <sui-button content="导出" v-on:click="exportToExcel" icon="file green" />
-        </div>
+
         <div class="filterBiaoDan">
             <sui-form>
-                <sui-form-fields inline>
-                    <label> 房屋ID</label>
-                    <sui-form-field>
-                        <input type="text" placeholder="请选择" v-model="filterString.jiadi" />
-                    </sui-form-field>
-                    <label> 权证号</label>
-                    <sui-form-field>
-                        <input type="text" placeholder="请选择" v-model="filterString.diji" />
-                    </sui-form-field>
-                </sui-form-fields>
-                <sui-form-fields inline>
-                    <label> 使用面积</label>
-                    <sui-form-field>
-                        <input type="text" placeholder="请选择" v-model="filterString.hezhunyongtu" />
-                    </sui-form-field>
-                    <label> 至</label>
-                    <sui-form-field>
-                        <input type="text" placeholder="请选择" v-model="filterString.shijiyongtu" />
-                    </sui-form-field>
-                </sui-form-fields>
                 <sui-form-fields inline>
                     <label> 产证面积</label>
                     <sui-form-field>
@@ -49,19 +24,23 @@
                     <sui-form-field>
                         <input type="text" placeholder="请选择" v-model="filterString.shijiyongtu" />
                     </sui-form-field>
+                    <sui-button positive content="查询" v-on:click="submit" />
+                    <sui-button content="重置" />
                 </sui-form-fields>
             </sui-form>
-            <sui-button positive content="查询" v-on:click="submit" />
-            <sui-button content="重置" />
+        </div>
+        <div class="filterBiaoDan">
+            <sui-button content="创建房屋" @click.native="createRoomModel" icon="add green" />
+            <!-- <sui-button content="修改" icon="edit yellow" />
+        <sui-button content="删除" icon="delete red" /> -->
+            <sui-button content="导出" v-on:click="exportToExcel" icon="file green" />
         </div>
         <div class="vue2Table">
             <vuetable ref="vuetable" :api-mode="false" :data="localData" :fields="fields" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
                 <div slot="action" slot-scope="props">
                     <!-- <sui-button positive content="查看" v-on:click="viewSomeThing(props.rowData,'check')" /> -->
-                    <sui-button positive content="编辑" v-on:click="viewSomeThing(props.rowData,'modify')" />
+                    <sui-button positive content="编辑" v-on:click="openAssignSection(props.rowData)" />
                     <sui-button negative content="删除" v-on:click="deleteRoom(props.rowData)" />
-                    <sui-button positive content="定位" v-on:click="showMapF(props.rowData)" />
-                    <sui-button content="分配" v-on:click="openAssignSection(props.rowData)" />
                     <!-- <sui-button content="分配房屋列表" v-on:click="openAssignList(props.rowData)" /> -->
                 </div>
             </vuetable>
@@ -77,7 +56,7 @@
                 <sui-modal-header>{{modelTitle}}</sui-modal-header>
                 <sui-modal-content>
                     <div>
-                        <form-create ref='formComponent'></form-create>
+                        <form-create ref='formComponent' :singleRoom="selectedRoom"></form-create>
                     </div>
                 </sui-modal-content>
                 <sui-modal-actions>
@@ -163,88 +142,104 @@
                 </sui-modal-actions>
             </sui-modal>
         </div>
-
-        <div>
-            <sui-modal class="modal2" v-model="showMap">
-                <sui-modal-header>创建楼层</sui-modal-header>
-                <sui-modal-content>
-                    <div class="imageForm">
-                        <sui-form>
-                            <sui-form-fields inline>
-                                <label> 经度</label>
-                                <sui-form-field>
-                                    <input type="text" placeholder="请选择" v-model="point.lng" />
-                                </sui-form-field>
-                                <label> 维度</label>
-                                <sui-form-field>
-                                    <input type="text" placeholder="请选择" v-model="point.lat" />
-                                </sui-form-field>
-                            </sui-form-fields>
-                        </sui-form>
-                    </div>
-                    <baidu-map class="map" :center="point" :zoom="15">
-                        <bm-navigation anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-navigation>
-                        <bm-marker :position="point" :dragging="true" animation="BMAP_ANIMATION_BOUNCE" @dragend="dragend">
-                        </bm-marker>
-                    </baidu-map>
-                </sui-modal-content>
-                <sui-modal-actions>
-                    <sui-button negative @click.native="closeModal">
-                        取消
-                    </sui-button>
-                    <sui-button positive @click.native="manualUpdateGeo">
-                        提交
-                    </sui-button>
-                </sui-modal-actions>
-            </sui-modal>
-        </div>
-
         <div>
             <sui-modal class="modal2" v-model="assignList.open">
-                <sui-modal-header>分配房屋</sui-modal-header>
                 <sui-modal-content>
-                    <sui-button positive @click.native="openBuildingModal">
-                        创建楼
-                    </sui-button>
-                    <sui-grid :columns="2" relaxed="very">
-                        <sui-grid-column>
-                            <div>
-                                <vue-tree-list @click="onClick" @change-name="onChangeName" @delete-node="onDel" @add-node="onAddNode" :model="tree" default-tree-node-name="new node" default-leaf-node-name="new leaf" v-bind:default-expanded="false">
-                                    <span class="icon" slot="addTreeNodeIcon">📂</span>
-                                    <span class="icon" slot="addLeafNodeIcon">＋</span>
-                                    <span class="icon" slot="editNodeIcon">📃</span>
-                                    <span class="icon" slot="delNodeIcon">✂️</span>
-                                    <span class="icon" slot="leafNodeIcon">
-                                        <sui-icon name="home" /></span>
-                                    <span class="icon" slot="treeNodeIcon">
-                                        <sui-icon name="building outline" /></span>
-                                </vue-tree-list>
-                            </div>
-                        </sui-grid-column>
-                        <sui-grid-column>
-                            <sui-statistic horizontal size="huge">
-                                <sui-statistic-value>
-                                    {{assignList.selectedFloor.name}}
-                                </sui-statistic-value>
-                            </sui-statistic>
-                            <div v-show="assignList.selectedBuilding">
-                                <sui-button @click.native="openAssignModal(assignList.selectedBuilding,assignList.selectedFloor)">
-                                    分配
+                    <div>
+                        <sui-tab :menu="{ text: true }">
+                            <sui-tab-pane title="基本信息" :attached="false">
+                                <div>
+                                    <form-create ref='formComponent' :singleRoom="selectedRoom"></form-create>
+                                </div>
+                            </sui-tab-pane>
+                            <sui-tab-pane title="产证信息" :attached="false">
+                                <div>
+
+                                    <chanzheng-form ref='chanZhengForm' :singleRoom="selectedRoom"></chanzheng-form>
+
+                                </div>
+                            </sui-tab-pane>
+                            <sui-tab-pane title="资产信息" :attached="false">
+                                <div>
+                                    <zichan-form ref='zichanForm' :singleRoom="selectedRoom"></zichan-form>
+                                </div>
+                            </sui-tab-pane>
+                            <sui-tab-pane title="房屋面积" :attached="false">
+                                Box
+                            </sui-tab-pane>
+                            <sui-tab-pane title="楼层管理" :attached="false">
+                                <sui-button positive @click.native="openBuildingModal">
+                                    创建楼
                                 </sui-button>
-                                <sui-button @click.native="openImageModal()">
-                                    楼层图
-                                </sui-button>
-                            </div>
-                        </sui-grid-column>
-                    </sui-grid>
+                                <sui-grid :columns="2" relaxed="very">
+                                    <sui-grid-column>
+                                        <div>
+                                            <vue-tree-list @click="onClick" @change-name="onChangeName" @delete-node="onDel" @add-node="onAddNode" :model="tree" default-tree-node-name="new node" default-leaf-node-name="new leaf" v-bind:default-expanded="false">
+                                                <span class="icon" slot="addTreeNodeIcon">📂</span>
+                                                <span class="icon" slot="addLeafNodeIcon">＋</span>
+                                                <span class="icon" slot="editNodeIcon">📃</span>
+                                                <span class="icon" slot="delNodeIcon">✂️</span>
+                                                <span class="icon" slot="leafNodeIcon">
+                                                    <sui-icon name="home" /></span>
+                                                <span class="icon" slot="treeNodeIcon">
+                                                    <sui-icon name="building outline" /></span>
+                                            </vue-tree-list>
+                                        </div>
+                                    </sui-grid-column>
+                                    <sui-grid-column>
+                                        <sui-statistic horizontal size="huge">
+                                            <sui-statistic-value>
+                                                {{assignList.selectedFloor.name}}
+                                            </sui-statistic-value>
+                                        </sui-statistic>
+                                        <div v-show="assignList.selectedBuilding">
+                                            <sui-button @click.native="openAssignModal(assignList.selectedBuilding,assignList.selectedFloor)">
+                                                分配
+                                            </sui-button>
+                                            <sui-button @click.native="openImageModal()">
+                                                楼层图
+                                            </sui-button>
+                                        </div>
+                                    </sui-grid-column>
+                                </sui-grid>
+
+                            </sui-tab-pane>
+                            <sui-tab-pane title="地图定位" :attached="false">
+                                <div class="imageForm">
+                                    <sui-form>
+                                        <sui-form-fields inline>
+                                            <label> 经度</label>
+                                            <sui-form-field>
+                                                <input type="text" placeholder="请选择" v-model="point.lng" />
+                                            </sui-form-field>
+                                            <label> 维度</label>
+                                            <sui-form-field>
+                                                <input type="text" placeholder="请选择" v-model="point.lat" />
+                                            </sui-form-field>
+                                        </sui-form-fields>
+                                    </sui-form>
+                                </div>
+                                <baidu-map class="map" :center="point" :zoom="15">
+                                    <bm-navigation anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-navigation>
+                                    <bm-marker :position="point" :dragging="true" animation="BMAP_ANIMATION_BOUNCE" @dragend="dragend">
+                                    </bm-marker>
+                                </baidu-map>
+                            </sui-tab-pane>
+                            <sui-tab-pane title="资料管理" :attached="false">
+                                建设中。。。。
+                            </sui-tab-pane>
+                        </sui-tab>
+                    </div>
+
                 </sui-modal-content>
                 <sui-modal-actions>
+                    <sui-button positive @click.native="toggle">
+                        保存
+                    </sui-button>
                     <sui-button negative @click.native="closeModal">
                         取消
                     </sui-button>
-                    <sui-button positive @click.native="manualUpdateGeo">
-                        提交
-                    </sui-button>
+
                 </sui-modal-actions>
             </sui-modal>
         </div>
@@ -265,6 +260,8 @@ import FieldsDef from "./FieldsDef.js";
 import FieldsDefList from "./FieldsDefList.js";
 import BuildingForm from "@/components/buildingForm";
 import AssignForm from "@/components/assignForm";
+import chanZhengForm from "@/components/chanZhengForm";
+import ziChanForm from "@/components/ziChanForm";
 import pdf from 'vue-pdf'
 import {
     VueTreeList,
@@ -302,6 +299,8 @@ export default {
         VuetablePagination,
         VuetablePaginationInfo,
         FormCreate,
+        'zichan-form': ziChanForm,
+        'chanzheng-form': chanZhengForm,
         'building-form': BuildingForm,
         'buildingFloor-form': BuildingFloorForm,
         'assign-form': AssignForm
@@ -316,7 +315,6 @@ export default {
                 jiadi: "",
                 diji: ""
             },
-            componentKey: 1,
             showMap: false,
             point: {},
             buildingFloorForm: {
@@ -336,7 +334,9 @@ export default {
             deleteTarget: "",
             loading: true,
             localData: [],
-            selectedRoom: {},
+            selectedRoom: {
+                roomname: ""
+            },
             listField: FieldsDefList,
             fields: FieldsDef,
             imgeComponentKey: 1,
@@ -382,7 +382,6 @@ export default {
     },
 
     methods: {
-
         //tree
         onDel(node) {
             console.log(node)
@@ -408,9 +407,6 @@ export default {
                     }
                 })
             }
-            console.log(this.assignList.selectedBuilding.name);
-            console.log(this.assignList.selectedFloor.name);
-
         },
 
         addNode() {
@@ -466,7 +462,8 @@ export default {
         createBuildingFloor(data) {
             this.loading = true;
             createBuildingFloorApi(data).then(() => {
-                this.loading = false;ti
+                this.loading = false;
+                ti
                 this.buildingFloorForm.open = false;
                 this.$refs.formComponentBuilding.singleBuilding = {
                     room_id: this.selectedRappoom.id,
@@ -485,30 +482,6 @@ export default {
                     return v[j]
                 }
             }))
-        },
-        showMapF: function (data) {
-            this.assignList.open = false;
-            this.selectedRoom = data;
-            this.showMap = true;
-            //  this.loading = true;
-            if (data.lon == "" && data.lat == "") {
-                data.lon = 121.468322;
-                data.lat = 30.924587;
-            }
-            this.point = {
-                lng: data.lon,
-                lat: data.lat
-            }
-        },
-        handleTabChange: function (e, activePane) {
-            console.log(activePane.title);
-            this.assignList.buildings.map((building) => {
-                if (building.name == activePane.title) {
-                    this.selectedBuildingID = building.id;
-                }
-                console.log(this.selectedBuildingID);
-            });
-
         },
         dragend: function (e) {
             this.loading = true;
@@ -533,13 +506,31 @@ export default {
             });
         },
         openAssignSection(rowData) {
-            this.loading = true;
+            console.log(this.selectedRoom);
             this.selectedRoom = rowData;
-             this.tree=new Tree([]);
+
+            this.modalMode = "edit";
+            // point 
+            if (rowData.lat === null || rowData.lat == "") {
+                this.point = {
+                    lng: 121.547967,
+                    lat: 30.879141
+                }
+            } else {
+                this.point = {
+                    lng: rowData.lon,
+                    lat: rowData.lat
+                }
+            }
+            this.loading = true;
+            this.tree = new Tree([]);
             this.assignList.selectedBuilding = false;
             this.assignList.selectedFloor = {
                 url: ""
             };
+            this.loading = false;
+            this.assignList.open = true;
+
             this.getBuildingSection();
         },
         getBuildingSection() {
@@ -585,7 +576,6 @@ export default {
                     floor.floor_id = floor.id;
                     building.children.push(floor)
                 });
-                this.componentKey += 1;
                 this.tree = new Tree(this.treeData);
             })
         },
@@ -615,40 +605,17 @@ export default {
             })
         },
         viewSomeThing(data, type) {
-            this.$refs.formComponent.singleRoom = data;
-            //修改
-            if (type == "modify") {
-                //查看
-                this.modelTitle = "编辑房屋";
-                this.modalMode = "edit";
-                this.open = !this.open;
-                console.log(data.lat);
-                console.log(data.lon);
-                if (this.$refs.formComponent.zoomlevel == 14) {
-                    this.$refs.formComponent.zoomlevel = 13;
-                }
-                if (data.lat === null) {
-                    this.$refs.formComponent.point = {
-                        lng: 121.547967,
-                        lat: 30.879141
-                    }
-                } else {
-                    this.point = {
-                        lng: data.lon,
-                        lat: data.lat
-                    }
-                    this.$refs.formComponent.point = {
-                        lng: data.lon,
-                        lat: data.lat
-                    }
-                }
-            } else if (type == "check") {
-                this.modalMode = "check";
-                this.modelTitle = "查看Room";
-                this.open = !this.open;
-            } else {
-                console.log("delete");
-            }
+            // this.$refs.formComponent.singleRoom = data;
+            // //修改
+            // if (type == "modify") {
+
+            // } else if (type == "check") {
+            //     this.modalMode = "check";
+            //     this.modelTitle = "查看Room";
+            //     this.open = !this.open;
+            // } else {
+            //     console.log("delete");
+            // }
         },
         exportToExcel() {
             let headers = ['id', 'room_id', 'certid', 'owner', 'address', 'roomname', 'usage', 'space', 'optional', 'age', 'build_date', 'origin_value', 'room_value', 'dep', 'net_value', 'dep_rate', 'internal_info', 'cur_status'];
@@ -703,7 +670,7 @@ export default {
             this.modelTitle = "创建房屋"
             this.modalMode = "create";
             this.open = true;
-            this.$refs.formComponent.singleRoom = {
+            this.selectedRoom = {
                 room_id: "",
                 certid: "",
                 owner: "",
@@ -724,9 +691,11 @@ export default {
             };
         },
         toggle() {
-            this.open = !this.open;
             this.loading = true;
-            let formdata = this.$refs.formComponent.singleRoom;
+
+            console.log(this.selectedRoom.age);
+            console.log(this.selectedRoom.certid);
+            let formdata = this.selectedRoom;
             if (formdata.space == "") {
                 formdata.space = null;
             }
@@ -734,13 +703,14 @@ export default {
                 formdata.usage = null
             }
             if (this.modalMode == "create") {
+                this.open = !this.open;
                 createRoomApi(this.$refs.formComponent.singleRoom).then((result) => {
-                    console.log(result);
                     this.loading = false;
+
                 });
             } else if (this.modalMode == "edit") {
-                updateRoomApi(this.$refs.formComponent.singleRoom).then((result) => {
-                    console.log(result);
+                this.assignList.open = false;
+                updateRoomApi(this.selectedRoom).then((result) => {
                     this.loading = false;
                 });
             }
@@ -769,7 +739,6 @@ export default {
             this.buildingForm.open = false;
             this.buildingFloorForm.open = false;
             this.buildingImage.open = false;
-            this.showMap = false;
             this.assignList.open = false;
         },
         uploadFile: function (e) {
