@@ -143,8 +143,8 @@
             </sui-modal>
         </div>
         <div>
-            <sui-modal class="modal2" v-model="assignList.open">
-                <sui-modal-content>
+            <sui-modal class="modal2" v-model="assignList.open" >
+                <sui-modal-content scrolling>
                     <div>
                         <sui-tab :menu="{ text: true }">
                             <sui-tab-pane title="基本信息" :attached="false">
@@ -165,7 +165,7 @@
                                 </div>
                             </sui-tab-pane>
                             <sui-tab-pane title="房屋面积" :attached="false">
-                                Box
+                                <mianji-form ref='mianjiForm' :singleRoom="selectedRoom"></mianji-form>
                             </sui-tab-pane>
                             <sui-tab-pane title="楼层管理" :attached="false">
                                 <sui-button positive @click.native="openBuildingModal">
@@ -262,6 +262,7 @@ import BuildingForm from "@/components/buildingForm";
 import AssignForm from "@/components/assignForm";
 import chanZhengForm from "@/components/chanZhengForm";
 import ziChanForm from "@/components/ziChanForm";
+import mianjiForm from "@/components/mianjiForm";
 import pdf from 'vue-pdf'
 import {
     VueTreeList,
@@ -303,7 +304,8 @@ export default {
         'chanzheng-form': chanZhengForm,
         'building-form': BuildingForm,
         'buildingFloor-form': BuildingFloorForm,
-        'assign-form': AssignForm
+        'assign-form': AssignForm,
+        'mianji-form': mianjiForm
     },
     data() {
         return {
