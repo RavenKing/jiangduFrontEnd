@@ -14,27 +14,37 @@
         </div>
 
         <div class="filterBiaoDan">
-            <sui-form>
-                <sui-form-fields inline>
-                    <label> 产证面积</label>
-                    <sui-form-field>
-                        <input type="text" placeholder="请选择" v-model="filterString.hezhunyongtu" />
-                    </sui-form-field>
-                    <label> 至</label>
-                    <sui-form-field>
-                        <input type="text" placeholder="请选择" v-model="filterString.shijiyongtu" />
-                    </sui-form-field>
-                    <sui-button positive content="查询" v-on:click="submit" />
-                    <sui-button content="重置" />
-                </sui-form-fields>
-            </sui-form>
-        </div>
-        <div class="filterBiaoDan">
-            <sui-button content="创建房屋" @click.native="createRoomModel" icon="add green" />
-            <!-- <sui-button content="修改" icon="edit yellow" />
+
+            <sui-grid>
+                <sui-grid-row>
+                    <sui-grid-column :width="13">
+                        <sui-form>
+                            <sui-form-fields inline>
+                                <label> 产证面积</label>
+                                <sui-form-field>
+                                    <input type="text" placeholder="请选择" v-model="filterString.hezhunyongtu" />
+                                </sui-form-field>
+                                <label> 至</label>
+                                <sui-form-field>
+                                    <input type="text" placeholder="请选择" v-model="filterString.shijiyongtu" />
+                                </sui-form-field>
+                                <sui-button positive content="查询" v-on:click="submit" />
+                                <sui-button content="重置" />
+                            </sui-form-fields>
+                        </sui-form>
+                    </sui-grid-column>
+                    <sui-grid-column :width="3">
+                        <div>
+                            <sui-button content="创建房屋" @click.native="createRoomModel" icon="add green" />
+                            <!-- <sui-button content="修改" icon="edit yellow" />
         <sui-button content="删除" icon="delete red" /> -->
-            <sui-button content="导出" v-on:click="exportToExcel" icon="file green" />
+                            <sui-button content="导出" v-on:click="exportToExcel" icon="file green" />
+                        </div>
+                    </sui-grid-column>
+                </sui-grid-row>
+            </sui-grid>
         </div>
+
         <div class="vue2Table">
             <vuetable ref="vuetable" :api-mode="false" :data="localData" :fields="fields" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
                 <div slot="action" slot-scope="props">
@@ -71,7 +81,6 @@
         </div>
         <div>
             <sui-modal class="modal2" v-model="buildingForm.open">
-                <sui-modal-header>创建楼</sui-modal-header>
                 <sui-modal-content image>
                     <building-form ref='formComponentBuilding'></building-form>
                 </sui-modal-content>
@@ -126,24 +135,7 @@
             </sui-modal>
         </div>
         <div>
-            <sui-modal class="modal2" v-model="buildingFloorForm.open">
-                <sui-modal-header>创建楼层</sui-modal-header>
-                <sui-modal-content image>
-                    <buildingFloor-form ref='formComponentBuildingFloor'>
-                    </buildingFloor-form>
-                </sui-modal-content>
-                <sui-modal-actions>
-                    <sui-button negative @click.native="closeModal">
-                        取消
-                    </sui-button>
-                    <sui-button positive @click.native="createBuildingFloor">
-                        提交
-                    </sui-button>
-                </sui-modal-actions>
-            </sui-modal>
-        </div>
-        <div>
-            <sui-modal class="modal2" v-model="assignList.open" >
+            <sui-modal class="modal2" v-model="assignList.open">
                 <sui-modal-content scrolling>
                     <div>
                         <sui-tab :menu="{ text: true }">
@@ -169,16 +161,14 @@
                             </sui-tab-pane>
                             <sui-tab-pane title="楼层管理" :attached="false">
                                 <sui-button positive @click.native="openBuildingModal">
-                                    创建楼
+                                    新增
                                 </sui-button>
                                 <sui-grid :columns="2" relaxed="very">
                                     <sui-grid-column>
                                         <div>
-                                            <vue-tree-list @click="onClick" @change-name="onChangeName" @delete-node="onDel" @add-node="onAddNode" :model="tree" default-tree-node-name="new node" default-leaf-node-name="new leaf" v-bind:default-expanded="false">
+                                            <vue-tree-list @click="onClick" @changeName="onChangeName" @delete-node="onDel" @add-node="onAddNode" :model="tree" default-tree-node-name="new node" default-leaf-node-name="new leaf" v-bind:default-expanded="false">
                                                 <span class="icon" slot="addTreeNodeIcon">📂</span>
                                                 <span class="icon" slot="addLeafNodeIcon">＋</span>
-                                                <span class="icon" slot="editNodeIcon">📃</span>
-                                                <span class="icon" slot="delNodeIcon">✂️</span>
                                                 <span class="icon" slot="leafNodeIcon">
                                                     <sui-icon name="home" /></span>
                                                 <span class="icon" slot="treeNodeIcon">
@@ -187,6 +177,12 @@
                                         </div>
                                     </sui-grid-column>
                                     <sui-grid-column>
+
+                                        <sui-statistic horizontal size="huge">
+                                            <sui-statistic-value>
+                                                {{assignList.selectedBuilding.name}}
+                                            </sui-statistic-value>
+                                        </sui-statistic>
                                         <sui-statistic horizontal size="huge">
                                             <sui-statistic-value>
                                                 {{assignList.selectedFloor.name}}
@@ -196,7 +192,7 @@
                                             <sui-button @click.native="openAssignModal(assignList.selectedBuilding,assignList.selectedFloor)">
                                                 分配
                                             </sui-button>
-                                            <sui-button @click.native="openImageModal()">
+                                            <sui-button v-show="assignList.selectedFloor.name!==undefined" @click.native="openImageModal()">
                                                 楼层图
                                             </sui-button>
                                         </div>
@@ -239,7 +235,6 @@
                     <sui-button negative @click.native="closeModal">
                         取消
                     </sui-button>
-
                 </sui-modal-actions>
             </sui-modal>
         </div>
@@ -359,7 +354,9 @@ export default {
                     dragDisabled: true,
                     addTreeNodeDisabled: true,
                     addLeafNodeDisabled: true,
-                    editNodeDisabled: false,
+                    delLeafNodeDisabled: true,
+                    editLeafNodeDisabled: true,
+                    editNodeDisabled: true,
                     delNodeDisabled: false,
                     children: [{
                         name: 'Node 1-2',
@@ -387,7 +384,7 @@ export default {
         //tree
         onDel(node) {
             console.log(node)
-            node.remove()
+            this.deleteBuilding(node);
         },
 
         onChangeName(params) {
@@ -401,6 +398,9 @@ export default {
         onClick(params) {
             if (params.floor_id == undefined) {
                 this.assignList.selectedBuilding = params;
+                this.assignList.selectedFloor = {
+                    url: ""
+                };
             } else {
                 this.assignList.selectedFloor = params;
                 this.treeData.map((building) => {
@@ -458,15 +458,11 @@ export default {
             this.assignList.open = false;
         },
 
-        openBuildingFloorModel() {
-            this.buildingFloorForm.open = true;
-        },
         createBuildingFloor(data) {
             this.loading = true;
             createBuildingFloorApi(data).then(() => {
                 this.loading = false;
                 ti
-                this.buildingFloorForm.open = false;
                 this.$refs.formComponentBuilding.singleBuilding = {
                     room_id: this.selectedRappoom.id,
                     name: "",
@@ -551,8 +547,10 @@ export default {
                     building.dragDisabled = true;
                     building.addTreeNodeDisabled = true;
                     building.addLeafNodeDisabled = true;
+                    building.editLeafNodeDisabled = true;
+                    building.delLeafNodeDisabled = true;
                     building.editNodeDisabled = true;
-                    building.delNodeDisabled = true;
+                    building.delNodeDisabled = false;
                     building.children = [];
                     root.push(building);
                     this.getBuildingFloorSection(building);
@@ -576,6 +574,7 @@ export default {
                     floor.pid = building.id;
                     floor.isLeaf = true;
                     floor.floor_id = floor.id;
+                    floor.disabled = true;
                     building.children.push(floor)
                 });
                 this.tree = new Tree(this.treeData);
@@ -586,12 +585,21 @@ export default {
                 this.loading = true;
                 deleteRoomApi(this.deleteTarget).then(() => {
                     this.refreshRooms();
+                    this.$notify({
+                        group: 'foo',
+                        title: '删除成功',
+                        text: '删除成功'
+                    });
                 });
             } else {
                 this.loading = true;
                 deleteBuildingApi(this.deleteTarget).then(() => {
                     this.getBuildingSection();
-
+                    this.$notify({
+                        group: 'foo',
+                        title: '删除成功',
+                        text: '删除成功'
+                    });
                 });
             }
 
@@ -605,19 +613,6 @@ export default {
                 this.$refs.formComponentBuilding.singleBuilding.building_id = result.data.data;
                 this.createBuildingFloor(this.$refs.formComponentBuilding.singleBuilding);
             })
-        },
-        viewSomeThing(data, type) {
-            // this.$refs.formComponent.singleRoom = data;
-            // //修改
-            // if (type == "modify") {
-
-            // } else if (type == "check") {
-            //     this.modalMode = "check";
-            //     this.modelTitle = "查看Room";
-            //     this.open = !this.open;
-            // } else {
-            //     console.log("delete");
-            // }
         },
         exportToExcel() {
             let headers = ['id', 'room_id', 'certid', 'owner', 'address', 'roomname', 'usage', 'space', 'optional', 'age', 'build_date', 'origin_value', 'room_value', 'dep', 'net_value', 'dep_rate', 'internal_info', 'cur_status'];
@@ -713,6 +708,14 @@ export default {
             } else if (this.modalMode == "edit") {
                 this.assignList.open = false;
                 updateRoomApi(this.selectedRoom).then((result) => {
+                    if (result.data.code == 0) {
+                        this.$notify({
+                            group: 'foo',
+                            title: '更新成功',
+                            text: '更新成功',
+                            type: "success"
+                        });
+                    }
                     this.loading = false;
                 });
             }
@@ -764,7 +767,8 @@ export default {
                 this.$notify({
                     group: 'foo',
                     title: '成功上传',
-                    text: '成功上传'
+                    text: '成功上传',
+                    type: "success"
                 });
             });
         },

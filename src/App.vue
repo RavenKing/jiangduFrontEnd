@@ -2,7 +2,6 @@
 <div id="app">
     <router-view />
     <notifications group="foo" position="top center" type="success"/>
-
 </div>
 </template>
 
