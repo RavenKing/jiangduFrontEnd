@@ -46,7 +46,7 @@ function getFileOSSApi(data)
         },
         timeout: 560000 // request timeout
       });
-    return http.get(constants.getOSSURLApi+"?key="+data,{ responseType: 'blob' });
+    return http.get(constants.getOSSURLApi+"?key="+data,{ responseType: 'arraybuffer' });
 }
 export {
     getMapLonAndLat,

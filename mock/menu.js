@@ -49,8 +49,8 @@ const menus = [{
         url: "/ui/employee"
       }, {
         id: "3-28",
-        title: "baidu地图",
-        url: "/map"
+        title: "维修列表",
+        url: "/ui/weixiu"
       },
     ]
   },
