@@ -8,7 +8,7 @@ const http = Axios.create({
   headers: {
     "Content-Type": "application/json;charset=UTF-8"
   },
-  timeout: 5000 // request timeout
+  timeout: 50000 // request timeout
 });
 
 // 设置全局的请求次数，请求的间隙，用于自动再次请求

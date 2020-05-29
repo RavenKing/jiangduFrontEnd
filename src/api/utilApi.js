@@ -31,7 +31,7 @@ function uploadFileApi(formData)
         headers: {
             headers:{'Content-Type':'multipart/form-data'}
         },
-        timeout: 5000 // request timeout
+        timeout: 500000 // request timeout
       });
     return http.post(constants.uploadUrlApi,formData);
 }
@@ -44,9 +44,9 @@ function getFileOSSApi(data)
         headers: {
             headers:{'Content-Type':'multipart/form-data'}
         },
-        timeout: 5000 // request timeout
+        timeout: 560000 // request timeout
       });
-    return http.get(constants.getOSSURLApi+"?key="+data,{ responseType: 'arraybuffer' });
+    return http.get(constants.getOSSURLApi+"?key="+data,{ responseType: 'blob' });
 }
 export {
     getMapLonAndLat,

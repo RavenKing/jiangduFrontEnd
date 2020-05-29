@@ -101,7 +101,8 @@
 
                     <sui-item-group divided>
                         <sui-item class="imageModal">
-                            <pdf :src="this.assignList.selectedFloor.url" style="display: inline-block; width:700px" />
+                            <sui-image :src="this.assignList.selectedFloor.url" style="display: inline-block; width:700px" />
+                            <!-- <pdf :src="this.assignList.selectedFloor.url"  /> -->
                         </sui-item>
                         <sui-item>
                             <input type="file" placeholder="上传Cad图" @change="uploadFile" />
@@ -135,7 +136,7 @@
             </sui-modal>
         </div>
         <div>
-            <sui-modal class="modal2" v-model="assignList.open">
+            <sui-modal class="modal2" v-model="assignList.open" :key="ComponentKey">
                 <sui-modal-content scrolling>
                     <div>
                         <sui-tab :menu="{ text: true }">
@@ -144,14 +145,14 @@
                                     <form-create ref='formComponent' :singleRoom="selectedRoom"></form-create>
                                 </div>
                             </sui-tab-pane>
-                            <sui-tab-pane title="产证信息" :attached="false">
+                            <sui-tab-pane title="产证信息" :attached="false" v-show="selectedRoom.hasproperty" :disabled="!selectedRoom.hasproperty">
                                 <div>
 
                                     <chanzheng-form ref='chanZhengForm' :singleRoom="selectedRoom"></chanzheng-form>
 
                                 </div>
                             </sui-tab-pane>
-                            <sui-tab-pane title="资产信息" :attached="false">
+                            <sui-tab-pane title="资产信息" :attached="false" :disabled="!selectedRoom.inaccount">
                                 <div>
                                     <zichan-form ref='zichanForm' :singleRoom="selectedRoom"></zichan-form>
                                 </div>
@@ -164,7 +165,7 @@
                                     新增
                                 </sui-button>
                                 <sui-grid :columns="2" relaxed="very">
-                                    <sui-grid-column>
+                                    <sui-grid-column :width="5">
                                         <div>
                                             <vue-tree-list @click="onClick" @changeName="onChangeName" @delete-node="onDel" @add-node="onAddNode" :model="tree" default-tree-node-name="new node" default-leaf-node-name="new leaf" v-bind:default-expanded="false">
                                                 <span class="icon" slot="addTreeNodeIcon">📂</span>
@@ -176,20 +177,33 @@
                                             </vue-tree-list>
                                         </div>
                                     </sui-grid-column>
-                                    <sui-grid-column>
+                                    <sui-grid-column :width="11">
 
-                                        <sui-statistic horizontal size="huge">
+                                        <sui-statistic horizontal size="big">
                                             <sui-statistic-value>
                                                 {{assignList.selectedBuilding.name}}
                                             </sui-statistic-value>
                                         </sui-statistic>
-                                        <sui-statistic horizontal size="huge">
+                                        <sui-statistic horizontal size="big">
                                             <sui-statistic-value>
                                                 {{assignList.selectedFloor.name}}
                                             </sui-statistic-value>
                                         </sui-statistic>
+                                        <sui-image src="https://iknow-pic.cdn.bcebos.com/38dbb6fd5266d01634283751932bd40735fa3591?x-bce-process=image/resize,m_lfit,w_600,h_800,limit_1" size="medium" />
+
+                                        <sui-list v-show="assignList.selectedFloor.name!==undefined">
+                                            <sui-list-item v-for="unit in assignList.selectedFloor.unitlist" :key="unit[0]">
+                                                {{unit[1]}} {{unit[2]}}平米
+                                                <sui-button @click.native="">
+                                                    编辑
+                                                </sui-button>
+                                                <sui-button @click.native="deleteBuildingFloorAssignment(unit)">
+                                                    删除
+                                                </sui-button>
+                                            </sui-list-item>
+                                        </sui-list>
                                         <div v-show="assignList.selectedBuilding">
-                                            <sui-button @click.native="openAssignModal(assignList.selectedBuilding,assignList.selectedFloor)">
+                                            <sui-button v-show="assignList.selectedBuilding.name!==''" @click.native="openAssignModal(assignList.selectedBuilding,assignList.selectedFloor)">
                                                 分配
                                             </sui-button>
                                             <sui-button v-show="assignList.selectedFloor.name!==undefined" @click.native="openImageModal()">
@@ -281,7 +295,9 @@ import {
     getBuildingListApi,
     createBuildingFloorApi,
     createAssignmentApi,
+    getAssignRoomList,
     deleteBuildingApi,
+    deleteBuildingFloorAssignmentApi,
     getBuildingFloorApi,
     updateFloorApi
 } from "@/api/roomDataAPI";
@@ -334,6 +350,7 @@ export default {
             selectedRoom: {
                 roomname: ""
             },
+            ComponentKey: 1,
             listField: FieldsDefList,
             fields: FieldsDef,
             imgeComponentKey: 1,
@@ -347,36 +364,7 @@ export default {
                 open: false
             },
             treeData: [],
-            tree: new Tree([{
-                    name: 'Node 1',
-                    id: 1,
-                    pid: 0,
-                    dragDisabled: true,
-                    addTreeNodeDisabled: true,
-                    addLeafNodeDisabled: true,
-                    delLeafNodeDisabled: true,
-                    editLeafNodeDisabled: true,
-                    editNodeDisabled: true,
-                    delNodeDisabled: false,
-                    children: [{
-                        name: 'Node 1-2',
-                        id: 2,
-                        isLeaf: true,
-                        pid: 1
-                    }]
-                },
-                {
-                    name: 'Node 2',
-                    id: 3,
-                    pid: 0,
-                    disabled: true
-                },
-                {
-                    name: 'Node 3',
-                    id: 4,
-                    pid: 0
-                }
-            ])
+            tree: new Tree([])
         };
     },
 
@@ -426,7 +414,10 @@ export default {
             this.assignList.open = false;
             if (this.assignList.selectedFloor.cadfile != null) {
                 getFileOSSApi(this.assignList.selectedFloor.cadfile).then((file) => {
-                    this.assignList.selectedFloor.url = file;
+                    console.log(file);
+                    //var imgBlob=new Blob(file.data,{type:"image/png"});
+
+                    this.assignList.selectedFloor.url = URL.createObjectURL(file.data);
                     this.buildingImage.open = true;
                     this.loading = false;
                 });
@@ -444,6 +435,7 @@ export default {
             data.floor_id = this.assignForm.floor_id;
             createAssignmentApi(data).then((result) => {
                 this.loading = false;
+                this.getBuildingSection();
                 this.closeAssignModal();
                 console.log(result);
             })
@@ -537,6 +529,12 @@ export default {
             // get room
             getBuildingListApi(data).then((result) => {
                 this.loading = false;
+                this.assignList.selectedFloor = {
+                    url: ""
+                };
+                this.assignList.selectedBuilding = {
+                    name: ""
+                };
                 //get floor
                 this.assignList.buildings = [];
                 this.assignList.buildings = result.data.data;
@@ -560,6 +558,7 @@ export default {
                 }
                 this.treeData = root;
                 this.assignList.open = true;
+                // this.ComponentKey++;
 
             });
         },
@@ -581,8 +580,8 @@ export default {
             })
         },
         clickConfirmDelete() {
+            this.loading = true;
             if (this.deleteTarget.type == "Room") {
-                this.loading = true;
                 deleteRoomApi(this.deleteTarget).then(() => {
                     this.refreshRooms();
                     this.$notify({
@@ -591,10 +590,19 @@ export default {
                         text: '删除成功'
                     });
                 });
-            } else {
-                this.loading = true;
+            } else if (this.deleteTarget.type == "Building") {
                 deleteBuildingApi(this.deleteTarget).then(() => {
                     this.getBuildingSection();
+                    this.$notify({
+                        group: 'foo',
+                        title: '删除成功',
+                        text: '删除成功'
+                    });
+                });
+            } else if (this.deleteTarget.type = "buildingFloorAssignment") {
+                deleteBuildingFloorAssignmentApi(this.deleteTarget).then(() => {
+                    this.getBuildingSection();
+                    // this.ComponentKey++;
                     this.$notify({
                         group: 'foo',
                         title: '删除成功',
@@ -640,6 +648,19 @@ export default {
                 text: "是否要删除" + building.name + "(" + building.id + ")?",
                 id: building.id,
                 type: "Building"
+            };
+        },
+        deleteBuildingFloorAssignment(building) {
+            this.sendVal = true;
+            console.log(building)
+            this.deleteTarget = {
+                text: "是否要删除" + building[1] + "(" + building[0] + ")?",
+                id: building[0],
+                room_id: this.selectedRoom.id,
+                building_id: this.assignList.selectedBuilding.id,
+                floor_id: this.assignList.selectedFloor.id,
+                unit_id: building[0],
+                type: "BuildingFloorAssignment"
             };
         },
         refreshRooms() {
@@ -760,8 +781,14 @@ export default {
             }
 
         },
+        saveImage() {
+            console.log("saveImage");
+            console.log(this.assignList.selectedFloor);
+
+        },
         updateFloorInfo(result) {
             this.assignList.selectedFloor.cadfile = result.data.data;
+            this.loading = false;
             updateFloorApi(this.assignList.selectedFloor).then((result) => {
                 this.loading = false;
                 this.$notify({

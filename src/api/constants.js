@@ -21,7 +21,7 @@ const constantsJinhui = {
     createLoanContractApi:hostname+'createloancontract',
     deleteRentContractApi:hostname+'/delrentcontract',
     deleteLoanContractApi:hostname+'/delloancontract',
-    listRoomAssignmentApi:hostname+'listroomassignment',
+    listRoomAssignmentApi:hostname+'/listroomassignment',
     listRentRoomContractApi:hostname+'/listrentcontract',
     listLoanRoomContractApi:hostname+'/listloancontract',
     createAssignmentApi:hostname+'/assignroom',
@@ -33,6 +33,7 @@ const constantsJinhui = {
     listBuildingFloorApi:hostname+"listbuildingfloor",
     uploadUrlApi:hostname+"/uploaddwg",
     getOSSURLApi:hostname+"/getpdf",
-    updateFloorApi:hostname+"/editbuildingfloor"
+    updateFloorApi:hostname+"/editbuildingfloor",
+    deleteBuildingFloorAssignmentApi:hostname+"/delassignroom"
 }
 export default constantsJinhui;

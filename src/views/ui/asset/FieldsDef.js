@@ -22,7 +22,7 @@ export default [
   },
  
   {
-    name: "space",
+    name: "area",
     title: '所属区域',
     width: "10%",
     titleClass: 'center aligned',
