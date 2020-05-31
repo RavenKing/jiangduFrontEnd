@@ -2,6 +2,11 @@ import VuetableFieldSwitch from './VuetableFieldSwitch.vue'
 
 export default [
   {
+    name:"select",
+    title:"",
+    width:"10%"
+  },
+  {
     name: "roomname",
     title: '房屋名称',
     width: "15%"
@@ -30,12 +35,5 @@ export default [
     name: "space",
     title: '状态',
     width: "15%"
-  },
-  {
-    name: "action",
-    title: '操作',
-    titleClass: "center aligned",
-    dataClass: "center aligned",
-    width: "30%"
-  },
+  }
 ];

@@ -6,8 +6,56 @@
                 <sui-loader content="Loading..." />
             </sui-dimmer>
         </div>
+        <div is="sui-divider" horizontal>
+            <h4 is="sui-header">
+                <i class="tag icon"></i>
+                申请维修
+            </h4>
+        </div>
         <div class="filterBiaoDan">
-            <sui-button content="创建维修计划" @click.native="createRoomModel" icon="add green" />
+            <sui-button content="申请维修" @click.native="openWeiXiuForm" icon="add green" />
+        </div>
+
+        <div class="vue2Table">
+            <vuetable ref="vuetable" :api-mode="false" :data="localData" :fields="fields" :sort-order="sortOrder" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
+                <div slot="select" slot-scope="props">
+                    <sui-checkbox label="" @change="handleChange(props)" />
+                </div>
+            </vuetable>
+            <div class="pagination ui basic segment grid">
+                <vuetable-pagination-info ref="paginationInfo"></vuetable-pagination-info>
+                <vuetable-pagination ref="pagination" @vuetable-pagination:change-page="onChangePage"></vuetable-pagination>
+            </div>
+        </div>
+        <dialog-bar v-model="sendVal" type="danger" title="是否要删除" :content="deleteTarget.text" v-on:cancel="clickCancel()" @danger="clickConfirmDelete()" @confirm="clickConfirmDelete()" dangerText="确认删除"></dialog-bar>
+        <div>
+            <sui-modal class="modal2" v-model="weixiuForm.open">
+                <sui-modal-header>申请维修</sui-modal-header>
+                <sui-modal-content >
+                  <weixiu-form> </weixiu-form>
+                </sui-modal-content>
+                <sui-modal-actions>
+                    <sui-button negative @click.native="closeModal">
+                        取消
+                    </sui-button>
+                    <sui-button positive @click.native="createRentContract">
+                        申报
+                    </sui-button>
+                    <sui-button positive @click.native="createRentContract">
+                        保存
+                    </sui-button>
+                </sui-modal-actions>
+            </sui-modal>
+        </div>
+
+        <div is="sui-divider" horizontal>
+            <h4 is="sui-header">
+                <i class="tag icon"></i>
+                维修合同
+            </h4>
+        </div>
+        <div class="filterBiaoDan">
+            <sui-button content="创建维修计划" @click.native="openWeiXiuJihua" icon="add green" />
         </div>
 
         <div class="vue2Table">
@@ -25,18 +73,46 @@
 
         <div>
             <sui-modal class="modal2" v-model="open">
-                <sui-modal-header>维修</sui-modal-header>
                 <sui-modal-content>
-                    <sui-segment>
-                        <p>房屋名称 地址</p>
-                        <sui-list v-show="weixiuList.length!==0">
-                            <sui-list-item v-for="weixiu in weixiuList" :key="weixiu.id">
-                                {{weixiu.roomname}} {{weixiu.address}}
-                            </sui-list-item>
-                        </sui-list>
+                    <div>
+                        <sui-step-group>
+                            <sui-step :active="currentStep==1">
+                                <sui-icon name="truck" />
+                                <sui-step-content>
+                                    <sui-step-title>选择维修房屋</sui-step-title>
+                                </sui-step-content>
+                            </sui-step>
+
+                            <sui-step :active="currentStep==2">
+                                <sui-icon name="payment" />
+                                <!-- Shorthand -->
+                                <sui-step-content title="填写合同信息" />
+                            </sui-step>
+
+                            <sui-step :active="currentStep==3">
+                                <sui-icon name="info" />
+                                <sui-step-content title="上传合同" />
+                            </sui-step>
+                        </sui-step-group>
+
+                        <!-- Shorthand -->
+                        <sui-step-group :steps="steps" />
+                    </div>
+                    <sui-segment v-show="currentStep==1">
+                        <div class="vue2Table">
+                            <vuetable ref="vuetable" :api-mode="false" :data="localData" :fields="fields2" :sort-order="sortOrder" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
+                                <div slot="select" slot-scope="props">
+                                    <sui-checkbox label="" @change="handleChange(props)" />
+                                </div>
+                            </vuetable>
+                            <div class="pagination ui basic segment grid">
+                                <vuetable-pagination-info ref="paginationInfo"></vuetable-pagination-info>
+                                <vuetable-pagination ref="pagination" @vuetable-pagination:change-page="onChangePage"></vuetable-pagination>
+                            </div>
+                        </div>
                     </sui-segment>
 
-                    <sui-segment>
+                    <sui-segment v-show="currentStep==2">
                         <sui-form>
                             <sui-form-fields inline>
                                 <label>维修时间</label>
@@ -70,40 +146,22 @@
                             </sui-form-fields>
                         </sui-form>
                     </sui-segment>
+                    <sui-segment v-show="currentStep==3">
+                        <sui-button icon="upload" />上传附件
+                    </sui-segment>
+                </sui-modal-content>
+                <sui-modal-actions>
+                    <sui-button negative @click.native="closeModal">
+                        取消
+                    </sui-button>
+                    <sui-button v-if="currentStep !== 1 " positive @click.native="goToPreviousStep">
+                        上一步 </sui-button>
+                    <sui-button v-if="currentStep !== 3" positive @click.native="goToNextStep">
+                        下一步
+                    </sui-button>
 
-                </sui-modal-content>
-                <sui-modal-actions>
-                    <sui-button negative @click.native="closeModal">
-                        取消
-                    </sui-button>
-                    <sui-button v-if="modalMode !== 'check'" positive @click.native="toggle">
+                    <sui-button positive @click.native="" v-if="currentStep == 3">
                         确定
-                    </sui-button>
-                </sui-modal-actions>
-            </sui-modal>
-        </div>
-        <div>
-            <sui-modal class="modal2" v-model="contractForm.open">
-                <sui-modal-header>维修</sui-modal-header>
-                <sui-modal-content image>
-                    <sui-list v-show="weixiuList.length!==0">
-                        <sui-list-item v-for="weixiu in weixiuList" :key="weixiu.id">
-                            {{weixiu.roomname}} {{weixiu.address}}
-                            <sui-button @click.native="">
-                                编辑
-                            </sui-button>
-                            <sui-button @click.native="deleteBuildingFloorAssignment(unit)">
-                                删除
-                            </sui-button>
-                        </sui-list-item>
-                    </sui-list>
-                </sui-modal-content>
-                <sui-modal-actions>
-                    <sui-button negative @click.native="closeModal">
-                        取消
-                    </sui-button>
-                    <sui-button positive @click.native="createRentContract">
-                        提交
                     </sui-button>
                 </sui-modal-actions>
             </sui-modal>
@@ -114,12 +172,12 @@
 
 <script>
 import dialogBar from '@/components/MDialog'
-import RentRoomForm from "@/components/rentRoomForm";
 import Vuetable from "vuetable-2/src/components/Vuetable";
 import VuetablePagination from "vuetable-2/src/components/VuetablePagination";
 import VuetablePaginationInfo from "vuetable-2/src/components/VuetablePaginationInfo";
 import FieldsDef from "./FieldsDef.js";
-import contractForm from "@/components/rentContractForm";
+import Fields2 from "./fields2.js";
+import WeiXiuForm from "@/components/weixiuForm";
 import {
     export_json_to_excel
 } from "@/util/Export2Excel";
@@ -137,12 +195,12 @@ export default {
         Vuetable,
         VuetablePagination,
         VuetablePaginationInfo,
-        'rentroom-form': RentRoomForm,
-        'contract-form': contractForm
+        'weixiu-form': WeiXiuForm
 
     },
     data() {
         return {
+            currentStep: 1,
             sendVal: false,
             modelTitle: "",
             modalMode: "create",
@@ -153,14 +211,19 @@ export default {
             },
             weixiuList: [],
             value: [],
+            weixiuForm: {
+                open: false
+            },
             deleteTarget: "",
             loading: true,
             localData: [],
             fields: FieldsDef,
+            fields2: Fields2,
             sortOrder: [{
                 field: "email",
                 direction: "asc"
             }],
+            steps: [],
             contractForm: {
                 open: false,
                 title: "createForm",
@@ -175,6 +238,20 @@ export default {
     },
 
     methods: {
+        openWeiXiuForm() {
+            this.weixiuForm.open = true;
+        },
+        openWeiXiuJihua() {
+            this.open = true;
+        },
+
+        goToPreviousStep() {
+            this.currentStep--;
+
+        },
+        goToNextStep() {
+            this.currentStep++;
+        },
         handleChange(data) {
             console.log(this.weixiuList);
             var count = 0;
@@ -190,156 +267,7 @@ export default {
             }
             console.log(this.weixiuList);
         },
-        formatJson(filterVal, jsonData) {
-            return jsonData.map(v => filterVal.map(j => {
-                if (j === 'timestamp') {
-                    //  return parseTime(v[j])
-                } else {
-                    return v[j]
-                }
-            }))
-        },
-        clickConfirmDelete() {
-            this.loading = true;
-            deleteRentRoomApi(this.deleteTarget).then((result) => {
-                this.refreshRooms();
-                console.log(result)
-            });
-        },
-        openContractModal(rowData) {
-            this.contractForm.open = true;
-            this.contractForm.room_id = rowData.room_id;
-            this.$refs.formComponentContract.singleContract = this.contractForm;
-        },
-        createRentContract: function () {
-            createLoanContractApi(this.$refs.formComponentContract.singleContract).then(() => {
-                this.$refs.formComponentContract.singleContract = {
-                    open: false,
-                    title: "createForm",
-                    room_id: "",
-                    amt: 0,
-                    owner: "",
-                    rentunit: "",
-                    starttime: "",
-                    endtime: ""
-                }
-                this.contractForm.open = false;
-            });
 
-        },
-        viewSomeThing(data, type) {
-            this.$refs.formComponent.singleRoom = data;
-            //修改
-            if (type == "modify") {
-                //查看
-                this.$refs.formComponent.disabled = false;
-                this.modelTitle = "修改租赁房屋";
-                this.modalMode = "edit";
-                this.open = !this.open;
-            } else if (type == "check") {
-                this.$refs.formComponent.disabled = true;
-                this.modalMode = "check";
-                this.modelTitle = "查看租赁房屋";
-                this.open = !this.open;
-            } else {
-                console.log("delete");
-            }
-        },
-        exportToExcel() {
-            let headers = ['id', 'room_id', 'cert_id', 'owner', 'address', 'roomname', 'usage', 'space'];
-            const filtedData = this.formatJson(headers, this.localData.data);
-            export_json_to_excel({
-                header: headers,
-                data: filtedData,
-                filename: 'excel-list', //Optional
-                autoWidth: true, //Optional
-                bookType: 'xlsx' //Optional
-            });
-
-        },
-        deleteRoom(data) {
-            this.sendVal = true;
-            this.deleteTarget = {
-                text: "是否要删除" + data.room_id + "(" + data.room_name + ")?",
-                id: data.id
-            };
-            // this.loading = true;
-            // deleteRoomApi(data).then((result) => {
-            //     this.refreshRooms();
-            //     console.log(result)
-            // });
-        },
-        refreshRooms() {
-            getRentRoomDataApi().then((data) => {
-                console.log(data);
-                this.loading = false;
-                this.localData = {
-                    total: 16,
-                    per_page: 5,
-                    current_page: 1,
-                    last_page: 4,
-                    next_page_url: "data.data.data?page=2",
-                    prev_page_url: null,
-                    from: 1,
-                    to: 5,
-                    data: data.data.data
-                }
-            });
-        },
-        createRoomModel() {
-            // show create Model
-            this.modelTitle = "创建租赁房屋"
-            this.modalMode = "create";
-            this.open = true;
-            this.$refs.formComponent.singleRoom = {
-                room_id: "",
-                cert_id: "",
-                owner: "",
-                address: "",
-                room_name: "",
-                usage: "",
-                space: "",
-                optional: "",
-                age: "",
-                build_date: "",
-                origin_value: "",
-                room_value: "",
-                dep: "",
-                net_value: "",
-                dep_rate: "",
-                internal_info: "",
-                cur_status: ""
-            };
-        },
-        toggle() {
-            this.open = !this.open;
-            this.loading = true;
-            let formdata = this.$refs.formComponent.singleRoom;
-            if (formdata.space == "") {
-                formdata.space = null;
-            }
-            if (formdata.usage == "") {
-                formdata.usage = null
-            }
-            if (this.modalMode == "create") {
-                createRentRoomApi(this.$refs.formComponent.singleRoom).then((result) => {
-                    console.log(result);
-                    this.loading = false;
-                });
-            } else if (this.modalMode == "edit") {
-                updateRentRoomApi(this.$refs.formComponent.singleRoom).then((result) => {
-                    console.log(result);
-                    this.loading = false;
-                });
-            }
-
-        },
-        openRoom(value) {
-            console.log(value);
-        },
-        submit() {
-            console.log(this.filterString);
-        },
         onPaginationData(paginationData) {
             this.$refs.pagination.setPaginationData(paginationData);
             this.$refs.paginationInfo.setPaginationData(paginationData);

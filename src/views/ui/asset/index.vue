@@ -416,8 +416,8 @@ export default {
                 getFileOSSApi(this.assignList.selectedFloor.cadfile).then((file) => {
                     console.log(file);
                     //var imgBlob=new Blob(file.data,{type:"image/png"});
-
-                    this.assignList.selectedFloor.url = URL.createObjectURL(file.data);
+    
+                    // this.assignList.selectedFloor.url = URL.createObjectURL(file.data);
                     this.buildingImage.open = true;
                     this.loading = false;
                 });
