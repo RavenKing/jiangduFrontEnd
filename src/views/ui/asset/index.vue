@@ -260,7 +260,6 @@
 
 <script>
 import dialogBar from '@/components/MDialog'
-import FormCreate from "@/components/createForm";
 import BuildingFloorForm from "@/components/buildingFloorForm"
 import Vuetable from "vuetable-2/src/components/Vuetable";
 import VuetablePagination from "vuetable-2/src/components/VuetablePagination";
@@ -272,6 +271,7 @@ import AssignForm from "@/components/assignForm";
 import chanZhengForm from "@/components/chanZhengForm";
 import ziChanForm from "@/components/ziChanForm";
 import mianjiForm from "@/components/mianjiForm";
+import FormCreate from "@/components/createForm";
 import pdf from 'vue-pdf'
 import {
     VueTreeList,
