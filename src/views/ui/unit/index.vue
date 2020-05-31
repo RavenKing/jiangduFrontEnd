@@ -101,17 +101,33 @@
                                     <form-create ref='formComponent' :singleRoom="selectedRoom"></form-create>
                                 </div>
                             </sui-tab-pane>
-                            <sui-tab-pane title="产证信息" :attached="false" v-show="selectedRoom.hasproperty" :disabled="!selectedRoom.hasproperty">
+                            <sui-tab-pane title="分配列表" :attached="false">
                                 <div>
-
-
+                                    <vuetable ref="vuetable" :api-mode="false" :data="localData" :fields="fields" :sort-order="sortOrder" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
+                                    <div slot="name" slot-scope="props">
+                                    <div :class="props.rowData.status!=99?'center aligned':'' ">
+                                        {{props.rowData.name}}
+                                    </div>
+                                    </div>
+                                    <div slot="action" slot-scope="props">
+                                    </div>
+                                    </vuetable>
                                 </div>
                             </sui-tab-pane>
-                            <sui-tab-pane title="资产信息" :attached="false" :disabled="!selectedRoom.inaccount">
+                            <sui-tab-pane title="领导办公" :attached="false" >
                                 <div>
+                                    <vuetable ref="vuetable" :api-mode="false" :data="localData" :fields="fields" :sort-order="sortOrder" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
+                                    <div slot="name" slot-scope="props">
+                                    <div :class="props.rowData.status!=99?'center aligned':'' ">
+                                        {{props.rowData.name}}
+                                    </div>
+                                    </div>
+                                    <div slot="action" slot-scope="props">
+                                    </div>
+                                    </vuetable>
                                 </div>
                             </sui-tab-pane>
-                            <sui-tab-pane title="房屋面积" :attached="false">
+                            <sui-tab-pane title="地图定位" :attached="false">
                             </sui-tab-pane>
                         </sui-tab>
                     </div>
@@ -132,7 +148,7 @@
 </template>
 
 <script>
-import FormCreate from "@/components/createForm";
+import FormCreate from "@/components/unit_basic_info";
 import dialogBar from '@/components/MDialog'
 import UnitForm from "@/components/unitForm";
 import Vuetable from "vuetable-2/src/components/Vuetable";
