@@ -26,9 +26,11 @@
                     </div>
                 </div>
                 <div slot="action" slot-scope="props">
-                        <sui-button v-if="props.rowData.status!=99" positive content="查看" v-on:click="viewSomeThing(props.rowData,'check')" />
+                    <sui-button positive content="编辑" v-on:click="openAssignSection(props.rowData)" />
+                    <sui-button negative content="删除" v-on:click="deleteRoom(props.rowData)" />
+                        <!-- <sui-button v-if="props.rowData.status!=99" positive content="查看" v-on:click="viewSomeThing(props.rowData,'check')" />
                         <sui-button v-if="props.rowData.status!=99" content="修改" v-on:click="viewSomeThing(props.rowData,'modify')" />
-                        <sui-button v-if="props.rowData.status!=99" content="删除" v-on:click="deleteRoom(props.rowData)" />
+                        <sui-button v-if="props.rowData.status!=99" content="删除" v-on:click="deleteRoom(props.rowData)" /> -->
                 </div>
             </vuetable>
             <div class="pagination ui basic segment grid">
@@ -37,6 +39,39 @@
             </div>
         </div>
         <dialog-bar v-model="sendVal" type="danger" title="是否要删除" :content="deleteTarget.text" v-on:cancel="clickCancel()" @danger="clickConfirmDelete()" @confirm="clickConfirmDelete()" dangerText="确认删除"></dialog-bar>
+        <div>
+            <sui-modal class="modal2" v-model="open">
+                <sui-modal-header>{{modelTitle}}</sui-modal-header>
+                <sui-modal-content>
+                    <div>
+                        <form-create ref='formComponent' :singleRoom="selectedRoom"></form-create>
+                    </div>
+                </sui-modal-content>
+                <sui-modal-actions>
+                    <sui-button negative @click.native="closeModal">
+                        取消
+                    </sui-button>
+                    <sui-button v-if="modalMode !== 'check'" positive @click.native="toggle">
+                        提交
+                    </sui-button>
+                </sui-modal-actions>
+            </sui-modal>
+        </div>
+        <div>
+            <sui-modal class="modal2" v-model="buildingForm.open">
+                <sui-modal-content image>
+                    <building-form ref='formComponentBuilding'></building-form>
+                </sui-modal-content>
+                <sui-modal-actions>
+                    <sui-button negative @click.native="closeModal">
+                        取消
+                    </sui-button>
+                    <sui-button positive @click.native="createBuilding">
+                        提交
+                    </sui-button>
+                </sui-modal-actions>
+            </sui-modal>
+        </div>
 
         <div>
             <sui-modal class="modal2" v-model="open">
@@ -56,16 +91,146 @@
             </sui-modal>
         </div>
     </div>
+    <div>
+            <sui-modal class="modal2" v-model="assignList.open" :key="ComponentKey">
+                <sui-modal-content scrolling>
+                    <div>
+                        <sui-tab :menu="{ text: true }">
+                            <sui-tab-pane title="基本信息" :attached="false">
+                                <div>
+                                    <form-create ref='formComponent' :singleRoom="selectedRoom"></form-create>
+                                </div>
+                            </sui-tab-pane>
+                            <sui-tab-pane title="产证信息" :attached="false" v-show="selectedRoom.hasproperty" :disabled="!selectedRoom.hasproperty">
+                                <div>
+
+                                    <chanzheng-form ref='chanZhengForm' :singleRoom="selectedRoom"></chanzheng-form>
+
+                                </div>
+                            </sui-tab-pane>
+                            <sui-tab-pane title="资产信息" :attached="false" :disabled="!selectedRoom.inaccount">
+                                <div>
+                                    <zichan-form ref='zichanForm' :singleRoom="selectedRoom"></zichan-form>
+                                </div>
+                            </sui-tab-pane>
+                            <sui-tab-pane title="房屋面积" :attached="false">
+                                <mianji-form ref='mianjiForm' :singleRoom="selectedRoom"></mianji-form>
+                            </sui-tab-pane>
+                            <sui-tab-pane title="楼层管理" :attached="false">
+                                <sui-button positive @click.native="openBuildingModal">
+                                    新增
+                                </sui-button>
+                                <sui-grid :columns="2" relaxed="very">
+                                    <sui-grid-column :width="5">
+                                        <div>
+                                            <vue-tree-list @click="onClick" @changeName="onChangeName" @delete-node="onDel" @add-node="onAddNode" :model="tree" default-tree-node-name="new node" default-leaf-node-name="new leaf" v-bind:default-expanded="false">
+                                                <span class="icon" slot="addTreeNodeIcon">📂</span>
+                                                <span class="icon" slot="addLeafNodeIcon">＋</span>
+                                                <span class="icon" slot="leafNodeIcon">
+                                                    <sui-icon name="home" /></span>
+                                                <span class="icon" slot="treeNodeIcon">
+                                                    <sui-icon name="building outline" /></span>
+                                            </vue-tree-list>
+                                        </div>
+                                    </sui-grid-column>
+                                    <sui-grid-column :width="11">
+
+                                        <sui-statistic horizontal size="big">
+                                            <sui-statistic-value>
+                                                {{assignList.selectedBuilding.name}}
+                                            </sui-statistic-value>
+                                        </sui-statistic>
+                                        <sui-statistic horizontal size="big">
+                                            <sui-statistic-value>
+                                                {{assignList.selectedFloor.name}}
+                                            </sui-statistic-value>
+                                        </sui-statistic>
+                                        <sui-image src="https://iknow-pic.cdn.bcebos.com/38dbb6fd5266d01634283751932bd40735fa3591?x-bce-process=image/resize,m_lfit,w_600,h_800,limit_1" size="medium" />
+
+                                        <sui-list v-show="assignList.selectedFloor.name!==undefined">
+                                            <sui-list-item v-for="unit in assignList.selectedFloor.unitlist" :key="unit[0]">
+                                                {{unit[1]}} {{unit[2]}}平米
+                                                <sui-button @click.native="">
+                                                    编辑
+                                                </sui-button>
+                                                <sui-button @click.native="deleteBuildingFloorAssignment(unit)">
+                                                    删除
+                                                </sui-button>
+                                            </sui-list-item>
+                                        </sui-list>
+                                        <div v-show="assignList.selectedBuilding">
+                                            <sui-button v-show="assignList.selectedBuilding.name!==''" @click.native="openAssignModal(assignList.selectedBuilding,assignList.selectedFloor)">
+                                                分配
+                                            </sui-button>
+                                            <sui-button v-show="assignList.selectedFloor.name!==undefined" @click.native="openImageModal()">
+                                                楼层图
+                                            </sui-button>
+                                        </div>
+                                    </sui-grid-column>
+                                </sui-grid>
+
+                            </sui-tab-pane>
+                            <sui-tab-pane title="地图定位" :attached="false">
+                                <div class="imageForm">
+                                    <sui-form>
+                                        <sui-form-fields inline>
+                                            <label> 经度</label>
+                                            <sui-form-field>
+                                                <input type="text" placeholder="请选择" v-model="point.lng" />
+                                            </sui-form-field>
+                                            <label> 维度</label>
+                                            <sui-form-field>
+                                                <input type="text" placeholder="请选择" v-model="point.lat" />
+                                            </sui-form-field>
+                                        </sui-form-fields>
+                                    </sui-form>
+                                </div>
+                                <baidu-map class="map" :center="point" :zoom="15">
+                                    <bm-navigation anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-navigation>
+                                    <bm-marker :position="point" :dragging="true" animation="BMAP_ANIMATION_BOUNCE" @dragend="dragend">
+                                    </bm-marker>
+                                </baidu-map>
+                            </sui-tab-pane>
+                            <sui-tab-pane title="资料管理" :attached="false">
+                                建设中。。。。
+                            </sui-tab-pane>
+                        </sui-tab>
+                    </div>
+
+                </sui-modal-content>
+                <sui-modal-actions>
+                    <sui-button positive @click.native="toggle">
+                        保存
+                    </sui-button>
+                    <sui-button negative @click.native="closeModal">
+                        取消
+                    </sui-button>
+                </sui-modal-actions>
+            </sui-modal>
+        </div>
+
 </wl-container>
 </template>
 
 <script>
+import FormCreate from "@/components/createForm";
 import dialogBar from '@/components/MDialog'
 import UnitForm from "@/components/unitForm";
 import Vuetable from "vuetable-2/src/components/Vuetable";
 import VuetablePagination from "vuetable-2/src/components/VuetablePagination";
 import VuetablePaginationInfo from "vuetable-2/src/components/VuetablePaginationInfo";
 import FieldsDef from "./FieldsDef.js";
+import FieldsDefList from "./FieldsDefList.js";
+import BuildingForm from "@/components/buildingForm";
+import AssignForm from "@/components/assignForm";
+import chanZhengForm from "@/components/chanZhengForm";
+import ziChanForm from "@/components/ziChanForm";
+import mianjiForm from "@/components/mianjiForm";
+import {
+    VueTreeList,
+    Tree,
+    TreeNode
+} from 'vue-tree-list'
 import {
     export_json_to_excel
 } from "@/util/Export2Excel";
@@ -82,7 +247,14 @@ export default {
         Vuetable,
         VuetablePagination,
         VuetablePaginationInfo,
-        UnitForm
+        UnitForm,
+        FormCreate,
+        'zichan-form': ziChanForm,
+        'chanzheng-form': chanZhengForm,
+        'building-form': BuildingForm,
+        'buildingFloor-form': BuildingFloorForm,
+        'assign-form': AssignForm,
+        'mianji-form': mianjiForm
     },
     data() {
         return {
@@ -101,7 +273,55 @@ export default {
             data: [{
                 id: "2",
                 name: "租房子"
-            }]
+            }],
+
+            // copied
+
+            sendVal: false,
+            modelTitle: "",
+            modalMode: "create",
+            open: false,
+            filterString: {
+                jiadi: "",
+                diji: ""
+            },
+            showMap: false,
+            point: {},
+            buildingFloorForm: {
+                open: false
+            },
+            singleBuilding: {},
+            buildingImage: {
+                open: false
+            },
+            assignForm: {
+                open: false,
+                room_id: "",
+                roomname: "",
+                building_id: null
+            },
+            selectedBuildingID: null,
+            deleteTarget: "",
+            loading: true,
+            localData: [],
+            selectedRoom: {
+                roomname: ""
+            },
+            ComponentKey: 1,
+            listField: FieldsDefList,
+            fields: FieldsDef,
+            imgeComponentKey: 1,
+            assignList: {
+                open: false,
+                buildings: [],
+                selectedBuilding: {},
+                selectedFloor: {}
+            },
+            buildingForm: {
+                open: false
+            },
+            treeData: [],
+            tree: new Tree([])
         };
     },
 
@@ -226,6 +446,32 @@ export default {
                 level: "",
                 level_num: ""
             };
+        },
+        openAssignSection(rowData) {
+            console.log(this.selectedRoom);
+            this.selectedRoom = rowData;
+
+            this.modalMode = "edit";
+            // point 
+            if (rowData.lat === null || rowData.lat == "") {
+                this.point = {
+                    lng: 121.547967,
+                    lat: 30.879141
+                }
+            } else {
+                this.point = {
+                    lng: rowData.lon,
+                    lat: rowData.lat
+                }
+            }
+            this.loading = true;
+            this.tree = new Tree([]);
+            this.assignList.selectedBuilding = false;
+            this.assignList.selectedFloor = {
+                url: ""
+            };
+            this.loading = false;
+            this.assignList.open = true;
         },
         toggle() {
             this.open = !this.open;
