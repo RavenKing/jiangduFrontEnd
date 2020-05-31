@@ -104,95 +104,14 @@
                             <sui-tab-pane title="产证信息" :attached="false" v-show="selectedRoom.hasproperty" :disabled="!selectedRoom.hasproperty">
                                 <div>
 
-                                    <chanzheng-form ref='chanZhengForm' :singleRoom="selectedRoom"></chanzheng-form>
 
                                 </div>
                             </sui-tab-pane>
                             <sui-tab-pane title="资产信息" :attached="false" :disabled="!selectedRoom.inaccount">
                                 <div>
-                                    <zichan-form ref='zichanForm' :singleRoom="selectedRoom"></zichan-form>
                                 </div>
                             </sui-tab-pane>
                             <sui-tab-pane title="房屋面积" :attached="false">
-                                <mianji-form ref='mianjiForm' :singleRoom="selectedRoom"></mianji-form>
-                            </sui-tab-pane>
-                            <sui-tab-pane title="楼层管理" :attached="false">
-                                <sui-button positive @click.native="openBuildingModal">
-                                    新增
-                                </sui-button>
-                                <sui-grid :columns="2" relaxed="very">
-                                    <sui-grid-column :width="5">
-                                        <div>
-                                            <vue-tree-list @click="onClick" @changeName="onChangeName" @delete-node="onDel" @add-node="onAddNode" :model="tree" default-tree-node-name="new node" default-leaf-node-name="new leaf" v-bind:default-expanded="false">
-                                                <span class="icon" slot="addTreeNodeIcon">📂</span>
-                                                <span class="icon" slot="addLeafNodeIcon">＋</span>
-                                                <span class="icon" slot="leafNodeIcon">
-                                                    <sui-icon name="home" /></span>
-                                                <span class="icon" slot="treeNodeIcon">
-                                                    <sui-icon name="building outline" /></span>
-                                            </vue-tree-list>
-                                        </div>
-                                    </sui-grid-column>
-                                    <sui-grid-column :width="11">
-
-                                        <sui-statistic horizontal size="big">
-                                            <sui-statistic-value>
-                                                {{assignList.selectedBuilding.name}}
-                                            </sui-statistic-value>
-                                        </sui-statistic>
-                                        <sui-statistic horizontal size="big">
-                                            <sui-statistic-value>
-                                                {{assignList.selectedFloor.name}}
-                                            </sui-statistic-value>
-                                        </sui-statistic>
-                                        <sui-image src="https://iknow-pic.cdn.bcebos.com/38dbb6fd5266d01634283751932bd40735fa3591?x-bce-process=image/resize,m_lfit,w_600,h_800,limit_1" size="medium" />
-
-                                        <sui-list v-show="assignList.selectedFloor.name!==undefined">
-                                            <sui-list-item v-for="unit in assignList.selectedFloor.unitlist" :key="unit[0]">
-                                                {{unit[1]}} {{unit[2]}}平米
-                                                <sui-button @click.native="">
-                                                    编辑
-                                                </sui-button>
-                                                <sui-button @click.native="deleteBuildingFloorAssignment(unit)">
-                                                    删除
-                                                </sui-button>
-                                            </sui-list-item>
-                                        </sui-list>
-                                        <div v-show="assignList.selectedBuilding">
-                                            <sui-button v-show="assignList.selectedBuilding.name!==''" @click.native="openAssignModal(assignList.selectedBuilding,assignList.selectedFloor)">
-                                                分配
-                                            </sui-button>
-                                            <sui-button v-show="assignList.selectedFloor.name!==undefined" @click.native="openImageModal()">
-                                                楼层图
-                                            </sui-button>
-                                        </div>
-                                    </sui-grid-column>
-                                </sui-grid>
-
-                            </sui-tab-pane>
-                            <sui-tab-pane title="地图定位" :attached="false">
-                                <div class="imageForm">
-                                    <sui-form>
-                                        <sui-form-fields inline>
-                                            <label> 经度</label>
-                                            <sui-form-field>
-                                                <input type="text" placeholder="请选择" v-model="point.lng" />
-                                            </sui-form-field>
-                                            <label> 维度</label>
-                                            <sui-form-field>
-                                                <input type="text" placeholder="请选择" v-model="point.lat" />
-                                            </sui-form-field>
-                                        </sui-form-fields>
-                                    </sui-form>
-                                </div>
-                                <baidu-map class="map" :center="point" :zoom="15">
-                                    <bm-navigation anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-navigation>
-                                    <bm-marker :position="point" :dragging="true" animation="BMAP_ANIMATION_BOUNCE" @dragend="dragend">
-                                    </bm-marker>
-                                </baidu-map>
-                            </sui-tab-pane>
-                            <sui-tab-pane title="资料管理" :attached="false">
-                                建设中。。。。
                             </sui-tab-pane>
                         </sui-tab>
                     </div>
@@ -252,7 +171,6 @@ export default {
         'zichan-form': ziChanForm,
         'chanzheng-form': chanZhengForm,
         'building-form': BuildingForm,
-        'buildingFloor-form': BuildingFloorForm,
         'assign-form': AssignForm,
         'mianji-form': mianjiForm
     },
