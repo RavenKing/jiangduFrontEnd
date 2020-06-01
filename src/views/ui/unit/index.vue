@@ -8,6 +8,61 @@
             </sui-dimmer>
 
         </div>
+
+        <sui-grid>
+            <sui-grid-row :columns="2">
+                <sui-grid-column>
+                    <div class="filterBiaoDan">
+                    <vue-tree-list :key="componentKey" @click="onClick" @changeName="onChangeName" @delete-node="onDel" @add-node="onAddNode" :model="tree" default-tree-node-name="new node" default-leaf-node-name="new leaf" v-bind:default-expanded="false">
+                        <span class="icon" slot="addTreeNodeIcon">📂</span>
+                        <span class="icon" slot="addLeafNodeIcon">＋</span>
+                        <span class="icon" slot="leafNodeIcon">
+                            <sui-icon name="home" /></span>
+                        <span class="icon" slot="treeNodeIcon">
+                            <sui-icon name="building outline" /></span>
+                    </vue-tree-list>
+                    </div>
+                </sui-grid-column>
+                <sui-grid-column>
+                    <sui-tab :menu="{ text: true }">
+                        <sui-tab-pane title="基本信息" :attached="false">
+                            <div>
+                                <form-create ref='formComponent' :singleRoom="selectedRoom"></form-create>
+                            </div>
+                        </sui-tab-pane>
+                        <sui-tab-pane title="分配列表" :attached="false">
+                            <div>
+                                <vuetable ref="vuetable" :api-mode="false" :data="localData" :fields="fields" :sort-order="sortOrder" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
+                                    <div slot="name" slot-scope="props">
+                                        <div :class="props.rowData.status!=99?'center aligned':'' ">
+                                            {{props.rowData.name}}
+                                        </div>
+                                    </div>
+                                    <div slot="action" slot-scope="props">
+                                    </div>
+                                </vuetable>
+                            </div>
+                        </sui-tab-pane>
+                        <sui-tab-pane title="领导办公" :attached="false">
+                            <div>
+                                <vuetable ref="vuetable" :api-mode="false" :data="localData" :fields="fields" :sort-order="sortOrder" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
+                                    <div slot="name" slot-scope="props">
+                                        <div :class="props.rowData.status!=99?'center aligned':'' ">
+                                            {{props.rowData.name}}
+                                        </div>
+                                    </div>
+                                    <div slot="action" slot-scope="props">
+                                    </div>
+                                </vuetable>
+                            </div>
+                        </sui-tab-pane>
+                        <sui-tab-pane title="地图定位" :attached="false">
+                        </sui-tab-pane>
+                    </sui-tab>
+                </sui-grid-column>
+            </sui-grid-row>
+        </sui-grid>
+
         <div class="filterBiaoDan">
             <sui-button content="添加" @click.native="createRoomModel" icon="add green" />
             <!-- <sui-button content="修改" icon="edit yellow" />
@@ -28,7 +83,7 @@
                 <div slot="action" slot-scope="props">
                     <sui-button positive content="编辑" v-on:click="openAssignSection(props.rowData)" />
                     <sui-button negative content="删除" v-on:click="deleteRoom(props.rowData)" />
-                        <!-- <sui-button v-if="props.rowData.status!=99" positive content="查看" v-on:click="viewSomeThing(props.rowData,'check')" />
+                    <!-- <sui-button v-if="props.rowData.status!=99" positive content="查看" v-on:click="viewSomeThing(props.rowData,'check')" />
                         <sui-button v-if="props.rowData.status!=99" content="修改" v-on:click="viewSomeThing(props.rowData,'modify')" />
                         <sui-button v-if="props.rowData.status!=99" content="删除" v-on:click="deleteRoom(props.rowData)" /> -->
                 </div>
@@ -92,57 +147,23 @@
         </div>
     </div>
     <div>
-            <sui-modal class="modal2" v-model="assignList.open" :key="ComponentKey">
-                <sui-modal-content scrolling>
-                    <div>
-                        <sui-tab :menu="{ text: true }">
-                            <sui-tab-pane title="基本信息" :attached="false">
-                                <div>
-                                    <form-create ref='formComponent' :singleRoom="selectedRoom"></form-create>
-                                </div>
-                            </sui-tab-pane>
-                            <sui-tab-pane title="分配列表" :attached="false">
-                                <div>
-                                    <vuetable ref="vuetable" :api-mode="false" :data="localData" :fields="fields" :sort-order="sortOrder" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
-                                    <div slot="name" slot-scope="props">
-                                    <div :class="props.rowData.status!=99?'center aligned':'' ">
-                                        {{props.rowData.name}}
-                                    </div>
-                                    </div>
-                                    <div slot="action" slot-scope="props">
-                                    </div>
-                                    </vuetable>
-                                </div>
-                            </sui-tab-pane>
-                            <sui-tab-pane title="领导办公" :attached="false" >
-                                <div>
-                                    <vuetable ref="vuetable" :api-mode="false" :data="localData" :fields="fields" :sort-order="sortOrder" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
-                                    <div slot="name" slot-scope="props">
-                                    <div :class="props.rowData.status!=99?'center aligned':'' ">
-                                        {{props.rowData.name}}
-                                    </div>
-                                    </div>
-                                    <div slot="action" slot-scope="props">
-                                    </div>
-                                    </vuetable>
-                                </div>
-                            </sui-tab-pane>
-                            <sui-tab-pane title="地图定位" :attached="false">
-                            </sui-tab-pane>
-                        </sui-tab>
-                    </div>
+        <sui-modal class="modal2" v-model="assignList.open">
+            <sui-modal-content scrolling>
+                <div>
 
-                </sui-modal-content>
-                <sui-modal-actions>
-                    <sui-button positive @click.native="toggle">
-                        保存
-                    </sui-button>
-                    <sui-button negative @click.native="closeModal">
-                        取消
-                    </sui-button>
-                </sui-modal-actions>
-            </sui-modal>
-        </div>
+                </div>
+
+            </sui-modal-content>
+            <sui-modal-actions>
+                <sui-button positive @click.native="toggle">
+                    保存
+                </sui-button>
+                <sui-button negative @click.native="closeModal">
+                    取消
+                </sui-button>
+            </sui-modal-actions>
+        </sui-modal>
+    </div>
 
 </wl-container>
 </template>
@@ -178,6 +199,7 @@ import {
 export default {
     name: "MyVuetable",
     components: {
+        VueTreeList,
         'dialog-bar': dialogBar,
         Vuetable,
         VuetablePagination,
@@ -192,6 +214,34 @@ export default {
     },
     data() {
         return {
+            tree: new Tree([{
+                    name: 'Node 1',
+                    id: 1,
+                    pid: 0,
+                    dragDisabled: true,
+                    addTreeNodeDisabled: true,
+                    addLeafNodeDisabled: true,
+                    editNodeDisabled: true,
+                    delNodeDisabled: true,
+                    children: [{
+                        name: 'Node 1-2',
+                        id: 1,
+                        isLeaf: true,
+                        pid: 1
+                    },
+                    {
+                        name: 'Node 1-1',
+                        id: 2,
+                        isLeaf: true,
+                        pid: 1
+                    }]
+                },
+                {
+                    name: 'Node 3',
+                    id: 4,
+                    pid: 0
+                }
+            ]),
             sendVal: false,
             modelTitle: "",
             modalMode: "create",
@@ -241,10 +291,8 @@ export default {
             selectedRoom: {
                 roomname: ""
             },
-            ComponentKey: 1,
             listField: FieldsDefList,
             fields: FieldsDef,
-            imgeComponentKey: 1,
             assignList: {
                 open: false,
                 buildings: [],
@@ -253,13 +301,51 @@ export default {
             },
             buildingForm: {
                 open: false
-            },
-            treeData: [],
-            tree: new Tree([])
+            }
         };
     },
 
     methods: {
+
+        //tree
+        onDel(node) {
+            console.log(node)
+            this.deleteBuilding(node);
+        },
+
+        onChangeName(params) {
+            console.log(params)
+        },
+
+        onAddNode(params) {
+            console.log(params)
+        },
+
+        onClick(params) {
+            if (params.floor_id == undefined) {
+                this.assignList.selectedBuilding = params;
+                this.assignList.selectedFloor = {
+                    url: ""
+                };
+            } else {
+                this.assignList.selectedFloor = params;
+                this.treeData.map((building) => {
+                    if (building.id == params.pid) {
+                        this.assignList.selectedBuilding = building;
+                    }
+                })
+            }
+        },
+
+        addNode() {
+            var node = new TreeNode({
+                name: 'new node',
+                isLeaf: false
+            })
+            if (!this.data.children) this.data.children = []
+            this.data.addChildren(node)
+        },
+
         formatJson(filterVal, jsonData) {
             return jsonData.map(v => filterVal.map(j => {
                 if (j === 'timestamp') {
@@ -381,52 +467,52 @@ export default {
                 level_num: ""
             };
         },
-        openAssignSection(rowData) {
-            console.log(this.selectedRoom);
-            this.selectedRoom = rowData;
+        // openAssignSection(rowData) {
+        //     console.log(this.selectedRoom);
+        //     this.selectedRoom = rowData;
 
-            this.modalMode = "edit";
-            // point 
-            if (rowData.lat === null || rowData.lat == "") {
-                this.point = {
-                    lng: 121.547967,
-                    lat: 30.879141
-                }
-            } else {
-                this.point = {
-                    lng: rowData.lon,
-                    lat: rowData.lat
-                }
-            }
-            this.loading = true;
-            this.tree = new Tree([]);
-            this.assignList.selectedBuilding = false;
-            this.assignList.selectedFloor = {
-                url: ""
-            };
-            this.loading = false;
-            this.assignList.open = true;
-        },
-        toggle() {
-            this.open = !this.open;
-            this.loading = true;
-            let formdata = this.$refs.formComponent.singleUnit;
+        //     this.modalMode = "edit";
+        //     // point 
+        //     if (rowData.lat === null || rowData.lat == "") {
+        //         this.point = {
+        //             lng: 121.547967,
+        //             lat: 30.879141
+        //         }
+        //     } else {
+        //         this.point = {
+        //             lng: rowData.lon,
+        //             lat: rowData.lat
+        //         }
+        //     }
+        //     this.loading = true;
+        //     this.tree = new Tree([]);
+        //     this.assignList.selectedBuilding = false;
+        //     this.assignList.selectedFloor = {
+        //         url: ""
+        //     };
+        //     this.loading = false;
+        //     this.assignList.open = true;
+        // },
+        // toggle() {
+        //     this.open = !this.open;
+        //     this.loading = true;
+        //     let formdata = this.$refs.formComponent.singleUnit;
 
-            if (this.modalMode == "create") {
-                createUnitApi(formdata).then((result) => {
-                    console.log(result);
-                    this.loading = false;
-                    this.refreshUnits();
+        //     if (this.modalMode == "create") {
+        //         createUnitApi(formdata).then((result) => {
+        //             console.log(result);
+        //             this.loading = false;
+        //             this.refreshUnits();
 
-                });
-            } else if (this.modalMode == "edit") {
-                updateUnitApi(formdata).then((result) => {
-                    console.log(result);
-                    this.loading = false;
-                });
-            }
+        //         });
+        //     } else if (this.modalMode == "edit") {
+        //         updateUnitApi(formdata).then((result) => {
+        //             console.log(result);
+        //             this.loading = false;
+        //         });
+        //     }
 
-        },
+        // },
         openRoom(value) {
             console.log(value);
         },
@@ -465,13 +551,16 @@ export default {
                 for (var j = son_data.length - 1; j >= 0; j--) {
                     if (son_data[j]["parent_id"] == abstract_parent["id"])
                         abstract_parent["enumber"] = parseInt(abstract_parent["enumber"]) + parseInt(son_data[j]["enumber"])
-                        abstract_parent["zhengting"] = parseInt(abstract_parent["zhengting"]) + parseInt(son_data[j]["zhengting"])
-                        abstract_parent["futing"] = parseInt(abstract_parent["futing"]) + parseInt(son_data[j]["futing"])
-                        abstract_parent["zhengchu"] = parseInt(abstract_parent["zhengchu"]) + parseInt(son_data[j]["zhengchu"])
-                        abstract_parent["fuchu"] = parseInt(abstract_parent["fuchu"]) + parseInt(son_data[j]["fuchu"])
-                        abstract_parent["zhengke"] = parseInt(abstract_parent["zhengke"]) + parseInt(son_data[j]["zhengke"])
-                        abstract_parent["fuke"] = parseInt(abstract_parent["fuke"]) + parseInt(son_data[j]["fuke"])
-                        abstract_parent["keji"] = parseInt(abstract_parent["keji"]) + parseInt(son_data[j]["keji"])
+                    abstract_parent["zhengting"] = parseInt(abstract_parent["zhengting"]) + parseInt(son_data[j]["zhengting"])
+                    abstract_parent["futing"] = parseInt(abstract_parent["futing"]) + parseInt(son_data[j]["futing"])
+                    abstract_parent["zhengchu"] = parseInt(abstract_parent["zhengchu"]) + parseInt(son_data[j]["zhengchu"])
+                    abstract_parent["fuchu"] = parseInt(abstract_parent["fuchu"]) + parseInt(son_data[j]["fuchu"])
+                    abstract_parent["zhengke"] = parseInt(abstract_parent["zhengke"]) + parseInt(son_data[j]["zhengke"])
+                    abstract_parent["fuke"] = parseInt(abstract_parent["fuke"]) + parseInt(son_data[j]["fuke"])
+                    abstract_parent["keji"] = parseInt(abstract_parent["keji"]) + parseInt(son_data[j]["keji"])
+
+
+                
                 }
                 filtered_data.push(abstract_parent)
                 filtered_data.push(parent_data[i])
@@ -529,7 +618,6 @@ export default {
 .filterBiaoDan {
     margin: 20px
 }
-
 .vue2Table {
     margin: 20px;
 }
