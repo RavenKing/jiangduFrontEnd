@@ -4,7 +4,7 @@
         <sui-form-fields>
             <sui-form-field>
                 <label>单位名称</label>
-                <sui-input placeholder="单位名称" v-model="singleRoom.roomname" :disabled="disabled" />
+                <sui-input placeholder="单位名称" v-model="singleRoom.name" :disabled="disabled" />
             </sui-form-field>
             <sui-form-field>
                 <label>单位类别</label>
@@ -34,7 +34,7 @@
             <sui-form-field>
                 
                 <label>编制数</label>
-                <sui-input placeholder="编制数" v-model="singleRoom.jiegou" :disabled="disabled" />
+                <sui-input placeholder="编制数" v-model="singleRoom.enumber" :disabled="disabled" />
             </sui-form-field>
             <sui-form-field>
                 <label>正局级</label>

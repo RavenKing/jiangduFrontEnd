@@ -322,19 +322,14 @@ export default {
         },
 
         onClick(params) {
-            if (params.floor_id == undefined) {
-                this.assignList.selectedBuilding = params;
-                this.assignList.selectedFloor = {
-                    url: ""
-                };
-            } else {
-                this.assignList.selectedFloor = params;
-                this.treeData.map((building) => {
-                    if (building.id == params.pid) {
-                        this.assignList.selectedBuilding = building;
-                    }
-                })
-            }
+            console.log(params)
+            this.$refs.formComponent.singleRoom = {
+                name: params.name,
+                enumber: params.enumber
+                
+            };
+            
+
         },
 
         addNode() {
@@ -566,7 +561,7 @@ export default {
 
 
 
-
+            console.log(data.data.data)
             var res_data = data.data.data
             var parent_data = []
             var son_data = []
@@ -613,6 +608,14 @@ export default {
                     var children_node = {}
                     children_node["id"] = filtered_data[i]["id"]
                     children_node["name"] = filtered_data[i]["name"]
+                    children_node["enumber"] = filtered_data[i]["enumber"]
+                    children_node["zhengting"] = filtered_data[i]["zhengting"]
+                    children_node["futing"] = filtered_data[i]["futing"]
+                    children_node["zhengchu"] = filtered_data[i]["zhengchu"]
+                    children_node["fuchu"] = filtered_data[i]["fuchu"]
+                    children_node["zhengke"] = filtered_data[i]["zhengke"]
+                    children_node["fuke"] = filtered_data[i]["fuke"]
+                    children_node["keji"] = filtered_data[i]["keji"]
                     children_node["isLeaf"] = true
                     tree_list[tree_list.length-1]["children"].push(children_node)
                 }
