@@ -70,10 +70,10 @@
             <sui-button content="导出" v-on:click="exportToExcel" icon="file green" />
         </div>
 
-        <div class="wl-gantt-demo">
+        <!-- <div class="wl-gantt-demo">
             <wlGantt :data="data" default-expand-all></wlGantt>
-        </div>
-        <div class="vue2Table">
+        </div> -->
+        <!-- <div class="vue2Table">
             <vuetable ref="vuetable" :api-mode="false" :data="localData" :fields="fields" :sort-order="sortOrder" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
                 <div slot="name" slot-scope="props">
                     <div :class="props.rowData.status!=99?'center aligned':'' ">
@@ -83,16 +83,16 @@
                 <div slot="action" slot-scope="props">
                     <sui-button positive content="编辑" v-on:click="openAssignSection(props.rowData)" />
                     <sui-button negative content="删除" v-on:click="deleteRoom(props.rowData)" />
-                    <!-- <sui-button v-if="props.rowData.status!=99" positive content="查看" v-on:click="viewSomeThing(props.rowData,'check')" />
+                    <sui-button v-if="props.rowData.status!=99" positive content="查看" v-on:click="viewSomeThing(props.rowData,'check')" />
                         <sui-button v-if="props.rowData.status!=99" content="修改" v-on:click="viewSomeThing(props.rowData,'modify')" />
-                        <sui-button v-if="props.rowData.status!=99" content="删除" v-on:click="deleteRoom(props.rowData)" /> -->
+                        <sui-button v-if="props.rowData.status!=99" content="删除" v-on:click="deleteRoom(props.rowData)" />
                 </div>
             </vuetable>
             <div class="pagination ui basic segment grid">
                 <vuetable-pagination-info ref="paginationInfo"></vuetable-pagination-info>
                 <vuetable-pagination ref="pagination" @vuetable-pagination:change-page="onChangePage"></vuetable-pagination>
             </div>
-        </div>
+        </div> -->
         <dialog-bar v-model="sendVal" type="danger" title="是否要删除" :content="deleteTarget.text" v-on:cancel="clickCancel()" @danger="clickConfirmDelete()" @confirm="clickConfirmDelete()" dangerText="确认删除"></dialog-bar>
         <div>
             <sui-modal class="modal2" v-model="open">
@@ -534,11 +534,44 @@ export default {
     created() {
         getUnitApi().then((data) => {
             //this.localData = data.data.data;
-            console.log(data)
+            
+            // tree: new Tree([{
+            //         name: 'Node 1',
+            //         id: 1,
+            //         pid: 0,
+            //         dragDisabled: true,
+            //         addTreeNodeDisabled: true,
+            //         addLeafNodeDisabled: true,
+            //         editNodeDisabled: true,
+            //         delNodeDisabled: true,
+            //         children: [{
+            //             name: 'Node 1-2',
+            //             id: 1,
+            //             isLeaf: true,
+            //             pid: 1
+            //         },
+            //         {
+            //             name: 'Node 1-1',
+            //             id: 2,
+            //             isLeaf: true,
+            //             pid: 1
+            //         }]
+            //     },
+            //     {
+            //         name: 'Node 3',
+            //         id: 4,
+            //         pid: 0
+            //     }
+            // ]),
+
+
+
+
             var res_data = data.data.data
             var parent_data = []
             var son_data = []
             var filtered_data = []
+            console.log(res_data)
             for (var i = res_data.length - 1; i >= 0; i--) {
                 if (res_data[i]["parent_id"] == 0)
                     parent_data.push(res_data[i])
@@ -550,7 +583,7 @@ export default {
                 abstract_parent["status"] = 99
                 for (var j = son_data.length - 1; j >= 0; j--) {
                     if (son_data[j]["parent_id"] == abstract_parent["id"])
-                        abstract_parent["enumber"] = parseInt(abstract_parent["enumber"]) + parseInt(son_data[j]["enumber"])
+                    abstract_parent["enumber"] = parseInt(abstract_parent["enumber"]) + parseInt(son_data[j]["enumber"])
                     abstract_parent["zhengting"] = parseInt(abstract_parent["zhengting"]) + parseInt(son_data[j]["zhengting"])
                     abstract_parent["futing"] = parseInt(abstract_parent["futing"]) + parseInt(son_data[j]["futing"])
                     abstract_parent["zhengchu"] = parseInt(abstract_parent["zhengchu"]) + parseInt(son_data[j]["zhengchu"])
@@ -558,9 +591,6 @@ export default {
                     abstract_parent["zhengke"] = parseInt(abstract_parent["zhengke"]) + parseInt(son_data[j]["zhengke"])
                     abstract_parent["fuke"] = parseInt(abstract_parent["fuke"]) + parseInt(son_data[j]["fuke"])
                     abstract_parent["keji"] = parseInt(abstract_parent["keji"]) + parseInt(son_data[j]["keji"])
-
-
-                
                 }
                 filtered_data.push(abstract_parent)
                 filtered_data.push(parent_data[i])
@@ -570,6 +600,33 @@ export default {
                 }
             }
             console.log(filtered_data)
+            var tree_list = []
+            for (var i=0; i < filtered_data.length; i++){
+                if (filtered_data[i]["status"] == 99){
+                    var paraent_node = {}
+                    paraent_node["name"] = filtered_data[i]["name"]
+                    paraent_node["id"] = filtered_data[i]["id"]
+                    paraent_node["children"] = []
+                    tree_list.push(paraent_node)
+                }
+                else{
+                    var children_node = {}
+                    children_node["id"] = filtered_data[i]["id"]
+                    children_node["name"] = filtered_data[i]["name"]
+                    children_node["isLeaf"] = true
+                    tree_list[tree_list.length-1]["children"].push(children_node)
+                }
+            }
+            console.log(tree_list)
+            this.tree = new Tree(tree_list)
+
+
+
+
+
+
+
+
             this.loading = false;
             this.localData = {
                 total: 16,
