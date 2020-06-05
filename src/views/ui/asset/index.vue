@@ -6,13 +6,6 @@
                 <sui-loader content="Loading..." />
             </sui-dimmer>
         </div>
-        <div is="sui-divider" horizontal>
-            <h4 is="sui-header">
-                <i class="tag icon"></i>
-                基本信息列表
-            </h4>
-        </div>
-
         <div class="filterBiaoDan">
 
             <sui-grid>
@@ -348,7 +341,8 @@ export default {
             loading: true,
             localData: [],
             selectedRoom: {
-                roomname: ""
+                roomname: "",
+                area:"奉贤区"
             },
             ComponentKey: 1,
             listField: FieldsDefList,
@@ -705,7 +699,8 @@ export default {
                 net_value: "",
                 dep_rate: "",
                 internal_info: "",
-                cur_status: ""
+                cur_status: "",
+                area:"奉贤区"
             };
         },
         toggle() {
@@ -901,5 +896,22 @@ export default {
 
 .vuetable-head-wrapper table.vuetable th.sortable {
     cursor: pointer
+}
+.ui.text.menu {
+    background-color: transparent;
+    border: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    font-weight: 1000;
+    color: black;
+}
+
+.ui.text.menu .active.item {
+    background-color: transparent;
+    border: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    font-weight: 1000;
+    color: #75ADBF;
 }
 </style>

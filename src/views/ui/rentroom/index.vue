@@ -7,13 +7,34 @@
             </sui-dimmer>
         </div>
         <div class="filterBiaoDan">
-            <baidu-map class="map" center="上海"></baidu-map>
-        </div>
-        <div class="filterBiaoDan">
-            <sui-button content="添加" @click.native="createRoomModel" icon="add green" />
-            <!-- <sui-button content="修改" icon="edit yellow" />
+
+            <sui-grid>
+                <sui-grid-row>
+                    <sui-grid-column :width="13">
+                        <sui-form>
+                            <sui-form-fields inline>
+                                <label> 产证面积</label>
+                                <sui-form-field>
+                                    <input type="text" placeholder="请选择" v-model="filterString.hezhunyongtu" />
+                                </sui-form-field>
+                                <label> 至</label>
+                                <sui-form-field>
+                                    <input type="text" placeholder="请选择" v-model="filterString.shijiyongtu" />
+                                </sui-form-field>
+                                <sui-button positive content="搜索" v-on:click="submit" />
+                            </sui-form-fields>
+                        </sui-form>
+                    </sui-grid-column>
+                    <sui-grid-column :width="3">
+                        <div>
+                            <sui-button content="创建房屋" @click.native="createRoomModel" icon="add green" />
+                            <!-- <sui-button content="修改" icon="edit yellow" />
         <sui-button content="删除" icon="delete red" /> -->
-            <sui-button content="导出" v-on:click="exportToExcel" icon="file green" />
+                            <sui-button content="导出" v-on:click="exportToExcel" icon="file green" />
+                        </div>
+                    </sui-grid-column>
+                </sui-grid-row>
+            </sui-grid>
         </div>
 
         <div class="vue2Table">
@@ -35,34 +56,34 @@
 
         <div>
             <sui-modal class="modal2" v-model="open">
-                <sui-modal-header>{{modelTitle}}</sui-modal-header>
-                <sui-modal-content image>
-                    <rentroom-form ref='formComponent'></rentroom-form>
-                </sui-modal-content>
-                <sui-modal-actions>
-                    <sui-button negative @click.native="closeModal">
-                        取消
-                    </sui-button>
-                    <sui-button v-if="modalMode !== 'check'" positive @click.native="toggle">
-                        提交
-                    </sui-button>
-                </sui-modal-actions>
-            </sui-modal>
-        </div>
-        <div>
-            <sui-modal class="modal2" v-model="contractForm.open">
-                <sui-modal-header>{{contractForm.title}}</sui-modal-header>
-                <sui-modal-content image>
-                    <contract-form ref='formComponentContract'></contract-form>
-                </sui-modal-content>
-                <sui-modal-actions>
-                    <sui-button negative @click.native="closeModal">
-                        取消
-                    </sui-button>
-                    <sui-button positive @click.native="createRentContract">
-                        提交
-                    </sui-button>
-                </sui-modal-actions>
+                <sui-modal-content scrolling>
+                    <div>
+                        <sui-tab :menu="{ text: true }">
+                            <sui-tab-pane title="基本信息" :attached="false">
+                                <div>
+                                    <rentroom-form ref='formComponent' :singleRoom="selectedRoom"></rentroom-form>
+                                </div>
+                            </sui-tab-pane>
+                          
+                            <sui-tab-pane title="合同信息" :attached="false">
+                            </sui-tab-pane>
+                            <sui-tab-pane title="物业管理" :attached="false">
+                            </sui-tab-pane>
+                            <sui-tab-pane title="分配单位" :attached="false">
+                            </sui-tab-pane>
+                            <sui-tab-pane title="地图定位" :attached="false">
+                            </sui-tab-pane>
+                        </sui-tab>
+                    </div>
+                    </sui-modal-content>
+                    <sui-modal-actions>
+                        <sui-button negative @click.native="closeModal">
+                            取消
+                        </sui-button>
+                        <sui-button positive @click.native="createRentContract">
+                            提交
+                        </sui-button>
+                    </sui-modal-actions>
             </sui-modal>
         </div>
     </div>
@@ -108,6 +129,7 @@ export default {
                 jiadi: "",
                 diji: ""
             },
+            selectedRoom: {},
             deleteTarget: "",
             loading: true,
             localData: [],
@@ -168,7 +190,8 @@ export default {
 
         },
         viewSomeThing(data, type) {
-            this.$refs.formComponent.singleRoom = data;
+            this.selectedRoom = data;
+    console.log(this.selectedRoom);
             //修改
             if (type == "modify") {
                 //查看

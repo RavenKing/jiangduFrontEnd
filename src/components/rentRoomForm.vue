@@ -3,34 +3,33 @@
     <sui-form>
         <sui-form-fields>
             <sui-form-field>
-                <label>权证号</label>
-                <sui-input placeholder="权证号" v-model="singleRoom.certid" :disabled="disabled"/>
+                <label>所属区域</label>
+                <sui-input placeholder="所属区域" v-model="singleRoom.area" :disabled="disabled" />
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields>
-            <sui-form-field>
-                <label>权证人</label>
-                <sui-input placeholder="权证人" v-model="singleRoom.owner" :disabled="disabled"/>
-            </sui-form-field>
             <sui-form-field>
                 <label>房屋地址</label>
-                <sui-input placeholder="房屋地址" v-model="singleRoom.address" :disabled="disabled"/>
-            </sui-form-field>
-            <sui-form-field>
-                <label>房屋名称</label>
-                <sui-input placeholder="房屋名称" v-model="singleRoom.roomname" :disabled="disabled"/>
+                <sui-input placeholder="房屋地址" v-model="singleRoom.address" :disabled="disabled" class="width600"/>
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields>
             <sui-form-field>
-                <label>房屋用途</label>
-                <sui-input placeholder="房屋用途" v-model="singleRoom.usage" :disabled="disabled" />
+                <label>结构类型</label>
+                <sui-input placeholder="结构类型" v-model="singleRoom.space" :disabled="disabled" />
             </sui-form-field>
+
             <sui-form-field>
-                <label>房屋面积</label>
-                <sui-input placeholder="房屋面积" v-model="singleRoom.space" :disabled="disabled"/>
+                <label>建筑类型</label>
+                <sui-input placeholder="建筑类型" v-model="singleRoom.usage" :disabled="disabled" />
             </sui-form-field>
-        </sui-form-fields>      
+        </sui-form-fields>
+        <sui-form-fields>
+            <sui-form-field>
+                <label>建筑面积</label>
+                <sui-input placeholder="建筑面积" v-model="singleRoom.space" :disabled="disabled" />
+            </sui-form-field>
+        </sui-form-fields>
     </sui-form>
 </div>
 </template>
@@ -62,9 +61,17 @@ export default {
             }
         };
     },
-    methods:{
-      createRoom(){console.log(this.singleRoom.roomid);}
+    methods: {
+        createRoom() {
+            console.log(this.singleRoom.roomid);
+        }
 
     }
 };
 </script>
+
+<style>
+.width600{
+    width:600px!important;
+}
+</style>

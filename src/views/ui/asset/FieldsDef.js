@@ -1,12 +1,5 @@
 export default [
   {
-    name: "room_id",
-    title: '房屋id',
-    width: "10%",
-    titleClass: 'center aligned',
-    dataClass: 'center aligned',
-  },
-  {
     name: "roomname",
     title: '房屋名称',
     width: "10%",

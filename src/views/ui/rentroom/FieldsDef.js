@@ -7,28 +7,18 @@ export default [
     width: "15%"
   },
   {
-    name: "certid",
-    title: '权证号',
-    width: "20%",
-  },
-  {
-    name: "owner",
-    title: '权证人',
-    width: "15%"
-  },
-  {
     name: "address",
     title: '房屋地址',
     width: "15%"
   },
   {
-    name: "usage1",
-    title: '房屋用途',
+    name: "space",
+    title: '房屋面积',
     width: "15%"
   },
   {
-    name: "space",
-    title: '房屋面积',
+    name: "created_on",
+    title: '创建时间',
     width: "15%"
   },
   {
