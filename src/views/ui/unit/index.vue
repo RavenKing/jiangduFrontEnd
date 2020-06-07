@@ -8,12 +8,17 @@
             </sui-dimmer>
 
         </div>
+        
+        <div class="filterBiaoDan">
+            <sui-button content="添加" @click.native="createRoomModel" icon="add green" />
+            <sui-button content="导出" v-on:click="exportToExcel" icon="file green" />
+        </div>
 
         <sui-grid>
-            <sui-grid-row :columns="2">
-                <sui-grid-column>
+            <sui-grid-row >
+                <sui-grid-column :width="3">
                     <div class="filterBiaoDan">
-                    <vue-tree-list :key="componentKey" @click="onClick" @changeName="onChangeName" @delete-node="onDel" @add-node="onAddNode" :model="tree" default-tree-node-name="new node" default-leaf-node-name="new leaf" v-bind:default-expanded="false">
+                    <vue-tree-list :key="componentKey" @click="onClick"  :model="tree" default-tree-node-name="new node" default-leaf-node-name="new leaf" v-bind:default-expanded="false">
                         <span class="icon" slot="addTreeNodeIcon">📂</span>
                         <span class="icon" slot="addLeafNodeIcon">＋</span>
                         <span class="icon" slot="leafNodeIcon">
@@ -23,7 +28,7 @@
                     </vue-tree-list>
                     </div>
                 </sui-grid-column>
-                <sui-grid-column>
+                <sui-grid-column :width="13">
                     <sui-tab :menu="{ text: true }">
                         <sui-tab-pane title="基本信息" :attached="false">
                             <div>
@@ -63,12 +68,6 @@
             </sui-grid-row>
         </sui-grid>
 
-        <div class="filterBiaoDan">
-            <sui-button content="添加" @click.native="createRoomModel" icon="add green" />
-            <!-- <sui-button content="修改" icon="edit yellow" />
-        <sui-button content="删除" icon="delete red" /> -->
-            <sui-button content="导出" v-on:click="exportToExcel" icon="file green" />
-        </div>
 
         <!-- <div class="wl-gantt-demo">
             <wlGantt :data="data" default-expand-all></wlGantt>
@@ -325,8 +324,25 @@ export default {
             console.log(params)
             this.$refs.formComponent.singleRoom = {
                 name: params.name,
-                enumber: params.enumber
-                
+                kind: params.kind,
+                enumber: params.enumber,
+                level: params.level,
+                zhengju: params.zhengju,
+                fuju: params.fuju,
+                zhengchu: params.zhengchu,
+                zhengke: params.zhengke,
+                fuke: params.fuke,
+                keji: params.keji,
+                enumber_r: params.enumber_r,
+                other: params.other,
+                zhengju_r: params.zhengju_r,
+                fuju_r: params.fuju_r,
+                zhengchu_r: params.zhengchu_r,
+                fuchu_r: params.fuchu_r,
+                zhengke_r: params.zhengke_r,
+                fuke_r: params.fuke_r,
+                keji_r: params.keji_r,
+                other_r: params.other_r
             };
             
 

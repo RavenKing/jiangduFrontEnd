@@ -8,21 +8,17 @@
             </sui-form-field>
             <sui-form-field>
                 <label>单位类别</label>
-                <sui-input placeholder="单位类别" v-model="singleRoom.area" :disabled="disabled" />
+                <sui-input placeholder="单位类别" v-model="singleRoom.kind" :disabled="disabled" />
             </sui-form-field>
             <sui-form-field>
-                <label>单位性质</label>
-                <sui-input placeholder="单位性质" v-model="singleRoom.age" :disabled="disabled" />
+                <label>单位级别</label>
+                <sui-input placeholder="单位级别" v-model="singleRoom.level" :disabled="disabled" />
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields>
             <sui-form-field>
-                <label>机构规格</label>
-                <sui-input placeholder="机构规格" v-model="singleRoom.room_id" :disabled="disabled" />
-            </sui-form-field>
-            <sui-form-field>
-                <label>组织机构</label>
-                <sui-input placeholder="组织机构" v-model="singleRoom.address" :disabled="disabled" />
+                <label>组织机构代码</label>
+                <sui-input placeholder="组织机构代码" v-model="singleRoom.code" :disabled="disabled" />
             </sui-form-field>
 
         </sui-form-fields>
@@ -31,57 +27,92 @@
             <sui-form-field>
                 <label>编制人数：</label>
             </sui-form-field>
+        </sui-form-fields>
+        <sui-form-fields>
             <sui-form-field>
                 
-                <label>编制数</label>
-                <sui-input placeholder="编制数" v-model="singleRoom.enumber" :disabled="disabled" />
+                <label>单位人数</label>
+                <sui-input placeholder="单位人数" v-model="singleRoom.enumber" :disabled="disabled" />
             </sui-form-field>
             <sui-form-field>
-                <label>正局级</label>
-                <sui-input placeholder="正局级" v-model="singleRoom.jianzhu" :disabled="disabled" />
+                <label>正局</label>
+                <sui-input placeholder="正局" v-model="singleRoom.zhengju" :disabled="disabled" />
+            </sui-form-field>
+            <sui-form-field>
+                <label>副局</label>
+                <sui-input placeholder="副局" v-model="singleRoom.fuju" :disabled="disabled" />
+            </sui-form-field>
+        </sui-form-fields>
+        <sui-form-fields>
+            <sui-form-field>
+                <label> 其 中：</label>
+            </sui-form-field>
+        </sui-form-fields>
+        <sui-form-fields>
+            <sui-form-field>
+                
+                <label>正处</label>
+                <sui-input placeholder="正处" v-model="singleRoom.zhengchu" :disabled="disabled" />
+            </sui-form-field>
+            <sui-form-field>
+                <label>副处</label>
+                <sui-input placeholder="副处" v-model="singleRoom.fuchu" :disabled="disabled" />
+            </sui-form-field>
+            <sui-form-field>
+                <label>正科</label>
+                <sui-input placeholder="正科" v-model="singleRoom.zhengke" :disabled="disabled" />
             </sui-form-field>
             <sui-form-field>
                 <label>副科</label>
-                <sui-input placeholder="副科" v-model="singleRoom.optional" :disabled="disabled" />
+                <sui-input placeholder="副科" v-model="singleRoom.fuke" :disabled="disabled" />
+            </sui-form-field>
+            <sui-form-field>
+                <label>科级</label>
+                <sui-input placeholder="科级" v-model="singleRoom.keji" :disabled="disabled" />
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields>
             <sui-form-field>
-                <label>其中：</label>
+                <label>实际人数</label>
+                <sui-input placeholder="实际人数" v-model="singleRoom.enumber_r" :disabled="disabled" />
             </sui-form-field>
             <sui-form-field>
-                
-                <label>副局级</label>
-                <sui-input placeholder="副局级" v-model="singleRoom.jiegou" :disabled="disabled" />
+                <label>科级及以下</label>
+                <sui-input placeholder="科级及以下" v-model="singleRoom.other" :disabled="disabled" />
             </sui-form-field>
             <sui-form-field>
-                <label>正处级</label>
-                <sui-input placeholder="正处级" v-model="singleRoom.jianzhu" :disabled="disabled" />
+                <label>正局</label>
+                <sui-input placeholder="正局" v-model="singleRoom.zhengju_r" :disabled="disabled" />
             </sui-form-field>
             <sui-form-field>
-                <label>副处级</label>
-                <sui-input placeholder="副处级" v-model="singleRoom.optional" :disabled="disabled" />
+                <label>副局</label>
+                <sui-input placeholder="副局" v-model="singleRoom.fuju_r" :disabled="disabled" />
             </sui-form-field>
             <sui-form-field>
-                <label>正科级</label>
-                <sui-input placeholder="正科级" v-model="singleRoom.optional" :disabled="disabled" />
+                <label>正处</label>
+                <sui-input placeholder="正处" v-model="singleRoom.zhengchu_r" :disabled="disabled" />
             </sui-form-field>
             <sui-form-field>
-                <label>科员及以下</label>
-                <sui-input placeholder="科员及以下" v-model="singleRoom.optional" :disabled="disabled" />
+                <label>副处</label>
+                <sui-input placeholder="副处" v-model="singleRoom.fuchu_r" :disabled="disabled" />
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields>
             <sui-form-field>
-                <sui-checkbox label="是否统一管理" toggle v-model="singleRoom.isunimanage" />
+                <label>正科</label>
+                <sui-input placeholder="正科" v-model="singleRoom.zhengke_r" :disabled="disabled" />
             </sui-form-field>
             <sui-form-field>
-                <sui-checkbox label="是否有产证" toggle v-model="singleRoom.hasproperty" />
+                <label>副科</label>
+                <sui-input placeholder="副科" v-model="singleRoom.fuke_r" :disabled="disabled" />
             </sui-form-field>
-        </sui-form-fields>
-                <sui-form-fields>
             <sui-form-field>
-                <sui-checkbox label="是否入账" toggle v-model="singleRoom.inaccount" />
+                <label>科级</label>
+                <sui-input placeholder="科级" v-model="singleRoom.keji_r" :disabled="disabled" />
+            </sui-form-field>
+            <sui-form-field>
+                <label>科级及以下</label>
+                <sui-input placeholder="科级及以下" v-model="singleRoom.other_r" :disabled="disabled" />
             </sui-form-field>
         </sui-form-fields>
     </sui-form>
