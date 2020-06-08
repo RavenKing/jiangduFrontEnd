@@ -23,11 +23,12 @@
             </sui-form-field>
             <sui-form-field>
                 <label>入账时间</label>
-                <sui-input placeholder="入账时间" v-model="singleRoom.accounttime" :disabled="disabled" />
+                <datepicker :value="singleRoom.accounttime" :language="lang['zh']"></datepicker>
+
             </sui-form-field>
             <sui-form-field>
                 <label>取得时间</label>
-                <sui-input placeholder="取得时间" v-model="singleRoom.aquiretime" :disabled="disabled" />
+                <datepicker :value="singleRoom.aquiretime" :language="lang['zh']"></datepicker>
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields>
@@ -44,7 +45,7 @@
                 <sui-input placeholder="年折旧率" v-model="singleRoom.dep_rate" :disabled="disabled" />
             </sui-form-field>
         </sui-form-fields>
-                <sui-form-fields>
+        <sui-form-fields>
             <sui-form-field>
                 <label>累计折旧</label>
                 <sui-input placeholder="累计折旧" v-model="singleRoom.dep" :disabled="disabled" />
@@ -59,11 +60,17 @@
 </template>
 
 <script>
+import Datepicker from 'vuejs-datepicker';
+import * as lang from "vuejs-datepicker/src/locale";
 export default {
     props: ['singleRoom'],
     name: 'zichan-form',
+    components: {
+        Datepicker
+    },
     data() {
         return {
+            lang: lang,
             disabled: false,
             zoomlevel: 14
         };
