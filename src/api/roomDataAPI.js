@@ -116,6 +116,7 @@ function getUnitApi()
 {
     let local_auth = localGet(global.project_key, true);
     //console.log(local_auth);
+    console.log(constants.unitGetApi);
     const newFormData = {
         "token": local_auth
     }
@@ -127,6 +128,51 @@ function getUnitApi()
     });
 
 }
+
+// "curl --location --request POST 'http://118.190.204.202:9002/listunitbyid' \
+// --form 'token=1234' \
+// --form 'id=3'"              
+function getUnitApiByid(id)
+{
+    let local_auth = localGet(global.project_key, true);
+    //console.log(local_auth);
+    console.log(constants.unitGetApi);
+    const newFormData = {
+        "token": local_auth,
+        "id":id
+    }
+
+    return request({
+        url: constants.leaderUnitByIdGetApi,
+        method: 'post',
+        data: newFormData
+    });
+
+}                
+                
+                
+
+
+function getlistleaderroomApi(id)
+{
+    let local_auth = localGet(global.project_key, true);
+    console.log(constants.leaderRoomGetApi);
+    console.log(local_auth)
+    const newFormData = {
+        "token": local_auth,
+        "id": id
+    }
+
+    return request({
+        url: constants.leaderRoomGetApi,
+        method: 'post',
+        data: newFormData
+    });
+
+}
+
+
+
 function createUnitApi(data)
 {
     let local_auth = localGet(global.project_key, true);
@@ -366,6 +412,7 @@ export {
     updateRentRoomApi,
     deleteRentRoomApi,    
     getUnitApi,
+    getlistleaderroomApi,
     createUnitApi,
     updateUnitApi,
     deleteUnitApi,
@@ -387,5 +434,6 @@ export {
     createBuildingFloorApi,
     getBuildingFloorApi,
     updateFloorApi,
-    deleteBuildingFloorAssignmentApi
+    deleteBuildingFloorAssignmentApi,
+    getUnitApiByid
 }

@@ -8,7 +8,7 @@
             </sui-dimmer>
 
         </div>
-        
+
         <div class="filterBiaoDan">
             <sui-button content="添加" @click.native="createRoomModel" icon="add green" />
             <sui-button content="导出" v-on:click="exportToExcel" icon="file green" />
@@ -18,9 +18,9 @@
             <sui-grid-row >
                 <sui-grid-column :width="3">
                     <div class="filterBiaoDan">
-                    <vue-tree-list :key="componentKey" @click="onClick"  :model="tree" default-tree-node-name="new node" default-leaf-node-name="new leaf" v-bind:default-expanded="false">
-                        <span class="icon" slot="addTreeNodeIcon">📂</span>
-                        <span class="icon" slot="addLeafNodeIcon">＋</span>
+                    <vue-tree-list :key="componentKey" @click="onClick"  :model="tree" default-tree-node-name="new node" default-leaf-node-name="new leaf" v-bind:default-expanded="false" >
+                        <span class="icon" slot="addTreeNodeIcon"></span>
+                        <span class="icon" slot="addLeafNodeIcon"></span>
                         <span class="icon" slot="leafNodeIcon">
                             <sui-icon name="home" /></span>
                         <span class="icon" slot="treeNodeIcon">
@@ -37,9 +37,9 @@
                         </sui-tab-pane>
                         <sui-tab-pane title="分配列表" :attached="false">
                             <div>
-                                <vuetable ref="vuetable" :api-mode="false" :data="localData" :fields="fields" :sort-order="sortOrder" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
+                                <vuetable ref="vuetable" :api-mode="false" :data="fenpeilocalData" :fields="fenpeifields" :sort-order="sortOrder" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
                                     <div slot="name" slot-scope="props">
-                                        <div :class="props.rowData.status!=99?'center aligned':'' ">
+                                        <div>
                                             {{props.rowData.name}}
                                         </div>
                                     </div>
@@ -175,6 +175,7 @@ import Vuetable from "vuetable-2/src/components/Vuetable";
 import VuetablePagination from "vuetable-2/src/components/VuetablePagination";
 import VuetablePaginationInfo from "vuetable-2/src/components/VuetablePaginationInfo";
 import FieldsDef from "./FieldsDef.js";
+import FenpeiDef from "./FenpeiDef.js";
 import FieldsDefList from "./FieldsDefList.js";
 import BuildingForm from "@/components/buildingForm";
 import AssignForm from "@/components/assignForm";
@@ -193,7 +194,9 @@ import {
     getUnitApi,
     createUnitApi,
     updateUnitApi,
-    deleteUnitApi
+    deleteUnitApi,
+    getlistleaderroomApi,
+    getUnitApiByid
 } from "@/api/roomDataAPI";
 export default {
     name: "MyVuetable",
@@ -248,7 +251,9 @@ export default {
             deleteTarget: "",
             loading: true,
             localData: [],
+            fenpeilocalData: [],
             fields: FieldsDef,
+            fenpeifields: FenpeiDef,
             sortOrder: [{
                 field: "email",
                 direction: "asc"
@@ -321,7 +326,24 @@ export default {
         },
 
         onClick(params) {
-            console.log(params)
+            getUnitApiByid(params.id).then((data)=> {
+            var res_data = data.data.data['building_info']
+            this.fenpeilocalData = {
+                total: 16,
+                per_page: 5,
+                current_page: 1,
+                last_page: 4,
+                next_page_url: "data.data.data?page=2",
+                prev_page_url: null,
+                from: 1,
+                to: 5,
+                data: res_data
+            }            
+        })
+        getlistleaderroomApi(params.id).then((data)=> {
+            console.log('leader room')
+            console.log(data)
+        })
             this.$refs.formComponent.singleRoom = {
                 name: params.name,
                 kind: params.kind,
@@ -344,6 +366,9 @@ export default {
                 keji_r: params.keji_r,
                 other_r: params.other_r
             };
+            
+            
+
             
 
         },
@@ -543,41 +568,11 @@ export default {
 
     },
     created() {
+        
+
+
+
         getUnitApi().then((data) => {
-            //this.localData = data.data.data;
-            
-            // tree: new Tree([{
-            //         name: 'Node 1',
-            //         id: 1,
-            //         pid: 0,
-            //         dragDisabled: true,
-            //         addTreeNodeDisabled: true,
-            //         addLeafNodeDisabled: true,
-            //         editNodeDisabled: true,
-            //         delNodeDisabled: true,
-            //         children: [{
-            //             name: 'Node 1-2',
-            //             id: 1,
-            //             isLeaf: true,
-            //             pid: 1
-            //         },
-            //         {
-            //             name: 'Node 1-1',
-            //             id: 2,
-            //             isLeaf: true,
-            //             pid: 1
-            //         }]
-            //     },
-            //     {
-            //         name: 'Node 3',
-            //         id: 4,
-            //         pid: 0
-            //     }
-            // ]),
-
-
-
-            console.log(data.data.data)
             var res_data = data.data.data
             var parent_data = []
             var son_data = []
@@ -618,6 +613,13 @@ export default {
                     paraent_node["name"] = filtered_data[i]["name"]
                     paraent_node["id"] = filtered_data[i]["id"]
                     paraent_node["children"] = []
+                    paraent_node.dragDisabled = true;
+                    paraent_node.addTreeNodeDisabled = true;
+                    paraent_node.addLeafNodeDisabled = true;
+                    paraent_node.editLeafNodeDisabled = true;
+                    paraent_node.delLeafNodeDisabled = true;
+                    paraent_node.editNodeDisabled = true;
+                    paraent_node.delNodeDisabled = true;
                     tree_list.push(paraent_node)
                 }
                 else{
@@ -633,19 +635,18 @@ export default {
                     children_node["fuke"] = filtered_data[i]["fuke"]
                     children_node["keji"] = filtered_data[i]["keji"]
                     children_node["isLeaf"] = true
+                    children_node.dragDisabled = true;
+                    children_node.addTreeNodeDisabled = true;
+                    children_node.addLeafNodeDisabled = true;
+                    children_node.editLeafNodeDisabled = true;
+                    children_node.delLeafNodeDisabled = true;
+                    children_node.editNodeDisabled = true;
+                    children_node.delNodeDisabled = true;
                     tree_list[tree_list.length-1]["children"].push(children_node)
                 }
             }
             console.log(tree_list)
             this.tree = new Tree(tree_list)
-
-
-
-
-
-
-
-
             this.loading = false;
             this.localData = {
                 total: 16,
