@@ -17,9 +17,13 @@
         </div>
 
         <div class="vue2Table">
-            <vuetable ref="vuetable" :api-mode="false" :data="localData" :fields="fields" :sort-order="sortOrder" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
+            <vuetable :key="componentKey" ref="vuetable" :api-mode="false" :data="localData" :fields="fields" :sort-order="sortOrder" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
                 <div slot="select" slot-scope="props">
                     <sui-checkbox label="" @change="handleChange(props)" />
+                </div>
+                <div slot="action" slot-scope="props">
+                    <sui-button text="编辑" @change="handleChange(props)">编辑</sui-button>
+                    <sui-button text="删除" @change="handleChange(props)">删除</sui-button>
                 </div>
             </vuetable>
             <div class="pagination ui basic segment grid">
@@ -31,14 +35,14 @@
         <div>
             <sui-modal class="modal2" v-model="weixiuForm.open">
                 <sui-modal-header>申请维修</sui-modal-header>
-                <sui-modal-content >
-                  <weixiu-form> </weixiu-form>
+                <sui-modal-content>
+                    <weixiu-form :singleEntry="selectedWeixiu"> </weixiu-form>
                 </sui-modal-content>
                 <sui-modal-actions>
-                    <sui-button negative @click.native="closeModal">
+                    <sui-button negative @click.native="closeWeiXiuForm">
                         取消
                     </sui-button>
-                    <sui-button positive @click.native="createRentContract">
+                    <sui-button positive @click.native="createShenbao">
                         申报
                     </sui-button>
                     <sui-button positive @click.native="createRentContract">
@@ -63,6 +67,7 @@
                 <div slot="select" slot-scope="props">
                     <sui-checkbox label="" @change="handleChange(props)" />
                 </div>
+
             </vuetable>
             <div class="pagination ui basic segment grid">
                 <vuetable-pagination-info ref="paginationInfo"></vuetable-pagination-info>
@@ -182,12 +187,10 @@ import {
     export_json_to_excel
 } from "@/util/Export2Excel";
 import {
-    getRentRoomDataApi,
-    createRentRoomApi,
-    updateRentRoomApi,
-    deleteRentRoomApi,
-    createLoanContractApi
-} from "@/api/roomDataAPI";
+    getMRApi,
+    createMRApi,
+    getroombyid
+} from "@/api/weixiuAPI";
 export default {
     name: "MyVuetable",
     components: {
@@ -200,29 +203,25 @@ export default {
     },
     data() {
         return {
+            componentKey:1,
             currentStep: 1,
             sendVal: false,
             modelTitle: "",
             modalMode: "create",
             open: false,
-            filterString: {
-                jiadi: "",
-                diji: ""
-            },
+            filterString: {},
             weixiuList: [],
             value: [],
             weixiuForm: {
                 open: false
             },
+            selectedWeixiu: {},
             deleteTarget: "",
             loading: true,
             localData: [],
             fields: FieldsDef,
             fields2: Fields2,
-            sortOrder: [{
-                field: "email",
-                direction: "asc"
-            }],
+            sortOrder: [{}],
             steps: [],
             contractForm: {
                 open: false,
@@ -238,8 +237,20 @@ export default {
     },
 
     methods: {
+        createShenbao() {
+
+            this.loading = true;
+            createMRApi(this.selectedWeixiu).then((result) => {
+                console.log(result);
+                this.loading = false;
+                this.closeWeiXiuForm();
+            })
+        },
         openWeiXiuForm() {
             this.weixiuForm.open = true;
+        },
+        closeWeiXiuForm() {
+            this.weixiuForm.open = false;
         },
         openWeiXiuJihua() {
             this.open = true;
@@ -278,43 +289,53 @@ export default {
         closeModal: function () {
             this.open = false;
             this.contractForm.open = false;
-        }
-
+        },
     },
-    created() {
+    mounted() {
         //this.localData = data.data.data;
-        this.loading = false;
-        this.localData = {
-            total: 16,
-            per_page: 5,
-            current_page: 1,
-            last_page: 4,
-            next_page_url: "data.data.data?page=2",
-            prev_page_url: null,
-            from: 1,
-            to: 5,
-            data: [{
-                    id: 1,
-                    roomname: "金山1",
-                    address: "jinshan1"
-                },
-                {
-                    id: 2,
-                    roomname: "金山2",
-                    address: "jinshan2"
-                },
-                {
-                    id: 3,
-                    roomname: "金山3",
-                    address: "jinshan3"
-                },
-                {
-                    id: 4,
-                    roomname: "金山4",
-                    address: "jinshan4"
+        this.loading = true;
+        getMRApi().then((data) => {
+            //this.localData = data.data.data;
+            this.loading = false;
+            this.localData = {
+                total: 16,
+                per_page: 5,
+                current_page: 1,
+                last_page: 4,
+                next_page_url: "data.data.data?page=2",
+                prev_page_url: null,
+                from: 1,
+                to: 5,
+                data: data.data.data
+            }
+            this.localData.data.map((one) => {
+                getroombyid(one).then((result) => {
+                    console.log(result);
+                    if (result.data.code == 0) {
+                        one.roomname = result.data.data.roomname;
+                        one.address = result.data.data.address;
+                        console.log(one.address);
+                        console.log(this.localData.data);
+                        this.componentKey++;    
+                    }
+                });
+                switch (one.status) {
+                    case 1:
+                        one.statusText = "新建";
+                        break;
+                    case 2:
+                        one.statusText = "审核中";
+                        break;
+                    case 3:
+                        one.statusText = "审核通过";
+                        break;
+                    default:
+                        break;
                 }
-            ]
-        }
+
+            });
+
+        });
 
     }
 };

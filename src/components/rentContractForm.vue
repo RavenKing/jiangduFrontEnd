@@ -84,7 +84,6 @@ export default {
                 getRentRoomDataApi().then((data) => {
                     //this.localData = data.data.data;
                     this.options = [];
-
                     data.data.data.map((one) => {
                         this.options.push({
                             text: one.roomname,

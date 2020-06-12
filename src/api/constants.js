@@ -36,6 +36,12 @@ const constantsJinhui = {
     uploadUrlApi:hostname+"/uploaddwg",
     getOSSURLApi:hostname+"/getpdf",
     updateFloorApi:hostname+"/editbuildingfloor",
-    deleteBuildingFloorAssignmentApi:hostname+"/delassignroom"
+    deleteBuildingFloorAssignmentApi:hostname+"/delassignroom",
+    //MR request
+    getMRAPI:"/listmr",
+    updateMRAPI:"",
+    deleteMRAPI:"",
+    createMRAPI:"/createmr",
+    getRoomByIDApi:"getroombyid"
 }
 export default constantsJinhui;

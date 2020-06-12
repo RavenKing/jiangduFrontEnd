@@ -22,12 +22,12 @@ export default [
     width: "15%"
   },
   {
-    name: "time",
+    name: "appdate",
     title: '申报时间',
     width: "15%"
   },
   {
-    name: "space",
+    name: "statusText",
     title: '状态',
     width: "15%"
   },

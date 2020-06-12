@@ -64,26 +64,26 @@
                                     <rentroom-form ref='formComponent' :singleRoom="selectedRoom"></rentroom-form>
                                 </div>
                             </sui-tab-pane>
-                          
-                            <sui-tab-pane title="合同信息" :attached="false">
+
+                            <sui-tab-pane title="合同信息" :attached="false" :disabled="!editMode">
                             </sui-tab-pane>
-                            <sui-tab-pane title="物业管理" :attached="false">
+                            <sui-tab-pane title="物业管理" :attached="false" :disabled="!editMode">
                             </sui-tab-pane>
-                            <sui-tab-pane title="分配单位" :attached="false">
+                            <sui-tab-pane title="分配单位" :attached="false" :disabled="!editMode">
                             </sui-tab-pane>
-                            <sui-tab-pane title="地图定位" :attached="false">
+                            <sui-tab-pane title="地图定位" :attached="false" :disabled="!editMode">
                             </sui-tab-pane>
                         </sui-tab>
                     </div>
-                    </sui-modal-content>
-                    <sui-modal-actions>
-                        <sui-button negative @click.native="closeModal">
-                            取消
-                        </sui-button>
-                        <sui-button positive @click.native="createRentContract">
-                            提交
-                        </sui-button>
-                    </sui-modal-actions>
+                </sui-modal-content>
+                <sui-modal-actions>
+                    <sui-button negative @click.native="closeModal">
+                        取消
+                    </sui-button>
+                    <sui-button positive @click.native="toggle">
+                        提交
+                    </sui-button>
+                </sui-modal-actions>
             </sui-modal>
         </div>
     </div>
@@ -123,7 +123,7 @@ export default {
         return {
             sendVal: false,
             modelTitle: "",
-            modalMode: "create",
+            editMode: false,
             open: false,
             filterString: {
                 jiadi: "",
@@ -140,6 +140,7 @@ export default {
             }],
             contractForm: {
                 open: false,
+                model: "create",
                 title: "createForm",
                 room_id: "",
                 amt: 0,
@@ -177,6 +178,7 @@ export default {
             createLoanContractApi(this.$refs.formComponentContract.singleContract).then(() => {
                 this.$refs.formComponentContract.singleContract = {
                     open: false,
+                    mode: "create",
                     title: "createForm",
                     room_id: "",
                     amt: 0,
@@ -191,13 +193,12 @@ export default {
         },
         viewSomeThing(data, type) {
             this.selectedRoom = data;
-    console.log(this.selectedRoom);
             //修改
             if (type == "modify") {
                 //查看
                 this.$refs.formComponent.disabled = false;
                 this.modelTitle = "修改租赁房屋";
-                this.modalMode = "edit";
+                this.editMode = true;
                 this.open = !this.open;
             } else if (type == "check") {
                 this.$refs.formComponent.disabled = true;
@@ -252,46 +253,27 @@ export default {
         createRoomModel() {
             // show create Model
             this.modelTitle = "创建租赁房屋"
-            this.modalMode = "create";
+            this.editMode = false;
             this.open = true;
-            this.$refs.formComponent.singleRoom = {
-                room_id: "",
-                cert_id: "",
-                owner: "",
-                address: "",
-                room_name: "",
-                usage: "",
-                space: "",
-                optional: "",
-                age: "",
-                build_date: "",
-                origin_value: "",
-                room_value: "",
-                dep: "",
-                net_value: "",
-                dep_rate: "",
-                internal_info: "",
-                cur_status: ""
+            this.selectedRoom = {
+                area: "奉贤区"
             };
         },
         toggle() {
             this.open = !this.open;
             this.loading = true;
-            let formdata = this.$refs.formComponent.singleRoom;
-            if (formdata.space == "") {
-                formdata.space = null;
-            }
-            if (formdata.usage == "") {
-                formdata.usage = null
-            }
-            if (this.modalMode == "create") {
-                createRentRoomApi(this.$refs.formComponent.singleRoom).then((result) => {
+            console.log(this.editMode);
+            if (!this.editMode) {
+                createRentRoomApi(this.selectedRoom).then((result) => {
                     console.log(result);
+                    this.refreshRooms();
                     this.loading = false;
                 });
-            } else if (this.modalMode == "edit") {
-                updateRentRoomApi(this.$refs.formComponent.singleRoom).then((result) => {
+            } else if (this.editMode) {
+                updateRentRoomApi(this.selectedRoom).then((result) => {
                     console.log(result);
+                    this.refreshRooms();
+
                     this.loading = false;
                 });
             }

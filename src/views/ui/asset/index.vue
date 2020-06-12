@@ -735,7 +735,6 @@ export default {
                     this.loading = false;
                 });
             }
-
         },
         openBuildingModal() {
             this.assignList.open = false;
