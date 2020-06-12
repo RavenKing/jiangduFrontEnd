@@ -40,7 +40,7 @@
             </sui-form-field>
             <sui-form-field>
                 <label>楼</label>
-              <sui-dropdown placeholder="选择楼" selection :options="floorOptions" v-model="singleEntry.floor_id"  :loading="floorLoading" :disabled="floorLoading"/>
+              <sui-dropdown  floating direction="upward" placeholder="选择楼" selection :options="floorOptions" v-model="singleEntry.floor_id"  :loading="floorLoading" :disabled="floorLoading"/>
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields>

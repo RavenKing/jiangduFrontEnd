@@ -35,7 +35,7 @@
         <div>
             <sui-modal class="modal2" v-model="weixiuForm.open">
                 <sui-modal-header>申请维修</sui-modal-header>
-                <sui-modal-content>
+                <sui-modal-content scrolling>
                     <weixiu-form :singleEntry="selectedWeixiu"> </weixiu-form>
                 </sui-modal-content>
                 <sui-modal-actions>
@@ -203,7 +203,7 @@ export default {
     },
     data() {
         return {
-            componentKey:1,
+            componentKey: 1,
             currentStep: 1,
             sendVal: false,
             modelTitle: "",
@@ -244,7 +244,53 @@ export default {
                 console.log(result);
                 this.loading = false;
                 this.closeWeiXiuForm();
+                this.refreshWeixiuList();
             })
+        },
+        refreshWeixiuList() {
+            this.loading = true;
+            getMRApi().then((data) => {
+                //this.localData = data.data.data;
+                this.loading = false;
+                this.localData = {
+                    total: 16,
+                    per_page: 5,
+                    current_page: 1,
+                    last_page: 4,
+                    next_page_url: "data.data.data?page=2",
+                    prev_page_url: null,
+                    from: 1,
+                    to: 5,
+                    data: data.data.data
+                }
+                this.localData.data.map((one) => {
+                    getroombyid(one).then((result) => {
+                        console.log(result);
+                        if (result.data.code == 0) {
+                            one.roomname = result.data.data.roomname;
+                            one.address = result.data.data.address;
+                            console.log(one.address);
+                            console.log(this.localData.data);
+                            this.componentKey++;
+                        }
+                    });
+                    switch (one.status) {
+                        case 1:
+                            one.statusText = "新建";
+                            break;
+                        case 2:
+                            one.statusText = "审核中";
+                            break;
+                        case 3:
+                            one.statusText = "审核通过";
+                            break;
+                        default:
+                            break;
+                    }
+
+                });
+
+            });
         },
         openWeiXiuForm() {
             this.weixiuForm.open = true;
@@ -316,7 +362,7 @@ export default {
                         one.address = result.data.data.address;
                         console.log(one.address);
                         console.log(this.localData.data);
-                        this.componentKey++;    
+                        this.componentKey++;
                     }
                 });
                 switch (one.status) {
