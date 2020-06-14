@@ -77,10 +77,6 @@
                 <sui-input placeholder="实际人数" v-model="singleRoom.enumber_r" :disabled="disabled" />
             </sui-form-field>
             <sui-form-field>
-                <label>科级及以下</label>
-                <sui-input placeholder="科级及以下" v-model="singleRoom.other" :disabled="disabled" />
-            </sui-form-field>
-            <sui-form-field>
                 <label>正局</label>
                 <sui-input placeholder="正局" v-model="singleRoom.zhengju_r" :disabled="disabled" />
             </sui-form-field>
@@ -88,12 +84,13 @@
                 <label>副局</label>
                 <sui-input placeholder="副局" v-model="singleRoom.fuju_r" :disabled="disabled" />
             </sui-form-field>
-        </sui-form-fields>
-        <sui-form-fields>    
+        
             <sui-form-field>
                 <label>正处</label>
                 <sui-input placeholder="正处" v-model="singleRoom.zhengchu_r" :disabled="disabled" />
             </sui-form-field>
+            </sui-form-fields>
+        <sui-form-fields>    
             <sui-form-field>
                 <label>副处</label>
                 <sui-input placeholder="副处" v-model="singleRoom.fuchu_r" :disabled="disabled" />
@@ -105,12 +102,6 @@
             <sui-form-field>
                 <label>副科</label>
                 <sui-input placeholder="副科" v-model="singleRoom.fuke_r" :disabled="disabled" />
-            </sui-form-field>
-        </sui-form-fields>
-        <sui-form-fields>
-            <sui-form-field>
-                <label>科级</label>
-                <sui-input placeholder="科级" v-model="singleRoom.keji_r" :disabled="disabled" />
             </sui-form-field>
             <sui-form-field>
                 <label>科级及以下</label>
