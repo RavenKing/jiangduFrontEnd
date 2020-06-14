@@ -9,52 +9,6 @@
         <div is="sui-divider" horizontal>
             <h4 is="sui-header">
                 <i class="tag icon"></i>
-                申请维修
-            </h4>
-        </div>
-        <div class="filterBiaoDan">
-            <sui-button content="申请维修" @click.native="openWeiXiuForm" icon="add green" />
-        </div>
-
-        <div class="vue2Table">
-            <vuetable :key="componentKey" ref="vuetable" :api-mode="false" :data="localData" :fields="fields" :sort-order="sortOrder" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
-                <div slot="select" slot-scope="props">
-                    <sui-checkbox label="" @change="handleChange(props)" />
-                </div>
-                <div slot="action" slot-scope="props">
-                    <sui-button text="编辑" @change="handleChange(props)">编辑</sui-button>
-                    <sui-button text="删除" @change="handleChange(props)">删除</sui-button>
-                </div>
-            </vuetable>
-            <div class="pagination ui basic segment grid">
-                <vuetable-pagination-info ref="paginationInfo"></vuetable-pagination-info>
-                <vuetable-pagination ref="pagination" @vuetable-pagination:change-page="onChangePage"></vuetable-pagination>
-            </div>
-        </div>
-        <dialog-bar v-model="sendVal" type="danger" title="是否要删除" :content="deleteTarget.text" v-on:cancel="clickCancel()" @danger="clickConfirmDelete()" @confirm="clickConfirmDelete()" dangerText="确认删除"></dialog-bar>
-        <div>
-            <sui-modal class="modal2" v-model="weixiuForm.open">
-                <sui-modal-header>申请维修</sui-modal-header>
-                <sui-modal-content scrolling>
-                    <weixiu-form :singleEntry="selectedWeixiu"> </weixiu-form>
-                </sui-modal-content>
-                <sui-modal-actions>
-                    <sui-button negative @click.native="closeWeiXiuForm">
-                        取消
-                    </sui-button>
-                    <sui-button positive @click.native="createShenbao">
-                        申报
-                    </sui-button>
-                    <sui-button positive @click.native="createRentContract">
-                        保存
-                    </sui-button>
-                </sui-modal-actions>
-            </sui-modal>
-        </div>
-
-        <div is="sui-divider" horizontal>
-            <h4 is="sui-header">
-                <i class="tag icon"></i>
                 维修合同
             </h4>
         </div>
@@ -181,8 +135,6 @@ import dialogBar from '@/components/MDialog'
 import Vuetable from "vuetable-2/src/components/Vuetable";
 import VuetablePagination from "vuetable-2/src/components/VuetablePagination";
 import VuetablePaginationInfo from "vuetable-2/src/components/VuetablePaginationInfo";
-import FieldsDef from "./FieldsDef.js";
-import Fields2 from "./fields2.js";
 import FieldHetong from "./fieldsHetong.js";
 import WeiXiuForm from "@/components/weixiuForm";
 import Datepicker from 'vuejs-datepicker';
@@ -190,6 +142,8 @@ import * as lang from "vuejs-datepicker/src/locale";
 import {
     export_json_to_excel
 } from "@/util/Export2Excel";
+import Fields2 from "./fields2.js";
+
 import {
     getMRApi,
     createMRApi,
@@ -210,16 +164,15 @@ export default {
     },
     data() {
         return {
+            fields2: Fields2,
+
             lang: lang,
             hetongdata: [],
             hetongComponentKey: 1,
             componentKey: 1,
             currentStep: 1,
             sendVal: false,
-            modelTitle: "",
-            modalMode: "create",
             open: false,
-            filterString: {},
             weixiuList: [],
             value: [],
             weixiuForm: {
@@ -229,22 +182,10 @@ export default {
             deleteTarget: "",
             loading: true,
             localData: [],
-            fields: FieldsDef,
-            fields2: Fields2,
             hetongFields: FieldHetong,
             sortOrder: [{}],
             steps: [],
             weixiuhetong: {},
-            contractForm: {
-                open: false,
-                title: "createForm",
-                room_id: "",
-                amt: 0,
-                owner: "",
-                rentunit: "",
-                starttime: "",
-                endtime: ""
-            }
         };
     },
 
@@ -255,21 +196,24 @@ export default {
             this.weixiuList.map((one) => {
                 this.weixiuhetong.mrlist.push(one.id);
             });
+
+            this.weixiuhetong.mrlist = JSON.stringify(this.weixiuhetong.mrlist);
             this.weixiuhetong.memo = "test";
             this.loading = true;
             var context = this;
-            closeHetongModal
+            this.closeHetongModal();
             createMCApi(this.weixiuhetong).then((result) => {
-                this.loading = false;
+                context.loading = false;
                 if (result.data.code == 0) {
-                    this.$notify({
+                    context.refreshHetongList();
+                    context.$notify({
                         group: 'foo',
                         title: '创建成功',
                         text: '创建成功',
                         type: "success"
                     });
                 } else {
-                    this.$notify({
+                    context.$notify({
                         group: 'foo',
                         title: '创建失败',
                         text: '创建失败',
@@ -291,7 +235,6 @@ export default {
             this.open = false;
         },
         createShenbao() {
-
             this.loading = true;
             createMRApi(this.selectedWeixiu).then((result) => {
                 console.log(result);
@@ -299,6 +242,42 @@ export default {
                 this.closeWeiXiuForm();
                 this.refreshWeixiuList();
             })
+        },
+        refreshHetongList() {
+            this.loading=true;
+            getMCApi().then((data) => {
+                //this.localData = data.data.data;
+                this.loading = false;
+                console.log(data.data.data);
+                this.hetongdata = {
+                    total: 16,
+                    per_page: 5,
+                    current_page: 1,
+                    last_page: 4,
+                    next_page_url: "data.data.data?page=2",
+                    prev_page_url: null,
+                    from: 1,
+                    to: 5,
+                    data: data.data.data
+                }
+                this.hetongdata.data.map((one) => {
+                    switch (one.status) {
+                        case 1:
+                            one.statusText = "未开始";
+                            break;
+                        case 2:
+                            one.statusText = "开始维修";
+                            break;
+                        case 3:
+                            one.statusText = "维修完成";
+                            break;
+                        default:
+                            break;
+                    }
+
+                });
+
+            });
         },
         refreshWeixiuList() {
             this.loading = true;
@@ -367,6 +346,7 @@ export default {
             var count = 0;
             this.weixiuList.map((item, index) => {
                 if (item.id !== data.rowData.id) {} else {
+
                     count++;
                     this.weixiuList.splice(index, 1);
                 }
@@ -387,7 +367,7 @@ export default {
         },
         closeModal: function () {
             this.open = false;
-            this.contractForm.open = false;
+            // this.contractForm.open = false;
         },
     },
     mounted() {
@@ -427,6 +407,40 @@ export default {
                         break;
                     case 3:
                         one.statusText = "审核通过";
+                        break;
+                    default:
+                        break;
+                }
+
+            });
+
+        });
+
+        getMCApi().then((data) => {
+            //this.localData = data.data.data;
+            this.loading = false;
+            console.log(data.data.data);
+            this.hetongdata = {
+                total: 16,
+                per_page: 5,
+                current_page: 1,
+                last_page: 4,
+                next_page_url: "data.data.data?page=2",
+                prev_page_url: null,
+                from: 1,
+                to: 5,
+                data: data.data.data
+            }
+            this.hetongdata.data.map((one) => {
+                switch (one.status) {
+                    case 1:
+                        one.statusText = "未开始";
+                        break;
+                    case 2:
+                        one.statusText = "开始维修";
+                        break;
+                    case 3:
+                        one.statusText = "维修完成";
                         break;
                     default:
                         break;

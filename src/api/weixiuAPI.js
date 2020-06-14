@@ -19,6 +19,20 @@ function getMRApi() {
         data: newFormData
     });
 }
+function getMCApi(){
+    let local_auth = localGet(global.project_key, true);
+    //console.log(local_auth);
+    const newFormData = {
+        "token": local_auth
+    }
+
+    return request({
+        url: constants.getMCAPI,
+        method: 'post',
+        data: newFormData
+    });
+
+}
 function updateMRApi(data)
 {
     let local_auth = localGet(global.project_key, true);
@@ -63,11 +77,27 @@ function getroombyid(data)
         data: data
     });
 }
+function createMCApi(data){
+    let local_auth = localGet(global.project_key, true);
+  //console.log(local_auth);
+    // //console.log(local_auth);
+    // // const newFormData = {
+    // //     "token": local_auth
+    // // }
+    data.token=local_auth;
+    return request({
+        url: constants.createMCApi,
+        method: 'post',
+        data: data
+    });
+}
 
 export {
     getMRApi,
     createMRApi,
     updateMRApi,// MR接口
     deleteMRApi,
-    getroombyid
+    getroombyid,
+    createMCApi,
+    getMCApi
 }

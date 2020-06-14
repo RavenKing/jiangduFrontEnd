@@ -35,7 +35,7 @@
             </sui-form-field>
             <sui-form-field>
                 <label>房</label>
-                <sui-dropdown placeholder="选择房" selection :options="louOptions" v-model="singleEntry.building_id"  @input="setFloor()" />
+                <sui-dropdown placeholder="选择房" selection :options="louOptions" v-model="singleEntry.building_id"  @input="setFloor()"  :loading="louLoading" :disabled="louLoading" />
 
             </sui-form-field>
             <sui-form-field>
@@ -124,9 +124,10 @@ export default {
                             value: one.id,
                         })
                     });
+                    this.louLoading = false;
+
                 })
             }
-            this.louLoading = false;
 
         }
     },
