@@ -64,7 +64,6 @@
                                     <rentroom-form ref='formComponent' :singleRoom="selectedRoom"></rentroom-form>
                                 </div>
                             </sui-tab-pane>
-
                             <sui-tab-pane title="合同信息" :attached="false" :disabled="!editMode">
                             </sui-tab-pane>
                             <sui-tab-pane title="物业管理" :attached="false" :disabled="!editMode">
