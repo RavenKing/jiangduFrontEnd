@@ -380,6 +380,13 @@ export default {
 
         openWeiXiuJihua() {
             this.mode = "create";
+            this.weixiuhetong = {};
+            this.resetStep();
+            this.localData.data.map((one) => {
+                one.select = false;
+            })
+            this.selectedlist=[];
+            this.componentKey++;
             this.open = true;
         },
 
