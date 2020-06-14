@@ -33,11 +33,11 @@ const menus = [{
         name: "租赁合同",
         url: "/ui/loancontract"
       },
-      /* {
-        id: "3-5",
-        title: "树形表格",
-        url: "/ui/table"
-      }, */
+      // /* {
+      //   id: "3-5",
+      //   title: "树形表格",
+      //   url: "/ui/table"
+      // }, */
       {
         id: "3-6",
         title: "单位管理",
@@ -51,6 +51,10 @@ const menus = [{
         id: "3-28",
         title: "维修列表",
         url: "/ui/weixiu"
+      }, {
+        id: "3-29",
+        title: "维修合同",
+        url: "/ui/weixiuhetong"
       },
     ]
   },

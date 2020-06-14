@@ -22,15 +22,20 @@
         <sui-form-fields>
             <sui-form-field>
                 <label>竣工日期</label>
-                <datepicker :value="singleRoom.build_date" :language="lang['zh']"></datepicker>
+                <datepicker :value="singleRoom.built_date" v-model="singleRoom.built_date" :language="lang['zh']"></datepicker>
+            </sui-form-field>
+            <sui-form-field>
+                <label>房屋地址</label>
+                <sui-input placeholder="房屋地址" v-model="singleRoom.address" :disabled="disabled" />
             </sui-form-field>
             <sui-form-field>
                 <label>结构类型</label>
-                <sui-input placeholder="结构类型" v-model="singleRoom.jiegou" :disabled="disabled" />
+                <sui-dropdown placeholder="结构类型" selection :options="jiegouoptions" v-model="singleRoom.jiegou" />
             </sui-form-field>
+
             <sui-form-field>
                 <label>建筑类型</label>
-                <sui-input placeholder="建筑类型" v-model="singleRoom.jianzhu" :disabled="disabled" />
+                <sui-dropdown placeholder="建筑类型" selection :options="jianzhuoptions" v-model="singleRoom.jianzhu" />
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields>
@@ -71,14 +76,50 @@ export default {
     },
     data() {
         return {
-             lang: lang,
+            lang: lang,
             disabled: false,
             zoomlevel: 14,
-            testDate: Date.now()
+            testDate: Date.now(),
+            jianzhuoptions: [{
+                text: "低层住宅",
+                value: "低层住宅"
+            }, {
+                text: "多层住宅",
+                value: "多层住宅"
+            }, {
+                text: "中高层住宅",
+                value: "中高层住宅"
+            }, {
+                text: "高层住宅",
+                value: "高层住宅"
+            }, {
+                text: "其他形式住宅",
+                value: "、其他形式住宅"
+            }],
+            jiegouoptions: [{
+                text: "砖混结构",
+                value: "砖混结构"
+            }, {
+                text: "钢筋混凝土结构",
+                value: "钢筋混凝土结构"
+            }, {
+                text: "框架结构",
+                value: "框架结构"
+            }, {
+                text: "框剪结构",
+                value: "框剪结构"
+            }, {
+                text: "钢结构",
+                value: "钢结构"
+            }, {
+                text: "核心筒结构",
+                value: "核心筒结构"
+            }]
         };
     },
     methods: {},
     created() {
+
         this.testDate = Date.now();
         if (this.singleRoom.roomname == undefined) {
             this.singleRoom.roomname = ""

@@ -7,7 +7,6 @@
             </sui-dimmer>
         </div>
         <div class="filterBiaoDan">
-
             <sui-grid>
                 <sui-grid-row>
                     <sui-grid-column :width="13">
@@ -208,16 +207,17 @@
 
                             </sui-tab-pane>
                             <sui-tab-pane title="地图定位" :attached="false">
-                                <div class="imageForm">
+                                <div class="imageForm" :key="ComponentKey">
                                     <sui-form>
                                         <sui-form-fields inline>
-                                            <label> 经度</label>
+                                            <label> 经度
+                                            </label>
                                             <sui-form-field>
-                                                <input type="text" placeholder="请选择" v-model="point.lng" />
+                                                <sui-input type="text" placeholder="请选择" v-model="selectedRoom.lon" />
                                             </sui-form-field>
                                             <label> 维度</label>
                                             <sui-form-field>
-                                                <input type="text" placeholder="请选择" v-model="point.lat" />
+                                                <sui-input type="text" placeholder="请选择" v-model="selectedRoom.lat" />
                                             </sui-form-field>
                                         </sui-form-fields>
                                     </sui-form>
@@ -342,7 +342,7 @@ export default {
             localData: [],
             selectedRoom: {
                 roomname: "",
-                area:"奉贤区"
+                area: "奉贤区"
             },
             ComponentKey: 1,
             listField: FieldsDefList,
@@ -410,7 +410,7 @@ export default {
                 getFileOSSApi(this.assignList.selectedFloor.cadfile).then((file) => {
                     console.log(file);
                     //var imgBlob=new Blob(file.data,{type:"image/png"});
-    
+
                     // this.assignList.selectedFloor.url = URL.createObjectURL(file.data);
                     this.buildingImage.open = true;
                     this.loading = false;
@@ -700,7 +700,7 @@ export default {
                 dep_rate: "",
                 internal_info: "",
                 cur_status: "",
-                area:"奉贤区"
+                area: "奉贤区"
             };
         },
         toggle() {
@@ -735,7 +735,6 @@ export default {
                     this.loading = false;
                 });
             }
-
         },
         openBuildingModal() {
             this.assignList.open = false;
@@ -761,6 +760,7 @@ export default {
             this.buildingFloorForm.open = false;
             this.buildingImage.open = false;
             this.assignList.open = false;
+            this.refreshRooms();
         },
         uploadFile: function (e) {
             let formData = new FormData();
@@ -897,6 +897,7 @@ export default {
 .vuetable-head-wrapper table.vuetable th.sortable {
     cursor: pointer
 }
+
 .ui.text.menu {
     background-color: transparent;
     border: none;
