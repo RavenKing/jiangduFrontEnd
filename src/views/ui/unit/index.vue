@@ -34,6 +34,11 @@
                             <div>
                                 <form-create ref='formComponent' :singleRoom="selectedRoom"></form-create>
                             </div>
+                            <sui-modal-actions>
+                    <sui-button positive @click.native="updateUnit">
+                        保存
+                    </sui-button>
+                </sui-modal-actions>
                         </sui-tab-pane>
                         <sui-tab-pane title="分配列表" :attached="false">
                             <div>
@@ -50,7 +55,7 @@
                         </sui-tab-pane>
                         <sui-tab-pane title="领导办公" :attached="false">
                             <div>
-                                <vuetable ref="vuetable" :api-mode="false" :data="localData" :fields="fields" :sort-order="sortOrder" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
+                                <vuetable ref="vuetable" :api-mode="false" :data="lingdaoData" :fields="lingdaofields" :sort-order="sortOrder" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
                                     <div slot="name" slot-scope="props">
                                         <div :class="props.rowData.status!=99?'center aligned':'' ">
                                             {{props.rowData.name}}
@@ -63,35 +68,14 @@
                         </sui-tab-pane>
                         <sui-tab-pane title="地图定位" :attached="false">
                         </sui-tab-pane>
+
                     </sui-tab>
+
                 </sui-grid-column>
+
             </sui-grid-row>
         </sui-grid>
 
-
-        <!-- <div class="wl-gantt-demo">
-            <wlGantt :data="data" default-expand-all></wlGantt>
-        </div> -->
-        <!-- <div class="vue2Table">
-            <vuetable ref="vuetable" :api-mode="false" :data="localData" :fields="fields" :sort-order="sortOrder" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
-                <div slot="name" slot-scope="props">
-                    <div :class="props.rowData.status!=99?'center aligned':'' ">
-                        {{props.rowData.name}}
-                    </div>
-                </div>
-                <div slot="action" slot-scope="props">
-                    <sui-button positive content="编辑" v-on:click="openAssignSection(props.rowData)" />
-                    <sui-button negative content="删除" v-on:click="deleteRoom(props.rowData)" />
-                    <sui-button v-if="props.rowData.status!=99" positive content="查看" v-on:click="viewSomeThing(props.rowData,'check')" />
-                        <sui-button v-if="props.rowData.status!=99" content="修改" v-on:click="viewSomeThing(props.rowData,'modify')" />
-                        <sui-button v-if="props.rowData.status!=99" content="删除" v-on:click="deleteRoom(props.rowData)" />
-                </div>
-            </vuetable>
-            <div class="pagination ui basic segment grid">
-                <vuetable-pagination-info ref="paginationInfo"></vuetable-pagination-info>
-                <vuetable-pagination ref="pagination" @vuetable-pagination:change-page="onChangePage"></vuetable-pagination>
-            </div>
-        </div> -->
         <dialog-bar v-model="sendVal" type="danger" title="是否要删除" :content="deleteTarget.text" v-on:cancel="clickCancel()" @danger="clickConfirmDelete()" @confirm="clickConfirmDelete()" dangerText="确认删除"></dialog-bar>
         <div>
             <sui-modal class="modal2" v-model="open">
@@ -176,6 +160,7 @@ import VuetablePagination from "vuetable-2/src/components/VuetablePagination";
 import VuetablePaginationInfo from "vuetable-2/src/components/VuetablePaginationInfo";
 import FieldsDef from "./FieldsDef.js";
 import FenpeiDef from "./FenpeiDef.js";
+import LingdaoDef from "./LingdaoDef.js";
 import FieldsDefList from "./FieldsDefList.js";
 import BuildingForm from "@/components/buildingForm";
 import AssignForm from "@/components/assignForm";
@@ -252,8 +237,10 @@ export default {
             loading: true,
             localData: [],
             fenpeilocalData: [],
+            lingdaoData: [],
             fields: FieldsDef,
             fenpeifields: FenpeiDef,
+            lingdaofields: LingdaoDef,
             sortOrder: [{
                 field: "email",
                 direction: "asc"
@@ -326,6 +313,8 @@ export default {
         },
 
         onClick(params) {
+
+            this.selectedRoom = params
             getUnitApiByid(params.id).then((data)=> {
             var res_data = data.data.data['building_info']
             this.fenpeilocalData = {
@@ -341,36 +330,20 @@ export default {
             }            
         })
         getlistleaderroomApi(params.id).then((data)=> {
+            var res_data = data.data.data
             console.log('leader room')
-            console.log(data)
+            this.lingdaoData = {
+                total: 16,
+                per_page: 5,
+                current_page: 1,
+                last_page: 4,
+                next_page_url: "data.data.data?page=2",
+                prev_page_url: null,
+                from: 1,
+                to: 5,
+                data: res_data
+            }
         })
-            this.$refs.formComponent.singleRoom = {
-                name: params.name,
-                kind: params.kind,
-                enumber: params.enumber,
-                level: params.level,
-                zhengju: params.zhengju,
-                fuju: params.fuju,
-                zhengchu: params.zhengchu,
-                zhengke: params.zhengke,
-                fuke: params.fuke,
-                keji: params.keji,
-                enumber_r: params.enumber_r,
-                other: params.other,
-                zhengju_r: params.zhengju_r,
-                fuju_r: params.fuju_r,
-                zhengchu_r: params.zhengchu_r,
-                fuchu_r: params.fuchu_r,
-                zhengke_r: params.zhengke_r,
-                fuke_r: params.fuke_r,
-                keji_r: params.keji_r,
-                other_r: params.other_r
-            };
-            
-            
-
-            
-
         },
 
         addNode() {
@@ -549,6 +522,18 @@ export default {
         //     }
 
         // },
+
+        updateUnit(){
+            console.log('updateUnit')
+            let formdata = this.$refs.formComponent.singleRoom;
+            updateUnitApi(formdata).then((result) => {
+                    console.log(result);
+                    this.loading = false;
+                });
+        },
+
+
+
         openRoom(value) {
             console.log(value);
         },
@@ -574,6 +559,7 @@ export default {
 
         getUnitApi().then((data) => {
             var res_data = data.data.data
+            console.log(res_data)            
             var parent_data = []
             var son_data = []
             var filtered_data = []
@@ -632,8 +618,20 @@ export default {
                     children_node["zhengchu"] = filtered_data[i]["zhengchu"]
                     children_node["fuchu"] = filtered_data[i]["fuchu"]
                     children_node["zhengke"] = filtered_data[i]["zhengke"]
+                    children_node["zhengju"] = filtered_data[i]["zhengju"]
+                    children_node["fuju"] = filtered_data[i]["fuju"]
+                    children_node["zhengke"] = filtered_data[i]["zhengke"]
                     children_node["fuke"] = filtered_data[i]["fuke"]
                     children_node["keji"] = filtered_data[i]["keji"]
+                    children_node["enumber_r"] = filtered_data[i]["enumber_r"]
+                    children_node["zhengju_r"] = filtered_data[i]["zhengju_r"]
+                    children_node["fuju_r"] = filtered_data[i]["fuju_r"]
+                    children_node["zhengchu_r"] = filtered_data[i]["zhengchu_r"]
+                    children_node["fuchu_r"] = filtered_data[i]["fuchu_r"]
+                    children_node["zhengke_r"] = filtered_data[i]["zhengke_r"]
+                    children_node["fuke_r"] = filtered_data[i]["fuke_r"]
+                    children_node["other_r"] = filtered_data[i]["other_r"]
+
                     children_node["isLeaf"] = true
                     children_node.dragDisabled = true;
                     children_node.addTreeNodeDisabled = true;
