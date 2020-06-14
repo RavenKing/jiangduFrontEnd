@@ -67,6 +67,26 @@
                             </div>
                         </sui-tab-pane>
                         <sui-tab-pane title="地图定位" :attached="false">
+                            <div class="imageForm" :key="ComponentKey">
+                                    <sui-form>
+                                        <sui-form-fields inline>
+                                            <label> 经度
+                                            </label>
+                                            <sui-form-field>
+                                                <sui-input type="text" placeholder="请选择" v-model="selectedRoom.lon" />
+                                            </sui-form-field>
+                                            <label> 维度</label>
+                                            <sui-form-field>
+                                                <sui-input type="text" placeholder="请选择" v-model="selectedRoom.lat" />
+                                            </sui-form-field>
+                                        </sui-form-fields>
+                                    </sui-form>
+                                </div>
+                                <baidu-map class="map" :center="point" :zoom="15">
+                                    <bm-navigation anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-navigation>
+                                    <bm-marker :position="point" :dragging="true" animation="BMAP_ANIMATION_BOUNCE" @dragend="dragend">
+                                    </bm-marker>
+                                </baidu-map>
                         </sui-tab-pane>
 
                     </sui-tab>
@@ -238,6 +258,7 @@ export default {
             localData: [],
             fenpeilocalData: [],
             lingdaoData: [],
+            ComponentKey: 1,
             fields: FieldsDef,
             fenpeifields: FenpeiDef,
             lingdaofields: LingdaoDef,
