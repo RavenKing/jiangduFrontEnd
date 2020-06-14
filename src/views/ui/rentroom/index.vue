@@ -199,6 +199,20 @@ export default {
             this.contractForm.room_id = rowData.room_id;
             this.$refs.formComponentContract.singleContract = this.contractForm;
         },
+        dragend: function (e) {
+            //this.loading = true;
+            // alert("what")
+            if (e == undefined) {
+                this.selectedRoom.lon = this.point.lng;
+                this.selectedRoom.lat = this.point.lat;
+            } else {
+                this.selectedRoom.lon = e.point.lng;
+                this.selectedRoom.lat = e.point.lat;
+            }
+            // updateRoomApi(this.selectedRoom).then(() => {
+            //     this.loading = false;
+            // });
+        },
         createRentContract: function () {
             this.selectedRoomContract.room_id = this.selectedRoom.id;
             var context = this;
