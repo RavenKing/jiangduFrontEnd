@@ -48,13 +48,6 @@
                 </sui-modal-actions>
             </sui-modal>
         </div>
-
-        <div is="sui-divider" horizontal>
-            <h4 is="sui-header">
-                <i class="tag icon"></i>
-                维修合同
-            </h4>
-        </div>
         <dialog-bar v-model="sendVal" type="danger" title="是否要删除" :content="deleteTarget.text" v-on:cancel="clickCancel()" @danger="clickConfirmDelete()" @confirm="clickConfirmDelete()" dangerText="确认删除"></dialog-bar>
 
     </div>

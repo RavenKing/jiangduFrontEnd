@@ -277,12 +277,10 @@ function createLoanContractApi(data)
         data: data
     });
 }
-function getRentRoomContractListApi()
+function getRentRoomContractListApi(data)
 {
     let local_auth = localGet(global.project_key, true);
-    var data={token:null};
     data.token=local_auth;
-    console.log(constants.listRentRoomContractApi);
     return request({
         url: constants.listRentRoomContractApi,
         method: 'post',
@@ -436,4 +434,5 @@ export {
     updateFloorApi,
     deleteBuildingFloorAssignmentApi,
     getUnitApiByid
+    
 }

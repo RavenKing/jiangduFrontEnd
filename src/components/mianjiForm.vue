@@ -30,28 +30,41 @@
                 <label>总使用面积</label>
                 <sui-input placeholder="总使用面积" v-model="singleRoom.space4" :disabled="disabled" />
             </sui-form-field>
+            <sui-form-field>
+                <label>房屋占地面积</label>
+                <sui-input placeholder="房屋占地面积" v-model="singleRoom.space5" :disabled="disabled" />
+            </sui-form-field>
+            <sui-form-field>
+                <label>办公室面积</label>
+                <sui-input placeholder="办公室面积" v-model="singleRoom.space7" :disabled="disabled" />
+            </sui-form-field>
+            <sui-form-field>
+                <label>办公室数量</label>
+                <sui-input placeholder="办公室数量" v-model="singleRoom.space8" :disabled="disabled" />
+            </sui-form-field>
         </sui-form-fields>
-        <div>
+        <sui-form-fields>
+            <sui-form-field>
+                <label>设备用房面积</label>
+                <sui-input placeholder="设备用房面积" v-model="singleRoom.space28" :disabled="disabled" />
+            </sui-form-field>
+            <sui-form-field>
+                <label>设备用房使用面积</label>
+                <sui-input placeholder="设备用房使用面积" v-model="singleRoom.space29" :disabled="disabled" />
+            </sui-form-field>
+            <sui-form-field>
+                <label>附属用房面积</label>
+                <sui-input placeholder="附属用房面积" v-model="singleRoom.space40" :disabled="disabled" />
+            </sui-form-field>
+        </sui-form-fields>
+
+        <div v-show="singleRoom.space6&&singleRoom.space7">
             <div is="sui-divider" horizontal>
                 <h4 is="sui-header">
                     <i class="bar chart icon"></i>
-                    总建筑面积
+                    办公室
                 </h4>
             </div>
-            <sui-form-fields>
-                <sui-form-field>
-                    <label>房屋占地面积</label>
-                    <sui-input placeholder="房屋占地面积" v-model="singleRoom.space5" :disabled="disabled" />
-                </sui-form-field>
-                <sui-form-field>
-                    <label>办公室面积</label>
-                    <sui-input placeholder="办公室面积" v-model="singleRoom.space7" :disabled="disabled" />
-                </sui-form-field>
-                <sui-form-field>
-                    <label>办公室数量</label>
-                    <sui-input placeholder="办公室数量" v-model="singleRoom.space8" :disabled="disabled" />
-                </sui-form-field>
-            </sui-form-fields>
             <sui-form-fields>
                 <sui-form-field>
                     <label>会议室面积</label>
@@ -121,169 +134,156 @@
                     <label>物业及工勤人员用房面积</label>
                     <sui-input placeholder="物业及工勤人员用房面积" v-model="singleRoom.space23" :disabled="disabled" />
                 </sui-form-field>
+
+            </sui-form-fields>
+        </div>
+        <div>
+            <div is="sui-divider" horizontal>
+                <h4 is="sui-header">
+                    <i class="bar chart icon"></i>
+                    业务用房
+                </h4>
+            </div>
+            <sui-form-fields>
                 <sui-form-field>
-                    <label>办公室其他用房面积</label>
-                    <sui-input placeholder="办公室其他用房面积" v-model="singleRoom.space24" :disabled="disabled" />
+                    <label>业务用房名称</label>
+                    <sui-input placeholder="业务用房名称" v-model="singleRoom.space24" :disabled="disabled" />
+                </sui-form-field>
+                <sui-form-field>
+                    <label>业务用房面积</label>
+                    <sui-input placeholder="业务用房面积" v-model="singleRoom.space25" :disabled="disabled" />
+                </sui-form-field>
+                <sui-form-field>
+                    <label>业务用房使用面积</label>
+                    <sui-input placeholder="业务用房使用面积" v-model="singleRoom.space26" :disabled="disabled" />
+                </sui-form-field>
+                <sui-form-field>
+                    <label>业务用房使用用途</label>
+                    <sui-input placeholder="业务用房使用用途" v-model="singleRoom.space24" :disabled="disabled" />
                 </sui-form-field>
             </sui-form-fields>
         </div>
-        <div v-show="singleRoom.space2">
+        <div v-show="singleRoom.space28&&singleRoom.space29">
             <div is="sui-divider" horizontal>
                 <h4 is="sui-header">
                     <i class="bar chart icon"></i>
-                    公共面积
+                    设备用房
                 </h4>
             </div>
-        <sui-form-fields>
-            <sui-form-field>
-                <label>业务用房名称</label>
-                <sui-input placeholder="业务用房名称" v-model="singleRoom.space25" :disabled="disabled" />
-            </sui-form-field>
-            <sui-form-field>
-                <label>业务用房面积</label>
-                <sui-input placeholder="业务用房面积" v-model="singleRoom.space26" :disabled="disabled" />
-            </sui-form-field>
-            <sui-form-field>
-                <label>业务用房使用面积</label>
-                <sui-input placeholder="业务用房使用面积" v-model="singleRoom.space27" :disabled="disabled" />
-            </sui-form-field>
-        </sui-form-fields>
+            <sui-form-fields>
+
+                <sui-form-field>
+                    <label>变配电间面积</label>
+                    <sui-input placeholder="变配电间面积" v-model="singleRoom.space30" :disabled="disabled" />
+                </sui-form-field>
+                <sui-form-field>
+                    <label>锅炉房面积</label>
+                    <sui-input placeholder="锅炉房面积" v-model="singleRoom.space31" :disabled="disabled" />
+                </sui-form-field>
+                <sui-form-field>
+                    <label>通讯机房面积</label>
+                    <sui-input placeholder="通讯机房面积" v-model="singleRoom.space32" :disabled="disabled" />
+                </sui-form-field>
+                <sui-form-field>
+                    <label>电梯机房</label>
+                    <sui-input placeholder="电梯机房" v-model="singleRoom.space33" :disabled="disabled" />
+                </sui-form-field>
+            </sui-form-fields>
+            <sui-form-fields>
+                <sui-form-field>
+                    <label>空调机房</label>
+                    <sui-input placeholder="空调机房" v-model="singleRoom.space34" :disabled="disabled" />
+                </sui-form-field>
+                <sui-form-field>
+                    <label>建筑智能化系统设备</label>
+                    <sui-input placeholder="建筑智能化系统设备" v-model="singleRoom.space35" :disabled="disabled" />
+                </sui-form-field>
+                <sui-form-field>
+                    <label>水泵房面积</label>
+                    <sui-input placeholder="水泵房面积" v-model="singleRoom.space36" :disabled="disabled" />
+                </sui-form-field>
+                <sui-form-field>
+                    <label>水箱房面积</label>
+                    <sui-input placeholder="水箱房面积" v-model="singleRoom.space37" :disabled="disabled" />
+                </sui-form-field>
+
+            </sui-form-fields>
+            <sui-form-fields>
+
+                <sui-form-field>
+                    <label>中水处理房</label>
+                    <sui-input placeholder="中水处理房" v-model="singleRoom.space38" :disabled="disabled" />
+                </sui-form-field>
+                <sui-form-field>
+                    <label>设备用房其他用房面积</label>
+                    <sui-input placeholder="设备用房其他用房面积" v-model="singleRoom.space39" :disabled="disabled" />
+                </sui-form-field>
+            </sui-form-fields>
         </div>
-               <div v-show="singleRoom.space3">
+        <div v-show="singleRoom.space40">
             <div is="sui-divider" horizontal>
                 <h4 is="sui-header">
                     <i class="bar chart icon"></i>
-                    产证面积    
+                    附属用房
                 </h4>
             </div>
-        <sui-form-fields>
-            <sui-form-field>
-                <label>设备用房面积</label>
-                <sui-input placeholder="设备用房面积" v-model="singleRoom.space28" :disabled="disabled" />
-            </sui-form-field>
-            <sui-form-field>
-                <label>设备用房使用面积</label>
-                <sui-input placeholder="设备用房使用面积" v-model="singleRoom.space29" :disabled="disabled" />
-            </sui-form-field>
-            <sui-form-field>
-                <label>变配电间面积</label>
-                <sui-input placeholder="变配电间面积" v-model="singleRoom.space30" :disabled="disabled" />
-            </sui-form-field>
-            <sui-form-field>
-                <label>锅炉房面积</label>
-                <sui-input placeholder="锅炉房面积" v-model="singleRoom.space31" :disabled="disabled" />
-            </sui-form-field>
-        </sui-form-fields>
-        <sui-form-fields>
+            <sui-form-fields>
+                <sui-form-field>
+                    <label>食堂面积</label>
+                    <sui-input placeholder="食堂面积" v-model="singleRoom.space41" :disabled="disabled" />
+                </sui-form-field>
+                <sui-form-field>
+                    <label>汽车库位数量</label>
+                    <sui-input placeholder="汽车库位数量" v-model="singleRoom.space42" :disabled="disabled" />
+                </sui-form-field>
+                <sui-form-field>
+                    <label>汽车库位面积</label>
+                    <sui-input placeholder="汽车库位面积" v-model="singleRoom.space43" :disabled="disabled" />
+                </sui-form-field>
+            </sui-form-fields>
+            <sui-form-fields>
 
-            <sui-form-field>
-                <label>通讯机房面积</label>
-                <sui-input placeholder="通讯机房面积" v-model="singleRoom.space32" :disabled="disabled" />
-            </sui-form-field>
-            <sui-form-field>
-                <label>电梯机房</label>
-                <sui-input placeholder="电梯机房" v-model="singleRoom.space33" :disabled="disabled" />
-            </sui-form-field>
-        </sui-form-fields>
-        <sui-form-fields>
-            <sui-form-field>
-                <label>空调机房</label>
-                <sui-input placeholder="空调机房" v-model="singleRoom.space34" :disabled="disabled" />
-            </sui-form-field>
-            <sui-form-field>
-                <label>建筑智能化系统设备</label>
-                <sui-input placeholder="建筑智能化系统设备" v-model="singleRoom.space35" :disabled="disabled" />
-            </sui-form-field>
-            <sui-form-field>
-                <label>水泵房面积</label>
-                <sui-input placeholder="水泵房面积" v-model="singleRoom.space36" :disabled="disabled" />
-            </sui-form-field>
-            <sui-form-field>
-                <label>水箱房面积</label>
-                <sui-input placeholder="水箱房面积" v-model="singleRoom.space37" :disabled="disabled" />
-            </sui-form-field>
-
-        </sui-form-fields>
-        <sui-form-fields>
-
-            <sui-form-field>
-                <label>中水处理房</label>
-                <sui-input placeholder="中水处理房" v-model="singleRoom.space38" :disabled="disabled" />
-            </sui-form-field>
-            <sui-form-field>
-                <label>设备用房其他用房面积</label>
-                <sui-input placeholder="设备用房其他用房面积" v-model="singleRoom.space39" :disabled="disabled" />
-            </sui-form-field>
-        </sui-form-fields>
-    </div>
-           <div v-show="singleRoom.space4">
-            <div is="sui-divider" horizontal>
-                <h4 is="sui-header">
-                    <i class="bar chart icon"></i>
-                    无证面积
-                </h4>
-            </div>
-        <sui-form-fields>
-            <sui-form-field>
-                <label>附属用房面积</label>
-                <sui-input placeholder="附属用房面积" v-model="singleRoom.space40" :disabled="disabled" />
-            </sui-form-field>
-            <sui-form-field>
-                <label>食堂面积</label>
-                <sui-input placeholder="食堂面积" v-model="singleRoom.space41" :disabled="disabled" />
-            </sui-form-field>
-            <sui-form-field>
-                <label>汽车库位数量</label>
-                <sui-input placeholder="汽车库位数量" v-model="singleRoom.space42" :disabled="disabled" />
-            </sui-form-field>
-            <sui-form-field>
-                <label>汽车库位面积</label>
-                <sui-input placeholder="汽车库位面积" v-model="singleRoom.space43" :disabled="disabled" />
-            </sui-form-field>
-        </sui-form-fields>
-        <sui-form-fields>
-
-            <sui-form-field>
-                <label>自行车库位数量</label>
-                <sui-input placeholder="自行车库位数量" v-model="singleRoom.space44" :disabled="disabled" />
-            </sui-form-field>
-            <sui-form-field>
-                <label>自行车库位面积</label>
-                <sui-input placeholder="自行车库位面积" v-model="singleRoom.space45" :disabled="disabled" />
-            </sui-form-field>
-        </sui-form-fields>
-        <sui-form-fields>
-            <sui-form-field>
-                <label>电动/摩托车库位数量</label>
-                <sui-input placeholder="电动/摩托车库位数量" v-model="singleRoom.space46" :disabled="disabled" />
-            </sui-form-field>
-            <sui-form-field>
-                <label>电动/摩托车库位面积</label>
-                <sui-input placeholder="电动/摩托车库位面积" v-model="singleRoom.space47" :disabled="disabled" />
-            </sui-form-field>
-            <sui-form-field>
-                <label>人防设置</label>
-                <sui-input placeholder="人防设置" v-model="singleRoom.space48" :disabled="disabled" />
-            </sui-form-field>
-            <sui-form-field>
-                <label>消防设施</label>
-                <sui-input placeholder="消防设施" v-model="singleRoom.space49" :disabled="disabled" />
-            </sui-form-field>
-        </sui-form-fields>
-        <sui-form-fields>
-            <sui-form-field>
-                <label>警卫用房人数</label>
-                <sui-input placeholder="警卫用房人数" v-model="singleRoom.space50" :disabled="disabled" />
-            </sui-form-field>
-            <sui-form-field>
-                <label>警卫用房面积</label>
-                <sui-input placeholder="警卫用房面积" v-model="singleRoom.space51" :disabled="disabled" />
-            </sui-form-field>
-            <sui-form-field>
-                <label>附属用房其他面积</label>
-                <sui-input placeholder="附属用房其他面积" v-model="singleRoom.space52" :disabled="disabled" />
-            </sui-form-field>
-        </sui-form-fields>
+                <sui-form-field>
+                    <label>自行车库位数量</label>
+                    <sui-input placeholder="自行车库位数量" v-model="singleRoom.space44" :disabled="disabled" />
+                </sui-form-field>
+                <sui-form-field>
+                    <label>自行车库位面积</label>
+                    <sui-input placeholder="自行车库位面积" v-model="singleRoom.space45" :disabled="disabled" />
+                </sui-form-field>
+            </sui-form-fields>
+            <sui-form-fields>
+                <sui-form-field>
+                    <label>电动/摩托车库位数量</label>
+                    <sui-input placeholder="电动/摩托车库位数量" v-model="singleRoom.space46" :disabled="disabled" />
+                </sui-form-field>
+                <sui-form-field>
+                    <label>电动/摩托车库位面积</label>
+                    <sui-input placeholder="电动/摩托车库位面积" v-model="singleRoom.space47" :disabled="disabled" />
+                </sui-form-field>
+                <sui-form-field>
+                    <label>人防设置</label>
+                    <sui-input placeholder="人防设置" v-model="singleRoom.space48" :disabled="disabled" />
+                </sui-form-field>
+                <sui-form-field>
+                    <label>消防设施</label>
+                    <sui-input placeholder="消防设施" v-model="singleRoom.space49" :disabled="disabled" />
+                </sui-form-field>
+            </sui-form-fields>
+            <sui-form-fields>
+                <sui-form-field>
+                    <label>警卫用房人数</label>
+                    <sui-input placeholder="警卫用房人数" v-model="singleRoom.space50" :disabled="disabled" />
+                </sui-form-field>
+                <sui-form-field>
+                    <label>警卫用房面积</label>
+                    <sui-input placeholder="警卫用房面积" v-model="singleRoom.space51" :disabled="disabled" />
+                </sui-form-field>
+                <sui-form-field>
+                    <label>附属用房其他面积</label>
+                    <sui-input placeholder="附属用房其他面积" v-model="singleRoom.space52" :disabled="disabled" />
+                </sui-form-field>
+            </sui-form-fields>
         </div>
     </sui-form>
 </div>

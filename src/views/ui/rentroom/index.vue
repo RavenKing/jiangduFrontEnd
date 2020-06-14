@@ -41,9 +41,8 @@
             <vuetable ref="vuetable" :api-mode="false" :data="localData" :fields="fields" :sort-order="sortOrder" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
                 <div slot="action" slot-scope="props">
                     <!-- <sui-button positive content="查看" v-on:click="viewSomeThing(props.rowData,'check')" /> -->
-                    <sui-button positive content="修改" v-on:click="viewSomeThing(props.rowData,'modify')" />
+                    <sui-button positive content="修改" v-on:click="viewSomeThing(props.rowData)" />
                     <sui-button negative content="删除" v-on:click="deleteRoom(props.rowData)" />
-                    <sui-button content="创建合同" v-on:click="openContractModal(props.rowData)" />
 
                 </div>
             </vuetable>
@@ -61,16 +60,39 @@
                         <sui-tab :menu="{ text: true }">
                             <sui-tab-pane title="基本信息" :attached="false">
                                 <div>
-                                    <rentroom-form ref='formComponent' :singleRoom="selectedRoom"></rentroom-form>
+                                    <rentroom-form :singleRoom="selectedRoom"></rentroom-form>
                                 </div>
                             </sui-tab-pane>
                             <sui-tab-pane title="合同信息" :attached="false" :disabled="!editMode">
-                            </sui-tab-pane>
-                            <sui-tab-pane title="物业管理" :attached="false" :disabled="!editMode">
+                                <div>
+                                    <contract-form :singleEntry="selectedRoomContract"></contract-form>
+                                    <sui-button content="创建合同" v-on:click="createRentContract()" />
+
+                                </div>
                             </sui-tab-pane>
                             <sui-tab-pane title="分配单位" :attached="false" :disabled="!editMode">
                             </sui-tab-pane>
                             <sui-tab-pane title="地图定位" :attached="false" :disabled="!editMode">
+                                <div class="imageForm" :key="ComponentKey">
+                                    <sui-form>
+                                        <sui-form-fields inline>
+                                            <label> 经度
+                                            </label>
+                                            <sui-form-field>
+                                                <sui-input type="text" placeholder="请选择" v-model="selectedRoom.lon" />
+                                            </sui-form-field>
+                                            <label> 维度</label>
+                                            <sui-form-field>
+                                                <sui-input type="text" placeholder="请选择" v-model="selectedRoom.lat" />
+                                            </sui-form-field>
+                                        </sui-form-fields>
+                                    </sui-form>
+                                </div>
+                                <baidu-map class="map" :center="point" :zoom="15">
+                                    <bm-navigation anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-navigation>
+                                    <bm-marker :position="point" :dragging="true" animation="BMAP_ANIMATION_BOUNCE" @dragend="dragend">
+                                    </bm-marker>
+                                </baidu-map>
                             </sui-tab-pane>
                         </sui-tab>
                     </div>
@@ -97,6 +119,7 @@ import VuetablePagination from "vuetable-2/src/components/VuetablePagination";
 import VuetablePaginationInfo from "vuetable-2/src/components/VuetablePaginationInfo";
 import FieldsDef from "./FieldsDef.js";
 import contractForm from "@/components/rentContractForm";
+import rentHeTongForm from "@/components/rentHeTongForm";
 import {
     export_json_to_excel
 } from "@/util/Export2Excel";
@@ -105,7 +128,8 @@ import {
     createRentRoomApi,
     updateRentRoomApi,
     deleteRentRoomApi,
-    createLoanContractApi
+    createRentContractApi,
+    getRentRoomContractListApi
 } from "@/api/roomDataAPI";
 export default {
     name: "MyVuetable",
@@ -115,7 +139,7 @@ export default {
         VuetablePagination,
         VuetablePaginationInfo,
         'rentroom-form': RentRoomForm,
-        'contract-form': contractForm
+        'contract-form': rentHeTongForm
 
     },
     data() {
@@ -128,7 +152,9 @@ export default {
                 jiadi: "",
                 diji: ""
             },
+            point: {},
             selectedRoom: {},
+            selectedRoomContract: {},
             deleteTarget: "",
             loading: true,
             localData: [],
@@ -174,39 +200,68 @@ export default {
             this.$refs.formComponentContract.singleContract = this.contractForm;
         },
         createRentContract: function () {
-            createLoanContractApi(this.$refs.formComponentContract.singleContract).then(() => {
-                this.$refs.formComponentContract.singleContract = {
-                    open: false,
-                    mode: "create",
-                    title: "createForm",
-                    room_id: "",
-                    amt: 0,
-                    owner: "",
-                    rentunit: "",
-                    starttime: "",
-                    endtime: ""
+            this.selectedRoomContract.room_id = this.selectedRoom.id;
+            var context = this;
+            createRentContractApi(this.selectedRoomContract).then((result) => {
+                this.selectedRoomContract = {};
+                if (result.data.code == 0) {
+                    context.$notify({
+                        group: 'foo',
+                        title: '创建合同成功',
+                        text: '创建合同成功',
+                        type: "success"
+                    });
+                } else {
+                    context.$notify({
+                        group: 'foo',
+                        title: '创建合同失败',
+                        text: '创建合同失败',
+                        type: "error"
+                    });
+
                 }
-                this.contractForm.open = false;
+            }).catch(function (error) {
+                context.$notify({
+                    group: 'foo',
+                    title: '创建合同失败',
+                    text: '创建合同失败',
+                    type: "error"
+                });
             });
 
         },
-        viewSomeThing(data, type) {
+        viewSomeThing(data) {
+            this.loading = true
             this.selectedRoom = data;
-            //修改
-            if (type == "modify") {
-                //查看
-                this.$refs.formComponent.disabled = false;
-                this.modelTitle = "修改租赁房屋";
-                this.editMode = true;
-                this.open = !this.open;
-            } else if (type == "check") {
-                this.$refs.formComponent.disabled = true;
-                this.modalMode = "check";
-                this.modelTitle = "查看租赁房屋";
-                this.open = !this.open;
+            this.modelTitle = "修改租赁房屋";
+            console.log(data.id);
+            this.editMode = true;
+            if (data.lat === null || data.lat == "") {
+                this.point = {
+                    lng: 121.547967,
+                    lat: 30.879141
+                }
             } else {
-                console.log("delete");
+                this.point = {
+                    lng: data.lon,
+                    lat: data.lat
+                }
             }
+            this.open = true;
+
+            getRentRoomContractListApi({
+                room_id: this.selectedRoom.id
+            }).then((result) => {
+                console.log(result.data.data);
+                var latestOne = result.data.data.length;
+                if (latestOne == 0) {
+                    this.selectedRoomContract = {}
+                } else {
+                    this.selectedRoomContract = result.data.data[latestOne - 1];
+                }
+                this.selectedRoomContract = {}
+                this.loading = false;
+            })
         },
         exportToExcel() {
             let headers = ['id', 'room_id', 'cert_id', 'owner', 'address', 'roomname', 'usage', 'space'];
