@@ -87,7 +87,7 @@ export default {
             options: [],
             louOptions: [],
             floorOptions: [],
-            floorLoading: true,
+            floorLoading: false,
             louLoading: false,
             lang: lang,
             disabled: false,
@@ -131,7 +131,7 @@ export default {
 
         }
     },
-    created() {
+    mounted() {
         getRoomDataApi().then((data) => {
             //this.localData = data.data.data;
             data.data.data.map((one) => {

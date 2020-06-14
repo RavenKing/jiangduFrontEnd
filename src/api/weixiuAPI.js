@@ -91,7 +91,20 @@ function createMCApi(data){
         data: data
     });
 }
-
+function updateMCApi(data){
+    let local_auth = localGet(global.project_key, true);
+  //console.log(local_auth);
+    // //console.log(local_auth);
+    // // const newFormData = {
+    // //     "token": local_auth
+    // // }
+    data.token=local_auth;
+    return request({
+        url: constants.updateMCApi,
+        method: 'post',
+        data: data
+    });
+}
 export {
     getMRApi,
     createMRApi,
@@ -99,5 +112,6 @@ export {
     deleteMRApi,
     getroombyid,
     createMCApi,
-    getMCApi
+    getMCApi,
+    updateMCApi
 }

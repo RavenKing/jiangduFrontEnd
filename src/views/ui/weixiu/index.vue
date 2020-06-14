@@ -18,11 +18,8 @@
 
         <div class="vue2Table">
             <vuetable :key="componentKey" ref="vuetable" :api-mode="false" :data="localData" :fields="fields" :sort-order="sortOrder" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
-                <div slot="select" slot-scope="props">
-                    <sui-checkbox label="" @change="handleChange(props)" />
-                </div>
                 <div slot="action" slot-scope="props">
-                    <sui-button text="编辑" @change="handleChange(props)">编辑</sui-button>
+                    <sui-button text="编辑" v-on:click="editWeixiuShenqing(props.rowData)">编辑</sui-button>
                     <sui-button text="删除" @change="handleChange(props)">删除</sui-button>
                 </div>
             </vuetable>
@@ -36,7 +33,7 @@
             <sui-modal class="modal2" v-model="weixiuForm.open">
                 <sui-modal-header>申请维修</sui-modal-header>
                 <sui-modal-content scrolling>
-                    <weixiu-form :singleEntry="selectedWeixiu"> </weixiu-form>
+                    <weixiu-form :singleEntry="selectedWeixiu" ref="weixiuForm"> </weixiu-form>
                 </sui-modal-content>
                 <sui-modal-actions>
                     <sui-button negative @click.native="closeWeiXiuForm">
@@ -45,7 +42,7 @@
                     <sui-button positive @click.native="createShenbao">
                         申报
                     </sui-button>
-                    <sui-button positive @click.native="createRentContract">
+                    <sui-button positive @click.native="">
                         保存
                     </sui-button>
                 </sui-modal-actions>
@@ -85,6 +82,11 @@ import {
     createMCApi,
     getMCApi
 } from "@/api/weixiuAPI";
+import {
+    getRoomDataApi,
+    getBuildingListApi,
+    getBuildingFloorApi
+} from "@/api/roomDataAPI";
 export default {
     name: "MyVuetable",
     components: {
@@ -137,6 +139,40 @@ export default {
     },
 
     methods: {
+        editWeixiuShenqing(props) {
+            console.log(props);
+            this.selectedWeixiu = props;
+            this.loading = true;
+            if (this.selectedWeixiu.room_id && this.selectedWeixiu.building_id) {
+                var flooroptions = [];
+                var buildingoptions = [];
+                const context = this;
+                getBuildingListApi(context.selectedWeixiu).then((data) => {
+                    data.data.data.map((one) => {
+                        buildingoptions.push({
+                            text: one.name,
+                            value: one.id,
+                        })
+                    });
+                    context.$refs.weixiuForm.louOptions = buildingoptions;
+                    getBuildingFloorApi(context.selectedWeixiu).then((result) => {
+                        var floors = result.data.data;
+                        floors.map((floor) => {
+                            flooroptions.push({
+                                text: floor.name,
+                                value: floor.id,
+                            })
+                        });
+                        context.$refs.weixiuForm.floorOptions = flooroptions;
+                        this.loading = false;
+                        context.openWeiXiuForm();
+                    });
+                })
+            } else {
+                context.openWeiXiuForm();
+            }
+
+        },
         createWeiXiuHeTong() {
             console.log(this.weixiuhetong);
             this.weixiuhetong.mrlist = [];

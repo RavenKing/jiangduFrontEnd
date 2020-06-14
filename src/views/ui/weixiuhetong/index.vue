@@ -19,7 +19,7 @@
         <div class="vue2Table">
             <vuetable ref="vuetable" :api-mode="false" :data="hetongdata" :fields="hetongFields" :sort-order="sortOrder" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData" :key="hetongComponentKey">
                 <div slot="action" slot-scope="props">
-                    <sui-button>编辑</sui-button>
+                    <sui-button v-on:click="editHeTongData(props.rowData)">编辑</sui-button>
                     <sui-button>删除</sui-button>
                 </div>
 
@@ -62,7 +62,7 @@
                         <div class="vue2Table">
                             <vuetable :key="componentKey" ref="vuetable" :api-mode="false" :data="localData" :fields="fields2" :sort-order="sortOrder" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
                                 <div slot="select" slot-scope="props">
-                                    <sui-checkbox label="" @change="handleChange(props)" />
+                                    <sui-checkbox @change="handleChange(props)" v-model="props.rowData.select" />
                                 </div>
                             </vuetable>
                             <div class="pagination ui basic segment grid">
@@ -149,7 +149,8 @@ import {
     createMRApi,
     getroombyid,
     createMCApi,
-    getMCApi
+    getMCApi,
+    updateMCApi
 } from "@/api/weixiuAPI";
 export default {
     name: "MyVuetable",
@@ -165,7 +166,6 @@ export default {
     data() {
         return {
             fields2: Fields2,
-
             lang: lang,
             hetongdata: [],
             hetongComponentKey: 1,
@@ -175,8 +175,9 @@ export default {
             open: false,
             weixiuList: [],
             value: [],
+            mode: "",
             weixiuForm: {
-                open: false
+                open: false,
             },
             selectedWeixiu: {},
             deleteTarget: "",
@@ -190,46 +191,98 @@ export default {
     },
 
     methods: {
+        editHeTongData(props) {
+            this.resetStep();
+            this.mode = "edit";
+            this.weixiuhetong = props;
+            this.weixiuList = [];
+            var selectedlist = JSON.parse(this.weixiuhetong.mrlist);
+            this.localData.data.map((one) => {
+                one.select = false;
+                selectedlist.map((selectedOne) => {
+                    if (selectedOne == one.id) {
+                        one.select = true;
+                        this.weixiuList.push(one);
+                    }
+                })
+            });
+            this.componentKey++;
+            this.open = true;
+        },
+        resetStep() {
+
+            this.currentStep = 1;
+        },
         createWeiXiuHeTong() {
-            console.log(this.weixiuhetong);
+            this.resetStep();
             this.weixiuhetong.mrlist = [];
             this.weixiuList.map((one) => {
                 this.weixiuhetong.mrlist.push(one.id);
             });
-
             this.weixiuhetong.mrlist = JSON.stringify(this.weixiuhetong.mrlist);
-            this.weixiuhetong.memo = "test";
             this.loading = true;
             var context = this;
             this.closeHetongModal();
-            createMCApi(this.weixiuhetong).then((result) => {
-                context.loading = false;
-                if (result.data.code == 0) {
-                    context.refreshHetongList();
-                    context.$notify({
-                        group: 'foo',
-                        title: '创建成功',
-                        text: '创建成功',
-                        type: "success"
-                    });
-                } else {
+            if (this.mode == "create") {
+                createMCApi(this.weixiuhetong).then((result) => {
+                    context.loading = false;
+                    if (result.data.code == 0) {
+                        context.refreshHetongList();
+                        context.$notify({
+                            group: 'foo',
+                            title: '创建成功',
+                            text: '创建成功',
+                            type: "success"
+                        });
+                    } else {
+                        context.$notify({
+                            group: 'foo',
+                            title: '创建失败',
+                            text: '创建失败',
+                            type: "error"
+                        });
+
+                    }
+                }).catch(function (error) {
+                    this.loading = false;
                     context.$notify({
                         group: 'foo',
                         title: '创建失败',
                         text: '创建失败',
                         type: "error"
                     });
-
-                }
-            }).catch(function (error) {
-                this.loading = false;
-                context.$notify({
-                    group: 'foo',
-                    title: '创建失败',
-                    text: '创建失败',
-                    type: "error"
                 });
-            });
+            } else if (this.mode == "edit") {
+                updateMCApi(this.weixiuhetong).then((result) => {
+                    context.loading = false;
+                    if (result.data.code == 0) {
+                        context.refreshHetongList();
+                        context.$notify({
+                            group: 'foo',
+                            title: '更新成功',
+                            text: '更新成功',
+                            type: "success"
+                        });
+                    } else {
+                        context.$notify({
+                            group: 'foo',
+                            title: '更新失败',
+                            text: '更新失败',
+                            type: "error"
+                        });
+
+                    }
+                }).catch(function (error) {
+                    this.loading = false;
+                    context.$notify({
+                        group: 'foo',
+                        title: '更新失败',
+                        text: '更新失败',
+                        type: "error"
+                    });
+                });
+            }
+
         },
         closeHetongModal() {
             this.open = false;
@@ -244,7 +297,7 @@ export default {
             })
         },
         refreshHetongList() {
-            this.loading=true;
+            this.loading = true;
             getMCApi().then((data) => {
                 //this.localData = data.data.data;
                 this.loading = false;
@@ -324,13 +377,9 @@ export default {
 
             });
         },
-        openWeiXiuForm() {
-            this.weixiuForm.open = true;
-        },
-        closeWeiXiuForm() {
-            this.weixiuForm.open = false;
-        },
+
         openWeiXiuJihua() {
+            this.mode = "create";
             this.open = true;
         },
 

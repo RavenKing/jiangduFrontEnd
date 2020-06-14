@@ -44,6 +44,7 @@ const constantsJinhui = {
     createMRAPI:"/createmr",
     getRoomByIDApi:"/getroombyid",
     createMCApi:"/createmc",
-    getMCAPI:"/listmc"
+    getMCAPI:"/listmc",
+    updateMCApi:"/editmc"
 }
 export default constantsJinhui;
