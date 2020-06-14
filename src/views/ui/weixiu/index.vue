@@ -31,7 +31,7 @@
         <dialog-bar v-model="sendVal" type="danger" title="是否要删除" :content="deleteTarget.text" v-on:cancel="clickCancel()" @danger="clickConfirmDelete()" @confirm="clickConfirmDelete()" dangerText="确认删除"></dialog-bar>
         <div>
             <sui-modal class="modal2" v-model="weixiuForm.open">
-                <sui-modal-header>申请维修</sui-modal-header>
+                <sui-modal-header>{{modelTitle}}维修</sui-modal-header>
                 <sui-modal-content scrolling>
                     <weixiu-form :singleEntry="selectedWeixiu" ref="weixiuForm"> </weixiu-form>
                 </sui-modal-content>
@@ -40,9 +40,6 @@
                         取消
                     </sui-button>
                     <sui-button positive @click.native="createShenbao">
-                        申报
-                    </sui-button>
-                    <sui-button positive @click.native="">
                         保存
                     </sui-button>
                 </sui-modal-actions>
@@ -135,6 +132,7 @@ export default {
         editWeixiuShenqing(props) {
             console.log(props);
             this.selectedWeixiu = props;
+            this.modelTitle = "编辑";
             this.loading = true;
             if (this.selectedWeixiu.room_id && this.selectedWeixiu.building_id) {
                 var flooroptions = [];
@@ -158,11 +156,11 @@ export default {
                         });
                         context.$refs.weixiuForm.floorOptions = flooroptions;
                         this.loading = false;
-                        context.openWeiXiuForm();
+                        context.openWeiXiuForm("edit");
                     });
                 })
             } else {
-                context.openWeiXiuForm();
+                context.openWeiXiuForm("edit");
             }
 
         },
@@ -262,7 +260,14 @@ export default {
 
             });
         },
-        openWeiXiuForm() {
+        openWeiXiuForm(mode) {
+            if (mode == "edit") {
+                this.modelTitle = "编辑";
+
+            } else {
+                this.modelTitle = "创建";
+                this.selectedWeixiu = {};
+            }
             this.weixiuForm.open = true;
         },
         closeWeiXiuForm() {
