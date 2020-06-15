@@ -8,7 +8,7 @@
                 <sui-input placeholder="权证号" v-model="singleRoom.certid" :disabled="disabled" />
             </sui-form-field>
             <sui-form-field>
-                <label>权证d单位(人)</label>
+                <label>权证单位(人)</label>
                 <sui-input placeholder="权证单位(人)" v-model="singleRoom.owner" :disabled="disabled" />
             </sui-form-field>
             <sui-form-field>
