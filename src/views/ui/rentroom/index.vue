@@ -65,8 +65,9 @@
                             </sui-tab-pane>
                             <sui-tab-pane title="合同信息" :attached="false" :disabled="!editMode">
                                 <div>
+
                                     <contract-form :singleEntry="selectedRoomContract"></contract-form>
-                                    <sui-button content="创建合同" v-on:click="createRentContract()" />
+                                    <sui-button content="创建新合同" v-on:click="createRentContract()" />
 
                                 </div>
                             </sui-tab-pane>
@@ -273,7 +274,6 @@ export default {
                 } else {
                     this.selectedRoomContract = result.data.data[latestOne - 1];
                 }
-                this.selectedRoomContract = {}
                 this.loading = false;
             })
         },

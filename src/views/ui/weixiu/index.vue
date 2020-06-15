@@ -173,7 +173,7 @@ export default {
             this.weixiuhetong.memo = "test";
             this.loading = true;
             var context = this;
-            closeHetongModal
+            closeHetongModal();
             createMCApi(this.weixiuhetong).then((result) => {
                 this.loading = false;
                 if (result.data.code == 0) {
@@ -273,32 +273,6 @@ export default {
         closeWeiXiuForm() {
             this.weixiuForm.open = false;
         },
-        openWeiXiuJihua() {
-            this.open = true;
-        },
-
-        goToPreviousStep() {
-            this.currentStep--;
-
-        },
-        goToNextStep() {
-            this.currentStep++;
-        },
-        handleChange(data) {
-            console.log(this.weixiuList);
-            var count = 0;
-            this.weixiuList.map((item, index) => {
-                if (item.id !== data.rowData.id) {} else {
-                    count++;
-                    this.weixiuList.splice(index, 1);
-                }
-            })
-            if (count == 0) {
-                this.weixiuList.push(data.rowData);
-                return;
-            }
-            console.log(this.weixiuList);
-        },
 
         onPaginationData(paginationData) {
             this.$refs.pagination.setPaginationData(paginationData);
@@ -306,11 +280,7 @@ export default {
         },
         onChangePage(page) {
             this.$refs.vuetable.changePage(page);
-        },
-        closeModal: function () {
-            this.open = false;
-            this.contractForm.open = false;
-        },
+        }
     },
     mounted() {
         //this.localData = data.data.data;
