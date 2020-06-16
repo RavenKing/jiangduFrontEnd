@@ -88,7 +88,9 @@ export default {
                         data
                     }) => {
                         if (data.code === 0) {
-                            localSet(this.GLOBAL.project_key, data.data);
+                            localSet(this.GLOBAL.project_key, data.data.token);
+                            console.log(data.data);
+                            localSet("role", data.data.role);
                             this.setToken(data.data);
                             this.$router.push("/index");
                         }

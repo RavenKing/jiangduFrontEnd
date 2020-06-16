@@ -45,6 +45,8 @@ const constantsJinhui = {
     getRoomByIDApi:"/getroombyid",
     createMCApi:"/createmc",
     getMCAPI:"/listmc",
-    updateMCApi:"/editmc"
+    updateMCApi:"/editmc",
+    approveMRApi:"/approvemr",
+    rejectMRApi:"/rejectmr"
 }
 export default constantsJinhui;

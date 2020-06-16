@@ -19,8 +19,14 @@
         <div class="vue2Table">
             <vuetable :key="componentKey" ref="vuetable" :api-mode="false" :data="localData" :fields="fields" :sort-order="sortOrder" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
                 <div slot="action" slot-scope="props">
+
                     <sui-button text="编辑" v-on:click="editWeixiuShenqing(props.rowData)">编辑</sui-button>
                     <sui-button text="删除" @change="handleChange(props)">删除</sui-button>
+                    <span v-show="role==1">
+                        <sui-button v-on:click="approveContract(props.rowData)">同意</sui-button>
+                        <sui-button v-on:click="rejectContract(props.rowData)">拒绝</sui-button>
+                    </span>
+
                 </div>
             </vuetable>
             <div class="pagination ui basic segment grid">
@@ -28,7 +34,8 @@
                 <vuetable-pagination ref="pagination" @vuetable-pagination:change-page="onChangePage"></vuetable-pagination>
             </div>
         </div>
-        <dialog-bar v-model="sendVal" type="danger" title="是否要删除" :content="deleteTarget.text" v-on:cancel="clickCancel()" @danger="clickConfirmDelete()" @confirm="clickConfirmDelete()" dangerText="确认删除"></dialog-bar>
+
+        <dialog-bar v-model="sendVal" type="danger" title="确认" :content="deleteTarget.text" v-on:cancel="clickCancel()" @danger="clickConfirmDelete()" @confirm="clickConfirmDelete()" :dangerText="deleteTarget.dangerText"></dialog-bar>
         <div>
             <sui-modal class="modal2" v-model="weixiuForm.open">
                 <sui-modal-header>{{modelTitle}}维修</sui-modal-header>
@@ -45,8 +52,6 @@
                 </sui-modal-actions>
             </sui-modal>
         </div>
-        <dialog-bar v-model="sendVal" type="danger" title="是否要删除" :content="deleteTarget.text" v-on:cancel="clickCancel()" @danger="clickConfirmDelete()" @confirm="clickConfirmDelete()" dangerText="确认删除"></dialog-bar>
-
     </div>
 </wl-container>
 </template>
@@ -63,6 +68,9 @@ import WeiXiuForm from "@/components/weixiuForm";
 import Datepicker from 'vuejs-datepicker';
 import * as lang from "vuejs-datepicker/src/locale";
 import {
+    localGet
+} from "@/util/storage";
+import {
     export_json_to_excel
 } from "@/util/Export2Excel";
 import {
@@ -70,7 +78,9 @@ import {
     createMRApi,
     getroombyid,
     createMCApi,
-    getMCApi
+    getMCApi,
+    approveMRApi,
+    rejectMRApi
 } from "@/api/weixiuAPI";
 import {
     getRoomDataApi,
@@ -102,11 +112,12 @@ export default {
             filterString: {},
             weixiuList: [],
             value: [],
+            role: 2,
             weixiuForm: {
                 open: false
             },
             selectedWeixiu: {},
-            deleteTarget: "",
+            deleteTarget: {},
             loading: true,
             localData: [],
             fields: FieldsDef,
@@ -129,6 +140,90 @@ export default {
     },
 
     methods: {
+        clickConfirmDelete() {
+            this.closeComfirmDialog();
+            this.loading = true;
+            if (this.deleteTarget.mode == "approve") {
+                approveMRApi(this.deleteTarget).then((result) => {
+                    this.loading = false;
+                    if (result.data.code == 0) {
+                        this.$notify({
+                            group: 'foo',
+                            title: '已经同意',
+                            text: '已经同意',
+                            type: "success"
+                        });
+                    } else {
+                        this.$notify({
+                            group: 'foo',
+                            title: '创建失败',
+                            text: '创建失败',
+                            type: "error"
+                        });
+                    }
+                }).catch(function (error) {
+                    this.loading = false;
+                    context.$notify({
+                        group: 'foo',
+                        title: '创建失败',
+                        text: '创建失败',
+                        type: "error"
+                    });
+                });
+
+            } else if (this.deleteTarget.mode == "reject") {
+                this.loading = false;
+                rejectMRApi(this.deleteTarget).then((result) => {
+                    if (result.data.code == 0) {
+                        this.$notify({
+                            group: 'foo',
+                            title: '已经拒绝',
+                            text: '已经拒绝',
+                            type: "success"
+                        });
+                    } else {
+                        this.$notify({
+                            group: 'foo',
+                            title: '创建失败',
+                            text: '创建失败',
+                            type: "error"
+                        });
+                    }
+                }).catch(function (error) {
+                    this.loading = false;
+                    context.$notify({
+                        group: 'foo',
+                        title: '创建失败',
+                        text: '创建失败',
+                        type: "error"
+                    });
+                });
+            }
+
+        },
+        openComfirmDialog() {
+            this.sendVal = true;
+        },
+        closeComfirmDialog() {
+            this.sendVal = false;
+        },
+        approveContract(props) {
+            this.sendVal = true;
+            this.deleteTarget.text = "是否要同意该申请" + props.roomname + "(申请id:" + props.id + ")?";
+            this.deleteTarget.mode = "approve";
+            this.deleteTarget.dangerText = "确认";
+            this.deleteTarget.id = props.id;
+            this.openComfirmDialog();
+        },
+        rejectContract(props) {
+            this.sendVal = true;
+            this.deleteTarget.text = "是否要拒绝该申请" + props.roomname + "(申请id:" + props.id + ")?";
+            this.deleteTarget.mode = "reject";
+            this.deleteTarget.id = props.id;
+            this.deleteTarget.dangerText = "确认";
+
+            this.openComfirmDialog();
+        },
         editWeixiuShenqing(props) {
             console.log(props);
             this.selectedWeixiu = props;
@@ -284,6 +379,7 @@ export default {
     },
     mounted() {
         //this.localData = data.data.data;
+        this.role = localGet("role");
         this.loading = true;
         getMRApi().then((data) => {
             //this.localData = data.data.data;

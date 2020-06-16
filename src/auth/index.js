@@ -34,6 +34,32 @@ function registerRouteGuard() {
           .then(({ data }) => {
             let _menu = data.data || [];
             // 异步退入路由
+           console.log(_menu);
+            if(localGet("role")==2)
+            {
+              
+              _menu[0].children.push( {
+                id: "3-28",
+                title: "维修列表",
+                url: "/ui/weixiu"
+              });
+
+            }
+            else{
+              
+              _menu[0].children.push( {
+                id: "3-28",
+                title: "维修列表",
+                url: "/ui/weixiu"
+              });
+              _menu[0].children.push( {
+                id: "3-29",
+                title: "维修合同",
+                url: "/ui/weixiuhetong"
+              });
+
+            }
+            
             addUserRouter(_menu);
             // 整理菜单数据
             store.dispatch('menu/setUserMenu', _menu)

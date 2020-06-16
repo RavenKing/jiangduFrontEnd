@@ -47,15 +47,7 @@ const menus = [{
         id: "3-7",
         title: "员工管理",
         url: "/ui/employee"
-      }, {
-        id: "3-28",
-        title: "维修列表",
-        url: "/ui/weixiu"
-      }, {
-        id: "3-29",
-        title: "维修合同",
-        url: "/ui/weixiuhetong"
-      },
+      }
     ]
   },
   // {
