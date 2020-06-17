@@ -6,12 +6,6 @@
                 <sui-loader content="Loading..." />
             </sui-dimmer>
         </div>
-        <div is="sui-divider" horizontal>
-            <h4 is="sui-header">
-                <i class="tag icon"></i>
-                申请维修
-            </h4>
-        </div>
         <div class="filterBiaoDan">
             <sui-button content="申请维修" @click.native="openWeiXiuForm" icon="add green" />
         </div>
@@ -35,7 +29,8 @@
             </div>
         </div>
 
-        <dialog-bar v-model="sendVal" type="danger" title="确认" :content="deleteTarget.text" v-on:cancel="clickCancel()" @danger="clickConfirmDelete()" @confirm="clickConfirmDelete()" :dangerText="deleteTarget.dangerText"></dialog-bar>
+        <dialog-bar :commentData="deleteTarget.comments" v-model="sendVal" type="danger" title="确认" :content="deleteTarget.text" v-on:cancel="clickCancel()" @danger="clickConfirmDelete()" @confirm="clickConfirmDelete()" :dangerText="deleteTarget.dangerText">
+        </dialog-bar>
         <div>
             <sui-modal class="modal2" v-model="weixiuForm.open">
                 <sui-modal-header>{{modelTitle}}维修</sui-modal-header>
@@ -49,6 +44,9 @@
                     <sui-button positive @click.native="createShenbao">
                         保存
                     </sui-button>
+
+                    <sui-button v-on:click="approveContract(selectedWeixiu)">同意</sui-button>
+                    <sui-button v-on:click="rejectContract(selectedWeixiu)">拒绝</sui-button>
                 </sui-modal-actions>
             </sui-modal>
         </div>
@@ -212,6 +210,7 @@ export default {
             this.deleteTarget.text = "是否要同意该申请" + props.roomname + "(申请id:" + props.id + ")?";
             this.deleteTarget.mode = "approve";
             this.deleteTarget.dangerText = "确认";
+            this.deleteTarget.comments = "";
             this.deleteTarget.id = props.id;
             this.openComfirmDialog();
         },
@@ -381,7 +380,7 @@ export default {
         //this.localData = data.data.data;
         this.role = localGet("role");
         this.loading = true;
-        getMRApi().then((data) => {
+        getMRApi({}).then((data) => {
             //this.localData = data.data.data;
             this.loading = false;
             this.localData = {

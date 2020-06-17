@@ -37,12 +37,20 @@ function registerRouteGuard() {
            console.log(_menu);
             if(localGet("role")==2)
             {
-              
-              _menu[0].children.push( {
+              _menu[0].children=[];
+
+              _menu[0].children.push( 
+                {
+                  id: "3-6",
+                  title: "单位管理",
+                  url: "/ui/unit"
+                },
+                {
                 id: "3-28",
                 title: "维修列表",
                 url: "/ui/weixiu"
-              });
+              }
+              );
 
             }
             else{

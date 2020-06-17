@@ -6,12 +6,6 @@
                 <sui-loader content="Loading..." />
             </sui-dimmer>
         </div>
-        <div is="sui-divider" horizontal>
-            <h4 is="sui-header">
-                <i class="tag icon"></i>
-                维修合同
-            </h4>
-        </div>
         <div class="filterBiaoDan">
             <sui-button content="创建维修计划" @click.native="openWeiXiuJihua" icon="add green" />
         </div>
@@ -29,7 +23,7 @@
                 <vuetable-pagination ref="pagination" @vuetable-pagination:change-page="onChangePage"></vuetable-pagination>
             </div>
         </div>
-        <dialog-bar v-model="sendVal" type="danger" title="是否要删除" :content="deleteTarget.text" v-on:cancel="clickCancel()" @danger="clickConfirmDelete()" @confirm="clickConfirmDelete()" dangerText="确认删除"></dialog-bar>
+        <dialog-bar :commentData="deleteTarget.comment" v-model="sendVal" type="danger" title="是否要删除" :content="deleteTarget.text" v-on:cancel="clickCancel()" @danger="clickConfirmDelete()" @confirm="clickConfirmDelete()" dangerText="确认删除"></dialog-bar>
 
         <div>
             <sui-modal class="modal2" v-model="open">
@@ -334,7 +328,7 @@ export default {
         },
         refreshWeixiuList() {
             this.loading = true;
-            getMRApi().then((data) => {
+            getMRApi({status:2}).then((data) => {
                 //this.localData = data.data.data;
                 this.loading = false;
                 this.localData = {
@@ -429,7 +423,8 @@ export default {
     mounted() {
         //this.localData = data.data.data;
         this.loading = true;
-        getMRApi().then((data) => {
+        
+        getMRApi({status:2}).then((data) => {
             //this.localData = data.data.data;
             this.loading = false;
             this.localData = {

@@ -5,12 +5,24 @@ import {
     localGet
 } from "@/util/storage"; // 导入存储函数
 // 登录接口
-function getMRApi() {
+function getMRApi(data) {
 
     let local_auth = localGet(global.project_key, true);
     //console.log(local_auth);
-    const newFormData = {
-        "token": local_auth
+    console.log(data)
+    let newFormData={};
+   if(data.status==undefined)
+    {
+         newFormData = {
+        "token": local_auth,
+             }
+    }
+    else{
+         newFormData = {
+            "token": local_auth,
+            "status":data.status
+        }
+
     }
 
     return request({

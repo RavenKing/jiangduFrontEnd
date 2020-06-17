@@ -1,6 +1,6 @@
 <template lang="html">
 <div>
-    <sui-form>
+    <sui-form class="marginBottom30">
         <sui-form-fields>
             <sui-form-field>
                 <label>申报单号</label>
@@ -43,8 +43,8 @@
               <sui-dropdown  floating direction="upward" placeholder="选择楼" selection :options="floorOptions" v-model="singleEntry.floor_id"  :loading="floorLoading" :disabled="floorLoading"/>
             </sui-form-field>
         </sui-form-fields>
-        <sui-form-fields>
-
+        <!-- <sui-form-fields> -->
+<!-- 
             <sui-form-field>
                 <label>房屋结构</label>
                 <sui-input placeholder="房屋结构" v-model="singleEntry.roomname"/>
@@ -63,7 +63,7 @@
                 <label>产权证号</label>
                 <sui-input placeholder="产权证号" v-model="singleEntry.roomname" />
             </sui-form-field>
-        </sui-form-fields>
+        </sui-form-fields> -->
     </sui-form>
 </div>
 </template>
@@ -144,3 +144,9 @@ export default {
     }
 };
 </script>
+<style>
+.marginBottom30 {
+margin-bottom: 60px;
+}
+
+</style>
