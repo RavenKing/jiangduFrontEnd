@@ -19,16 +19,9 @@
         </sui-form-fields>
         <sui-form-fields>
             <sui-form-field>
-                <label>结构类型</label>
-                <sui-dropdown placeholder="结构类型" selection :options="jiegouoptions" v-model="singleRoom.jiegou" />
+                <label>房屋用途</label>
+                <sui-dropdown placeholder="房屋用途" selection :options="yongtuOptions" v-model="singleRoom.usage" />
             </sui-form-field>
-
-            <sui-form-field>
-                <label>建筑类型</label>
-                <sui-dropdown placeholder="建筑类型" selection :options="jianzhuoptions" v-model="singleRoom.jianzhu" />
-            </sui-form-field>
-        </sui-form-fields>
-        <sui-form-fields>
             <sui-form-field>
                 <label>建筑面积</label>
                 <sui-input placeholder="建筑面积" v-model="singleRoom.space" />
@@ -44,6 +37,19 @@ export default {
     props: ['singleRoom'],
     data() {
         return {
+            yongtuOptions: [{
+                text: "办公用房",
+                value: "1"
+            }, {
+                text: "服务用房",
+                value: "2"
+            }, {
+                text: "设备用房",
+                value: "3"
+            }, {
+                text: "附属用房",
+                value: "4"
+            }],
             jianzhuoptions: [{
                 text: "低层住宅",
                 value: "低层住宅"

@@ -303,8 +303,15 @@ export default {
 
         },
         refreshWeixiuList() {
+            this.role = localGet("role");
             this.loading = true;
-            getMRApi({}).then((data) => {
+            let params = {};
+            if (this.role == 1) {
+                params = {
+                    status: constants.STATUSNEW
+                }
+            }
+            getMRApi(params).then((data) => {
                 //this.localData = data.data.data;
                 this.loading = false;
                 this.localData = {
@@ -375,7 +382,13 @@ export default {
         //this.localData = data.data.data;
         this.role = localGet("role");
         this.loading = true;
-        getMRApi({}).then((data) => {
+        let params = {};
+        if (this.role == 1) {
+            params = {
+                status: constants.STATUSNEW
+            }
+        }
+        getMRApi(params).then((data) => {
             //this.localData = data.data.data;
             this.loading = false;
             this.localData = {

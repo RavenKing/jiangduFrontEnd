@@ -92,12 +92,6 @@
                                     <input type="text" placeholder="请选择" v-model="weixiuhetong.rep_contact" />
                                 </sui-form-field>
                             </sui-form-fields>
-                            <sui-form-fields inline>
-                                <label>上传附件</label>
-                                <sui-form-field>
-                                    <input type="file" placeholder="请选择" />
-                                </sui-form-field>
-                            </sui-form-fields>
                         </sui-form>
                     </sui-segment>
                     <sui-segment v-show="currentStep==3">

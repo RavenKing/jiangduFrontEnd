@@ -5,6 +5,7 @@ const constantsJinhui = {
     PASS:"审核通过",
     FAIL:"审核失败",
     CREATESUCCESS:"创建成功",
-    CREATEFAILED:"创建失败"
+    CREATEFAILED:"创建失败",
+    STATUSNEW:1
 }
 export default constantsJinhui;
