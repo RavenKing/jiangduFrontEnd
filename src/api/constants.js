@@ -42,6 +42,7 @@ const constantsJinhui = {
     updateMRAPI:"",
     deleteMRAPI:"",
     createMRAPI:"/createmr",
+    editMRAPI:"/editmr",
     getRoomByIDApi:"/getroombyid",
     createMCApi:"/createmc",
     getMCAPI:"/listmc",

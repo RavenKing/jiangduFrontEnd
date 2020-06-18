@@ -47,7 +47,7 @@
                     <sui-button positive @click.native="createShenbao">
                         保存
                     </sui-button>
-                    <span v-show="role==1">
+                    <span v-show="role==1&&modalMode=='edit'">
                         <sui-button color="green" v-on:click="approveContract(selectedWeixiu)">同意</sui-button>
                         <sui-button negative v-on:click="rejectContract(selectedWeixiu)">拒绝</sui-button>
                     </span>
@@ -64,6 +64,7 @@ import Vuetable from "vuetable-2/src/components/Vuetable";
 import VuetablePagination from "vuetable-2/src/components/VuetablePagination";
 import VuetablePaginationInfo from "vuetable-2/src/components/VuetablePaginationInfo";
 import FieldsDef from "./FieldsDef.js";
+import constants from "@/util/constants";
 import Fields2 from "./fields2.js";
 import FieldHetong from "./fieldsHetong.js";
 import WeiXiuForm from "@/components/weixiuForm";
@@ -76,8 +77,12 @@ import {
     export_json_to_excel
 } from "@/util/Export2Excel";
 import {
+    notifySomething
+} from "@/util/utils"
+import {
     getMRApi,
     createMRApi,
+    editMRApi,
     getroombyid,
     createMCApi,
     getMCApi,
@@ -150,6 +155,7 @@ export default {
                     context.loading = false;
                     if (result.data.code == 0) {
                         context.closeComfirmDialog();
+                        context.closeWeiXiuForm();
                         context.$notify({
                             group: 'foo',
                             title: '已经同意',
@@ -157,21 +163,12 @@ export default {
                             type: "success"
                         });
                     } else {
-                        context.$notify({
-                            group: 'foo',
-                            title: '创建失败',
-                            text: '创建失败',
-                            type: "error"
-                        });
+                        notifySomething(constants.CREATEFAILED, constants.CREATEFAILED, constants.typeError);
                     }
                 }).catch(function (error) {
                     context.loading = false;
-                    context.$notify({
-                        group: 'foo',
-                        title: '创建失败',
-                        text: '创建失败',
-                        type: "error"
-                    });
+                    notifySomething(constants.CREATEFAILED, constants.CREATEFAILED, constants.typeError);
+
                 });
 
             } else if (this.deleteTarget.mode == "reject") {
@@ -186,21 +183,13 @@ export default {
                             type: "success"
                         });
                     } else {
-                        context.$notify({
-                            group: 'foo',
-                            title: '创建失败',
-                            text: '创建失败',
-                            type: "error"
-                        });
+                        notifySomething(constants.CREATEFAILED, constants.CREATEFAILED, constants.typeError);
+
                     }
                 }).catch(function (error) {
                     context.loading = false;
-                    context.$notify({
-                        group: 'foo',
-                        title: '创建失败',
-                        text: '创建失败',
-                        type: "error"
-                    });
+                    notifySomething(constants.CREATEFAILED, constants.CREATEFAILED, constants.typeError);
+
                 });
             }
 
@@ -233,7 +222,6 @@ export default {
             this.openComfirmDialog();
         },
         editWeixiuShenqing(props) {
-            console.log(props);
             this.selectedWeixiu = props;
             this.modelTitle = "编辑";
             this.loading = true;
@@ -280,43 +268,39 @@ export default {
             createMCApi(this.weixiuhetong).then((result) => {
                 this.loading = false;
                 if (result.data.code == 0) {
-                    this.$notify({
-                        group: 'foo',
-                        title: '创建成功',
-                        text: '创建成功',
-                        type: "success"
-                    });
+                    notifySomething(constants.CREATESUCCESS, constants.CREATESUCCESS, constants.typeSuccess);
                 } else {
-                    this.$notify({
-                        group: 'foo',
-                        title: '创建失败',
-                        text: '创建失败',
-                        type: "error"
-                    });
-
+                    notifySomething(constants.CREATEFAILED, constants.CREATEFAILED, constants.typeError);
                 }
             }).catch(function (error) {
                 this.loading = false;
-                context.$notify({
-                    group: 'foo',
-                    title: '创建失败',
-                    text: '创建失败',
-                    type: "error"
-                });
+                notifySomething(constants.CREATEFAILED, constants.CREATEFAILED, constants.typeError);
+
             });
         },
         closeHetongModal() {
             this.open = false;
         },
         createShenbao() {
-
             this.loading = true;
-            createMRApi(this.selectedWeixiu).then((result) => {
-                console.log(result);
-                this.loading = false;
-                this.closeWeiXiuForm();
-                this.refreshWeixiuList();
-            })
+            if (this.modalMode == "create") {
+                createMRApi(this.selectedWeixiu).then((result) => {
+                    this.loading = false;
+                    this.closeWeiXiuForm();
+                    this.refreshWeixiuList();
+                    notifySomething(constants.CREATESUCCESS, constants.CREATESUCCESS, constants.typeSuccess);
+                })
+            } else if (this.modalMode == "edit") {
+                editMRApi(this.selectedWeixiu).then((result) => {
+                    console.log(result);
+                    this.loading = false;
+                    this.closeWeiXiuForm();
+                    this.refreshWeixiuList();
+                    notifySomething("编辑成功", "编辑成功", constants.typeSuccess);
+
+                })
+            }
+
         },
         refreshWeixiuList() {
             this.loading = true;
@@ -347,13 +331,13 @@ export default {
                     });
                     switch (one.status) {
                         case 1:
-                            one.statusText = "新建";
+                            one.statusText = constants.NEW;
                             break;
                         case 2:
-                            one.statusText = "审核通过";
+                            one.statusText = constants.PASS;
                             break;
                         case 3:
-                            one.statusText = "审核失败";
+                            one.statusText = constants.FAIL;
                             break;
                         default:
                             break;
@@ -366,10 +350,12 @@ export default {
         openWeiXiuForm(mode) {
             if (mode == "edit") {
                 this.modelTitle = "编辑";
+                this.modalMode = "edit";
 
             } else {
                 this.modelTitle = "创建";
                 this.selectedWeixiu = {};
+                this.modalMode = "create";
             }
             this.weixiuForm.open = true;
         },
@@ -416,13 +402,13 @@ export default {
                 });
                 switch (one.status) {
                     case 1:
-                        one.statusText = "新建";
+                        one.statusText = constants.NEW;
                         break;
                     case 2:
-                        one.statusText = "审核通过";
+                        one.statusText = constants.PASS;
                         break;
                     case 3:
-                        one.statusText = "审核失败";
+                        one.statusText = constants.FAIL;
                         break;
                     default:
                         break;

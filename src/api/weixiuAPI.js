@@ -121,6 +121,12 @@ function updateMCApi(data){
 function approveMRApi(data){
     return generalRequet(data,constants.approveMRApi)
 }
+function editMRApi(data)
+{
+    console.log(constants.editMRApi)
+    return generalRequet(data,constants.editMRAPI)
+}
+
 function generalRequet(data,apiName)
 {
     let local_auth = localGet(global.project_key, true);
@@ -144,6 +150,7 @@ function rejectMRApi(data)
 export {
     getMRApi,
     createMRApi,
+    editMRApi,
     updateMRApi,// MR接口
     deleteMRApi,
     getroombyid,
