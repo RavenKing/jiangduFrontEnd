@@ -12,11 +12,14 @@
 
         <div class="vue2Table">
             <vuetable :key="componentKey" ref="vuetable" :api-mode="false" :data="localData" :fields="fields" :sort-order="sortOrder" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
+                <div slot="statusText" slot-scope="props">
+                    <h4 is="sui-header" :color="props.rowData.status==2?'green':'red'">
+                        {{props.rowData.statusText}}
+                    </h4>
+                </div>
                 <div slot="action" slot-scope="props">
-
                     <sui-button text="编辑" v-on:click="editWeixiuShenqing(props.rowData)">编辑</sui-button>
                     <sui-button text="删除" @change="handleChange(props)">删除</sui-button>
-
                 </div>
             </vuetable>
             <div class="pagination ui basic segment grid">
@@ -32,22 +35,23 @@
                 <sui-modal-header>{{modelTitle}}维修
                     <h4 is="sui-header" :color="selectedWeixiu.status==2?'green':'red'">
                         {{selectedWeixiu.statusText}}
-                    </h4></sui-modal-header>
-                    <sui-modal-content scrolling>
-                        <weixiu-form :singleEntry="selectedWeixiu" ref="weixiuForm"> </weixiu-form>
-                    </sui-modal-content>
-                    <sui-modal-actions>
-                        <sui-button negative @click.native="closeWeiXiuForm">
-                            取消
-                        </sui-button>
-                        <sui-button positive @click.native="createShenbao">
-                            保存
-                        </sui-button>
-                        <span v-show="role==1">
-                            <sui-button color="green" v-on:click="approveContract(selectedWeixiu)">同意</sui-button>
-                            <sui-button negative v-on:click="rejectContract(selectedWeixiu)">拒绝</sui-button>
-                        </span>
-                    </sui-modal-actions>
+                    </h4>
+                </sui-modal-header>
+                <sui-modal-content scrolling>
+                    <weixiu-form :singleEntry="selectedWeixiu" ref="weixiuForm"> </weixiu-form>
+                </sui-modal-content>
+                <sui-modal-actions>
+                    <sui-button negative @click.native="closeWeiXiuForm">
+                        取消
+                    </sui-button>
+                    <sui-button positive @click.native="createShenbao">
+                        保存
+                    </sui-button>
+                    <span v-show="role==1">
+                        <sui-button color="green" v-on:click="approveContract(selectedWeixiu)">同意</sui-button>
+                        <sui-button negative v-on:click="rejectContract(selectedWeixiu)">拒绝</sui-button>
+                    </span>
+                </sui-modal-actions>
             </sui-modal>
         </div>
     </div>
