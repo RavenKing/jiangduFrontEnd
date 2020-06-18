@@ -16,7 +16,7 @@
             </sui-form-field>
             <sui-form-field>
                 <label>房屋用途</label>
-                <sui-input placeholder="房屋用途" v-model="singleRoom.usage" :disabled="disabled" />
+                <sui-dropdown placeholder="房屋用途" selection :options="yongtuOptions" v-model="singleRoom.usage1" />
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields>
@@ -95,6 +95,19 @@ export default {
             }, {
                 text: "其他形式住宅",
                 value: "、其他形式住宅"
+            }],
+            yongtuOptions: [{
+                text: "办公用房",
+                value: "1"
+            }, {
+                text: "服务用房",
+                value: "2"
+            }, {
+                text: "设备用房",
+                value: "3"
+            }, {
+                text: "附属用房",
+                value: "4"
             }],
             jiegouoptions: [{
                 text: "砖混结构",

@@ -358,10 +358,10 @@ export default {
                             one.statusText = "新建";
                             break;
                         case 2:
-                            one.statusText = "审核中";
+                            one.statusText = "审核通过";
                             break;
                         case 3:
-                            one.statusText = "审核通过";
+                            one.statusText = "审核失败";
                             break;
                         default:
                             break;
@@ -454,10 +454,10 @@ export default {
                         one.statusText = "新建";
                         break;
                     case 2:
-                        one.statusText = "审核中";
+                        one.statusText = "审核通过";
                         break;
                     case 3:
-                        one.statusText = "审核通过";
+                        one.statusText = "审核失败";
                         break;
                     default:
                         break;

@@ -16,10 +16,6 @@
 
                     <sui-button text="编辑" v-on:click="editWeixiuShenqing(props.rowData)">编辑</sui-button>
                     <sui-button text="删除" @change="handleChange(props)">删除</sui-button>
-                    <span v-show="role==1">
-                        <sui-button v-on:click="approveContract(props.rowData)">同意</sui-button>
-                        <sui-button v-on:click="rejectContract(props.rowData)">拒绝</sui-button>
-                    </span>
 
                 </div>
             </vuetable>
@@ -29,25 +25,29 @@
             </div>
         </div>
 
-        <dialog-bar :commentData="deleteTarget.comments" v-model="sendVal" type="danger" title="确认" :content="deleteTarget.text" v-on:cancel="clickCancel()" @danger="clickConfirmDelete()" @confirm="clickConfirmDelete()" :dangerText="deleteTarget.dangerText">
+        <dialog-bar :commentData="deleteTarget.reason" v-model="sendVal" type="danger" title="确认" :content="deleteTarget.text" v-on:cancel="clickCancel()" @danger="clickConfirmDelete()" @confirm="clickConfirmDelete()" :dangerText="deleteTarget.dangerText">
         </dialog-bar>
         <div>
             <sui-modal class="modal2" v-model="weixiuForm.open">
-                <sui-modal-header>{{modelTitle}}维修</sui-modal-header>
-                <sui-modal-content scrolling>
-                    <weixiu-form :singleEntry="selectedWeixiu" ref="weixiuForm"> </weixiu-form>
-                </sui-modal-content>
-                <sui-modal-actions>
-                    <sui-button negative @click.native="closeWeiXiuForm">
-                        取消
-                    </sui-button>
-                    <sui-button positive @click.native="createShenbao">
-                        保存
-                    </sui-button>
-
-                    <sui-button v-on:click="approveContract(selectedWeixiu)">同意</sui-button>
-                    <sui-button v-on:click="rejectContract(selectedWeixiu)">拒绝</sui-button>
-                </sui-modal-actions>
+                <sui-modal-header>{{modelTitle}}维修
+                    <h4 is="sui-header" :color="selectedWeixiu.status==2?'green':'red'">
+                        {{selectedWeixiu.statusText}}
+                    </h4></sui-modal-header>
+                    <sui-modal-content scrolling>
+                        <weixiu-form :singleEntry="selectedWeixiu" ref="weixiuForm"> </weixiu-form>
+                    </sui-modal-content>
+                    <sui-modal-actions>
+                        <sui-button negative @click.native="closeWeiXiuForm">
+                            取消
+                        </sui-button>
+                        <sui-button positive @click.native="createShenbao">
+                            保存
+                        </sui-button>
+                        <span v-show="role==1">
+                            <sui-button color="green" v-on:click="approveContract(selectedWeixiu)">同意</sui-button>
+                            <sui-button negative v-on:click="rejectContract(selectedWeixiu)">拒绝</sui-button>
+                        </span>
+                    </sui-modal-actions>
             </sui-modal>
         </div>
     </div>
@@ -139,20 +139,21 @@ export default {
 
     methods: {
         clickConfirmDelete() {
-            this.closeComfirmDialog();
             this.loading = true;
+            var context = this;
             if (this.deleteTarget.mode == "approve") {
                 approveMRApi(this.deleteTarget).then((result) => {
-                    this.loading = false;
+                    context.loading = false;
                     if (result.data.code == 0) {
-                        this.$notify({
+                        context.closeComfirmDialog();
+                        context.$notify({
                             group: 'foo',
                             title: '已经同意',
                             text: '已经同意',
                             type: "success"
                         });
                     } else {
-                        this.$notify({
+                        context.$notify({
                             group: 'foo',
                             title: '创建失败',
                             text: '创建失败',
@@ -160,7 +161,7 @@ export default {
                         });
                     }
                 }).catch(function (error) {
-                    this.loading = false;
+                    context.loading = false;
                     context.$notify({
                         group: 'foo',
                         title: '创建失败',
@@ -173,14 +174,15 @@ export default {
                 this.loading = false;
                 rejectMRApi(this.deleteTarget).then((result) => {
                     if (result.data.code == 0) {
-                        this.$notify({
+                        context.closeComfirmDialog();
+                        context.$notify({
                             group: 'foo',
                             title: '已经拒绝',
                             text: '已经拒绝',
                             type: "success"
                         });
                     } else {
-                        this.$notify({
+                        context.$notify({
                             group: 'foo',
                             title: '创建失败',
                             text: '创建失败',
@@ -188,7 +190,7 @@ export default {
                         });
                     }
                 }).catch(function (error) {
-                    this.loading = false;
+                    context.loading = false;
                     context.$notify({
                         group: 'foo',
                         title: '创建失败',
@@ -204,13 +206,15 @@ export default {
         },
         closeComfirmDialog() {
             this.sendVal = false;
+            this.refreshWeixiuList();
+            //  this.refreshWeixiuList();
         },
         approveContract(props) {
             this.sendVal = true;
             this.deleteTarget.text = "是否要同意该申请" + props.roomname + "(申请id:" + props.id + ")?";
             this.deleteTarget.mode = "approve";
             this.deleteTarget.dangerText = "确认";
-            this.deleteTarget.comments = "";
+            this.deleteTarget.reason = "无";
             this.deleteTarget.id = props.id;
             this.openComfirmDialog();
         },
@@ -219,6 +223,7 @@ export default {
             this.deleteTarget.text = "是否要拒绝该申请" + props.roomname + "(申请id:" + props.id + ")?";
             this.deleteTarget.mode = "reject";
             this.deleteTarget.id = props.id;
+            this.deleteTarget.reason = "无";
             this.deleteTarget.dangerText = "确认";
 
             this.openComfirmDialog();
@@ -311,7 +316,7 @@ export default {
         },
         refreshWeixiuList() {
             this.loading = true;
-            getMRApi().then((data) => {
+            getMRApi({}).then((data) => {
                 //this.localData = data.data.data;
                 this.loading = false;
                 this.localData = {
@@ -341,10 +346,10 @@ export default {
                             one.statusText = "新建";
                             break;
                         case 2:
-                            one.statusText = "审核中";
+                            one.statusText = "审核通过";
                             break;
                         case 3:
-                            one.statusText = "审核通过";
+                            one.statusText = "审核失败";
                             break;
                         default:
                             break;
@@ -410,10 +415,10 @@ export default {
                         one.statusText = "新建";
                         break;
                     case 2:
-                        one.statusText = "审核中";
+                        one.statusText = "审核通过";
                         break;
                     case 3:
-                        one.statusText = "审核通过";
+                        one.statusText = "审核失败";
                         break;
                     default:
                         break;

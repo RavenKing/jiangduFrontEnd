@@ -15,6 +15,18 @@ export default [
     name: "appdate",
     title: '申报时间',
     width: "15%"
+  },  {
+    name: "unit_detail.name",
+    title: '单位',
+    width: "15%"
+  },  {
+    name: "contract",
+    title: '单位联系人',
+    width: "15%"
+  },  {
+    name: "tel",
+    title: '电话',
+    width: "15%"
   },
   {
     name: "statusText",
