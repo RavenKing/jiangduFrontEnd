@@ -185,7 +185,7 @@ export default {
         setFloor() {
             console.log(this.singleEntry.building_id);
             this.floorOptions = [];
-            this.floorLoading = true;
+            this.floorLoading = true;   
             if (this.singleEntry.building_id != null) {
                 getBuildingFloorApi(this.singleEntry).then((result) => {
                     var floors = result.data.data;
