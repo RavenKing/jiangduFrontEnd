@@ -57,7 +57,7 @@
             <sui-modal class="modal2" v-model="open">
                 <sui-modal-content scrolling>
                     <div>
-                        <sui-tab :menu="{ text: true }">
+                        <sui-tab :menu="{ text: true }" :active-index.sync="defaultTab">
                             <sui-tab-pane title="基本信息" :attached="false">
                                 <div>
                                     <rentroom-form :singleRoom="selectedRoom"></rentroom-form>
@@ -153,6 +153,7 @@ export default {
                 jiadi: "",
                 diji: ""
             },
+            defaultTab: 0,
             point: {},
             selectedRoom: {},
             selectedRoomContract: {},
@@ -246,7 +247,8 @@ export default {
 
         },
         viewSomeThing(data) {
-            this.loading = true
+            this.loading = true;
+            this.defaultTab=0;
             this.selectedRoom = data;
             this.modelTitle = "修改租赁房屋";
             console.log(data.id);
@@ -363,7 +365,7 @@ export default {
         closeModal: function () {
             this.open = false;
             this.contractForm.open = false;
-        }
+        },
 
     },
     created() {
