@@ -83,18 +83,3 @@ export default {
     }
 };
 </script>
-
-<style>
-.BMap_cpyCtrl {
-    display: none;
-}
-
-.anchorBL {
-    display: none;
-}
-
-.map {
-    width: 100%;
-    height: 400px;
-}
-</style>

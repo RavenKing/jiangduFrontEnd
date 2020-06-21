@@ -219,6 +219,10 @@
                                             <sui-form-field>
                                                 <sui-input type="text" placeholder="请选择" v-model="selectedRoom.lat" />
                                             </sui-form-field>
+                                            <sui-form-field>
+                                                <label>地址</label>
+                                                <sui-input type="text" placeholder="输入地址" v-model="keyword" />
+                                            </sui-form-field>
                                         </sui-form-fields>
                                     </sui-form>
                                 </div>
@@ -226,6 +230,8 @@
                                     <bm-navigation anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-navigation>
                                     <bm-marker :position="point" :dragging="true" animation="BMAP_ANIMATION_BOUNCE" @dragend="dragend">
                                     </bm-marker>
+                                    <bm-local-search :keyword="keyword" :auto-viewport="true" location="上海"></bm-local-search>
+
                                 </baidu-map>
                             </sui-tab-pane>
                             <sui-tab-pane title="资料管理" :attached="false">
@@ -358,7 +364,9 @@ export default {
                 open: false
             },
             treeData: [],
-            tree: new Tree([])
+            tree: new Tree([]),
+            keyword: ""
+
         };
     },
 
