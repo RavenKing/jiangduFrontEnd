@@ -52,11 +52,7 @@
                                         </div>
                                     </div>
                                     <div slot="action" slot-scope="props">
-                
-                    <!-- <sui-button positive content="查看" v-on:click="viewSomeThing(props.rowData,'check')" /> -->
-                    <sui-button negative content="删除" v-on:click="deletefenpei(props.rowData)" />
-                    <!-- <sui-button content="分配房屋列表" v-on:click="openAssignList(props.rowData)" /> -->
-                
+                                    <sui-button negative content="删除" v-on:click="deletefenpei(props.rowData)" />
                                     </div>
                                 </vuetable>
                             </div>
@@ -88,6 +84,7 @@
                                         </div>
                                     </div>
                                     <div slot="action" slot-scope="props">
+                                    <sui-button negative content="删除" v-on:click="deleteleader(props.rowData)" />
                                     </div>
                                 </vuetable>
                             </div>
@@ -234,7 +231,8 @@ import {
     roomGetAPI,
     getRoomDataApi,
     createAssignmentApi,
-    deleteBuildingFloorAssignmentApi
+    deleteBuildingFloorAssignmentApi,
+    delleaderroomApi
 } from "@/api/roomDataAPI";
 export default {
     name: "MyVuetable",
@@ -294,6 +292,7 @@ export default {
             rent_room_list : [],
             fenpeilocalData: [],
             lingdaoData: [],
+            deletetype:'',
             ComponentKey: 1,
             fields: FieldsDef,
             fenpeifields: FenpeiDef,
@@ -430,10 +429,16 @@ export default {
             this.loading = true;
             console.log('delete')
             console.log(this.deleteTarget)
-            deleteBuildingFloorAssignmentApi(this.deleteTarget).then((result) => {
-                console.log(result)
+            if(this.deletetype == 'fenpei'){
+                deleteBuildingFloorAssignmentApi(this.deleteTarget).then((result) => {
                 this.refreshUnits();
-            });
+            });    
+            }
+            if(this.deletetype == 'leader'){
+                delleaderroomApi(this.deleteTarget).then((result) => {
+                this.refreshUnits();
+            });  
+            }        
         },
         viewSomeThing(data, type) {
             this.$refs.formComponent.singleUnit = data;
@@ -481,7 +486,13 @@ export default {
         deletefenpei(data) {
             this.sendVal = true;
             this.deleteTarget = data
+            this.deletetype = 'fenpei'
 
+        },
+        deleteleader(data) {
+            this.sendVal = true;
+            this.deleteTarget = data
+            this.deletetype = 'leader'
         },
         refreshUnits() {
             this.loading = true;
