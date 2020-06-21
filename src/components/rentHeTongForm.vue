@@ -8,8 +8,6 @@
             <sui-form-field>
                 <sui-checkbox label="按具体面积" radio value="2" v-model="value" />
             </sui-form-field>
-            Value: {{ value }}
-
         </sui-form-fields>
 
         <sui-form-fields inline>
