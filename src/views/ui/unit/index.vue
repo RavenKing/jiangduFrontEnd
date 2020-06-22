@@ -232,7 +232,9 @@ import {
     getRoomDataApi,
     createAssignmentApi,
     deleteBuildingFloorAssignmentApi,
-    delleaderroomApi
+    delleaderroomApi,
+    getBuildingListApi,
+    getBuildingFloorApi
 } from "@/api/roomDataAPI";
 export default {
     name: "MyVuetable",
@@ -341,7 +343,8 @@ export default {
             selectedfenpei: {
                 unit: '',
                 room: '',
-                roomtype:''
+                roomtype:'',
+                roomname: ''
             },
             listField: FieldsDefList,
             fields: FieldsDef,
@@ -608,21 +611,28 @@ export default {
                     'value': res_data[i]['room_id']
                 })
             }
-            this.selectedfenpei = {'roomoptions': fenpei_options};
+            this.selectedfenpei = {'rentroomoptions': fenpei_options};
         })
 
+        var rent_options = []
+        var ziyou_source = []
         getRoomDataApi().then((data) => {
-            console.log('xx')
+
             var res_data = data.data.data
+            console.log('自有')
             console.log(res_data)
 
             for (var i = res_data.length - 1; i >= 0; i--) {
-                fenpei_options.push({
+                rent_options.push({
                     'text': res_data[i]['roomname'],
                     'value': res_data[i]['room_id']
                 })
+                ziyou_source.push({
+                    'title': res_data[i]['roomname'],
+                    'value': res_data[i]['room_id']
+                })
             }
-            this.selectedfenpei = {'roomoptions': fenpei_options};
+            this.selectedfenpei = {'ziyouroomoptions': rent_options, 'ziyousource': ziyou_source};
         })
 
         getUnitApi().then((data) => {
