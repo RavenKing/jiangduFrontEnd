@@ -21,18 +21,18 @@ const menus = [{
       //   name: "BIM三维模型",
       //   url: "/ui/bim"
       // },
-      {
-        id: "3-4",
-        title: "出租合同",
-        name: "出租合同",
-        url: "/ui/contract"
-      },
-      {
-        id: "3-5",
-        title: "租赁合同",
-        name: "租赁合同",
-        url: "/ui/loancontract"
-      },
+      // {
+      //   id: "3-4",
+      //   title: "出租合同",
+      //   name: "出租合同",
+      //   url: "/ui/contract"
+      // },
+      // {
+      //   id: "3-5",
+      //   title: "租赁合同",
+      //   name: "租赁合同",
+      //   url: "/ui/loancontract"
+      // },
       // /* {
       //   id: "3-5",
       //   title: "树形表格",
@@ -43,11 +43,11 @@ const menus = [{
         title: "单位管理",
         url: "/ui/unit"
       },
-      {
-        id: "3-7",
-        title: "员工管理",
-        url: "/ui/employee"
-      }
+      // {
+      //   id: "3-7",
+      //   title: "员工管理",
+      //   url: "/ui/employee"
+      // }
     ]
   },
   // {
