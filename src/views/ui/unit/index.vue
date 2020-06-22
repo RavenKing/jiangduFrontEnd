@@ -32,7 +32,7 @@
                     <sui-tab :menu="{ text: true }">
                         <sui-tab-pane title="基本信息" :attached="false">
                             <div>
-                                <form-create ref='formComponent' :singleRoom="selectedRoom"></form-create>
+                                <form-create ref='FormCreate' :singleRoom="selectedRoom"></form-create>
                             </div>
                             <sui-modal-actions>
                     <sui-button positive @click.native="updateUnit">
@@ -42,6 +42,9 @@
                         </sui-tab-pane>
                         <sui-tab-pane title="分配列表" :attached="false">
                             <div>
+                            <sui-button content="新增" @click.native="createRoomModel" icon="add green" />
+                        </div>
+                            <div>
                                 <vuetable ref="vuetable" :api-mode="false" :data="fenpeilocalData" :fields="fenpeifields" :sort-order="sortOrder" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
                                     <div slot="name" slot-scope="props">
                                         <div>
@@ -49,9 +52,28 @@
                                         </div>
                                     </div>
                                     <div slot="action" slot-scope="props">
+                                    <sui-button negative content="删除" v-on:click="deletefenpei(props.rowData)" />
                                     </div>
                                 </vuetable>
                             </div>
+                            <div>
+                            <sui-modal class="modal2" v-model="fenpeiopen">
+                                <sui-modal-header>{{modelTitle}}</sui-modal-header>
+                                <sui-modal-content>
+                                <div>
+                                    <form-fenpei :singleRoom="selectedfenpei"></form-fenpei>
+                                </div>
+                            </sui-modal-content>
+                            <sui-modal-actions>
+                            <sui-button negative @click.native="closeModal">
+                                取消
+                            </sui-button>
+                            <sui-button v-if="modalMode !== 'check'" positive @click.native="newfenpei">
+                                提交
+                            </sui-button>
+                </sui-modal-actions>
+            </sui-modal>
+        </div>
                         </sui-tab-pane>
                         <sui-tab-pane title="领导办公" :attached="false">
                             <div>
@@ -62,6 +84,7 @@
                                         </div>
                                     </div>
                                     <div slot="action" slot-scope="props">
+                                    <sui-button negative content="删除" v-on:click="deleteleader(props.rowData)" />
                                     </div>
                                 </vuetable>
                             </div>
@@ -104,6 +127,7 @@
                     <div>
                         <form-create ref='formComponent' :singleRoom="selectedRoom"></form-create>
                     </div>
+
                 </sui-modal-content>
                 <sui-modal-actions>
                     <sui-button negative @click.native="closeModal">
@@ -173,6 +197,7 @@
 
 <script>
 import FormCreate from "@/components/unit_basic_info";
+import FormFenpei from "@/components/unit_fenpei_new";
 import dialogBar from '@/components/MDialog'
 import UnitForm from "@/components/unitForm";
 import Vuetable from "vuetable-2/src/components/Vuetable";
@@ -201,7 +226,13 @@ import {
     updateUnitApi,
     deleteUnitApi,
     getlistleaderroomApi,
-    getUnitApiByid
+    getUnitApiByid,
+    getRentRoomDataApi,
+    roomGetAPI,
+    getRoomDataApi,
+    createAssignmentApi,
+    deleteBuildingFloorAssignmentApi,
+    delleaderroomApi
 } from "@/api/roomDataAPI";
 export default {
     name: "MyVuetable",
@@ -212,6 +243,7 @@ export default {
         VuetablePagination,
         VuetablePaginationInfo,
         UnitForm,
+        FormFenpei,
         FormCreate,
         'zichan-form': ziChanForm,
         'chanzheng-form': chanZhengForm,
@@ -253,11 +285,14 @@ export default {
             modelTitle: "",
             modalMode: "create",
             open: false,
+            fenpeiopen: false,
             deleteTarget: "",
             loading: true,
             localData: [],
+            rent_room_list : [],
             fenpeilocalData: [],
             lingdaoData: [],
+            deletetype:'',
             ComponentKey: 1,
             fields: FieldsDef,
             fenpeifields: FenpeiDef,
@@ -302,6 +337,11 @@ export default {
             localData: [],
             selectedRoom: {
                 roomname: ""
+            },
+            selectedfenpei: {
+                unit: '',
+                room: '',
+                roomtype:''
             },
             listField: FieldsDefList,
             fields: FieldsDef,
@@ -387,10 +427,18 @@ export default {
         },
         clickConfirmDelete() {
             this.loading = true;
-            deleteUnitApi(this.deleteTarget).then((result) => {
+            console.log('delete')
+            console.log(this.deleteTarget)
+            if(this.deletetype == 'fenpei'){
+                deleteBuildingFloorAssignmentApi(this.deleteTarget).then((result) => {
                 this.refreshUnits();
-                console.log(result)
-            });
+            });    
+            }
+            if(this.deletetype == 'leader'){
+                delleaderroomApi(this.deleteTarget).then((result) => {
+                this.refreshUnits();
+            });  
+            }        
         },
         viewSomeThing(data, type) {
             this.$refs.formComponent.singleUnit = data;
@@ -424,15 +472,27 @@ export default {
         },
         deleteRoom(data) {
             this.sendVal = true;
+            console.log(data)
             this.deleteTarget = {
                 text: "是否要删除" + data.name + "(" + data.enumber + ")?",
                 id: data.id
             };
-            // this.loading = true;
-            // deleteRoomApi(data).then((result) => {
-            //     this.refreshUnits();
-            //     console.log(result)
-            // });
+            this.loading = true;
+            deleteRoomApi(data).then((result) => {
+                this.refreshUnits();
+                console.log(result)
+            });
+        },
+        deletefenpei(data) {
+            this.sendVal = true;
+            this.deleteTarget = data
+            this.deletetype = 'fenpei'
+
+        },
+        deleteleader(data) {
+            this.sendVal = true;
+            this.deleteTarget = data
+            this.deletetype = 'leader'
         },
         refreshUnits() {
             this.loading = true;
@@ -487,68 +547,23 @@ export default {
         },
         createRoomModel() {
             // show create Model
-            this.modelTitle = "创建单位"
+            this.modelTitle = "单位新增房屋"
             this.modalMode = "create";
-            this.open = true;
-            this.$refs.formComponent.singleUnit = {
-                name: "",
-                enumber: "",
-                level: "",
-                level_num: ""
-            };
+            this.fenpeiopen = true;
+            console.log('create form')
+            // this.$refs.formComponent.singleUnit = {
+            //     name: "",
+            //     enumber: "",
+            //     level: "",
+            //     level_num: ""
+            // };
         },
-        // openAssignSection(rowData) {
-        //     console.log(this.selectedRoom);
-        //     this.selectedRoom = rowData;
-
-        //     this.modalMode = "edit";
-        //     // point 
-        //     if (rowData.lat === null || rowData.lat == "") {
-        //         this.point = {
-        //             lng: 121.547967,
-        //             lat: 30.879141
-        //         }
-        //     } else {
-        //         this.point = {
-        //             lng: rowData.lon,
-        //             lat: rowData.lat
-        //         }
-        //     }
-        //     this.loading = true;
-        //     this.tree = new Tree([]);
-        //     this.assignList.selectedBuilding = false;
-        //     this.assignList.selectedFloor = {
-        //         url: ""
-        //     };
-        //     this.loading = false;
-        //     this.assignList.open = true;
-        // },
-        // toggle() {
-        //     this.open = !this.open;
-        //     this.loading = true;
-        //     let formdata = this.$refs.formComponent.singleUnit;
-
-        //     if (this.modalMode == "create") {
-        //         createUnitApi(formdata).then((result) => {
-        //             console.log(result);
-        //             this.loading = false;
-        //             this.refreshUnits();
-
-        //         });
-        //     } else if (this.modalMode == "edit") {
-        //         updateUnitApi(formdata).then((result) => {
-        //             console.log(result);
-        //             this.loading = false;
-        //         });
-        //     }
-
-        // },
+        
 
         updateUnit(){
-            console.log('updateUnit')
-            let formdata = this.$refs.formComponent.singleRoom;
+            let formdata = this.$refs.FormCreate.singleRoom;
+            console.log(this.$refs)
             updateUnitApi(formdata).then((result) => {
-                    console.log(result);
                     this.loading = false;
                 });
         },
@@ -570,26 +585,63 @@ export default {
         },
         closeModal: function () {
             this.open = false;
+            this.fenpeiopen = false
+        },
+        newfenpei() {
+            console.log('提交')
+            console.log(this.selectedfenpei)
+            createAssignmentApi().then((data) => {
+
+
+            })
         }
 
     },
     created() {
-        
+        var fenpei_options = []
+        getRentRoomDataApi().then((data) => {
+            var res_data = data.data.data
 
+            for (var i = res_data.length - 1; i >= 0; i--) {
+                fenpei_options.push({
+                    'text': res_data[i]['roomname'],
+                    'value': res_data[i]['room_id']
+                })
+            }
+            this.selectedfenpei = {'roomoptions': fenpei_options};
+        })
 
+        getRoomDataApi().then((data) => {
+            console.log('xx')
+            var res_data = data.data.data
+            console.log(res_data)
+
+            for (var i = res_data.length - 1; i >= 0; i--) {
+                fenpei_options.push({
+                    'text': res_data[i]['roomname'],
+                    'value': res_data[i]['room_id']
+                })
+            }
+            this.selectedfenpei = {'roomoptions': fenpei_options};
+        })
 
         getUnitApi().then((data) => {
-            var res_data = data.data.data
-            console.log(res_data)            
+            var res_data = data.data.data         
             var parent_data = []
             var son_data = []
             var filtered_data = []
             console.log(res_data)
+            this.selectedfenpei['unitoptions'] = []
             for (var i = res_data.length - 1; i >= 0; i--) {
                 if (res_data[i]["parent_id"] == 0)
                     parent_data.push(res_data[i])
                 else
                     son_data.push(res_data[i])
+                this.selectedfenpei['unitoptions'].push({
+                    'text': res_data[i]['name'],
+                    'value': res_data[i]['id']
+                    }
+                    )
             }
             for (var i = parent_data.length - 1; i >= 0; i--) {
                 var abstract_parent = JSON.parse(JSON.stringify(parent_data[i]))
@@ -664,7 +716,6 @@ export default {
                     tree_list[tree_list.length-1]["children"].push(children_node)
                 }
             }
-            console.log(tree_list)
             this.tree = new Tree(tree_list)
             this.loading = false;
             this.localData = {

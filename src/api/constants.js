@@ -48,6 +48,8 @@ const constantsJinhui = {
     getMCAPI:"/listmc",
     updateMCApi:"/editmc",
     approveMRApi:"/approvemr",
-    rejectMRApi:"/rejectmr"
+    rejectMRApi:"/rejectmr",
+    delleaderroomApi:"/delleaderroom"
+    
 }
 export default constantsJinhui;

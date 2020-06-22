@@ -403,6 +403,29 @@ function deleteBuildingFloorAssignmentApi(data)
     });
 }
 
+function delleaderroomApi(data)
+{
+    let local_auth = localGet(global.project_key, true);
+    data.token=local_auth;
+    return request({
+        url: constants.delleaderroomApi,
+        method: 'post',
+        data: data
+    });
+}
+
+// function deleteBuildingFloorAssignmentApi(data)
+// {
+//     let local_auth = localGet(global.project_key, true);
+//     data.token=local_auth;
+//     return request({
+//         url: constants.deleteBuildingFloorAssignmentApi,
+//         method: 'post',
+//         data: data
+//     });
+// }
+
+
 export {
     getRoomDataApi,
     createRoomApi,
