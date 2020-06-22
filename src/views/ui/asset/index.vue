@@ -726,6 +726,7 @@ export default {
             if (this.modalMode == "create") {
                 this.open = !this.open;
                 createRoomApi(this.$refs.formComponent.singleRoom).then((result) => {
+                    this.refreshRooms();
                     this.loading = false;
 
                 });
@@ -733,6 +734,7 @@ export default {
                 this.assignList.open = false;
                 updateRoomApi(this.selectedRoom).then((result) => {
                     if (result.data.code == 0) {
+                        this.refreshRooms();
                         this.$notify({
                             group: 'foo',
                             title: '更新成功',
