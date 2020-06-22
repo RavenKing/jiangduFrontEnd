@@ -6,7 +6,7 @@
                 <sui-loader content="Loading..." />
             </sui-dimmer>
         </div>
-        <div class="filterBiaoDan">
+        <div class="filterBiaoDan" v-show="role!=1">
             <sui-button content="申请维修" @click.native="openWeiXiuForm" icon="add green" />
         </div>
 

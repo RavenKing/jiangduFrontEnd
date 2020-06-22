@@ -58,7 +58,7 @@
             </sui-form-field>
         </sui-form-fields>
 
-        <div v-show="singleRoom.space6&&singleRoom.space7">
+        <div v-show="singleRoom.space8&&singleRoom.space7&&singleRoom.space8>0&&singleRoom.space7>0">
             <div is="sui-divider" horizontal>
                 <h4 is="sui-header">
                     <i class="bar chart icon"></i>
@@ -163,7 +163,7 @@
                 </sui-form-field>
             </sui-form-fields>
         </div>
-        <div v-show="singleRoom.space28&&singleRoom.space29">
+        <div v-show="singleRoom.space28&&singleRoom.space29&&singleRoom.space28>0&&singleRoom.space29>0">
             <div is="sui-divider" horizontal>
                 <h4 is="sui-header">
                     <i class="bar chart icon"></i>
@@ -220,7 +220,7 @@
                 </sui-form-field>
             </sui-form-fields>
         </div>
-        <div v-show="singleRoom.space40">
+        <div v-show="singleRoom.space40&&singleRoom.space40>0">
             <div is="sui-divider" horizontal>
                 <h4 is="sui-header">
                     <i class="bar chart icon"></i>
