@@ -7,25 +7,24 @@
                 <sui-loader content="Loading..." />
             </sui-dimmer>
 
-        </div>
-
+        </div>  
         <div class="filterBiaoDan">
             <sui-button content="添加" @click.native="createRoomModel" icon="add green" />
             <sui-button content="导出" v-on:click="exportToExcel" icon="file green" />
         </div>
 
         <sui-grid>
-            <sui-grid-row >
+            <sui-grid-row>
                 <sui-grid-column :width="3">
                     <div class="filterBiaoDan">
-                    <vue-tree-list :key="componentKey" @click="onClick"  :model="tree" default-tree-node-name="new node" default-leaf-node-name="new leaf" v-bind:default-expanded="false" >
-                        <span class="icon" slot="addTreeNodeIcon"></span>
-                        <span class="icon" slot="addLeafNodeIcon"></span>
-                        <span class="icon" slot="leafNodeIcon">
-                            <sui-icon name="home" /></span>
-                        <span class="icon" slot="treeNodeIcon">
-                            <sui-icon name="building outline" /></span>
-                    </vue-tree-list>
+                        <vue-tree-list :key="componentKey" @click="onClick" :model="tree" default-tree-node-name="new node" default-leaf-node-name="new leaf" v-bind:default-expanded="false">
+                            <span class="icon" slot="addTreeNodeIcon"></span>
+                            <span class="icon" slot="addLeafNodeIcon"></span>
+                            <span class="icon" slot="leafNodeIcon">
+                                <sui-icon name="home" /></span>
+                            <span class="icon" slot="treeNodeIcon">
+                                <sui-icon name="building outline" /></span>
+                        </vue-tree-list>
                     </div>
                 </sui-grid-column>
                 <sui-grid-column :width="13">
@@ -35,15 +34,15 @@
                                 <form-create ref='FormCreate' :singleRoom="selectedRoom"></form-create>
                             </div>
                             <sui-modal-actions>
-                    <sui-button positive @click.native="updateUnit">
-                        保存
-                    </sui-button>
-                </sui-modal-actions>
+                                <sui-button positive @click.native="updateUnit">
+                                    保存
+                                </sui-button>
+                            </sui-modal-actions>
                         </sui-tab-pane>
                         <sui-tab-pane title="分配列表" :attached="false">
                             <div>
-                            <sui-button content="新增" @click.native="createRoomModel" icon="add green" />
-                        </div>
+                                <sui-button content="新增" @click.native="createRoomModel" icon="add green" />
+                            </div>
                             <div>
                                 <vuetable ref="vuetable" :api-mode="false" :data="fenpeilocalData" :fields="fenpeifields" :sort-order="sortOrder" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
                                     <div slot="name" slot-scope="props">
@@ -52,28 +51,28 @@
                                         </div>
                                     </div>
                                     <div slot="action" slot-scope="props">
-                                    <sui-button negative content="删除" v-on:click="deletefenpei(props.rowData)" />
+                                        <sui-button negative content="删除" v-on:click="deletefenpei(props.rowData)" />
                                     </div>
                                 </vuetable>
                             </div>
                             <div>
-                            <sui-modal class="modal2" v-model="fenpeiopen">
-                                <sui-modal-header>{{modelTitle}}</sui-modal-header>
-                                <sui-modal-content>
-                                <div>
-                                    <form-fenpei :singleRoom="selectedfenpei"></form-fenpei>
-                                </div>
-                            </sui-modal-content>
-                            <sui-modal-actions>
-                            <sui-button negative @click.native="closeModal">
-                                取消
-                            </sui-button>
-                            <sui-button v-if="modalMode !== 'check'" positive @click.native="newfenpei">
-                                提交
-                            </sui-button>
-                </sui-modal-actions>
-            </sui-modal>
-        </div>
+                                <sui-modal class="modal2" v-model="fenpeiopen">
+                                    <sui-modal-header>{{modelTitle}}</sui-modal-header>
+                                    <sui-modal-content scrolling>
+                                        <div>
+                                            <form-fenpei :singleRoom="selectedfenpei"></form-fenpei>
+                                        </div>
+                                    </sui-modal-content>
+                                    <sui-modal-actions>
+                                        <sui-button negative @click.native="closeModal">
+                                            取消
+                                        </sui-button>
+                                        <sui-button v-if="modalMode !== 'check'" positive @click.native="newfenpei">
+                                            提交
+                                        </sui-button>
+                                    </sui-modal-actions>
+                                </sui-modal>
+                            </div>
                         </sui-tab-pane>
                         <sui-tab-pane title="领导办公" :attached="false">
                             <div>
@@ -84,32 +83,32 @@
                                         </div>
                                     </div>
                                     <div slot="action" slot-scope="props">
-                                    <sui-button negative content="删除" v-on:click="deleteleader(props.rowData)" />
+                                        <sui-button negative content="删除" v-on:click="deleteleader(props.rowData)" />
                                     </div>
                                 </vuetable>
                             </div>
                         </sui-tab-pane>
                         <sui-tab-pane title="地图定位" :attached="false">
                             <div class="imageForm" :key="ComponentKey">
-                                    <sui-form>
-                                        <sui-form-fields inline>
-                                            <label> 经度
-                                            </label>
-                                            <sui-form-field>
-                                                <sui-input type="text" placeholder="请选择" v-model="selectedRoom.lon" />
-                                            </sui-form-field>
-                                            <label> 维度</label>
-                                            <sui-form-field>
-                                                <sui-input type="text" placeholder="请选择" v-model="selectedRoom.lat" />
-                                            </sui-form-field>
-                                        </sui-form-fields>
-                                    </sui-form>
-                                </div>
-                                <baidu-map class="map" :center="point" :zoom="15">
-                                    <bm-navigation anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-navigation>
-                                    <bm-marker :position="point" :dragging="true" animation="BMAP_ANIMATION_BOUNCE" @dragend="dragend">
-                                    </bm-marker>
-                                </baidu-map>
+                                <sui-form>
+                                    <sui-form-fields inline>
+                                        <label> 经度
+                                        </label>
+                                        <sui-form-field>
+                                            <sui-input type="text" placeholder="请选择" v-model="selectedRoom.lon" />
+                                        </sui-form-field>
+                                        <label> 维度</label>
+                                        <sui-form-field>
+                                            <sui-input type="text" placeholder="请选择" v-model="selectedRoom.lat" />
+                                        </sui-form-field>
+                                    </sui-form-fields>
+                                </sui-form>
+                            </div>
+                            <baidu-map class="map" :center="point" :zoom="15">
+                                <bm-navigation anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-navigation>
+                                <bm-marker :position="point" :dragging="true" animation="BMAP_ANIMATION_BOUNCE" @dragend="dragend">
+                                </bm-marker>
+                            </baidu-map>
                         </sui-tab-pane>
 
                     </sui-tab>
@@ -123,7 +122,7 @@
         <div>
             <sui-modal class="modal2" v-model="open">
                 <sui-modal-header>{{modelTitle}}</sui-modal-header>
-                <sui-modal-content>
+                <sui-modal-content scrolling>
                     <div>
                         <form-create ref='formComponent' :singleRoom="selectedRoom"></form-create>
                     </div>
@@ -141,7 +140,7 @@
         </div>
         <div>
             <sui-modal class="modal2" v-model="buildingForm.open">
-                <sui-modal-content image>
+                <sui-modal-content scrolling>
                     <building-form ref='formComponentBuilding'></building-form>
                 </sui-modal-content>
                 <sui-modal-actions>
@@ -172,24 +171,6 @@
                 </sui-modal-actions>
             </sui-modal>
         </div>
-    </div>
-    <div>
-        <sui-modal class="modal2" v-model="assignList.open">
-            <sui-modal-content scrolling>
-                <div>
-
-                </div>
-
-            </sui-modal-content>
-            <sui-modal-actions>
-                <sui-button positive @click.native="toggle">
-                    保存
-                </sui-button>
-                <sui-button negative @click.native="closeModal">
-                    取消
-                </sui-button>
-            </sui-modal-actions>
-        </sui-modal>
     </div>
 
 </wl-container>
@@ -255,6 +236,22 @@ export default {
     },
     data() {
         return {
+            source: [{
+                    title: 'Andorra'
+                },
+                {
+                    title: 'United Arab Emirates'
+                },
+                {
+                    title: 'Afghanistan'
+                },
+                {
+                    title: 'Antigua'
+                },
+                {
+                    title: 'Anguilla'
+                },
+            ],
             tree: new Tree([{
                     name: 'Node 1',
                     id: 1,
@@ -265,17 +262,18 @@ export default {
                     editNodeDisabled: true,
                     delNodeDisabled: true,
                     children: [{
-                        name: 'Node 1-2',
-                        id: 1,
-                        isLeaf: true,
-                        pid: 1
-                    },
-                    {
-                        name: 'Node 1-1',
-                        id: 2,
-                        isLeaf: true,
-                        pid: 1
-                    }]
+                            name: 'Node 1-2',
+                            id: 1,
+                            isLeaf: true,
+                            pid: 1
+                        },
+                        {
+                            name: 'Node 1-1',
+                            id: 2,
+                            isLeaf: true,
+                            pid: 1
+                        }
+                    ]
                 },
                 {
                     name: 'Node 3',
@@ -291,10 +289,10 @@ export default {
             deleteTarget: "",
             loading: true,
             localData: [],
-            rent_room_list : [],
+            rent_room_list: [],
             fenpeilocalData: [],
             lingdaoData: [],
-            deletetype:'',
+            deletetype: '',
             ComponentKey: 1,
             fields: FieldsDef,
             fenpeifields: FenpeiDef,
@@ -343,7 +341,7 @@ export default {
             selectedfenpei: {
                 unit: '',
                 room: '',
-                roomtype:'',
+                roomtype: '',
                 roomname: ''
             },
             listField: FieldsDefList,
@@ -379,35 +377,35 @@ export default {
         onClick(params) {
 
             this.selectedRoom = params
-            getUnitApiByid(params.id).then((data)=> {
-            var res_data = data.data.data['building_info']
-            this.fenpeilocalData = {
-                total: 16,
-                per_page: 5,
-                current_page: 1,
-                last_page: 4,
-                next_page_url: "data.data.data?page=2",
-                prev_page_url: null,
-                from: 1,
-                to: 5,
-                data: res_data
-            }            
-        })
-        getlistleaderroomApi(params.id).then((data)=> {
-            var res_data = data.data.data
-            console.log('leader room')
-            this.lingdaoData = {
-                total: 16,
-                per_page: 5,
-                current_page: 1,
-                last_page: 4,
-                next_page_url: "data.data.data?page=2",
-                prev_page_url: null,
-                from: 1,
-                to: 5,
-                data: res_data
-            }
-        })
+            getUnitApiByid(params.id).then((data) => {
+                var res_data = data.data.data['building_info']
+                this.fenpeilocalData = {
+                    total: 16,
+                    per_page: 5,
+                    current_page: 1,
+                    last_page: 4,
+                    next_page_url: "data.data.data?page=2",
+                    prev_page_url: null,
+                    from: 1,
+                    to: 5,
+                    data: res_data
+                }
+            })
+            getlistleaderroomApi(params.id).then((data) => {
+                var res_data = data.data.data
+                console.log('leader room')
+                this.lingdaoData = {
+                    total: 16,
+                    per_page: 5,
+                    current_page: 1,
+                    last_page: 4,
+                    next_page_url: "data.data.data?page=2",
+                    prev_page_url: null,
+                    from: 1,
+                    to: 5,
+                    data: res_data
+                }
+            })
         },
 
         addNode() {
@@ -432,16 +430,16 @@ export default {
             this.loading = true;
             console.log('delete')
             console.log(this.deleteTarget)
-            if(this.deletetype == 'fenpei'){
+            if (this.deletetype == 'fenpei') {
                 deleteBuildingFloorAssignmentApi(this.deleteTarget).then((result) => {
-                this.refreshUnits();
-            });    
+                    this.refreshUnits();
+                });
             }
-            if(this.deletetype == 'leader'){
+            if (this.deletetype == 'leader') {
                 delleaderroomApi(this.deleteTarget).then((result) => {
-                this.refreshUnits();
-            });  
-            }        
+                    this.refreshUnits();
+                });
+            }
         },
         viewSomeThing(data, type) {
             this.$refs.formComponent.singleUnit = data;
@@ -561,17 +559,14 @@ export default {
             //     level_num: ""
             // };
         },
-        
 
-        updateUnit(){
+        updateUnit() {
             let formdata = this.$refs.FormCreate.singleRoom;
             console.log(this.$refs)
             updateUnitApi(formdata).then((result) => {
-                    this.loading = false;
-                });
+                this.loading = false;
+            });
         },
-
-
 
         openRoom(value) {
             console.log(value);
@@ -595,7 +590,6 @@ export default {
             console.log(this.selectedfenpei)
             createAssignmentApi().then((data) => {
 
-
             })
         }
 
@@ -611,7 +605,9 @@ export default {
                     'value': res_data[i]['room_id']
                 })
             }
-            this.selectedfenpei = {'rentroomoptions': fenpei_options};
+            this.selectedfenpei = {
+                'rentroomoptions': fenpei_options
+            };
         })
 
         var rent_options = []
@@ -624,19 +620,22 @@ export default {
 
             for (var i = res_data.length - 1; i >= 0; i--) {
                 rent_options.push({
-                    'text': res_data[i]['roomname'],
-                    'value': res_data[i]['room_id']
+                    text: res_data[i]['roomname'],
+                    value: res_data[i]['id']
                 })
                 ziyou_source.push({
-                    'title': res_data[i]['roomname'],
-                    'value': res_data[i]['room_id']
+                    text: res_data[i]['roomname'],
+                    value: res_data[i]['id']
                 })
             }
-            this.selectedfenpei = {'ziyouroomoptions': rent_options, 'ziyousource': ziyou_source};
+            this.selectedfenpei = {
+                'ziyouroomoptions': rent_options,
+                'ziyousource': ziyou_source
+            };
         })
 
         getUnitApi().then((data) => {
-            var res_data = data.data.data         
+            var res_data = data.data.data
             var parent_data = []
             var son_data = []
             var filtered_data = []
@@ -650,15 +649,14 @@ export default {
                 this.selectedfenpei['unitoptions'].push({
                     'text': res_data[i]['name'],
                     'value': res_data[i]['id']
-                    }
-                    )
+                })
             }
             for (var i = parent_data.length - 1; i >= 0; i--) {
                 var abstract_parent = JSON.parse(JSON.stringify(parent_data[i]))
                 abstract_parent["status"] = 99
                 for (var j = son_data.length - 1; j >= 0; j--) {
                     if (son_data[j]["parent_id"] == abstract_parent["id"])
-                    abstract_parent["enumber"] = parseInt(abstract_parent["enumber"]) + parseInt(son_data[j]["enumber"])
+                        abstract_parent["enumber"] = parseInt(abstract_parent["enumber"]) + parseInt(son_data[j]["enumber"])
                     abstract_parent["zhengting"] = parseInt(abstract_parent["zhengting"]) + parseInt(son_data[j]["zhengting"])
                     abstract_parent["futing"] = parseInt(abstract_parent["futing"]) + parseInt(son_data[j]["futing"])
                     abstract_parent["zhengchu"] = parseInt(abstract_parent["zhengchu"]) + parseInt(son_data[j]["zhengchu"])
@@ -676,8 +674,8 @@ export default {
             }
             console.log(filtered_data)
             var tree_list = []
-            for (var i=0; i < filtered_data.length; i++){
-                if (filtered_data[i]["status"] == 99){
+            for (var i = 0; i < filtered_data.length; i++) {
+                if (filtered_data[i]["status"] == 99) {
                     var paraent_node = {}
                     paraent_node["name"] = filtered_data[i]["name"]
                     paraent_node["id"] = filtered_data[i]["id"]
@@ -690,8 +688,7 @@ export default {
                     paraent_node.editNodeDisabled = true;
                     paraent_node.delNodeDisabled = true;
                     tree_list.push(paraent_node)
-                }
-                else{
+                } else {
                     var children_node = {}
                     children_node["id"] = filtered_data[i]["id"]
                     children_node["name"] = filtered_data[i]["name"]
@@ -723,7 +720,7 @@ export default {
                     children_node.delLeafNodeDisabled = true;
                     children_node.editNodeDisabled = true;
                     children_node.delNodeDisabled = true;
-                    tree_list[tree_list.length-1]["children"].push(children_node)
+                    tree_list[tree_list.length - 1]["children"].push(children_node)
                 }
             }
             this.tree = new Tree(tree_list)
@@ -775,6 +772,7 @@ export default {
 .filterBiaoDan {
     margin: 20px
 }
+
 .vue2Table {
     margin: 20px;
 }

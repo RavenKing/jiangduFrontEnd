@@ -39,7 +39,8 @@
     "wl-gantt": "^1.0.1",
     "wl-tree-transfer": "^1.0.8",
     "wl-vue-select": "^0.5.1",
-    "xlsx": "^0.15.6"
+    "xlsx": "^0.15.6",
+    "vue-search-select": "2.9.3"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^4.1.0",
