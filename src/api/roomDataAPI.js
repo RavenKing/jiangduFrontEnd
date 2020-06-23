@@ -459,6 +459,7 @@ export {
     getBuildingFloorApi,
     updateFloorApi,
     deleteBuildingFloorAssignmentApi,
-    getUnitApiByid
+    getUnitApiByid,
+    delleaderroomApi
     
 }
