@@ -38,7 +38,7 @@
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields>
-            <sui-form-field v-if="singleRoom.roomtype == '1'">
+            <sui-form-field>
                 <label>选择单位</label>
                 <sui-dropdown placeholder="选择单位" selection :options="singleRoom.unitoptions" v-model="singleRoom.unit" />
             </sui-form-field>
