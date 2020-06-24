@@ -226,9 +226,9 @@
                                         </sui-form-fields>
                                     </sui-form>
                                 </div>
-                                <baidu-map class="map" :center="point" :zoom="15">
+                                <baidu-map class="map" :zoom="15">
                                     <bm-navigation anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-navigation>
-                                    <bm-marker :position="point" :dragging="true" animation="BMAP_ANIMATION_BOUNCE" @dragend="dragend">
+                                    <bm-marker v-for="(item,i) in points" :position="{lng: item.lng, lat: item.lat}" :position="point" :dragging="true" animation="BMAP_ANIMATION_BOUNCE" @dragend="dragend key="i">
                                     </bm-marker>
                                     <bm-local-search :keyword="keyword" :auto-viewport="true" location="上海"></bm-local-search>
 
