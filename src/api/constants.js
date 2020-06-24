@@ -24,9 +24,11 @@ const constantsJinhui = {
     deleteRentContractApi:hostname+'/delrentcontract',
     deleteLoanContractApi:hostname+'/delloancontract',
     listRoomAssignmentApi:hostname+'/listroomassignment',
+    listRentRoomAssignmentApi:'/listrentroomassignment',
     listRentRoomContractApi:hostname+'/listrentcontract',
     listLoanRoomContractApi:hostname+'/listloancontract',
     createAssignmentApi:hostname+'/assignroom',
+    createAssignmentRentApi:hostname+'/assignrentroom',
     baiduMapCheck:"http://api.map.baidu.com/geoconv/v1/?from=1&to=5&ak=vWGxcQlbdPyDTihpzGpiVeXcha5fdmea",
     createBuildingApi:hostname+"/assignroombuilding",
     listBuildingApi:hostname+"/listroombuilding",
@@ -50,7 +52,8 @@ const constantsJinhui = {
     updateMCApi:"/editmc",
     approveMRApi:"/approvemr",
     rejectMRApi:"/rejectmr",
-    delleaderroomApi:"/delleaderroom"
+    delleaderroomApi:"/delleaderroom",
+    deleteRentRoomAssignmentApi:"/delassignroom"
     
 }
 export default constantsJinhui;

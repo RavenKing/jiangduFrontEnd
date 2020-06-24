@@ -15,7 +15,7 @@
                             <sui-form-fields inline>
                                 <label> 产证面积</label>
                                 <sui-form-field>
-                                    <input type="text" placeholder="请选择" v-model="filterString.hezhunyongtu" />
+                                    <sui-input type="text" placeholder="请选择" v-model="filterString.hezhunyongtu" />
                                 </sui-form-field>
                                 <label> 至</label>
                                 <sui-form-field>
@@ -71,7 +71,31 @@
 
                                 </div>
                             </sui-tab-pane>
-                            <sui-tab-pane title="分配单位" :attached="false" :disabled="!editMode">
+                            <sui-tab-pane title="分配单位" :attached="false" :disabled="!editMode" :key="componentFenpeikey">
+                                <sui-dimmer :active="loading" inverted>
+                                    <sui-loader content="Loading..." />
+                                </sui-dimmer>
+                                <sui-form>
+                                    <sui-form-fields inline>
+                                        <sui-form-field required :error="validationCheck.unit_id">
+                                            <label>单位 </label>
+                                            <sui-dropdown placeholder="选择单位" selection :options="unitoptions" v-model="selectedRoom.unit_id" />
+                                        </sui-form-field>
+                                        <sui-form-field required :error="validationCheck.space">
+                                            <label>面积</label>
+                                            <sui-input type="text" placeholder="输入面积" v-model="selectedRoom.space_assign" />
+                                        </sui-form-field>
+                                        <sui-button negative content="添加单位" @click.prevent="assignRentRoom()" />
+                                    </sui-form-fields>
+                                </sui-form>
+                                <div class="vue2Table">
+                                    <vuetable ref="vuetable" :api-mode="false" :data="selectedRoom.assignList" :fields="fieldsAssign" data-path="data" :key="componentAssignListkey">
+                                        <div slot="action" slot-scope="props">
+                                            <!-- <sui-button positive content="查看" v-on:click="viewSomeThing(props.rowData,'check')" /> -->
+                                            <sui-button negative content="删除" v-on:click="deleteRoomAssign(props.rowData)" />
+                                        </div>
+                                    </vuetable>
+                                </div>
                             </sui-tab-pane>
                             <sui-tab-pane title="地图定位" :attached="false" :disabled="!editMode">
                                 <div class="imageForm" :key="ComponentKey">
@@ -125,19 +149,28 @@ import Vuetable from "vuetable-2/src/components/Vuetable";
 import VuetablePagination from "vuetable-2/src/components/VuetablePagination";
 import VuetablePaginationInfo from "vuetable-2/src/components/VuetablePaginationInfo";
 import FieldsDef from "./FieldsDef.js";
+import FieldsAssign from "./FieldsForAssign.js";
 import contractForm from "@/components/rentContractForm";
 import rentHeTongForm from "@/components/rentHeTongForm";
 import {
     export_json_to_excel
 } from "@/util/Export2Excel";
+import constants from "@/util/constants";
 import {
     getRentRoomDataApi,
     createRentRoomApi,
     updateRentRoomApi,
     deleteRentRoomApi,
     createRentContractApi,
-    getRentRoomContractListApi
+    getRentRoomContractListApi,
+    assignRentAssignmentApi,
+    getUnitApi,
+    listRentRoomAssignmentApi,
+    deleteRentRoomAssignmentApi
 } from "@/api/roomDataAPI";
+import {
+    notifySomething
+} from "@/util/utils"
 export default {
     name: "MyVuetable",
     components: {
@@ -151,6 +184,10 @@ export default {
     },
     data() {
         return {
+            validationCheck: {
+                unit_id: false,
+                space: false
+            },
             sendVal: false,
             modelTitle: "",
             editMode: false,
@@ -159,6 +196,9 @@ export default {
                 jiadi: "",
                 diji: ""
             },
+            unitoptions: [],
+            componentAssignListkey: 1,
+            componentFenpeikey: 1,
             defaultTab: 0,
             point: {},
             selectedRoom: {},
@@ -167,6 +207,7 @@ export default {
             loading: true,
             localData: [],
             fields: FieldsDef,
+            fieldsAssign: FieldsAssign,
             sortOrder: [{
                 field: "email",
                 direction: "asc"
@@ -187,6 +228,46 @@ export default {
     },
 
     methods: {
+        assignRentRoom() {
+            this.loading = true;
+            console.log(this.selectedRoom.unit_id);
+            if (this.selectedRoom.unit_id == undefined || this.selectedRoom.unit_id == "") {
+                this.validationCheck.unit_id = true;
+                this.validationCheck.space = true;
+                return;
+            }
+            this.validationCheck.unit_id = false;
+            this.validationCheck.space = false;
+            var nPayload = {
+                room_id: this.selectedRoom.id,
+                space: this.selectedRoom.space_assign,
+                unit_id: this.selectedRoom.unit_id
+            }
+            assignRentAssignmentApi(nPayload).then((result) => {
+                this.loading = false;
+                if (result.data.code == 0) {
+                    notifySomething(constants.FENPEISUCCESS, constants.FENPEISUCCESS, constants.typeSuccess);
+                    this.loading = true;
+                    this.refreshAssignment();
+                } else {
+                    notifySomething(constants.CREATEFAILED, constants.CREATEFAILED, constants.typeError);
+                }
+            }).catch(function (error) {
+                this.loading = false;
+                notifySomething(constants.CREATEFAILED, constants.CREATEFAILED, constants.typeError);
+            });
+
+        },
+        refreshAssignment() {
+            listRentRoomAssignmentApi({
+                room_id: this.selectedRoom.id
+            }).then((data) => {
+                this.loading = false;
+                this.selectedRoom.assignList = data.data.data;
+                this.componentAssignListkey++;
+
+            })
+        },
         formatJson(filterVal, jsonData) {
             return jsonData.map(v => filterVal.map(j => {
                 if (j === 'timestamp') {
@@ -198,10 +279,23 @@ export default {
         },
         clickConfirmDelete() {
             this.loading = true;
-            deleteRentRoomApi(this.deleteTarget).then((result) => {
-                this.refreshRooms();
-                console.log(result)
-            });
+            if (this.deleteTarget.type == constants.typeRoomAssignment) {
+                deleteRentRoomAssignmentApi(this.deleteTarget).then((result) => {
+                    this.loading = false;
+                    if (result.data.code == 0) {
+                        notifySomething(constants.DELETESUCCESS, constants.DELETESUCCESS, constants.typeSuccess);
+                        this.refreshAssignment();
+                    } else {
+                        notifySomething(constants.DELETEFAILED, constants.DELETEFAILED, constants.typeError);
+                    }
+                });
+
+            } else {
+                deleteRentRoomApi(this.deleteTarget).then((result) => {
+                    this.refreshRooms();
+                    console.log(result)
+                });
+            }
         },
         openContractModal(rowData) {
             this.contractForm.open = true;
@@ -258,7 +352,6 @@ export default {
             this.defaultTab = 0;
             this.selectedRoom = data;
             this.modelTitle = "修改租赁房屋";
-            console.log(data.id);
             this.editMode = true;
             if (data.lat === null || data.lat == "") {
                 this.point = {
@@ -272,19 +365,24 @@ export default {
                 }
             }
             this.open = true;
-
-            getRentRoomContractListApi({
+            listRentRoomAssignmentApi({
                 room_id: this.selectedRoom.id
-            }).then((result) => {
-                console.log(result.data.data);
-                var latestOne = result.data.data.length;
-                if (latestOne == 0) {
-                    this.selectedRoomContract = {}
-                } else {
-                    this.selectedRoomContract = result.data.data[latestOne - 1];
-                }
-                this.loading = false;
+            }).then((data) => {
+                this.selectedRoom.assignList = data.data.data;
+                getRentRoomContractListApi({
+                    room_id: this.selectedRoom.id
+                }).then((result) => {
+                    console.log(result.data.data);
+                    var latestOne = result.data.data.length;
+                    if (latestOne == 0) {
+                        this.selectedRoomContract = {}
+                    } else {
+                        this.selectedRoomContract = result.data.data[latestOne - 1];
+                    }
+                    this.loading = false;
+                })
             })
+
         },
         exportToExcel() {
             let headers = ['id', 'room_id', 'cert_id', 'owner', 'address', 'roomname', 'usage', 'space'];
@@ -298,12 +396,16 @@ export default {
             });
 
         },
-        deleteRoom(data) {
+        deleteRoomAssign(data) {
             this.sendVal = true;
             this.deleteTarget = {
-                text: "是否要删除" + data.room_id + "(" + data.room_name + ")?",
-                id: data.id
+                text: "是否要删除" + data.room_id + "(" + data.unit_detail.name + ")?",
+                id: data.id,
+                type: constants.typeRoomAssignment
             };
+        },
+        deleteRoom(data) {
+
             // this.loading = true;
             // deleteRoomApi(data).then((result) => {
             //     this.refreshRooms();
@@ -376,6 +478,7 @@ export default {
 
     },
     created() {
+
         getRentRoomDataApi().then((data) => {
             //this.localData = data.data.data;
             this.loading = false;
@@ -389,6 +492,15 @@ export default {
                 from: 1,
                 to: 5,
                 data: data.data.data
+            }
+        });
+        getUnitApi().then((data) => {
+            var res_data = data.data.data
+            for (var i = res_data.length - 1; i >= 0; i--) {
+                this.unitoptions.push({
+                    'text': res_data[i]['name'],
+                    'value': res_data[i]['id']
+                })
             }
         });
     }

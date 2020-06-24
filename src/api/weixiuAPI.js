@@ -123,18 +123,12 @@ function approveMRApi(data){
 }
 function editMRApi(data)
 {
-    console.log(constants.editMRApi)
     return generalRequet(data,constants.editMRAPI)
 }
 
 function generalRequet(data,apiName)
 {
     let local_auth = localGet(global.project_key, true);
-  //console.log(local_auth);
-    // //console.log(local_auth);
-    // // const newFormData = {
-    // //     "token": local_auth
-    // // }
     data.token=local_auth;
     return request({
         url: apiName,
