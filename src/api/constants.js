@@ -39,6 +39,7 @@ const constantsJinhui = {
     getOSSURLApi:hostname+"/getpdf",
     updateFloorApi:hostname+"/editbuildingfloor",
     deleteBuildingFloorAssignmentApi:hostname+"/delassignroom",
+    assignRentRoomApi: hostname+"/assignrentroom",
     //MR request
     getMRAPI:"/listmr",
     updateMRAPI:"",

@@ -588,9 +588,29 @@ export default {
         newfenpei() {
             console.log('提交')
             console.log(this.selectedfenpei)
-            createAssignmentApi().then((data) => {
+            if(this.selectedfenpei.roomtype == '1'){
+                var input = {}
+                input['room_id'] = this.selectedfenpei.room_id
+                input['building_id'] = this.selectedfenpei.building_id
+                input['floor_id'] = this.selectedfenpei.floor_id
+                input['unit_id'] = this.selectedfenpei.unit_id
 
-            })
+                createAssignmentApi(input).then((data) => {
+                    console.log(data)
+            })    
+            }
+            if(this.selectedfenpei.roomtype == '2'){
+                var input = {}
+                input['room_id'] = this.selectedfenpei.room_id
+                input['building_id'] = this.selectedfenpei.building_id
+                input['floor_id'] = this.selectedfenpei.floor_id
+                input['unit_id'] = this.selectedfenpei.unit_id
+
+                assignRentRoomApi(input).then((data) => {
+                    console.log(data)
+            })    
+            }
+            
         }
 
     },
@@ -598,11 +618,10 @@ export default {
         var fenpei_options = []
         getRentRoomDataApi().then((data) => {
             var res_data = data.data.data
-
             for (var i = res_data.length - 1; i >= 0; i--) {
                 fenpei_options.push({
-                    'text': res_data[i]['roomname'],
-                    'value': res_data[i]['room_id']
+                    text: res_data[i]['roomname'],
+                    value: res_data[i]['room_id']
                 })
             }
             this.selectedfenpei = {
@@ -628,10 +647,8 @@ export default {
                     value: res_data[i]['id']
                 })
             }
-            this.selectedfenpei = {
-                'ziyouroomoptions': rent_options,
-                'ziyousource': ziyou_source
-            };
+            this.selectedfenpei['ziyousource'] = ziyou_source
+            this.selectedfenpei['ziyouroomoptions'] = rent_options
         })
 
         getUnitApi().then((data) => {

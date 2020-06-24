@@ -20,24 +20,25 @@
                 </model-select>
                 <!-- <sui-dropdown placeholder="选择房屋"  selection :options="singleRoom.ziyouroomoptions" v-model="singleRoom.room" /> -->
             </sui-form-field>
-            <sui-form-field>
+            <sui-form-field v-if="singleRoom.roomtype == '1'" class="width300">
                 <label>房</label>
                 <sui-dropdown placeholder="选择房" selection :options="louOptions" v-model="singleRoom.building_id" @input="setFloor()" :loading="louLoading" :disabled="louLoading" />
 
             </sui-form-field>
-            <sui-form-field>
+            <sui-form-field v-if="singleRoom.roomtype == '1'" class="width300">
                 <label>楼</label>
                 <sui-dropdown floating direction="upward" placeholder="选择楼" selection :options="floorOptions" v-model="singleRoom.floor_id" :loading="floorLoading" :disabled="floorLoading" />
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields>
             <sui-form-field v-if="singleRoom.roomtype == '2'">
-                <label>选择房屋</label>
-                <sui-dropdown placeholder="选择房屋" selection :options="singleRoom.rentroomoptions" v-model="singleRoom.room" />
+                <label>选择租赁房屋</label>
+                <model-select :options="singleRoom.rentroomoptions" v-model="itemrent" placeholder="select item" width="300px" @input="handleOnInput">
+                </model-select>
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields>
-            <sui-form-field v-if="singleRoom.roomtype == '1'">
+            <sui-form-field>
                 <label>选择单位</label>
                 <sui-dropdown placeholder="选择单位" selection :options="singleRoom.unitoptions" v-model="singleRoom.unit" />
             </sui-form-field>

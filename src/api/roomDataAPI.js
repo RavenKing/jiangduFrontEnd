@@ -311,6 +311,18 @@ function createAssignmentApi(data)
         data: data
     });
 }
+
+function assignRentRoomApi(data)
+{
+    let local_auth = localGet(global.project_key, true);
+    data.token=local_auth;
+    return request({
+        url: constants.assignRentRoomApi,
+        method: 'post',
+        data: data
+    });
+}
+
 function getAssignRoomList(data)
 {  
     
@@ -439,7 +451,6 @@ function generalRequet(data,apiName)
 }
 
 
-
 export {
     getRoomDataApi,
     createRoomApi,
@@ -477,5 +488,6 @@ export {
     delleaderroomApi,
     assignRentAssignmentApi,
     listRentRoomAssignmentApi,
-    deleteRentRoomAssignmentApi
+    deleteRentRoomAssignmentApi,
+    assignRentRoomApi
 }
