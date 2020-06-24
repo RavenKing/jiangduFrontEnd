@@ -377,6 +377,10 @@ export default {
         onClick(params) {
 
             this.selectedRoom = params
+            console.log('clicked clicked')
+            console.log(this.selectedRoom)
+
+
             getUnitApiByid(params.id).then((data) => {
                 var res_data = data.data.data['building_info']
                 this.fenpeilocalData = {
@@ -634,9 +638,6 @@ export default {
         getRoomDataApi().then((data) => {
 
             var res_data = data.data.data
-            console.log('自有')
-            console.log(res_data)
-
             for (var i = res_data.length - 1; i >= 0; i--) {
                 rent_options.push({
                     text: res_data[i]['roomname'],
@@ -656,6 +657,7 @@ export default {
             var parent_data = []
             var son_data = []
             var filtered_data = []
+            console.log('getUnitApi')
             console.log(res_data)
             this.selectedfenpei['unitoptions'] = []
             for (var i = res_data.length - 1; i >= 0; i--) {
@@ -707,27 +709,28 @@ export default {
                     tree_list.push(paraent_node)
                 } else {
                     var children_node = {}
-                    children_node["id"] = filtered_data[i]["id"]
-                    children_node["name"] = filtered_data[i]["name"]
-                    children_node["enumber"] = filtered_data[i]["enumber"]
-                    children_node["zhengting"] = filtered_data[i]["zhengting"]
-                    children_node["futing"] = filtered_data[i]["futing"]
-                    children_node["zhengchu"] = filtered_data[i]["zhengchu"]
-                    children_node["fuchu"] = filtered_data[i]["fuchu"]
-                    children_node["zhengke"] = filtered_data[i]["zhengke"]
-                    children_node["zhengju"] = filtered_data[i]["zhengju"]
-                    children_node["fuju"] = filtered_data[i]["fuju"]
-                    children_node["zhengke"] = filtered_data[i]["zhengke"]
-                    children_node["fuke"] = filtered_data[i]["fuke"]
-                    children_node["keji"] = filtered_data[i]["keji"]
-                    children_node["enumber_r"] = filtered_data[i]["enumber_r"]
-                    children_node["zhengju_r"] = filtered_data[i]["zhengju_r"]
-                    children_node["fuju_r"] = filtered_data[i]["fuju_r"]
-                    children_node["zhengchu_r"] = filtered_data[i]["zhengchu_r"]
-                    children_node["fuchu_r"] = filtered_data[i]["fuchu_r"]
-                    children_node["zhengke_r"] = filtered_data[i]["zhengke_r"]
-                    children_node["fuke_r"] = filtered_data[i]["fuke_r"]
-                    children_node["other_r"] = filtered_data[i]["other_r"]
+                    children_node = filtered_data[i]
+                    // children_node["id"] = filtered_data[i]["id"]
+                    // children_node["name"] = filtered_data[i]["name"]
+                    // children_node["enumber"] = filtered_data[i]["enumber"]
+                    // children_node["zhengting"] = filtered_data[i]["zhengting"]
+                    // children_node["futing"] = filtered_data[i]["futing"]
+                    // children_node["zhengchu"] = filtered_data[i]["zhengchu"]
+                    // children_node["fuchu"] = filtered_data[i]["fuchu"]
+                    // children_node["zhengke"] = filtered_data[i]["zhengke"]
+                    // children_node["zhengju"] = filtered_data[i]["zhengju"]
+                    // children_node["fuju"] = filtered_data[i]["fuju"]
+                    // children_node["zhengke"] = filtered_data[i]["zhengke"]
+                    // children_node["fuke"] = filtered_data[i]["fuke"]
+                    // children_node["keji"] = filtered_data[i]["keji"]
+                    // children_node["enumber_r"] = filtered_data[i]["enumber_r"]
+                    // children_node["zhengju_r"] = filtered_data[i]["zhengju_r"]
+                    // children_node["fuju_r"] = filtered_data[i]["fuju_r"]
+                    // children_node["zhengchu_r"] = filtered_data[i]["zhengchu_r"]
+                    // children_node["fuchu_r"] = filtered_data[i]["fuchu_r"]
+                    // children_node["zhengke_r"] = filtered_data[i]["zhengke_r"]
+                    // children_node["fuke_r"] = filtered_data[i]["fuke_r"]
+                    // children_node["other_r"] = filtered_data[i]["other_r"]
 
                     children_node["isLeaf"] = true
                     children_node.dragDisabled = true;
