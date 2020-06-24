@@ -9,7 +9,6 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 import SuiVue from 'semantic-ui-vue';
 import 'semantic-ui-css/semantic.min.css';
 import Notifications from 'vue-notification'
-import 'vue-search-select/dist/VueSearchSelect.css'
 
 Vue.use(SuiVue);
 //Install BootstrapVue

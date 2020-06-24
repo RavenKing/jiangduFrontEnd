@@ -168,7 +168,6 @@ export default {
                 }).catch(function (error) {
                     context.loading = false;
                     notifySomething(constants.CREATEFAILED, constants.CREATEFAILED, constants.typeError);
-
                 });
 
             } else if (this.deleteTarget.mode == "reject") {

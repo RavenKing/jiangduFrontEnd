@@ -310,7 +310,6 @@ function createAssignmentApi(data)
         method: 'post',
         data: data
     });
-
 }
 function getAssignRoomList(data)
 {  
@@ -414,16 +413,31 @@ function delleaderroomApi(data)
     });
 }
 
-// function deleteBuildingFloorAssignmentApi(data)
-// {
-//     let local_auth = localGet(global.project_key, true);
-//     data.token=local_auth;
-//     return request({
-//         url: constants.deleteBuildingFloorAssignmentApi,
-//         method: 'post',
-//         data: data
-//     });
-// }
+function assignRentAssignmentApi(data)
+{
+    return generalRequet(data,constants.createAssignmentRentApi)
+}
+function listRentRoomAssignmentApi(data)
+{
+    return generalRequet(data,constants.listRentRoomAssignmentApi)
+}
+function deleteRentRoomAssignmentApi(data)
+{
+    return generalRequet(data,constants.deleteRentRoomAssignmentApi)
+}
+
+
+function generalRequet(data,apiName)
+{
+    let local_auth = localGet(global.project_key, true);
+    data.token=local_auth;
+    return request({
+        url: apiName,
+        method: 'post',
+        data: data
+    });
+}
+
 
 
 export {
@@ -460,6 +474,8 @@ export {
     updateFloorApi,
     deleteBuildingFloorAssignmentApi,
     getUnitApiByid,
-    delleaderroomApi
-    
+    delleaderroomApi,
+    assignRentAssignmentApi,
+    listRentRoomAssignmentApi,
+    deleteRentRoomAssignmentApi
 }
