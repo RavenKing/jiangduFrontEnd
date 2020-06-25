@@ -104,9 +104,10 @@
                                     </sui-form-fields>
                                 </sui-form>
                             </div>
+
                             <baidu-map class="map" :center="point" :zoom="15">
                                 <bm-navigation anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-navigation>
-                                <bm-marker :position="point" :dragging="true" animation="BMAP_ANIMATION_BOUNCE" @dragend="dragend">
+                                <bm-marker v-for="(item,i) in points" :position="{lng: item.lng, lat: item.lat}" :key="i">
                                 </bm-marker>
                             </baidu-map>
                         </sui-tab-pane>
@@ -317,7 +318,8 @@ export default {
                 diji: ""
             },
             showMap: false,
-            point: {},
+            point: {lng: 116.404, lat: 39.915},
+            points:[{lng: 116.404, lat: 39.915}, {lng: 113.404, lat: 39.915}, {lng: 112.404, lat: 39.915}],
             buildingFloorForm: {
                 open: false
             },
@@ -377,8 +379,24 @@ export default {
         onClick(params) {
 
             this.selectedRoom = params
-            console.log('clicked clicked')
-            console.log(this.selectedRoom)
+            var building_info = params['building_info']
+            var temp_points = []
+            var temp_x = 0
+            var temp_y = 0
+            var counter = 0
+            for (var i = building_info.length - 1; i >= 0; i--) {
+                if(building_info[i]['lat'] && building_info[i]['lon']){
+                    temp_x += building_info[i]['lat']
+                    temp_y += building_info[i]['lon']
+                    counter += 1
+                    temp_points.push({
+                    lat:building_info[i]['lat'],
+                    lon:building_info[i]['lon']
+                })    
+                }
+            }
+            this.point = {lat: temp_x/counter, lon: temp_y/counter}
+            this.points = temp_points
 
 
             getUnitApiByid(params.id).then((data) => {
@@ -710,28 +728,6 @@ export default {
                 } else {
                     var children_node = {}
                     children_node = filtered_data[i]
-                    // children_node["id"] = filtered_data[i]["id"]
-                    // children_node["name"] = filtered_data[i]["name"]
-                    // children_node["enumber"] = filtered_data[i]["enumber"]
-                    // children_node["zhengting"] = filtered_data[i]["zhengting"]
-                    // children_node["futing"] = filtered_data[i]["futing"]
-                    // children_node["zhengchu"] = filtered_data[i]["zhengchu"]
-                    // children_node["fuchu"] = filtered_data[i]["fuchu"]
-                    // children_node["zhengke"] = filtered_data[i]["zhengke"]
-                    // children_node["zhengju"] = filtered_data[i]["zhengju"]
-                    // children_node["fuju"] = filtered_data[i]["fuju"]
-                    // children_node["zhengke"] = filtered_data[i]["zhengke"]
-                    // children_node["fuke"] = filtered_data[i]["fuke"]
-                    // children_node["keji"] = filtered_data[i]["keji"]
-                    // children_node["enumber_r"] = filtered_data[i]["enumber_r"]
-                    // children_node["zhengju_r"] = filtered_data[i]["zhengju_r"]
-                    // children_node["fuju_r"] = filtered_data[i]["fuju_r"]
-                    // children_node["zhengchu_r"] = filtered_data[i]["zhengchu_r"]
-                    // children_node["fuchu_r"] = filtered_data[i]["fuchu_r"]
-                    // children_node["zhengke_r"] = filtered_data[i]["zhengke_r"]
-                    // children_node["fuke_r"] = filtered_data[i]["fuke_r"]
-                    // children_node["other_r"] = filtered_data[i]["other_r"]
-
                     children_node["isLeaf"] = true
                     children_node.dragDisabled = true;
                     children_node.addTreeNodeDisabled = true;
