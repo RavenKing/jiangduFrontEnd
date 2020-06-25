@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-0f3b21a2"],{"48f1":function(n,t,a){},7867:function(n,t,a){"use strict";var e=a("48f1"),c=a.n(e);c.a},e0fb:function(n,t,a){"use strict";a.r(t);var e=function(){var n=this,t=n.$createElement,a=n._self._c||t;return a("baidu-map",{staticClass:"map",attrs:{center:"北京"}})},c=[],s=(a("7867"),a("2877")),u={},r=Object(s["a"])(u,e,c,!1,null,null,null);t["default"]=r.exports}}]);
+//# sourceMappingURL=chunk-0f3b21a2.8a126779.js.map

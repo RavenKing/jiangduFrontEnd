@@ -666,6 +666,7 @@ export default {
             };
         },
         refreshRooms() {
+            this.loading = true;
             getRoomDataApi().then((data) => {
                 console.log(data);
                 this.loading = false;

@@ -4,11 +4,11 @@ let styleVariables = require('./src/style/variables.scss.js');
 const port = 9527 // dev port
 
 module.exports = {
-    publicPath: process.env.NODE_ENV === 'production' ? '/jgj' : './',
- 
-  // build时构建文件的目录 构建时传入 --no-clean 可关闭该行为
-  outputDir: 'build',
- 
+//     publicPath: process.env.NODE_ENV === 'production' ? '/jgj' : './',
+//  
+//   // build时构建文件的目录 构建时传入 --no-clean 可关闭该行为
+//   outputDir: 'build',
+//  
   /* crossorigin: 'anonymous', // htmlWebpackPlugin
   devServer: {
     hot: true,

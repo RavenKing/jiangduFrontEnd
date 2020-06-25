@@ -413,6 +413,7 @@ export default {
             // });
         },
         refreshRooms() {
+            this.loading = true;
             getRentRoomDataApi().then((data) => {
                 console.log(data);
                 this.loading = false;
@@ -447,11 +448,13 @@ export default {
                     console.log(result);
                     this.refreshRooms();
                     this.loading = false;
+                    notifySomething(constants.CREATESUCCESS, constants.CREATESUCCESS, constants.typeSuccess);
                 });
             } else if (this.editMode) {
                 updateRentRoomApi(this.selectedRoom).then((result) => {
                     console.log(result);
                     this.refreshRooms();
+                    notifySomething(constants.CREATESUCCESS, constants.CREATESUCCESS, constants.typeSuccess);
 
                     this.loading = false;
                 });
@@ -472,6 +475,7 @@ export default {
             this.$refs.vuetable.changePage(page);
         },
         closeModal: function () {
+            this.refreshRooms();
             this.open = false;
             this.contractForm.open = false;
         },
