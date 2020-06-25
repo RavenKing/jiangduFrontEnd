@@ -1,2 +1,0 @@
-(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0b5e25"],{"1b97":function(n,e,t){"use strict";t.r(e);var c=function(){var n=this,e=n.$createElement,t=n._self._c||e;return t("wl-container",[n._v("云台山的美，在于山峰是你的影，余晖是你的眸，夕阳落于你的发间")])},l=[],u=t("2877"),r={},a=Object(u["a"])(r,c,l,!1,null,null,null);e["default"]=a.exports}}]);
-//# sourceMappingURL=chunk-2d0b5e25.87287364.js.map

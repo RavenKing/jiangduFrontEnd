@@ -1,2 +1,0 @@
-(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0c8c01"],{"55e0":function(n,e,c){"use strict";c.r(e);var t=function(){var n=this,e=n.$createElement,c=n._self._c||e;return c("wl-container",[n._v(" 蓬莱是我们的约定，当疫情结束，我们就见面吧 ")])},l=[],u={},r=u,a=c("2877"),o=Object(a["a"])(r,t,l,!1,null,null,null);e["default"]=o.exports}}]);
-//# sourceMappingURL=chunk-2d0c8c01.0f6cf046.js.map

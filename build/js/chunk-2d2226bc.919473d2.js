@@ -1,2 +1,0 @@
-(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d2226bc"],{cf14:function(n,e,c){"use strict";c.r(e);var t=function(){var n=this,e=n.$createElement,c=n._self._c||e;return c("wl-container",[n._v(" 我们未曾到过天空之境，只是在我们的计划中随笔一提，但那把天空和白云都印在脚下的纯白，就像此刻印在我心底的你 ")])},l=[],u={},r=u,a=c("2877"),o=Object(a["a"])(r,t,l,!1,null,null,null);e["default"]=o.exports}}]);
-//# sourceMappingURL=chunk-2d2226bc.919473d2.js.map
