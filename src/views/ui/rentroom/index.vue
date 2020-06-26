@@ -66,7 +66,7 @@
                             <sui-tab-pane title="合同信息" :attached="false" :disabled="!editMode">
                                 <div>
 
-                                    <contract-form :singleEntry="selectedRoomContract"></contract-form>
+                                    <contract-form :singleEntry="selectedRoomContract" :mianji="selectedRoom.value"></contract-form>
                                     <sui-button content="创建新合同" v-on:click="createRentContract()" />
 
                                 </div>
@@ -121,8 +121,7 @@
                                     <bm-navigation anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-navigation>
                                     <bm-marker :position="point" :dragging="true" animation="BMAP_ANIMATION_BOUNCE" @dragend="dragend">
                                     </bm-marker>
-                                    <bm-local-search :keyword="keyword" :auto-viewport="true" location="上海"></bm-local-search>
-
+                                    <bm-local-search :keyword="keyword" :auto-viewport="true" location="上海" @markersset="setFirstPoint"></bm-local-search>
                                 </baidu-map>
                             </sui-tab-pane>
                         </sui-tab>
@@ -228,6 +227,11 @@ export default {
     },
 
     methods: {
+        setFirstPoint(pois) {
+            this.point = pois[0].point;
+            this.selectedRoom.lon = this.point.lng;
+            this.selectedRoom.lat = this.point.lat;
+        },
         assignRentRoom() {
             this.loading = true;
             console.log(this.selectedRoom.unit_id);

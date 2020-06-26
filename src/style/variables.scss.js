@@ -1,6 +1,6 @@
 module.exports = {
     // 头部样式变量
-    'header_height': '60px',
+    'header_height': '120px',
     'header_background': '#3E4246',
     'header_color': 'white',
     'header_padding': `15px`,

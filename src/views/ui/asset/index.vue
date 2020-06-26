@@ -226,12 +226,11 @@
                                         </sui-form-fields>
                                     </sui-form>
                                 </div>
-                                <baidu-map class="map" :zoom="15">
+                                <baidu-map class="map" :center="point" :zoom="15">
                                     <bm-navigation anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-navigation>
-                                    <bm-marker v-for="(item,i) in points" :position="{lng: item.lng, lat: item.lat}" :position="point" :dragging="true" animation="BMAP_ANIMATION_BOUNCE" @dragend="dragend key="i">
+                                    <bm-marker :position="point" :dragging="true" animation="BMAP_ANIMATION_BOUNCE" @dragend="dragend">
                                     </bm-marker>
-                                    <bm-local-search :keyword="keyword" :auto-viewport="true" location="上海"></bm-local-search>
-
+                                    <bm-local-search :keyword="keyword" :auto-viewport="true" location="上海" @markersset="setFirstPoint" @searchComplete="setFirstPoint"></bm-local-search>
                                 </baidu-map>
                             </sui-tab-pane>
                             <sui-tab-pane title="资料管理" :attached="false">
@@ -371,6 +370,11 @@ export default {
     },
 
     methods: {
+        setFirstPoint(pois) {
+            this.point = pois[0].point;
+            this.selectedRoom.lon = this.point.lng;
+            this.selectedRoom.lat = this.point.lat;
+        },
         //tree
         onDel(node) {
             console.log(node)

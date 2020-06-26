@@ -27,6 +27,14 @@
                 <sui-input placeholder="建筑面积" v-model="singleRoom.space" />
             </sui-form-field>
         </sui-form-fields>
+        <sui-form-fields inline>
+            <sui-form-field>
+                <sui-checkbox label="按总面积" radio value="1" v-model="singleRoom.value" />
+            </sui-form-field>
+            <sui-form-field>
+                <sui-checkbox label="按具体面积" radio value="2" v-model="singleRoom.value" />
+            </sui-form-field>
+        </sui-form-fields>
     </sui-form>
 </div>
 </template>

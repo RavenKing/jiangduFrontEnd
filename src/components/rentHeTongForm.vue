@@ -1,14 +1,7 @@
 <template lang="html">
 <div>
     <sui-form>
-        <sui-form-fields inline>
-            <sui-form-field>
-                <sui-checkbox label="按总面积" radio value="1" v-model="value" />
-            </sui-form-field>
-            <sui-form-field>
-                <sui-checkbox label="按具体面积" radio value="2" v-model="value" />
-            </sui-form-field>
-        </sui-form-fields>
+
 
         <sui-form-fields inline>
             <sui-form-field>
@@ -48,7 +41,7 @@
                 <sui-input placeholder="增长规则" v-model="singleEntry.rule" />
             </sui-form-field>
         </sui-form-fields>
-        <div v-show="value==2">
+        <div v-show="mianji==2">
             <sui-form-fields inline>
                 <sui-form-field>
                     <label>办公面积:</label>
@@ -152,7 +145,7 @@ export default {
     components: {
         Datepicker
     },
-    props: ['singleEntry'],
+    props: ['singleEntry','mianji'],
     data() {
         return {
             options: [],
