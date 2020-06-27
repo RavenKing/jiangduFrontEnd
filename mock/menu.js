@@ -1,12 +1,15 @@
 const menus = [{
     id: "3",
-    title: '系统功能',
-    icon: "el-icon-monitor",
-    children: [
+    title: '',
+    children: [{
+      id: "3-6",
+      title: "单位信息",
+      url: "/ui/unit"
+    },
       {
         id: "3-2",
-        title: "资产管理",
-        name: "资产管理",
+        title: "办公用房信息",
+        name: "办公用房信息",
         url: "/ui/asset"
       },
       {
@@ -38,11 +41,7 @@ const menus = [{
       //   title: "树形表格",
       //   url: "/ui/table"
       // }, */
-      {
-        id: "3-6",
-        title: "单位管理",
-        url: "/ui/unit"
-      },
+
       // {
       //   id: "3-7",
       //   title: "员工管理",

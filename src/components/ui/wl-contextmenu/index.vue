@@ -1,6 +1,6 @@
 <template>
   <div class="wl-context-menu" v-if="flag" :style="style">
-    <ul class="menu-liet" v-if="useDefault">
+    <ul v-if="useDefault">
       <li class="menu-item" v-for="item of menuList" :key="item.value" @click="handleMenuItem(item)">
         <i class="memu-item-icon" :class="item.icon"></i>
         <span class="memu-item-title">{{item.title}}</span>
@@ -77,11 +77,11 @@ export default {
 </script>
 
 <style lang="scss">
-.wl-context-menu {
+.wl-context-menu{
   position: absolute;
   padding: 5px 0;
   z-index: 2018;
-  background: #FFF;
+  background: #3E4246;
   border: 1px solid #cfd7e5;
   border-radius: 4px;
   box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
@@ -90,7 +90,7 @@ export default {
     padding: 8px 20px 8px 15px;
     margin: 0;
     font-size: 14px;
-    color: #606266;
+    color: #cfd7e5;
     cursor: pointer;
     &:hover {
       background: #ecf5ff;

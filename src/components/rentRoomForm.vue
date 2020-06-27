@@ -35,6 +35,15 @@
                 <sui-checkbox label="按具体面积" radio value="2" v-model="singleRoom.value" />
             </sui-form-field>
         </sui-form-fields>
+        <sui-form-fields inline>
+            <label>是否包含物业费:</label>
+            <sui-form-field>
+                <sui-checkbox label="是" radio value="1" v-model="singleRoom.value2" />
+            </sui-form-field>
+            <sui-form-field>
+                <sui-checkbox label="否" radio value="2" v-model="singleRoom.value2" />
+            </sui-form-field>
+        </sui-form-fields>
     </sui-form>
 </div>
 </template>

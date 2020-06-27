@@ -2,11 +2,6 @@
   <div class="the-nav">
     <!-- 菜单折叠按钮 -->
     <div class="nav-handle-collapse">
-      <i
-        class="nav-icon"
-        :class="isCollapse?'el-icon-d-arrow-right':'el-icon-d-arrow-left'"
-        @click="setMenuCollapseStatus()"
-      ></i>
     </div>
     <div class="nav-main"></div>
     <!-- 右侧操作区 -->

@@ -1,7 +1,7 @@
 <template>
 <wl-container class="wlui-login" :use-scroll="false">
   <div class="headerNew">
-      <div class="logoTitle">党政机关房地产管理信息平台</div>
+      <div class="logoTitle">奉贤区行政事业单位办公用房信息化平台</div>
     </div>
     <b-container class="bv-example-row">
         <b-row>

@@ -5,8 +5,8 @@ module.exports = {
     'header_color': 'white',
     'header_padding': `15px`,
     // 左侧菜单样式变量
-    'menu_background': 'white',
-    'menu_color': `black`,
+    'menu_background': '#3E4246',
+    'menu_color': `white`,
     'menu_active_color': `#75ADBF`,
     'menu_width': `180px`,
     // 主视图区样式变量
