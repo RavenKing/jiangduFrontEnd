@@ -458,8 +458,7 @@ export default {
                 updateRentRoomApi(this.selectedRoom).then((result) => {
                     console.log(result);
                     this.refreshRooms();
-                    notifySomething(constants.CREATESUCCESS, constants.CREATESUCCESS, constants.typeSuccess);
-
+                    notifySomething(constants.EDITSUCCESS, constants.EDITSUCCESS, constants.typeSuccess);
                     this.loading = false;
                 });
             }

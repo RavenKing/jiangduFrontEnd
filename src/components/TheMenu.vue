@@ -1,7 +1,9 @@
 <template>
 <div class="the-menu-box">
     <transition name="fade-width" mode="out-in">
-        <div class="the-menu-logo" @click="gotoIndex()" :key="is_collapse">{{is_collapse?'JH':'办公用房信息化平台'}}</div>
+        <div class="the-menu-logo" @click="gotoIndex()" :key="is_collapse">
+            奉贤区行政事业单位<br />
+            {{is_collapse?'JH':'办公用房信息化平台'}}</div>
     </transition>
     <div class="the-menu-scroll" ref="the-menu-scroll">
         <el-menu class="the-menu" :collapse="is_collapse" :text-color="themeMenu.text" :default-openeds="menuDefaultOpeneds" :background-color="themeMenu.background" :active-text-color="themeMenu.active_text" :default-active="current_menu">
@@ -116,19 +118,18 @@ export default {
 }
 
 .the-menu-box {
-    background: #3E4246;
+    background: $menu-background;
 
     .el-menu--collapse {
         width: 64px;
     }
 
     >.the-menu-logo {
-        margin-top: 30px;
+        margin-top: 15px;
         position: relative;
         z-index: 1;
         height: $header-height;
         text-align: center;
-        line-height: 60px;
         font-size: 18px;
         font-weight: 600;
         color: white;
