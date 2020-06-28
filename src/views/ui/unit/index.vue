@@ -675,19 +675,68 @@ export default {
             var parent_data = []
             var son_data = []
             var filtered_data = []
-            console.log('getUnitApi')
-            console.log(res_data)
             this.selectedfenpei['unitoptions'] = []
+
             for (var i = res_data.length - 1; i >= 0; i--) {
-                if (res_data[i]["parent_id"] == 0)
+                res_data[i]['bianzhi_num'] = 0
+                res_data[i]['shiji_num'] = 0
+                if (parseInt(res_data[i]['zhengju'])){
+                    res_data[i]['bianzhi_num'] = res_data[i]['bianzhi_num'] + parseInt(res_data[i]['zhengju'])
+                }
+                if (parseInt(res_data[i]['fuju'])){
+                    res_data[i]['bianzhi_num'] = res_data[i]['bianzhi_num'] + parseInt(res_data[i]['fuju'])
+                }
+                if (parseInt(res_data[i]['zhengchu'])){
+                    res_data[i]['bianzhi_num'] = res_data[i]['bianzhi_num'] + parseInt(res_data[i]['zhengchu'])
+                }
+                if (parseInt(res_data[i]['fuchu'])){
+                    res_data[i]['bianzhi_num'] = res_data[i]['bianzhi_num'] + parseInt(res_data[i]['fuchu'])
+                }
+                if (parseInt(res_data[i]['zhengke'])){
+                    res_data[i]['bianzhi_num'] = res_data[i]['bianzhi_num'] + parseInt(res_data[i]['zhengke'])
+                }
+                if (parseInt(res_data[i]['fuke'])){
+                    res_data[i]['bianzhi_num'] = res_data[i]['bianzhi_num'] + parseInt(res_data[i]['fuke'])
+                }
+                if (parseInt(res_data[i]['other'])){
+                    res_data[i]['bianzhi_num'] = res_data[i]['bianzhi_num'] + parseInt(res_data[i]['other'])
+                }
+                if (parseInt(res_data[i]['zhengju_r'])){
+                    res_data[i]['shiji_num'] = res_data[i]['shiji_num'] + parseInt(res_data[i]['zhengju_r'])
+                }
+                if (parseInt(res_data[i]['fuju_r'])){
+                    res_data[i]['shiji_num'] = res_data[i]['shiji_num'] + parseInt(res_data[i]['fuju_r'])
+                }
+                if (parseInt(res_data[i]['zhengchu_r'])){
+                    res_data[i]['shiji_num'] = res_data[i]['shiji_num'] + parseInt(res_data[i]['zhengchu_r'])
+                }
+                if (parseInt(res_data[i]['fuchu_r'])){
+                    res_data[i]['shiji_num'] = res_data[i]['shiji_num'] + parseInt(res_data[i]['fuchu_r'])
+                }
+                if (parseInt(res_data[i]['zhengke_r'])){
+                    res_data[i]['shiji_num'] = res_data[i]['shiji_num'] + parseInt(res_data[i]['zhengke_r'])
+                }
+                if (parseInt(res_data[i]['fuke_r'])){
+                    res_data[i]['shiji_num'] = res_data[i]['shiji_num'] + parseInt(res_data[i]['fuke_r'])
+                }
+                if (parseInt(res_data[i]['other_r'])){
+                    res_data[i]['shiji_num'] = res_data[i]['shiji_num'] + parseInt(res_data[i]['other_r'])
+                }
+
+                if (res_data[i]["parent_id"] == 0){
                     parent_data.push(res_data[i])
-                else
+                }
+                else{
+                    // res_data[i]['bianzhi_num'] = parseInt(res_data[i]['zhengju']) + parseInt(res_data[i]['fuju']) + parseInt(res_data[i]['zhengchu']) + parseInt(res_data[i]['fuchu']) + parseInt(res_data[i]['zhengke'])+parseInt(res_data[i]['fuke'])+parseInt(res_data[i]['other'])
+                    // res_data[i]['shiji_num'] = parseInt(res_data[i]['zhengju_r']) + parseInt(res_data[i]['fuju_r']) + parseInt(res_data[i]['zhengchu_r']) + parseInt(res_data[i]['fuchu_r']) + parseInt(res_data[i]['zhengke_r'])+parseInt(res_data[i]['fuke_r'])+parseInt(res_data[i]['other_r'])
                     son_data.push(res_data[i])
+                }
                 this.selectedfenpei['unitoptions'].push({
                     'text': res_data[i]['name'],
                     'value': res_data[i]['id']
                 })
             }
+            console.log(son_data)
             for (var i = parent_data.length - 1; i >= 0; i--) {
                 var abstract_parent = JSON.parse(JSON.stringify(parent_data[i]))
                 abstract_parent["status"] = 99
@@ -709,7 +758,6 @@ export default {
                         filtered_data.push(son_data[j])
                 }
             }
-            console.log(filtered_data)
             var tree_list = []
             for (var i = 0; i < filtered_data.length; i++) {
                 if (filtered_data[i]["status"] == 99) {
