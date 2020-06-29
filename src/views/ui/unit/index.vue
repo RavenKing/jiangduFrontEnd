@@ -7,7 +7,7 @@
                 <sui-loader content="Loading..." />
             </sui-dimmer>
 
-        </div>  
+        </div>
         <div class="filterBiaoDan">
             <sui-button content="添加" @click.native="createRoomModel" icon="add green" />
             <sui-button content="导出" v-on:click="exportToExcel" icon="file green" />
@@ -34,7 +34,7 @@
                                 <form-create ref='FormCreate' :singleRoom="selectedRoom"></form-create>
                             </div>
                             <sui-modal-actions>
-                                <sui-button positive @click.native="updateUnit">
+                                <sui-button basic color="blue"  @click.native="updateUnit">
                                     保存
                                 </sui-button>
                             </sui-modal-actions>
@@ -51,7 +51,7 @@
                                         </div>
                                     </div>
                                     <div slot="action" slot-scope="props">
-                                        <sui-button negative content="删除" v-on:click="deletefenpei(props.rowData)" />
+                                        <sui-button basic color="red"  content="删除" v-on:click="deletefenpei(props.rowData)" />
                                     </div>
                                 </vuetable>
                             </div>
@@ -64,10 +64,10 @@
                                         </div>
                                     </sui-modal-content>
                                     <sui-modal-actions>
-                                        <sui-button negative @click.native="closeModal">
+                                        <sui-button basic color="red"  @click.native="closeModal">
                                             取消
                                         </sui-button>
-                                        <sui-button v-if="modalMode !== 'check'" positive @click.native="newfenpei">
+                                        <sui-button v-if="modalMode !== 'check'" basic color="blue"  @click.native="newfenpei">
                                             提交
                                         </sui-button>
                                     </sui-modal-actions>
@@ -83,7 +83,7 @@
                                         </div>
                                     </div>
                                     <div slot="action" slot-scope="props">
-                                        <sui-button negative content="删除" v-on:click="deleteleader(props.rowData)" />
+                                        <sui-button basic color="red"  content="删除" v-on:click="deleteleader(props.rowData)" />
                                     </div>
                                 </vuetable>
                             </div>
@@ -130,10 +130,10 @@
 
                 </sui-modal-content>
                 <sui-modal-actions>
-                    <sui-button negative @click.native="closeModal">
+                    <sui-button basic color="red"  @click.native="closeModal">
                         取消
                     </sui-button>
-                    <sui-button v-if="modalMode !== 'check'" positive @click.native="toggle">
+                    <sui-button v-if="modalMode !== 'check'" basic color="blue"  @click.native="toggle">
                         提交
                     </sui-button>
                 </sui-modal-actions>
@@ -145,10 +145,10 @@
                     <building-form ref='formComponentBuilding'></building-form>
                 </sui-modal-content>
                 <sui-modal-actions>
-                    <sui-button negative @click.native="closeModal">
+                    <sui-button basic color="red"  @click.native="closeModal">
                         取消
                     </sui-button>
-                    <sui-button positive @click.native="createBuilding">
+                    <sui-button basic color="blue"  @click.native="createBuilding">
                         提交
                     </sui-button>
                 </sui-modal-actions>
@@ -163,10 +163,10 @@
                 </sui-modal-content>
                 <sui-modal-actions>
 
-                    <sui-button negative @click.native="closeModal">
+                    <sui-button basic color="red"  @click.native="closeModal">
                         取消
                     </sui-button>
-                    <sui-button v-if="modalMode !== 'check'" positive @click.native="toggle">
+                    <sui-button v-if="modalMode !== 'check'" basic color="blue"  @click.native="toggle">
                         提交
                     </sui-button>
                 </sui-modal-actions>
@@ -318,8 +318,20 @@ export default {
                 diji: ""
             },
             showMap: false,
-            point: {lng: 116.404, lat: 39.915},
-            points:[{lng: 116.404, lat: 39.915}, {lng: 113.404, lat: 39.915}, {lng: 112.404, lat: 39.915}],
+            point: {
+                lng: 116.404,
+                lat: 39.915
+            },
+            points: [{
+                lng: 116.404,
+                lat: 39.915
+            }, {
+                lng: 113.404,
+                lat: 39.915
+            }, {
+                lng: 112.404,
+                lat: 39.915
+            }],
             buildingFloorForm: {
                 open: false
             },
@@ -385,19 +397,21 @@ export default {
             var temp_y = 0
             var counter = 0
             for (var i = building_info.length - 1; i >= 0; i--) {
-                if(building_info[i]['lat'] && building_info[i]['lon']){
+                if (building_info[i]['lat'] && building_info[i]['lon']) {
                     temp_x += building_info[i]['lat']
                     temp_y += building_info[i]['lon']
                     counter += 1
                     temp_points.push({
-                    lat:building_info[i]['lat'],
-                    lon:building_info[i]['lon']
-                })    
+                        lat: building_info[i]['lat'],
+                        lon: building_info[i]['lon']
+                    })
                 }
             }
-            this.point = {lat: temp_x/counter, lon: temp_y/counter}
+            this.point = {
+                lat: temp_x / counter,
+                lon: temp_y / counter
+            }
             this.points = temp_points
-
 
             getUnitApiByid(params.id).then((data) => {
                 var res_data = data.data.data['building_info']
@@ -610,7 +624,7 @@ export default {
         newfenpei() {
             console.log('提交')
             console.log(this.selectedfenpei)
-            if(this.selectedfenpei.roomtype == '1'){
+            if (this.selectedfenpei.roomtype == '1') {
                 var input = {}
                 input['room_id'] = this.selectedfenpei.room_id
                 input['building_id'] = this.selectedfenpei.building_id
@@ -619,9 +633,9 @@ export default {
 
                 createAssignmentApi(input).then((data) => {
                     console.log(data)
-            })    
+                })
             }
-            if(this.selectedfenpei.roomtype == '2'){
+            if (this.selectedfenpei.roomtype == '2') {
                 var input = {}
                 input['room_id'] = this.selectedfenpei.room_id
                 input['building_id'] = this.selectedfenpei.building_id
@@ -630,9 +644,9 @@ export default {
 
                 assignRentRoomApi(input).then((data) => {
                     console.log(data)
-            })    
+                })
             }
-            
+
         }
 
     },
@@ -768,12 +782,22 @@ export default {
     height: auto !important;
 }
 
+.ui.table {
+    font-size: 13px;
+}
+
 .ui.table thead th {
-    padding: 2px !important;
-    background-color: #75ADBF !important;
-    color: white !important;
-    font-size: 15px;
-    height: 80px !important
+    cursor: auto;
+    background: #f9fafb;
+    text-align: inherit;
+    color: rgba(0, 0, 0, .87);
+    padding: .92857143em .78571429em;
+    vertical-align: inherit;
+    font-style: none;
+    font-weight: 500;
+    text-transform: none;
+    border-bottom: 1px solid rgba(34, 36, 38, .1);
+    border-left: none;
 }
 
 .map {

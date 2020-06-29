@@ -33,10 +33,10 @@
                     <unit-form ref='formComponent'></unit-form>
                 </sui-modal-content>
                 <sui-modal-actions>
-                    <sui-button negative @click.native="closeModal">
+                    <sui-button basic color="red"  @click.native="closeModal">
                         取消
                     </sui-button>
-                    <sui-button v-if="modalMode !== 'check'" positive @click.native="toggle">
+                    <sui-button v-if="modalMode !== 'check'" basic color="blue"  @click.native="toggle">
                         提交
                     </sui-button>
                 </sui-modal-actions>
@@ -50,10 +50,10 @@
                     <contract-form ref='formComponentContract'></contract-form>
                 </sui-modal-content>
                 <sui-modal-actions>
-                    <sui-button negative @click.native="closeModal">
+                    <sui-button basic color="red"  @click.native="closeModal">
                         取消
                     </sui-button>
-                    <sui-button positive @click.native="createContract">
+                    <sui-button basic color="blue"  @click.native="createContract">
                         提交
                     </sui-button>
                 </sui-modal-actions>
@@ -299,10 +299,6 @@ export default {
 </script>
 
 <style>
-.ui.positive.button {
-    background-color: #75ADBF !important;
-}
-
 .ui.modal {
     top: auto;
     left: auto;
@@ -317,14 +313,24 @@ export default {
     background: white !important;
 }
 
-.ui.table thead th {
-    padding: 2px !important;
-    background-color: #75ADBF !important;
-    color: white !important;
-    font-size: 15px;
-    height: 80px !important
+
+.ui.table {
+    font-size: 13px;
 }
 
+.ui.table thead th {
+    cursor: auto;
+    background: #f9fafb;
+    text-align: inherit;
+    color: rgba(0, 0, 0, .87);
+    padding: .92857143em .78571429em;
+    vertical-align: inherit;
+    font-style: none;
+    font-weight: 500;
+    text-transform: none;
+    border-bottom: 1px solid rgba(34, 36, 38, .1);
+    border-left: none;
+}
 .map {
     width: 100%;
     height: 400px;

@@ -13,8 +13,8 @@
         <div class="vue2Table">
             <vuetable ref="vuetable" :api-mode="false" :data="hetongdata" :fields="hetongFields" :sort-order="sortOrder" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData" :key="hetongComponentKey">
                 <div slot="action" slot-scope="props">
-                    <sui-button v-on:click="editHeTongData(props.rowData)">编辑</sui-button>
-                    <sui-button>删除</sui-button>
+                    <sui-button basic color="blue"  v-on:click="editHeTongData(props.rowData)">编辑</sui-button>
+                    <sui-button basic color="red" >删除</sui-button>
                 </div>
 
             </vuetable>
@@ -99,16 +99,16 @@
                     </sui-segment>
                 </sui-modal-content>
                 <sui-modal-actions>
-                    <sui-button negative @click.native="closeModal">
+                    <sui-button basic color="red"  @click.native="closeModal">
                         取消
                     </sui-button>
-                    <sui-button v-if="currentStep !== 1 " positive @click.native="goToPreviousStep">
+                    <sui-button v-if="currentStep !== 1 " basic color="blue"  @click.native="goToPreviousStep">
                         上一步 </sui-button>
-                    <sui-button v-if="currentStep !== 3" positive @click.native="goToNextStep">
+                    <sui-button v-if="currentStep !== 3" basic color="blue"  @click.native="goToNextStep">
                         下一步
                     </sui-button>
 
-                    <sui-button positive @click.native="createWeiXiuHeTong" v-if="currentStep == 3">
+                    <sui-button basic color="blue"  @click.native="createWeiXiuHeTong" v-if="currentStep == 3">
                         确定
                     </sui-button>
                 </sui-modal-actions>
@@ -515,14 +515,23 @@ export default {
     height: 400px;
 }
 
-.ui.table thead th {
-    padding: 2px !important;
-    background-color: #75ADBF !important;
-    color: white !important;
-    font-size: 15px;
-    height: 80px !important
+.ui.table {
+    font-size: 13px;
 }
 
+.ui.table thead th {
+    cursor: auto;
+    background: #f9fafb;
+    text-align: inherit;
+    color: rgba(0, 0, 0, .87);
+    padding: .92857143em .78571429em;
+    vertical-align: inherit;
+    font-style: none;
+    font-weight: 500;
+    text-transform: none;
+    border-bottom: 1px solid rgba(34, 36, 38, .1);
+    border-left: none;
+}
 .ui.blue.table {
     border-top: 0px !important;
 }

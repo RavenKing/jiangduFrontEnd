@@ -91,6 +91,7 @@ export default {
                             localSet(this.GLOBAL.project_key, data.data.token);
                             console.log(data.data);
                             localSet("role", data.data.role);
+                            localSet("username", this.login_form.act);
                             this.setToken(data.data);
                             this.$router.push("/index");
                         }

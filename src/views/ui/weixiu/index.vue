@@ -18,8 +18,8 @@
                     </h4>
                 </div>
                 <div slot="action" slot-scope="props">
-                    <sui-button text="编辑" v-on:click="editWeixiuShenqing(props.rowData)">编辑</sui-button>
-                    <sui-button text="删除" @change="handleChange(props)">删除</sui-button>
+                    <sui-button text="编辑" basic color="blue"  v-on:click="editWeixiuShenqing(props.rowData)">编辑</sui-button>
+                    <sui-button text="删除" basic color="red"  @change="handleChange(props)">删除</sui-button>
                 </div>
             </vuetable>
             <div class="pagination ui basic segment grid">
@@ -41,15 +41,15 @@
                     <weixiu-form :singleEntry="selectedWeixiu" ref="weixiuForm"> </weixiu-form>
                 </sui-modal-content>
                 <sui-modal-actions>
-                    <sui-button negative @click.native="closeWeiXiuForm">
+                    <sui-button basic color="red"  @click.native="closeWeiXiuForm">
                         取消
                     </sui-button>
-                    <sui-button positive @click.native="createShenbao">
+                    <sui-button basic color="blue"  @click.native="createShenbao">
                         保存
                     </sui-button>
                     <span v-show="role==1&&modalMode=='edit'">
                         <sui-button color="green" v-on:click="approveContract(selectedWeixiu)">同意</sui-button>
-                        <sui-button negative v-on:click="rejectContract(selectedWeixiu)">拒绝</sui-button>
+                        <sui-button basic color="red"  v-on:click="rejectContract(selectedWeixiu)">拒绝</sui-button>
                     </span>
                 </sui-modal-actions>
             </sui-modal>
@@ -450,12 +450,22 @@ export default {
     height: 400px;
 }
 
+.ui.table {
+    font-size: 13px;
+}
+
 .ui.table thead th {
-    padding: 2px !important;
-    background-color: #75ADBF !important;
-    color: white !important;
-    font-size: 15px;
-    height: 80px !important
+    cursor: auto;
+    background: #f9fafb;
+    text-align: inherit;
+    color: rgba(0, 0, 0, .87);
+    padding: .92857143em .78571429em;
+    vertical-align: inherit;
+    font-style: none;
+    font-weight: 500;
+    text-transform: none;
+    border-bottom: 1px solid rgba(34, 36, 38, .1);
+    border-left: none;
 }
 
 .ui.blue.table {

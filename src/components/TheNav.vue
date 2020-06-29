@@ -3,7 +3,9 @@
     <!-- 菜单折叠按钮 -->
     <div class="nav-handle-collapse">
     </div>
-    <div class="nav-main"></div>
+    <div class="nav-main">
+        奉贤区行政事业单位办公用房信息化平台
+    </div>
     <!-- 右侧操作区 -->
     <div class="nav-handle-box">
         <!-- <i class="iconfont icon-github-outline nav-icon nav-handle-item" @click="goToGithub()"></i> -->
@@ -23,14 +25,14 @@ import {
     mapActions
 } from "vuex";
 import {
-    localDel
+    localDel,
+    localGet
 } from "@/util/storage";
-
 export default {
     name: "theNav",
     data() {
         return {
-            user_name: "Admin", // 名称 // 用户信息
+            user_name: "", // 名称 // 用户信息
             full_screen: false // 是否全屏
         };
     },
@@ -39,7 +41,9 @@ export default {
             return this.$store.getters.is_collapse;
         }
     },
-    create() {},
+    mounted() {
+        this.user_name = localGet("username");
+    },
     methods: {
         // 设置左侧菜单折叠状态
         setMenuCollapseStatus() {

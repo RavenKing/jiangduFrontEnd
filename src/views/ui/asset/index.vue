@@ -20,7 +20,7 @@
                                 <sui-form-field>
                                     <input type="text" placeholder="请选择" v-model="filterString.shijiyongtu" />
                                 </sui-form-field>
-                                <sui-button positive content="查询" v-on:click="submit" />
+                                <sui-button basic color="blue" content="查询" v-on:click="submit" />
                                 <sui-button content="重置" />
                             </sui-form-fields>
                         </sui-form>
@@ -40,9 +40,9 @@
         <div class="vue2Table">
             <vuetable ref="vuetable" :api-mode="false" :data="localData" :fields="fields" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
                 <div slot="action" slot-scope="props">
-                    <!-- <sui-button positive content="查看" v-on:click="viewSomeThing(props.rowData,'check')" /> -->
-                    <sui-button positive content="编辑" v-on:click="openAssignSection(props.rowData)" />
-                    <sui-button negative content="删除" v-on:click="deleteRoom(props.rowData)" />
+                    <!-- <sui-button basic color="red"  content="查看" v-on:click="viewSomeThing(props.rowData,'check')" /> -->
+                    <sui-button basic color="blue"  content="编辑" v-on:click="openAssignSection(props.rowData)" />
+                    <sui-button basic color="red"  content="删除" v-on:click="deleteRoom(props.rowData)" />
                     <!-- <sui-button content="分配房屋列表" v-on:click="openAssignList(props.rowData)" /> -->
                 </div>
             </vuetable>
@@ -62,10 +62,10 @@
                     </div>
                 </sui-modal-content>
                 <sui-modal-actions>
-                    <sui-button negative @click.native="closeModal">
+                    <sui-button basic color="red"  @click.native="closeModal">
                         取消
                     </sui-button>
-                    <sui-button v-if="modalMode !== 'check'" positive @click.native="toggle">
+                    <sui-button v-if="modalMode !== 'check'" basic color="blue"  @click.native="toggle">
                         提交
                     </sui-button>
                 </sui-modal-actions>
@@ -77,10 +77,10 @@
                     <building-form ref='formComponentBuilding'></building-form>
                 </sui-modal-content>
                 <sui-modal-actions>
-                    <sui-button negative @click.native="closeModal">
+                    <sui-button basic color="red"  @click.native="closeModal">
                         取消
                     </sui-button>
-                    <sui-button positive @click.native="createBuilding">
+                    <sui-button basic color="blue"  @click.native="createBuilding">
                         提交
                     </sui-button>
                 </sui-modal-actions>
@@ -104,7 +104,7 @@
 
                 </sui-modal-content>
                 <sui-modal-actions>
-                    <sui-button negative @click.native="closeImageModal">
+                    <sui-button basic color="red"  @click.native="closeImageModal">
                         取消
                     </sui-button>
                 </sui-modal-actions>
@@ -118,10 +118,10 @@
                     </assign-form>
                 </sui-modal-content>
                 <sui-modal-actions>
-                    <sui-button negative @click.native="closeAssignModal">
+                    <sui-button basic color="red"  @click.native="closeAssignModal">
                         取消
                     </sui-button>
-                    <sui-button positive @click.native="createAssignment">
+                    <sui-button basic color="blue"  @click.native="createAssignment">
                         提交
                     </sui-button>
                 </sui-modal-actions>
@@ -153,7 +153,7 @@
                                 <mianji-form ref='mianjiForm' :singleRoom="selectedRoom"></mianji-form>
                             </sui-tab-pane>
                             <sui-tab-pane title="楼层管理" :attached="false">
-                                <sui-button positive @click.native="openBuildingModal">
+                                <sui-button basic color="blue"  @click.native="openBuildingModal">
                                     新增
                                 </sui-button>
                                 <sui-grid :columns="2" relaxed="very">
@@ -243,10 +243,10 @@
 
                 </sui-modal-content>
                 <sui-modal-actions>
-                    <sui-button positive @click.native="toggle">
+                    <sui-button basic color="blue"  @click.native="toggle">
                         保存
                     </sui-button>
-                    <sui-button negative @click.native="closeModal">
+                    <sui-button basic color="red"  @click.native="closeModal">
                         取消
                     </sui-button>
                 </sui-modal-actions>
@@ -286,6 +286,9 @@ import {
     getFileOSSApi
     //getRentRoomContractListApi
 } from "@/api/utilApi";
+import {
+    notifySomething
+} from "@/util/utils"
 import {
     getRoomDataApi,
     createRoomApi,
@@ -720,9 +723,6 @@ export default {
         },
         toggle() {
             this.loading = true;
-
-            console.log(this.selectedRoom.age);
-            console.log(this.selectedRoom.certid);
             let formdata = this.selectedRoom;
             if (formdata.space == "") {
                 formdata.space = null;
@@ -748,6 +748,10 @@ export default {
                             text: '更新成功',
                             type: "success"
                         });
+                    }
+                    else{
+                        notifySomething("更新失败","更新失败","error");
+                        this.refreshRooms();
                     }
                     this.loading = false;
                 });
@@ -878,12 +882,22 @@ export default {
     background: white !important;
 }
 
+.ui.table {
+    font-size: 13px;
+}
+
 .ui.table thead th {
-    padding: 2px !important;
-    background-color: #75ADBF !important;
-    color: white !important;
-    font-size: 15px;
-    height: 80px !important
+    cursor: auto;
+    background: #f9fafb;
+    text-align: inherit;
+    color: rgba(0, 0, 0, .87);
+    padding: .92857143em .78571429em;
+    vertical-align: inherit;
+    font-style: none;
+    font-weight: 500;
+    text-transform: none;
+    border-bottom: 1px solid rgba(34, 36, 38, .1);
+    border-left: none;
 }
 
 .ui.blue.table {

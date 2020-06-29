@@ -12,7 +12,7 @@
             </sui-form-field>
             <sui-form-field>
                 <label>建造年代</label>
-                <sui-input placeholder="建造年代" v-model="singleRoom.age" :disabled="disabled" />
+                <sui-input placeholder="建造年代" v-model="singleRoom.age" :disabled="disabled" type="number"/>
             </sui-form-field>
             <sui-form-field>
                 <label>房屋用途</label>

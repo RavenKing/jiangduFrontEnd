@@ -2,8 +2,7 @@
 <div class="the-menu-box">
     <transition name="fade-width" mode="out-in">
         <div class="the-menu-logo" @click="gotoIndex()" :key="is_collapse">
-            奉贤区行政事业单位<br />
-            {{is_collapse?'JH':'办公用房信息化平台'}}</div>
+        </div>
     </transition>
     <div class="the-menu-scroll" ref="the-menu-scroll">
         <el-menu class="the-menu" :collapse="is_collapse" :text-color="themeMenu.text" :default-openeds="menuDefaultOpeneds" :background-color="themeMenu.background" :active-text-color="themeMenu.active_text" :default-active="current_menu">
