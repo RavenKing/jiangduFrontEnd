@@ -13,8 +13,8 @@
         <div class="vue2Table">
             <vuetable ref="vuetable" :api-mode="false" :data="hetongdata" :fields="hetongFields" :sort-order="sortOrder" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData" :key="hetongComponentKey">
                 <div slot="action" slot-scope="props">
-                    <sui-button basic color="blue"  v-on:click="editHeTongData(props.rowData)">编辑</sui-button>
-                    <sui-button basic color="red" >删除</sui-button>
+                    <sui-button basic color="blue" v-on:click="editHeTongData(props.rowData)">编辑</sui-button>
+                    <sui-button basic color="red">删除</sui-button>
                 </div>
 
             </vuetable>
@@ -99,16 +99,16 @@
                     </sui-segment>
                 </sui-modal-content>
                 <sui-modal-actions>
-                    <sui-button basic color="red"  @click.native="closeModal">
+                    <sui-button basic color="red" @click.native="closeModal">
                         取消
                     </sui-button>
-                    <sui-button v-if="currentStep !== 1 " basic color="blue"  @click.native="goToPreviousStep">
+                    <sui-button v-if="currentStep !== 1 " basic color="blue" @click.native="goToPreviousStep">
                         上一步 </sui-button>
-                    <sui-button v-if="currentStep !== 3" basic color="blue"  @click.native="goToNextStep">
+                    <sui-button v-if="currentStep !== 3" basic color="blue" @click.native="goToNextStep">
                         下一步
                     </sui-button>
 
-                    <sui-button basic color="blue"  @click.native="createWeiXiuHeTong" v-if="currentStep == 3">
+                    <sui-button basic color="blue" @click.native="createWeiXiuHeTong" v-if="currentStep == 3">
                         确定
                     </sui-button>
                 </sui-modal-actions>
@@ -131,7 +131,10 @@ import {
     export_json_to_excel
 } from "@/util/Export2Excel";
 import Fields2 from "./fields2.js";
-
+import constants from "@/util/constants";
+import {
+    notifySomething
+} from "@/util/utils"
 import {
     getMRApi,
     createMRApi,
@@ -275,15 +278,6 @@ export default {
         closeHetongModal() {
             this.open = false;
         },
-        createShenbao() {
-            this.loading = true;
-            createMRApi(this.selectedWeixiu).then((result) => {
-                console.log(result);
-                this.loading = false;
-                this.closeWeiXiuForm();
-                this.refreshWeixiuList();
-            })
-        },
         refreshHetongList() {
             this.loading = true;
             getMCApi().then((data) => {
@@ -317,12 +311,16 @@ export default {
                     }
 
                 });
-
+            }).catch(function (error) {
+                this.loading = false;
+                notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
             });
         },
         refreshWeixiuList() {
             this.loading = true;
-            getMRApi({status:2}).then((data) => {
+            getMRApi({
+                status: 2
+            }).then((data) => {
                 //this.localData = data.data.data;
                 this.loading = false;
                 this.localData = {
@@ -346,6 +344,9 @@ export default {
                             console.log(this.localData.data);
                             this.componentKey++;
                         }
+                    }).catch(function (error) {
+                        this.loading = false;
+                        notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                     });
                     switch (one.status) {
                         case 1:
@@ -360,9 +361,10 @@ export default {
                         default:
                             break;
                     }
-
                 });
-
+            }).catch(function (error) {
+                this.loading = false;
+                notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
             });
         },
 
@@ -373,7 +375,7 @@ export default {
             this.localData.data.map((one) => {
                 one.select = false;
             })
-            this.selectedlist=[];
+            this.selectedlist = [];
             this.componentKey++;
             this.open = true;
         },
@@ -417,8 +419,10 @@ export default {
     mounted() {
         //this.localData = data.data.data;
         this.loading = true;
-        
-        getMRApi({status:2}).then((data) => {
+
+        getMRApi({
+            status: 2
+        }).then((data) => {
             //this.localData = data.data.data;
             this.loading = false;
             this.localData = {
@@ -442,6 +446,9 @@ export default {
                         console.log(this.localData.data);
                         this.componentKey++;
                     }
+                }).catch(function (error) {
+                    this.loading = false;
+                    notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                 });
                 switch (one.status) {
                     case 1:
@@ -456,9 +463,10 @@ export default {
                     default:
                         break;
                 }
-
             });
-
+        }).catch(function (error) {
+            this.loading = false;
+            notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
         });
 
         getMCApi().then((data) => {
@@ -492,7 +500,9 @@ export default {
                 }
 
             });
-
+        }).catch(function (error) {
+            this.loading = false;
+            notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
         });
 
     }
@@ -532,6 +542,7 @@ export default {
     border-bottom: 1px solid rgba(34, 36, 38, .1);
     border-left: none;
 }
+
 .ui.blue.table {
     border-top: 0px !important;
 }

@@ -13,7 +13,7 @@
         <div class="vue2Table">
             <vuetable :key="componentKey" ref="vuetable" :api-mode="false" :data="localData" :fields="fields" :sort-order="sortOrder" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
                 <div slot="statusText" slot-scope="props">
-                    <el-tag   :type="props.rowData.status==2?'success':'danger'">
+                    <el-tag :type="props.rowData.status==2?'success':'danger'">
                         {{props.rowData.statusText}}
                     </el-tag>
                 </div>
@@ -183,7 +183,6 @@ export default {
                         });
                     } else {
                         notifySomething(constants.CREATEFAILED, constants.CREATEFAILED, constants.typeError);
-
                     }
                 }).catch(function (error) {
                     context.loading = false;
@@ -217,7 +216,6 @@ export default {
             this.deleteTarget.id = props.id;
             this.deleteTarget.reason = "无";
             this.deleteTarget.dangerText = "确认";
-
             this.openComfirmDialog();
         },
         editWeixiuShenqing(props) {
@@ -247,8 +245,14 @@ export default {
                         context.$refs.weixiuForm.floorOptions = flooroptions;
                         this.loading = false;
                         context.openWeiXiuForm("edit");
+                    }).catch(function (error) {
+                        this.loading = false;
+                        notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                     });
-                })
+                }).catch(function (error) {
+                    this.loading = false;
+                    notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
+                });
             } else {
                 context.openWeiXiuForm("edit");
             }
@@ -288,16 +292,24 @@ export default {
                     this.closeWeiXiuForm();
                     this.refreshWeixiuList();
                     notifySomething(constants.CREATESUCCESS, constants.CREATESUCCESS, constants.typeSuccess);
-                })
+                }).catch(function (error) {
+                    this.loading = false;
+                    notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
+                });
             } else if (this.modalMode == "edit") {
                 editMRApi(this.selectedWeixiu).then((result) => {
-                    console.log(result);
+                    if (result.data.code == 0) {
+                        this.loading = false;
+                        this.closeWeiXiuForm();
+                        this.refreshWeixiuList();
+                        notifySomething("编辑成功", "编辑成功", constants.typeSuccess);
+                    } else {
+                        notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
+                    }
+                }).catch(function (error) {
                     this.loading = false;
-                    this.closeWeiXiuForm();
-                    this.refreshWeixiuList();
-                    notifySomething("编辑成功", "编辑成功", constants.typeSuccess);
-
-                })
+                    notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
+                });
             }
 
         },
@@ -334,6 +346,9 @@ export default {
                             console.log(this.localData.data);
                             this.componentKey++;
                         }
+                    }).catch(function (error) {
+                        this.loading = false;
+                        notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                     });
                     switch (one.status) {
                         case 1:
@@ -351,6 +366,9 @@ export default {
 
                 });
 
+            }).catch(function (error) {
+                this.loading = false;
+                notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
             });
         },
         openWeiXiuForm(mode) {
@@ -411,6 +429,9 @@ export default {
                         console.log(this.localData.data);
                         this.componentKey++;
                     }
+                }).catch(function (error) {
+                    this.loading = false;
+                    notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                 });
                 switch (one.status) {
                     case 1:
@@ -425,9 +446,10 @@ export default {
                     default:
                         break;
                 }
-
             });
-
+        }).catch(function (error) {
+            this.loading = false;
+            notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
         });
 
     }

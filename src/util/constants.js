@@ -5,6 +5,7 @@ const constantsJinhui = {
     PASS:"审核通过",
     FAIL:"审核失败",
     CREATESUCCESS:"创建成功",
+    GENERALERROR:"错误",
     DELETESUCCEFAILEDSS:"删除成功",
     EDITSUCCESS:"编辑成功",
     EDITFAILED:"编辑失败",

@@ -41,8 +41,8 @@
             <vuetable ref="vuetable" :api-mode="false" :data="localData" :fields="fields" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
                 <div slot="action" slot-scope="props">
                     <!-- <sui-button basic color="red"  content="查看" v-on:click="viewSomeThing(props.rowData,'check')" /> -->
-                    <sui-button basic color="blue"  content="编辑" v-on:click="openAssignSection(props.rowData)" />
-                    <sui-button basic color="red"  content="删除" v-on:click="deleteRoom(props.rowData)" />
+                    <sui-button basic color="blue" content="编辑" v-on:click="openAssignSection(props.rowData)" />
+                    <sui-button basic color="red" content="删除" v-on:click="deleteRoom(props.rowData)" />
                     <!-- <sui-button content="分配房屋列表" v-on:click="openAssignList(props.rowData)" /> -->
                 </div>
             </vuetable>
@@ -62,10 +62,10 @@
                     </div>
                 </sui-modal-content>
                 <sui-modal-actions>
-                    <sui-button basic color="red"  @click.native="closeModal">
+                    <sui-button basic color="red" @click.native="closeModal">
                         取消
                     </sui-button>
-                    <sui-button v-if="modalMode !== 'check'" basic color="blue"  @click.native="toggle">
+                    <sui-button v-if="modalMode !== 'check'" basic color="blue" @click.native="toggle">
                         提交
                     </sui-button>
                 </sui-modal-actions>
@@ -77,10 +77,10 @@
                     <building-form ref='formComponentBuilding'></building-form>
                 </sui-modal-content>
                 <sui-modal-actions>
-                    <sui-button basic color="red"  @click.native="closeModal">
+                    <sui-button basic color="red" @click.native="closeModal">
                         取消
                     </sui-button>
-                    <sui-button basic color="blue"  @click.native="createBuilding">
+                    <sui-button basic color="blue" @click.native="createBuilding">
                         提交
                     </sui-button>
                 </sui-modal-actions>
@@ -104,7 +104,7 @@
 
                 </sui-modal-content>
                 <sui-modal-actions>
-                    <sui-button basic color="red"  @click.native="closeImageModal">
+                    <sui-button basic color="red" @click.native="closeImageModal">
                         取消
                     </sui-button>
                 </sui-modal-actions>
@@ -118,10 +118,10 @@
                     </assign-form>
                 </sui-modal-content>
                 <sui-modal-actions>
-                    <sui-button basic color="red"  @click.native="closeAssignModal">
+                    <sui-button basic color="red" @click.native="closeAssignModal">
                         取消
                     </sui-button>
-                    <sui-button basic color="blue"  @click.native="createAssignment">
+                    <sui-button basic color="blue" @click.native="createAssignment">
                         提交
                     </sui-button>
                 </sui-modal-actions>
@@ -153,7 +153,7 @@
                                 <mianji-form ref='mianjiForm' :singleRoom="selectedRoom"></mianji-form>
                             </sui-tab-pane>
                             <sui-tab-pane title="楼层管理" :attached="false">
-                                <sui-button basic color="blue"  @click.native="openBuildingModal">
+                                <sui-button basic color="blue" @click.native="openBuildingModal">
                                     新增
                                 </sui-button>
                                 <sui-grid :columns="2" relaxed="very">
@@ -243,10 +243,10 @@
 
                 </sui-modal-content>
                 <sui-modal-actions>
-                    <sui-button basic color="blue"  @click.native="toggle">
+                    <sui-button basic color="blue" @click.native="toggle">
                         保存
                     </sui-button>
-                    <sui-button basic color="red"  @click.native="closeModal">
+                    <sui-button basic color="red" @click.native="closeModal">
                         取消
                     </sui-button>
                 </sui-modal-actions>
@@ -426,11 +426,11 @@ export default {
             if (this.assignList.selectedFloor.cadfile != null) {
                 getFileOSSApi(this.assignList.selectedFloor.cadfile).then((file) => {
                     console.log(file);
-                    //var imgBlob=new Blob(file.data,{type:"image/png"});
-
-                    // this.assignList.selectedFloor.url = URL.createObjectURL(file.data);
                     this.buildingImage.open = true;
                     this.loading = false;
+                }).catch(function (error) {
+                    this.loading = false;
+                    notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                 });
             } else {
                 this.buildingImage.open = true;
@@ -446,10 +446,16 @@ export default {
             data.floor_id = this.assignForm.floor_id;
             createAssignmentApi(data).then((result) => {
                 this.loading = false;
-                this.getBuildingSection();
-                this.closeAssignModal();
-                console.log(result);
-            })
+                if (result.data.code == 0) {
+                    this.getBuildingSection();
+                    this.closeAssignModal();
+                } else {
+                    notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
+                }
+            }).catch(function (error) {
+                this.loading = false;
+                notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
+            });
 
         },
         openAssignModal(building, floor) {
@@ -465,7 +471,6 @@ export default {
             this.loading = true;
             createBuildingFloorApi(data).then(() => {
                 this.loading = false;
-                ti
                 this.$refs.formComponentBuilding.singleBuilding = {
                     room_id: this.selectedRappoom.id,
                     name: "",
@@ -473,7 +478,10 @@ export default {
                     lower: "",
                     detail: ""
                 };
-            })
+            }).catch(function (error) {
+                this.loading = false;
+                notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
+            });
         },
         formatJson(filterVal, jsonData) {
             return jsonData.map(v => filterVal.map(j => {
@@ -504,6 +512,9 @@ export default {
             this.selectedRoom.lat = this.point.lat;
             updateRoomApi(this.selectedRoom).then(() => {
                 this.loading = false;
+            }).catch(function (error) {
+                this.loading = false;
+                notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
             });
         },
         openAssignSection(rowData) {
@@ -563,7 +574,10 @@ export default {
                     building.children = [];
                     root.push(building);
                     this.getBuildingFloorSection(building);
-                })
+                }).catch(function (error) {
+                    this.loading = false;
+                    notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
+                });
                 if (this.assignList.buildings.length > 0) {
                     this.selectedBuildingID = this.assignList.buildings[0].id;
                 }
@@ -586,6 +600,9 @@ export default {
                     floor.floor_id = floor.id;
                     floor.disabled = true;
                     building.children.push(floor)
+                }).catch(function (error) {
+                    this.loading = false;
+                    notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                 });
                 this.tree = new Tree(this.treeData);
             })
@@ -597,28 +614,38 @@ export default {
                     this.refreshRooms();
                     this.$notify({
                         group: 'foo',
-                        title: '删除成功',
-                        text: '删除成功'
+                        title: '删除自有房屋成功',
+                        text: '删除自有房屋成功'
                     });
                 });
             } else if (this.deleteTarget.type == "Building") {
-                deleteBuildingApi(this.deleteTarget).then(() => {
+                deleteBuildingApi(this.deleteTarget).then((result) => {
                     this.getBuildingSection();
-                    this.$notify({
-                        group: 'foo',
-                        title: '删除成功',
-                        text: '删除成功'
-                    });
+                    if (result.data.code == 0) {
+                        this.$notify({
+                            group: 'foo',
+                            title: '删除房成功',
+                            text: '删除房成功'
+                        });
+                    }
+                }).catch(function (error) {
+                    this.loading = false;
+                    notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                 });
             } else if (this.deleteTarget.type = "buildingFloorAssignment") {
-                deleteBuildingFloorAssignmentApi(this.deleteTarget).then(() => {
-                    this.getBuildingSection();
+                deleteBuildingFloorAssignmentApi(this.deleteTarget).then((result) => {
                     // this.ComponentKey++;
-                    this.$notify({
-                        group: 'foo',
-                        title: '删除成功',
-                        text: '删除成功'
-                    });
+                    if (result.data.code == 0) {
+                        this.getBuildingSection();
+                        this.$notify({
+                            group: 'foo',
+                            title: '删除房成功',
+                            text: '删除房成功'
+                        });
+                    }
+                }).catch(function (error) {
+                    this.loading = false;
+                    notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                 });
             }
 
@@ -631,7 +658,10 @@ export default {
                 this.getBuildingSection();
                 this.$refs.formComponentBuilding.singleBuilding.building_id = result.data.data;
                 this.createBuildingFloor(this.$refs.formComponentBuilding.singleBuilding);
-            })
+            }).catch(function (error) {
+                this.loading = false;
+                notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
+            });
         },
         exportToExcel() {
             let headers = ['id', 'room_id', 'certid', 'owner', 'address', 'roomname', 'usage', 'space', 'optional', 'age', 'build_date', 'origin_value', 'room_value', 'dep', 'net_value', 'dep_rate', 'internal_info', 'cur_status'];
@@ -690,6 +720,9 @@ export default {
                     to: 5,
                     data: data.data.data
                 }
+            }).catch(function (error) {
+                this.loading = false;
+                notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
             });
         },
         // assignRentRoom(rowData){
@@ -733,9 +766,15 @@ export default {
             if (this.modalMode == "create") {
                 this.open = !this.open;
                 createRoomApi(this.$refs.formComponent.singleRoom).then((result) => {
-                    this.refreshRooms();
                     this.loading = false;
-
+                    if (result.data.code == 0) {
+                        this.refreshRooms();
+                    } else {
+                        notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
+                    }
+                }).catch(function (error) {
+                    this.loading = false;
+                    notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                 });
             } else if (this.modalMode == "edit") {
                 this.assignList.open = false;
@@ -748,12 +787,14 @@ export default {
                             text: '更新成功',
                             type: "success"
                         });
-                    }
-                    else{
-                        notifySomething("更新失败","更新失败","error");
+                    } else {
+                        notifySomething("更新失败", "更新失败", "error");
                         this.refreshRooms();
                     }
                     this.loading = false;
+                }).catch(function (error) {
+                    this.loading = false;
+                    notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                 });
             }
         },
@@ -793,15 +834,14 @@ export default {
                     this.updateFloorInfo(result);
                     this.closeImageModal();
                     //uppdate file ppath
+                }).catch(function (error) {
+                    this.loading = false;
+                    notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                 });
             }
 
         },
-        saveImage() {
-            console.log("saveImage");
-            console.log(this.assignList.selectedFloor);
-
-        },
+        saveImage() {},
         updateFloorInfo(result) {
             this.assignList.selectedFloor.cadfile = result.data.data;
             this.loading = false;
@@ -813,6 +853,9 @@ export default {
                     text: '成功上传',
                     type: "success"
                 });
+            }).catch(function (error) {
+                this.loading = false;
+                notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
             });
         },
         closeImageModal() {
@@ -841,6 +884,9 @@ export default {
                 to: 5,
                 data: data.data.data
             }
+        }).catch(function (error) {
+            this.loading = false;
+            notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
         });
     }
 };
