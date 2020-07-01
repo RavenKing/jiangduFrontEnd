@@ -21,7 +21,7 @@
                                 <sui-form-field>
                                     <input type="text" placeholder="请选择" v-model="filterString.shijiyongtu" />
                                 </sui-form-field>
-                                <sui-button basic color="blue"  content="搜索" v-on:click="submit" />
+                                <sui-button basic color="blue" content="搜索" v-on:click="submit" />
                             </sui-form-fields>
                         </sui-form>
                     </sui-grid-column>
@@ -41,8 +41,8 @@
             <vuetable ref="vuetable" :api-mode="false" :data="localData" :fields="fields" :sort-order="sortOrder" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
                 <div slot="action" slot-scope="props">
                     <!-- <sui-button basic color="blue"  content="查看" v-on:click="viewSomeThing(props.rowData,'check')" /> -->
-                    <sui-button basic color="blue"  content="修改" v-on:click="viewSomeThing(props.rowData)" />
-                    <sui-button basic color="red"  content="删除" v-on:click="deleteRoom(props.rowData)" />
+                    <sui-button basic color="blue" content="修改" v-on:click="viewSomeThing(props.rowData)" />
+                    <sui-button basic color="red" content="删除" v-on:click="deleteRoom(props.rowData)" />
 
                 </div>
             </vuetable>
@@ -85,14 +85,14 @@
                                             <label>面积</label>
                                             <sui-input type="text" placeholder="输入面积" v-model="selectedRoom.space_assign" />
                                         </sui-form-field>
-                                        <sui-button basic color="red"  content="添加单位" @click.prevent="assignRentRoom()" />
+                                        <sui-button basic color="red" content="添加单位" @click.prevent="assignRentRoom()" />
                                     </sui-form-fields>
                                 </sui-form>
                                 <div class="vue2Table">
                                     <vuetable ref="vuetable" :api-mode="false" :data="selectedRoom.assignList" :fields="fieldsAssign" data-path="data" :key="componentAssignListkey">
                                         <div slot="action" slot-scope="props">
                                             <!-- <sui-button basic color="blue"  content="查看" v-on:click="viewSomeThing(props.rowData,'check')" /> -->
-                                            <sui-button basic color="red"  content="删除" v-on:click="deleteRoomAssign(props.rowData)" />
+                                            <sui-button basic color="red" content="删除" v-on:click="deleteRoomAssign(props.rowData)" />
                                         </div>
                                     </vuetable>
                                 </div>
@@ -128,10 +128,10 @@
                     </div>
                 </sui-modal-content>
                 <sui-modal-actions>
-                    <sui-button basic color="red"  @click.native="closeModal">
+                    <sui-button basic color="red" @click.native="closeModal">
                         取消
                     </sui-button>
-                    <sui-button basic color="blue"  @click.native="toggle">
+                    <sui-button basic color="blue" @click.native="toggle">
                         提交
                     </sui-button>
                 </sui-modal-actions>
@@ -254,11 +254,11 @@ export default {
                     this.loading = true;
                     this.refreshAssignment();
                 } else {
-                    notifySomething(constants.CREATEFAILED, constants.CREATEFAILED, constants.typeError);
+                    notifySomething(constants.FEIPEICREATEFAILED, constants.FEIPEICREATEFAILED + result.data.code, constants.typeError);
                 }
             }).catch(function (error) {
                 this.loading = false;
-                notifySomething(constants.CREATEFAILED, constants.CREATEFAILED, constants.typeError);
+                notifySomething(constants.FEIPEICREATEFAILED, constants.FEIPEICREATEFAILED + result.data.code, constants.typeError);
             });
 
         },
@@ -526,7 +526,6 @@ export default {
     height: 400px;
 }
 
-
 .ui.table {
     font-size: 13px;
 }
@@ -544,6 +543,7 @@ export default {
     border-bottom: 1px solid rgba(34, 36, 38, .1);
     border-left: none;
 }
+
 .ui.blue.table {
     border-top: 0px !important;
 }

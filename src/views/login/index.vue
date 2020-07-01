@@ -132,7 +132,7 @@ export default {
 }
 
 .wlui-login {
-    background-image: url("../../../public/data/background.jpg");
+    background-image: url("https://fengxianjiguanju.oss-cn-shanghai.aliyuncs.com/bailian.png");
   background-position: center;
     padding: 0px;
     .login-form {

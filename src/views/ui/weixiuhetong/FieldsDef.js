@@ -34,8 +34,6 @@ export default [
   {
     name: "action",
     title: '操作',
-    titleClass: "center aligned",
-    dataClass: "center aligned",
-    width: "30%"
+    width: "15%"
   },
 ];

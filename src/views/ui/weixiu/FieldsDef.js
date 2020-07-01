@@ -1,4 +1,4 @@
-import VuetableFieldSwitch from './VuetableFieldSwitch.vue'
+import moment from 'moment'
 
 export default [
   {
@@ -14,7 +14,10 @@ export default [
   {
     name: "appdate",
     title: '申报时间',
-    width: "15%"
+    width: "15%",
+    formatter (value) {
+      return moment(value).format("YYYY-MM-DD");
+    }
   },  {
     name: "unit_detail.name",
     title: '单位',
@@ -36,8 +39,6 @@ export default [
   {
     name: "action",
     title: '操作',
-    titleClass: "center aligned",
-    dataClass: "center aligned",
-    width: "30%"
+    width: "15%"
   },
 ];

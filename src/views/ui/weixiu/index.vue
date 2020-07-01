@@ -13,13 +13,13 @@
         <div class="vue2Table">
             <vuetable :key="componentKey" ref="vuetable" :api-mode="false" :data="localData" :fields="fields" :sort-order="sortOrder" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
                 <div slot="statusText" slot-scope="props">
-                    <h4 is="sui-header" :color="props.rowData.status==2?'green':'red'">
+                    <el-tag   :type="props.rowData.status==2?'success':'danger'">
                         {{props.rowData.statusText}}
-                    </h4>
+                    </el-tag>
                 </div>
                 <div slot="action" slot-scope="props">
-                    <sui-button text="编辑" basic color="blue"  v-on:click="editWeixiuShenqing(props.rowData)">编辑</sui-button>
-                    <sui-button text="删除" basic color="red"  @change="handleChange(props)">删除</sui-button>
+                    <sui-button text="编辑" basic color="blue" v-on:click="editWeixiuShenqing(props.rowData)">编辑</sui-button>
+                    <sui-button text="删除" basic color="red" @change="handleChange(props)">删除</sui-button>
                 </div>
             </vuetable>
             <div class="pagination ui basic segment grid">
@@ -41,15 +41,15 @@
                     <weixiu-form :singleEntry="selectedWeixiu" ref="weixiuForm"> </weixiu-form>
                 </sui-modal-content>
                 <sui-modal-actions>
-                    <sui-button basic color="red"  @click.native="closeWeiXiuForm">
+                    <sui-button basic color="red" @click.native="closeWeiXiuForm">
                         取消
                     </sui-button>
-                    <sui-button basic color="blue"  @click.native="createShenbao">
+                    <sui-button basic color="blue" @click.native="createShenbao">
                         保存
                     </sui-button>
                     <span v-show="role==1&&modalMode=='edit'">
                         <sui-button color="green" v-on:click="approveContract(selectedWeixiu)">同意</sui-button>
-                        <sui-button basic color="red"  v-on:click="rejectContract(selectedWeixiu)">拒绝</sui-button>
+                        <sui-button basic color="red" v-on:click="rejectContract(selectedWeixiu)">拒绝</sui-button>
                     </span>
                 </sui-modal-actions>
             </sui-modal>
