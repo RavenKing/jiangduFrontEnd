@@ -34,7 +34,7 @@
                                 <form-create ref='FormCreate' :singleRoom="selectedRoom"></form-create>
                             </div>
                             <sui-modal-actions>
-                                <sui-button basic color="blue"  @click.native="updateUnit">
+                                <sui-button basic color="blue" @click.native="updateUnit">
                                     保存
                                 </sui-button>
                             </sui-modal-actions>
@@ -51,7 +51,9 @@
                                         </div>
                                     </div>
                                     <div slot="action" slot-scope="props">
-                                        <sui-button basic color="red"  content="删除" v-on:click="deletefenpei(props.rowData)" />
+                                        
+                                        <span v-show="role!==1"><sui-button basic color="blue" content="申请维修" v-on:click="" /></span>
+                                        <sui-button basic color="red" content="删除" v-on:click="deletefenpei(props.rowData)" />
                                     </div>
                                 </vuetable>
                             </div>
@@ -64,10 +66,10 @@
                                         </div>
                                     </sui-modal-content>
                                     <sui-modal-actions>
-                                        <sui-button basic color="red"  @click.native="closeModal">
+                                        <sui-button basic color="red" @click.native="closeModal">
                                             取消
                                         </sui-button>
-                                        <sui-button v-if="modalMode !== 'check'" basic color="blue"  @click.native="newfenpei">
+                                        <sui-button v-if="modalMode !== 'check'" basic color="blue" @click.native="newfenpei">
                                             提交
                                         </sui-button>
                                     </sui-modal-actions>
@@ -83,7 +85,7 @@
                                         </div>
                                     </div>
                                     <div slot="action" slot-scope="props">
-                                        <sui-button basic color="red"  content="删除" v-on:click="deleteleader(props.rowData)" />
+                                        <sui-button basic color="red" content="删除" v-on:click="deleteleader(props.rowData)" />
                                     </div>
                                 </vuetable>
                             </div>
@@ -130,10 +132,10 @@
 
                 </sui-modal-content>
                 <sui-modal-actions>
-                    <sui-button basic color="red"  @click.native="closeModal">
+                    <sui-button basic color="red" @click.native="closeModal">
                         取消
                     </sui-button>
-                    <sui-button v-if="modalMode !== 'check'" basic color="blue"  @click.native="toggle">
+                    <sui-button v-if="modalMode !== 'check'" basic color="blue" @click.native="toggle">
                         提交
                     </sui-button>
                 </sui-modal-actions>
@@ -145,10 +147,10 @@
                     <building-form ref='formComponentBuilding'></building-form>
                 </sui-modal-content>
                 <sui-modal-actions>
-                    <sui-button basic color="red"  @click.native="closeModal">
+                    <sui-button basic color="red" @click.native="closeModal">
                         取消
                     </sui-button>
-                    <sui-button basic color="blue"  @click.native="createBuilding">
+                    <sui-button basic color="blue" @click.native="createBuilding">
                         提交
                     </sui-button>
                 </sui-modal-actions>
@@ -163,10 +165,10 @@
                 </sui-modal-content>
                 <sui-modal-actions>
 
-                    <sui-button basic color="red"  @click.native="closeModal">
+                    <sui-button basic color="red" @click.native="closeModal">
                         取消
                     </sui-button>
-                    <sui-button v-if="modalMode !== 'check'" basic color="blue"  @click.native="toggle">
+                    <sui-button v-if="modalMode !== 'check'" basic color="blue" @click.native="toggle">
                         提交
                     </sui-button>
                 </sui-modal-actions>
@@ -198,7 +200,10 @@ import {
     VueTreeList,
     Tree,
     TreeNode
-} from 'vue-tree-list'
+} from 'vue-tree-list';
+import {
+    localGet
+} from "@/util/storage";
 import {
     export_json_to_excel
 } from "@/util/Export2Excel";
@@ -237,51 +242,9 @@ export default {
     },
     data() {
         return {
-            source: [{
-                    title: 'Andorra'
-                },
-                {
-                    title: 'United Arab Emirates'
-                },
-                {
-                    title: 'Afghanistan'
-                },
-                {
-                    title: 'Antigua'
-                },
-                {
-                    title: 'Anguilla'
-                },
-            ],
-            tree: new Tree([{
-                    name: 'Node 1',
-                    id: 1,
-                    pid: 0,
-                    dragDisabled: true,
-                    addTreeNodeDisabled: true,
-                    addLeafNodeDisabled: true,
-                    editNodeDisabled: true,
-                    delNodeDisabled: true,
-                    children: [{
-                            name: 'Node 1-2',
-                            id: 1,
-                            isLeaf: true,
-                            pid: 1
-                        },
-                        {
-                            name: 'Node 1-1',
-                            id: 2,
-                            isLeaf: true,
-                            pid: 1
-                        }
-                    ]
-                },
-                {
-                    name: 'Node 3',
-                    id: 4,
-                    pid: 0
-                }
-            ]),
+            role:0,
+            source: [],
+            tree: new Tree([]),
             sendVal: false,
             modelTitle: "",
             modalMode: "create",
@@ -650,7 +613,8 @@ export default {
         }
 
     },
-    created() {
+    mounted() {
+        this.role = localGet("role");
         var fenpei_options = []
         getRentRoomDataApi().then((data) => {
             var res_data = data.data.data
@@ -694,53 +658,52 @@ export default {
             for (var i = res_data.length - 1; i >= 0; i--) {
                 res_data[i]['bianzhi_num'] = 0
                 res_data[i]['shiji_num'] = 0
-                if (parseInt(res_data[i]['zhengju'])){
+                if (parseInt(res_data[i]['zhengju'])) {
                     res_data[i]['bianzhi_num'] = res_data[i]['bianzhi_num'] + parseInt(res_data[i]['zhengju'])
                 }
-                if (parseInt(res_data[i]['fuju'])){
+                if (parseInt(res_data[i]['fuju'])) {
                     res_data[i]['bianzhi_num'] = res_data[i]['bianzhi_num'] + parseInt(res_data[i]['fuju'])
                 }
-                if (parseInt(res_data[i]['zhengchu'])){
+                if (parseInt(res_data[i]['zhengchu'])) {
                     res_data[i]['bianzhi_num'] = res_data[i]['bianzhi_num'] + parseInt(res_data[i]['zhengchu'])
                 }
-                if (parseInt(res_data[i]['fuchu'])){
+                if (parseInt(res_data[i]['fuchu'])) {
                     res_data[i]['bianzhi_num'] = res_data[i]['bianzhi_num'] + parseInt(res_data[i]['fuchu'])
                 }
-                if (parseInt(res_data[i]['zhengke'])){
+                if (parseInt(res_data[i]['zhengke'])) {
                     res_data[i]['bianzhi_num'] = res_data[i]['bianzhi_num'] + parseInt(res_data[i]['zhengke'])
                 }
-                if (parseInt(res_data[i]['fuke'])){
+                if (parseInt(res_data[i]['fuke'])) {
                     res_data[i]['bianzhi_num'] = res_data[i]['bianzhi_num'] + parseInt(res_data[i]['fuke'])
                 }
-                if (parseInt(res_data[i]['other'])){
+                if (parseInt(res_data[i]['other'])) {
                     res_data[i]['bianzhi_num'] = res_data[i]['bianzhi_num'] + parseInt(res_data[i]['other'])
                 }
-                if (parseInt(res_data[i]['zhengju_r'])){
+                if (parseInt(res_data[i]['zhengju_r'])) {
                     res_data[i]['shiji_num'] = res_data[i]['shiji_num'] + parseInt(res_data[i]['zhengju_r'])
                 }
-                if (parseInt(res_data[i]['fuju_r'])){
+                if (parseInt(res_data[i]['fuju_r'])) {
                     res_data[i]['shiji_num'] = res_data[i]['shiji_num'] + parseInt(res_data[i]['fuju_r'])
                 }
-                if (parseInt(res_data[i]['zhengchu_r'])){
+                if (parseInt(res_data[i]['zhengchu_r'])) {
                     res_data[i]['shiji_num'] = res_data[i]['shiji_num'] + parseInt(res_data[i]['zhengchu_r'])
                 }
-                if (parseInt(res_data[i]['fuchu_r'])){
+                if (parseInt(res_data[i]['fuchu_r'])) {
                     res_data[i]['shiji_num'] = res_data[i]['shiji_num'] + parseInt(res_data[i]['fuchu_r'])
                 }
-                if (parseInt(res_data[i]['zhengke_r'])){
+                if (parseInt(res_data[i]['zhengke_r'])) {
                     res_data[i]['shiji_num'] = res_data[i]['shiji_num'] + parseInt(res_data[i]['zhengke_r'])
                 }
-                if (parseInt(res_data[i]['fuke_r'])){
+                if (parseInt(res_data[i]['fuke_r'])) {
                     res_data[i]['shiji_num'] = res_data[i]['shiji_num'] + parseInt(res_data[i]['fuke_r'])
                 }
-                if (parseInt(res_data[i]['other_r'])){
+                if (parseInt(res_data[i]['other_r'])) {
                     res_data[i]['shiji_num'] = res_data[i]['shiji_num'] + parseInt(res_data[i]['other_r'])
                 }
 
-                if (res_data[i]["parent_id"] == 0){
+                if (res_data[i]["parent_id"] == 0) {
                     parent_data.push(res_data[i])
-                }
-                else{
+                } else {
                     // res_data[i]['bianzhi_num'] = parseInt(res_data[i]['zhengju']) + parseInt(res_data[i]['fuju']) + parseInt(res_data[i]['zhengchu']) + parseInt(res_data[i]['fuchu']) + parseInt(res_data[i]['zhengke'])+parseInt(res_data[i]['fuke'])+parseInt(res_data[i]['other'])
                     // res_data[i]['shiji_num'] = parseInt(res_data[i]['zhengju_r']) + parseInt(res_data[i]['fuju_r']) + parseInt(res_data[i]['zhengchu_r']) + parseInt(res_data[i]['fuchu_r']) + parseInt(res_data[i]['zhengke_r'])+parseInt(res_data[i]['fuke_r'])+parseInt(res_data[i]['other_r'])
                     son_data.push(res_data[i])
