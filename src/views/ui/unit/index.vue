@@ -9,7 +9,6 @@
 
         </div>
         <div class="filterBiaoDan">
-            <sui-button content="添加" @click.native="createRoomModel" icon="add green" />
             <sui-button content="导出" v-on:click="exportToExcel" icon="file green" />
         </div>
 
@@ -39,7 +38,7 @@
                                 </sui-button>
                             </sui-modal-actions>
                         </sui-tab-pane>
-                        <sui-tab-pane title="分配列表" :attached="false">
+                        <sui-tab-pane title="分配列表" :disabled="selectedRoom.name==''">
                             <div>
                                 <sui-button content="新增" @click.native="createRoomModel" icon="add green" />
                             </div>
@@ -77,7 +76,7 @@
                                 </sui-modal>
                             </div>
                         </sui-tab-pane>
-                        <sui-tab-pane title="领导办公" :attached="false">
+                        <sui-tab-pane title="领导办公" :attached="false" :disabled="selectedRoom.name==''">
                             <div>
                                 <sui-button basic color="blue" @click.native="assignLeader">
                                     新增
@@ -94,7 +93,7 @@
                                 </vuetable>
                             </div>
                         </sui-tab-pane>
-                        <sui-tab-pane title="地图定位" :attached="false">
+                        <sui-tab-pane title="地图定位" :attached="false" :disabled="selectedRoom.name==''">
                             <div class="imageForm" :key="ComponentKey">
                                 <sui-form>
                                     <sui-form-fields inline>
@@ -131,9 +130,8 @@
                 <sui-modal-header>{{modelTitle}}</sui-modal-header>
                 <sui-modal-content scrolling>
                     <div>
-                        <form-create ref='formComponent' :singleRoom="selectedRoom"></form-create>
+                        <form-create ref='formComponent' :singleRoom="selectedfenpei"></form-create>
                     </div>
-
                 </sui-modal-content>
                 <sui-modal-actions>
                     <sui-button basic color="red" @click.native="closeModal">
@@ -146,15 +144,15 @@
             </sui-modal>
         </div>
         <div>
-            <sui-modal class="modal2" v-model="buildingForm.open">
+            <sui-modal class="modal2" v-model="leader.open">
                 <sui-modal-content scrolling>
-                    <building-form ref='formComponentBuilding'></building-form>
+                    <leader-form :singleRoom="selectedfenpei"></leader-form>
                 </sui-modal-content>
                 <sui-modal-actions>
-                    <sui-button basic color="red" @click.native="closeModal">
+                    <sui-button basic color="red" @click.native="closeLeaderModal">
                         取消
                     </sui-button>
-                    <sui-button basic color="blue" @click.native="createBuilding">
+                    <sui-button basic color="blue" @click.native="createLeaderAssign">
                         提交
                     </sui-button>
                 </sui-modal-actions>
@@ -168,7 +166,6 @@
                     <unit-form ref='formComponent'></unit-form>
                 </sui-modal-content>
                 <sui-modal-actions>
-
                     <sui-button basic color="red" @click.native="closeModal">
                         取消
                     </sui-button>
@@ -184,8 +181,13 @@
 </template>
 
 <script>
+import {
+    notifySomething
+} from "@/util/utils";
+import constants from "@/util/constants";
 import FormCreate from "@/components/unit_basic_info";
 import FormFenpei from "@/components/unit_fenpei_new";
+import LeaderForm from "@/components/unit_leader_form";
 import dialogBar from '@/components/MDialog'
 import UnitForm from "@/components/unitForm";
 import Vuetable from "vuetable-2/src/components/Vuetable";
@@ -195,11 +197,6 @@ import FieldsDef from "./FieldsDef.js";
 import FenpeiDef from "./FenpeiDef.js";
 import LingdaoDef from "./LingdaoDef.js";
 import FieldsDefList from "./FieldsDefList.js";
-import BuildingForm from "@/components/buildingForm";
-import AssignForm from "@/components/assignForm";
-import chanZhengForm from "@/components/chanZhengForm";
-import ziChanForm from "@/components/ziChanForm";
-import mianjiForm from "@/components/mianjiForm";
 import {
     VueTreeList,
     Tree,
@@ -225,7 +222,8 @@ import {
     deleteBuildingFloorAssignmentApi,
     delleaderroomApi,
     getBuildingListApi,
-    getBuildingFloorApi
+    getBuildingFloorApi,
+    createLeaderAssignApi
 } from "@/api/roomDataAPI";
 export default {
     name: "MyVuetable",
@@ -238,11 +236,7 @@ export default {
         UnitForm,
         FormFenpei,
         FormCreate,
-        'zichan-form': ziChanForm,
-        'chanzheng-form': chanZhengForm,
-        'building-form': BuildingForm,
-        'assign-form': AssignForm,
-        'mianji-form': mianjiForm
+        "leader-form": LeaderForm
     },
     data() {
         return {
@@ -273,7 +267,9 @@ export default {
                 id: "2",
                 name: "租房子"
             }],
-
+            leader: {
+                open: false
+            },
             // copied
             sendVal: false,
             modelTitle: "",
@@ -316,7 +312,7 @@ export default {
             loading: true,
             localData: [],
             selectedRoom: {
-                roomname: ""
+                name: ""
             },
             selectedfenpei: {
                 unit: '',
@@ -325,23 +321,40 @@ export default {
                 roomname: ''
             },
             listField: FieldsDefList,
-            fields: FieldsDef,
-            assignList: {
-                open: false,
-                buildings: [],
-                selectedBuilding: {},
-                selectedFloor: {}
-            },
-            buildingForm: {
-                open: false
-            }
+            fields: FieldsDef
         };
     },
 
     methods: {
+        closeLeaderModal() {
+            this.leader.open = false;
+        },
+        createLeaderAssign() {
+            console.log(this.selectedRoom);
+            console.log(this.selectedfenpei);
+            var payload = {
+                room_id: this.selectedfenpei.room_id,
+                building_id: this.selectedfenpei.building_id,
+                floor_id: this.selectedfenpei.floor_id,
+                space: this.selectedfenpei.space,
+                unit_id: this.selectedRoom.id,
+                leader: this.selectedfenpei.leader
+            }
+            this.loading = true;
+            createLeaderAssignApi(payload).then((result) => {
+                this.loading = false;
+                if (result.data.code == 0) {
+                    this.leader.open = false;
+                    notifySomething("创建成功", "创建领导分配成功", "success");
+                    this.refreshLeaderAssignment(this.selectedRoom.id);
+                }
+            }).catch((exception) => {
+                this.loading = false;
+                notifySomething("创建失败", "创建失败", "Error")
+            });
+        },
         assignLeader() {
-            console.log(this.selectedRoom)
-
+            this.leader.open = true;
         },
         //tree
         onDel(node) {
@@ -359,7 +372,7 @@ export default {
 
         onClick(params) {
 
-            this.selectedRoom = params
+            this.selectedRoom = params;
             var building_info = params['building_info']
             var temp_points = []
             var temp_x = 0
@@ -396,9 +409,13 @@ export default {
                     data: res_data
                 }
             })
-            getlistleaderroomApi(params.id).then((data) => {
+            this.refreshLeaderAssignment(params.id);
+        },
+
+        refreshLeaderAssignment(data) {
+            getlistleaderroomApi(data).then((data) => {
+                this.loading = false;
                 var res_data = data.data.data
-                console.log('leader room')
                 this.lingdaoData = {
                     total: 16,
                     per_page: 5,
@@ -433,8 +450,6 @@ export default {
         },
         clickConfirmDelete() {
             this.loading = true;
-            console.log('delete')
-            console.log(this.deleteTarget)
             if (this.deletetype == 'fenpei') {
                 deleteBuildingFloorAssignmentApi(this.deleteTarget).then((result) => {
                     this.refreshUnits();
@@ -442,7 +457,10 @@ export default {
             }
             if (this.deletetype == 'leader') {
                 delleaderroomApi(this.deleteTarget).then((result) => {
-                    this.refreshUnits();
+                    if (result.data.code == 0) {
+                        notifySomething("删除成功", "删除成功", constants.typeSuccess);
+                    }
+                    this.refreshLeaderAssignment(this.selectedRoom.id);
                 });
             }
         },
@@ -552,17 +570,9 @@ export default {
             });
         },
         createRoomModel() {
-            // show create Model
             this.modelTitle = "单位新增房屋"
             this.modalMode = "create";
             this.fenpeiopen = true;
-            console.log('create form')
-            // this.$refs.formComponent.singleUnit = {
-            //     name: "",
-            //     enumber: "",
-            //     level: "",
-            //     level_num: ""
-            // };
         },
 
         updateUnit() {
@@ -591,8 +601,6 @@ export default {
             this.fenpeiopen = false
         },
         newfenpei() {
-            console.log('提交')
-            console.log(this.selectedfenpei)
             if (this.selectedfenpei.roomtype == '1') {
                 var input = {}
                 input['room_id'] = this.selectedfenpei.room_id

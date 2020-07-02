@@ -449,7 +449,11 @@ function generalRequet(data,apiName)
         data: data
     });
 }
+function createLeaderAssignApi(data)
+{
+    return generalRequet(data,constants.createLeaderAssignApi)
 
+}
 
 export {
     getRoomDataApi,
@@ -489,5 +493,6 @@ export {
     assignRentAssignmentApi,
     listRentRoomAssignmentApi,
     deleteRentRoomAssignmentApi,
-    assignRentRoomApi
+    assignRentRoomApi,
+    createLeaderAssignApi
 }

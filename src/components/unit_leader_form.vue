@@ -2,9 +2,13 @@
 <div>
     <sui-form>
         <sui-form-fields inline>
-            <label for="roomtype">请选择房屋类型:</label>
+            <sui-form-field>
+                <label>领导级别</label>
+                <sui-dropdown placeholder="选择领导级别" selection :options="leaderLevel" v-model="singleRoom.leader" />
+            </sui-form-field>
         </sui-form-fields>
         <sui-form-fields>
+            <label for="roomtype">请选择房屋类型:</label>
             <sui-form-field>
                 <sui-checkbox radio name="type" label="自有房屋" value="1" v-model="singleRoom.roomtype" />
             </sui-form-field>
@@ -20,15 +24,14 @@
                 </model-select>
                 <!-- <sui-dropdown placeholder="选择房屋"  selection :options="singleRoom.ziyouroomoptions" v-model="singleRoom.room" /> -->
             </sui-form-field>
-            <!-- <sui-form-field v-if="singleRoom.roomtype == '1'" class="width300">
+            <sui-form-field v-if="singleRoom.roomtype == '1'" class="width300">
                 <label>房</label>
                 <sui-dropdown placeholder="选择房" selection :options="louOptions" v-model="singleRoom.building_id" @input="setFloor()" :loading="louLoading" :disabled="louLoading" />
-
             </sui-form-field>
             <sui-form-field v-if="singleRoom.roomtype == '1'" class="width300">
                 <label>楼</label>
                 <sui-dropdown floating direction="upward" placeholder="选择楼" selection :options="floorOptions" v-model="singleRoom.floor_id" :loading="floorLoading" :disabled="floorLoading" />
-            </sui-form-field> -->
+            </sui-form-field>
         </sui-form-fields>
         <sui-form-fields>
             <sui-form-field v-if="singleRoom.roomtype == '2'">
@@ -37,13 +40,14 @@
                 </model-select>
             </sui-form-field>
         </sui-form-fields>
+        <sui-form-fields>
+            <sui-form-field>
+                <label>面积</label>
+                <sui-input v-model="singleRoom.space" placeholder="输入面积" width="300px" type="number">
+                </sui-input>
+            </sui-form-field>
+        </sui-form-fields>
     </sui-form>
-    <div class="transfet-box">
-        <wl-tree-transfer :key="transferKey" ref="wl-tree-transfer" filter high-light default-transfer :mode="mode" :title="title" :to_data="toData" :from_data="fromData" :filterNode="filterNode" :defaultProps="defaultProps" :defaultCheckedKeys="defaultCheckedKeys" :defaultExpandedKeys="[2,3]" @right-check-change="rightCheckChange" @left-check-change="leftCheckChange" @removeBtn="remove" @addBtn="add" height="540px" node_key="id">
-            <span slot="title-right" class="my-title-right" @click="handleTitleRight">楼</span>
-        </wl-tree-transfer>
-
-    </div>
 </div>
 </template>
 
@@ -64,6 +68,13 @@ export default {
     },
     data() {
         return {
+            leaderLevel: [{
+                text: "正科",
+                value: "正科"
+            }, {
+                text: "副处",
+                value: "副处"
+            }],
             disabled: false,
             zoomlevel: 14,
             item: "",
@@ -102,7 +113,6 @@ export default {
             this.setFang();
         },
         setFloor() {
-            console.log(this.singleRoom.building_id);
             this.floorOptions = [];
             this.floorLoading = true;
             if (this.singleRoom.building_id != null) {
@@ -127,30 +137,6 @@ export default {
                 getBuildingListApi(this.singleRoom).then((data) => {
                     this.fromData = [];
                     data.data.data.map((one, index) => {
-                        var newFather = {
-                            id: one.id,
-                            pid: one.id,
-                            name: one.name,
-                            children: []
-                        }
-                        getBuildingFloorApi({
-                            building_id: one.id
-                        }).then((result) => {
-                            var floors = result.data.data;
-                            floors.map((floor) => {
-                                newFather.children.push({
-                                    id: floor.id,
-                                    pid: newFather.id,
-                                    name: floor.name
-                                });
-
-                            });
-                            this.fromData.push(newFather);
-                            this.floorLoading = false;
-                            this.louLoading = false;
-
-                        })
-
                         this.louOptions.push({
                             text: one.name,
                             value: one.id,
@@ -234,7 +220,8 @@ export default {
             alert("标题自定义区点击事件");
         }
     },
-    created() {
+    mounted() {
+        console.log(this.singleRoom);
         if (this.singleRoom.roomname == undefined) {
             this.singleRoom.roomname = ""
         }

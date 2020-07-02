@@ -53,7 +53,8 @@ const constantsJinhui = {
     approveMRApi:"/approvemr",
     rejectMRApi:"/rejectmr",
     delleaderroomApi:"/delleaderroom",
-    deleteRentRoomAssignmentApi:"/delassignroom"
+    deleteRentRoomAssignmentApi:"/delassignroom",
+    createLeaderAssignApi:"/assignleaderroom"
     
 }
 export default constantsJinhui;
