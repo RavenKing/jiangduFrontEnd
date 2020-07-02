@@ -10,6 +10,7 @@ const constantsJinhui = {
     EDITSUCCESS:"编辑成功",
     EDITFAILED:"编辑失败",
     DELETEFAILED:"删除失败",
+    DELETESUCCESS:"删除成功",
     CREATEFAILED:"创建失败",
     FENPEISUCCESS:"分配成功",
     FENPEIFAILED:"分配失败",

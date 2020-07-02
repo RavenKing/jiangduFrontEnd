@@ -10,6 +10,10 @@
             <sui-button content="创建维修计划" @click.native="openWeiXiuJihua" icon="add green" />
         </div>
 
+        <div class="wl-gantt-demo">
+            <wlGantt :data="hetongdataNewData" use-real-time default-expand-all date-type="monthAndDay" start-date="2020-6-06" end-date="2020-7-02" @timeChange="timeChange" @preChange="preChange" @expand-change="expandChange"></wlGantt>
+        </div>
+        <!-- 
         <div class="vue2Table">
             <vuetable ref="vuetable" :api-mode="false" :data="hetongdata" :fields="hetongFields" :sort-order="sortOrder" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData" :key="hetongComponentKey">
                 <div slot="action" slot-scope="props">
@@ -22,7 +26,7 @@
                 <vuetable-pagination-info ref="paginationInfo"></vuetable-pagination-info>
                 <vuetable-pagination ref="pagination" @vuetable-pagination:change-page="onChangePage"></vuetable-pagination>
             </div>
-        </div>
+        </div> -->
         <dialog-bar :commentData="deleteTarget.comment" v-model="sendVal" type="danger" title="是否要删除" :content="deleteTarget.text" v-on:cancel="clickCancel()" @danger="clickConfirmDelete()" @confirm="clickConfirmDelete()" dangerText="确认删除"></dialog-bar>
 
         <div>
@@ -159,6 +163,7 @@ export default {
             fields2: Fields2,
             lang: lang,
             hetongdata: [],
+            hetongdataNewData: [],
             hetongComponentKey: 1,
             componentKey: 1,
             currentStep: 1,
@@ -178,6 +183,8 @@ export default {
             sortOrder: [{}],
             steps: [],
             weixiuhetong: {},
+            maxStartDate: 0,
+            minEndDate: 0
         };
     },
 
@@ -283,7 +290,6 @@ export default {
             getMCApi().then((data) => {
                 //this.localData = data.data.data;
                 this.loading = false;
-                console.log(data.data.data);
                 this.hetongdata = {
                     total: 16,
                     per_page: 5,
@@ -295,7 +301,17 @@ export default {
                     to: 5,
                     data: data.data.data
                 }
-                this.hetongdata.data.map((one) => {
+                this.hetongdata.data.map((one, index) => {
+                    var ganttData = {};
+                    ganttData = {
+                        id: index,
+                        pid: index,
+                        name: one.memo,
+                        startDate: one.starttime,
+                        endDate: one.endtime,
+                    }
+                    this.hetongdataNewData.push(ganttData);
+
                     switch (one.status) {
                         case 1:
                             one.statusText = "未开始";
@@ -484,7 +500,22 @@ export default {
                 to: 5,
                 data: data.data.data
             }
-            this.hetongdata.data.map((one) => {
+            this.hetongdata.data.map((one, index) => {
+                var ganttData = {};
+                ganttData = {
+                    id: index,
+                    pid: index,
+                    name: one.memo,
+                    startDate: one.starttime,
+                    endDate: one.endtime,
+                }
+                if (this.maxStartDate == 0) {
+                    this.maxStartDate = one.starttime;
+                    this.minEndDate = one.endtime;
+                }
+
+                this.hetongdataNewData.push(ganttData);
+
                 switch (one.status) {
                     case 1:
                         one.statusText = "未开始";

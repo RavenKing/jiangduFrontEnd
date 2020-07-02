@@ -51,8 +51,9 @@
                                         </div>
                                     </div>
                                     <div slot="action" slot-scope="props">
-                                        
-                                        <span v-show="role!==1"><sui-button basic color="blue" content="申请维修" v-on:click="" /></span>
+
+                                        <span v-show="role!==1">
+                                            <sui-button basic color="blue" content="申请维修" v-on:click="" /></span>
                                         <sui-button basic color="red" content="删除" v-on:click="deletefenpei(props.rowData)" />
                                     </div>
                                 </vuetable>
@@ -78,6 +79,9 @@
                         </sui-tab-pane>
                         <sui-tab-pane title="领导办公" :attached="false">
                             <div>
+                                <sui-button basic color="blue" @click.native="assignLeader">
+                                    新增
+                                </sui-button>
                                 <vuetable ref="vuetable" :api-mode="false" :data="lingdaoData" :fields="lingdaofields" :sort-order="sortOrder" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
                                     <div slot="name" slot-scope="props">
                                         <div :class="props.rowData.status!=99?'center aligned':'' ">
@@ -242,7 +246,7 @@ export default {
     },
     data() {
         return {
-            role:0,
+            role: 0,
             source: [],
             tree: new Tree([]),
             sendVal: false,
@@ -271,7 +275,6 @@ export default {
             }],
 
             // copied
-
             sendVal: false,
             modelTitle: "",
             modalMode: "create",
@@ -336,7 +339,10 @@ export default {
     },
 
     methods: {
+        assignLeader() {
+            console.log(this.selectedRoom)
 
+        },
         //tree
         onDel(node) {
             console.log(node)

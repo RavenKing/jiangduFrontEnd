@@ -283,7 +283,7 @@ export default {
         },
         clickConfirmDelete() {
             this.loading = true;
-            if (this.deleteTarget.type == constants.typeRoomAssignment) {
+            if (this.deleteTarget.room_type == constants.typeRoomAssignment) {
                 deleteRentRoomAssignmentApi(this.deleteTarget).then((result) => {
                     this.loading = false;
                     if (result.data.code == 0) {
@@ -405,7 +405,9 @@ export default {
             this.deleteTarget = {
                 text: "是否要删除" + data.room_id + "(" + data.unit_detail.name + ")?",
                 id: data.id,
-                type: constants.typeRoomAssignment
+                room_type: constants.typeRoomAssignment,
+                room_id:data.room_id,
+                unit_id:data.unit_id
             };
         },
         deleteRoom(data) {
