@@ -63,7 +63,7 @@
                                     <rentroom-form :singleRoom="selectedRoom"></rentroom-form>
                                 </div>
                             </sui-tab-pane>
-                            <sui-tab-pane title="合同信息" :attached="false" :disabled="!editMode">
+                            <sui-tab-pane title="合同信息" :attached="false" :disabled="!editMode" :key="componentFenpeikey">
                                 <div>
 
                                     <contract-form :singleEntry="selectedRoomContract" :mianji="selectedRoom.value"></contract-form>
@@ -355,6 +355,11 @@ export default {
             this.loading = true;
             this.defaultTab = 0;
             this.selectedRoom = data;
+            this.selectedRoom.spaces = [{
+                mianji: "",
+                price: "",
+                miaoshu: ""
+            }];
             this.modelTitle = "修改租赁房屋";
             this.editMode = true;
             if (data.lat === null || data.lat == "") {
@@ -406,8 +411,8 @@ export default {
                 text: "是否要删除" + data.room_id + "(" + data.unit_detail.name + ")?",
                 id: data.id,
                 room_type: constants.typeRoomAssignment,
-                room_id:data.room_id,
-                unit_id:data.unit_id
+                room_id: data.room_id,
+                unit_id: data.unit_id
             };
         },
         deleteRoom(data) {

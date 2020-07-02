@@ -1,8 +1,6 @@
 <template lang="html">
 <div>
     <sui-form>
-
-
         <sui-form-fields inline>
             <sui-form-field>
                 <label>出租方:</label>
@@ -41,56 +39,22 @@
                 <sui-input placeholder="增长规则" v-model="singleEntry.rule" />
             </sui-form-field>
         </sui-form-fields>
-        <div v-show="mianji==2">
+        <div :key="componentKey" v-for="(item, index) in singleEntry.spaces">
             <sui-form-fields inline>
                 <sui-form-field>
-                    <label>办公面积:</label>
-                    <sui-input placeholder="办公面积" v-model="singleEntry.space1" type="number" required />
+                    <label>面积:</label>
+                    <sui-input placeholder="面积" v-model="singleEntry.spaces[index].mianji" type="number" required />
                 </sui-form-field>
                 <sui-form-field>
                     <label>单价:</label>
-                    <sui-input placeholder="办公面积单价" v-model="singleEntry.price1" type="number" />
-                </sui-form-field>
-            </sui-form-fields>
-            <sui-form-fields inline>
-                <sui-form-field>
-                    <label>仓库面积:</label>
-                    <sui-input placeholder="仓库面积" v-model="singleEntry.space2" type="number" />
+                    <sui-input placeholder="单价" v-model="singleEntry.spaces[index].price" type="number" />
                 </sui-form-field>
                 <sui-form-field>
-                    <label>单价:</label>
-                    <sui-input placeholder="仓库面积单价" v-model="singleEntry.price2" type="number" />
+                    <label>描述:</label>
+                    <sui-input placeholder="描述" v-model="singleEntry.spaces[index].miaoshu" type="text" />
                 </sui-form-field>
-            </sui-form-fields>
-            <sui-form-fields inline>
-                <sui-form-field>
-                    <label>场地面积:</label>
-                    <sui-input placeholder="场地面积" v-model="singleEntry.space3" type="number" />
-                </sui-form-field>
-                <sui-form-field>
-                    <label>单价:</label>
-                    <sui-input placeholder="场地面积单价" v-model="singleEntry.price3" type="number" />
-                </sui-form-field>
-            </sui-form-fields>
-            <sui-form-fields inline>
-                <sui-form-field>
-                    <label>其他面积:</label>
-                    <sui-input placeholder="其他面积" v-model="singleEntry.space4" type="number" />
-                </sui-form-field>
-                <sui-form-field>
-                    <label>单价:</label>
-                    <sui-input placeholder="其他面积单价" v-model="singleEntry.price4" type="number" />
-                </sui-form-field>
-            </sui-form-fields>
-            <sui-form-fields inline>
-                <sui-form-field>
-                    <label>车位个数</label>
-                    <sui-input placeholder="车位个数" v-model="singleEntry.carslot" type="number" />
-                </sui-form-field>
-                <sui-form-field>
-                    <label>单价</label>
-                    <sui-input placeholder="单价" v-model="singleEntry.price5" type="number" />
-                </sui-form-field>
+                <sui-button circular icon="add" @click.prevent="addOneMore" v-show="index==singleEntry.spaces.length-1" />
+                <sui-button circular icon="minus" @click.prevent="deleteOne(index)" v-show="singleEntry.spaces.length>1" />
             </sui-form-fields>
         </div>
         <sui-form-fields inline>
@@ -145,9 +109,10 @@ export default {
     components: {
         Datepicker
     },
-    props: ['singleEntry','mianji'],
+    props: ['singleEntry', 'mianji'],
     data() {
         return {
+            componentKey: 0,
             options: [],
             louOptions: [],
             floorOptions: [],
@@ -161,6 +126,20 @@ export default {
         };
     },
     methods: {
+        deleteOne(index) {
+            this.singleEntry.spaces.splice(index, 1);
+            this.componentKey++;
+
+        },
+        addOneMore() {
+            this.singleEntry.spaces.push({
+                mianji: "",
+                price: "",
+                miaoshu: ""
+            })
+
+            this.componentKey++;
+        },
         calculateTotal() {
             this.total = this.checkValue(this.singleEntry.space1) + this.checkValue(this.singleEntry.space2) + this.checkValue(this.singleEntry.space4) + this.checkValue(this.singleEntry.carslot);
             this.totalPrice = this.checkValue(this.singleEntry.price1) * this.checkValue(this.singleEntry.space1) + this.checkValue(this.singleEntry.price2) * this.checkValue(this.singleEntry.space2) + this.checkValue(this.singleEntry.price3) * this.checkValue(this.singleEntry.space3) + this.checkValue(this.singleEntry.price4) * this.checkValue(this.singleEntry.space4) + this.checkValue(this.singleEntry.price5) * this.checkValue(this.singleEntry.carslot);
@@ -176,7 +155,7 @@ export default {
         setFloor() {
             console.log(this.singleEntry.building_id);
             this.floorOptions = [];
-            this.floorLoading = true;   
+            this.floorLoading = true;
             if (this.singleEntry.building_id != null) {
                 getBuildingFloorApi(this.singleEntry).then((result) => {
                     var floors = result.data.data;
@@ -210,12 +189,12 @@ export default {
 
         }
     },
-    mounted() {
-        if (this.singleEntry.space2 != null) {
-            this.value = "2";
-        } else {
-            this.value = "1"
-        }
+    created() {
+        this.singleEntry.spaces = [{
+            mianji: "",
+            price: "",
+            miaoshu: ""
+        }];
         this.total = 0;
         this.totalPrice = 0;
         getRoomDataApi().then((data) => {
