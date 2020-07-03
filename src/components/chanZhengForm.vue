@@ -29,7 +29,7 @@
         <sui-form-fields>
             <sui-form-field>
                 <label>土地面积</label>
-                <sui-input placeholder="土地面积" v-model="singleRoom.propertyspace2" :disabled="disabled" />
+                <sui-input placeholder="土地面积" v-model="singleRoom.rawspace" :disabled="disabled" />
             </sui-form-field>
             <sui-form-field>
                 <label>建筑面积</label>

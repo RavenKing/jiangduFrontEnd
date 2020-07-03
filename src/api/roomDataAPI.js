@@ -116,7 +116,6 @@ function getUnitApi()
 {
     let local_auth = localGet(global.project_key, true);
     //console.log(local_auth);
-    console.log(constants.unitGetApi);
     const newFormData = {
         "token": local_auth
     }
@@ -136,7 +135,6 @@ function getUnitApiByid(id)
 {
     let local_auth = localGet(global.project_key, true);
     //console.log(local_auth);
-    console.log(constants.unitGetApi);
     const newFormData = {
         "token": local_auth,
         "id":id
@@ -156,8 +154,6 @@ function getUnitApiByid(id)
 function getlistleaderroomApi(id)
 {
     let local_auth = localGet(global.project_key, true);
-    console.log(constants.leaderRoomGetApi);
-    console.log(local_auth)
     const newFormData = {
         "token": local_auth,
         "unit_id": id

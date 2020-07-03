@@ -50,7 +50,6 @@
                                         </div>
                                     </div>
                                     <div slot="action" slot-scope="props">
-
                                         <span v-show="role!==1">
                                             <sui-button basic color="blue" content="申请维修" v-on:click="" /></span>
                                         <sui-button basic color="red" content="删除" v-on:click="deletefenpei(props.rowData)" />
@@ -371,29 +370,30 @@ export default {
         },
 
         onClick(params) {
-
             this.selectedRoom = params;
             var building_info = params['building_info']
             var temp_points = []
             var temp_x = 0
             var temp_y = 0
             var counter = 0
-            for (var i = building_info.length - 1; i >= 0; i--) {
-                if (building_info[i]['lat'] && building_info[i]['lon']) {
-                    temp_x += building_info[i]['lat']
-                    temp_y += building_info[i]['lon']
-                    counter += 1
-                    temp_points.push({
-                        lat: building_info[i]['lat'],
-                        lon: building_info[i]['lon']
-                    })
+            if (building_info != undefined) {
+                for (var i = building_info.length - 1; i >= 0; i--) {
+                    if (building_info[i]['lat'] && building_info[i]['lon']) {
+                        temp_x += building_info[i]['lat']
+                        temp_y += building_info[i]['lon']
+                        counter += 1
+                        temp_points.push({
+                            lat: building_info[i]['lat'],
+                            lon: building_info[i]['lon']
+                        })
+                    }
                 }
+                this.point = {
+                    lat: temp_x / counter,
+                    lon: temp_y / counter
+                }
+                this.points = temp_points
             }
-            this.point = {
-                lat: temp_x / counter,
-                lon: temp_y / counter
-            }
-            this.points = temp_points
 
             getUnitApiByid(params.id).then((data) => {
                 var res_data = data.data.data['building_info']
@@ -510,6 +510,8 @@ export default {
         deletefenpei(data) {
             this.sendVal = true;
             this.deleteTarget = data
+            this.deleteTarget.text = "是否要删除";
+            this.deleteTarget
             this.deletetype = 'fenpei'
 
         },
@@ -523,7 +525,6 @@ export default {
 
             getUnitApi().then((data) => {
                 console.log(data);
-
                 var res_data = data.data.data
                 var parent_data = []
                 var son_data = []
