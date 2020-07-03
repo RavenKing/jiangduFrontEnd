@@ -7,7 +7,7 @@
             </sui-dimmer>
         </div>
         <div class="filterBiaoDan">
-            <sui-button content="创建维修计划" @click.native="openWeiXiuJihua" icon="add green" />
+            <sui-button content="创建项目" @click.native="openWeiXiuJihua" icon="add green" />
         </div>
 
         <div class="wl-gantt-demo">
@@ -37,7 +37,7 @@
                             <sui-step :active="currentStep==1">
                                 <sui-icon name="truck" />
                                 <sui-step-content>
-                                    <sui-step-title>选择维修房屋</sui-step-title>
+                                    <sui-step-title>项目列表</sui-step-title>
                                 </sui-step-content>
                             </sui-step>
 

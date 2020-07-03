@@ -47,7 +47,7 @@ function registerRouteGuard() {
                 },
                 {
                 id: "3-28",
-                title: "维修列表",
+                title: "项目管理",
                 url: "/ui/weixiu"
               }
               );
@@ -62,7 +62,7 @@ function registerRouteGuard() {
               });
               _menu[0].children.push( {
                 id: "3-29",
-                title: "维修合同",
+                title: "项目管理",
                 url: "/ui/weixiuhetong"
               });
 
