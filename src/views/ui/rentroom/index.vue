@@ -296,7 +296,14 @@ export default {
 
             } else {
                 deleteRentRoomApi(this.deleteTarget).then((result) => {
-                    this.refreshRooms();
+                    if (result.data.code == 0) {
+                        this.refreshRooms();
+                        notifySomething(constants.DELETESUCCESS, constants.DELETESUCCESS, constants.typeSuccess);
+                    } else {
+                        notifySomething(constants.DELETEFAILED, constants.DELETEFAILED, constants.typeError);
+
+                    }
+
                     console.log(result)
                 });
             }
@@ -328,20 +335,18 @@ export default {
                         var latestOne = result.data.data.length;
                         this.selectedRoomContract.contract_id = result.data.data[latestOne - 1].id;
                         editRentContractDetailApi({
-                            contract_id:this.selectedRoomContract.contract_id,
-                            valuelist:JSON.stringify(this.selectedRoomContract.spaces)
-                        }).then((result)=>{
-                            if(result.data.code==0)
-                            {
-                                notifySomething("'创建合同成功'",'创建合同成功','success');
-                            }else
-                            {
-                               notifySomething("'创建合同失败'",'创建合同失败','error');
+                            contract_id: this.selectedRoomContract.contract_id,
+                            valuelist: JSON.stringify(this.selectedRoomContract.spaces)
+                        }).then((result) => {
+                            if (result.data.code == 0) {
+                                notifySomething("'创建合同成功'", '创建合同成功', 'success');
+                            } else {
+                                notifySomething("'创建合同失败'", '创建合同失败', 'error');
                             }
                         })
                         this.loading = false;
                     })
-                    
+
                 } else {
                     context.$notify({
                         group: 'foo',
@@ -426,7 +431,12 @@ export default {
             };
         },
         deleteRoom(data) {
-
+            this.sendVal = true;
+            this.deleteTarget = {
+                text: "是否要删除" + data.room_id + "(" + data.roomname + ")?",
+                id: data.id,
+                room_type: "rentRoom"
+            };
             // this.loading = true;
             // deleteRoomApi(data).then((result) => {
             //     this.refreshRooms();
