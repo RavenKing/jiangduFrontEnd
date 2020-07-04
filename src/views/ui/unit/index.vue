@@ -43,6 +43,9 @@
                                 <sui-button content="新增" @click.native="createRoomModel" icon="add green" />
                             </div>
                             <div>
+                                <form-weixiu ref='WeixiuForm' :singleRoom="selectedRoom"></form-weixiu>
+                            </div>
+                            <div>
                                 <vuetable ref="vuetable" :api-mode="false" :data="fenpeilocalData" :fields="fenpeifields" :sort-order="sortOrder" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
                                     <div slot="name" slot-scope="props">
                                         <div>
@@ -53,9 +56,33 @@
                                         <span v-show="role!==1">
                                             <sui-button basic color="blue" content="申请维修" v-on:click="" /></span>
                                         <sui-button basic color="red" content="删除" v-on:click="deletefenpei(props.rowData)" />
+                                        <sui-button basic color="red" content="申请维修" v-on:click="applyRepair(props.rowData)" />
                                     </div>
                                 </vuetable>
                             </div>
+
+                            <div>
+                                <sui-modal class="modal2" v-model="weixiuopen">
+                                    <sui-modal-header>申请维修</sui-modal-header>
+                                    <sui-modal-content scrolling>
+                                        <div>
+                                        <form-weixiu ref='FormWeixiu' :singleEntry="selectedWeixiu"></form-weixiu>
+                                    </div>
+                                    </sui-modal-content>
+                                    <sui-modal-actions>
+                                    <sui-button basic color="red" @click.native="closeWeiXiuForm">
+                                        取消
+                                    </sui-button>
+                                    <sui-button basic color="blue" @click.native="createShenbao">
+                                        保存
+                                    </sui-button>
+                                </sui-modal-actions>
+                                    
+                                </sui-modal>
+                            </div>
+
+
+
                             <div>
                                 <sui-modal class="modal2" v-model="fenpeiopen">
                                     <sui-modal-header>{{modelTitle}}</sui-modal-header>
@@ -187,6 +214,7 @@ import constants from "@/util/constants";
 import FormCreate from "@/components/unit_basic_info";
 import FormFenpei from "@/components/unit_fenpei_new";
 import LeaderForm from "@/components/unit_leader_form";
+import FormWeixiu from "@/components/weixiuForm";
 import dialogBar from '@/components/MDialog'
 import UnitForm from "@/components/unitForm";
 import Vuetable from "vuetable-2/src/components/Vuetable";
@@ -224,6 +252,16 @@ import {
     getBuildingFloorApi,
     createLeaderAssignApi
 } from "@/api/roomDataAPI";
+import {
+    getMRApi,
+    createMRApi,
+    editMRApi,
+    getroombyid,
+    createMCApi,
+    getMCApi,
+    approveMRApi,
+    rejectMRApi
+} from "@/api/weixiuAPI";
 export default {
     name: "MyVuetable",
     components: {
@@ -235,6 +273,7 @@ export default {
         UnitForm,
         FormFenpei,
         FormCreate,
+        FormWeixiu,
         "leader-form": LeaderForm
     },
     data() {
@@ -247,12 +286,14 @@ export default {
             modalMode: "create",
             open: false,
             fenpeiopen: false,
+            weixiuopen: false,
             deleteTarget: "",
             loading: true,
             localData: [],
             rent_room_list: [],
             fenpeilocalData: [],
             lingdaoData: [],
+            selectedWeixiu: {},
             deletetype: '',
             ComponentKey: 1,
             fields: FieldsDef,
@@ -352,6 +393,19 @@ export default {
                 notifySomething("创建失败", "创建失败", "Error")
             });
         },
+        createShenbao() {
+            this.loading = true;
+            console.log(this.selectedWeixiu)
+                createMRApi(this.selectedWeixiu).then((result) => {
+                    this.loading = false;
+                    this.closeWeiXiuForm();
+                    notifySomething(constants.CREATESUCCESS, constants.CREATESUCCESS, constants.typeSuccess);
+                }).catch(function (error) {
+                    this.loading = false;
+                    notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
+                });
+
+        },
         assignLeader() {
             this.leader.open = true;
         },
@@ -363,6 +417,9 @@ export default {
 
         onChangeName(params) {
             console.log(params)
+        },
+        closeWeiXiuForm(){
+            this.weixiuopen = false
         },
 
         onAddNode(params) {
@@ -397,6 +454,13 @@ export default {
 
             getUnitApiByid(params.id).then((data) => {
                 var res_data = data.data.data['building_info']
+                console.log(res_data)
+                for (var i = res_data.length - 1; i >= 0; i--) {
+                    if(res_data[i]['type1'] == 'self')
+                        res_data[i]['type1'] = '自有房屋'
+                    else
+                        res_data[i]['type1'] = '租赁房屋'
+                }
                 this.fenpeilocalData = {
                     total: 16,
                     per_page: 5,
@@ -575,6 +639,10 @@ export default {
             this.fenpeiopen = true;
         },
 
+        applyRepair(data){
+            this.weixiuopen = true
+        },
+
         updateUnit() {
             let formdata = this.$refs.FormCreate.singleRoom;
             console.log(this.$refs)
@@ -727,7 +795,6 @@ export default {
                     'value': res_data[i]['id']
                 })
             }
-            console.log(son_data)
             for (var i = parent_data.length - 1; i >= 0; i--) {
                 var abstract_parent = JSON.parse(JSON.stringify(parent_data[i]))
                 abstract_parent["status"] = 99
