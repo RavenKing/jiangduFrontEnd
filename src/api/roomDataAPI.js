@@ -451,6 +451,11 @@ function createLeaderAssignApi(data)
 
 }
 
+function editRentContractDetailApi(data)
+{
+    return generalRequet(data,constants.editRentContractDetailApi)
+}
+
 export {
     getRoomDataApi,
     createRoomApi,
@@ -490,5 +495,6 @@ export {
     listRentRoomAssignmentApi,
     deleteRentRoomAssignmentApi,
     assignRentRoomApi,
-    createLeaderAssignApi
+    createLeaderAssignApi,
+    editRentContractDetailApi
 }

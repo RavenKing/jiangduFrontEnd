@@ -54,7 +54,8 @@ const constantsJinhui = {
     rejectMRApi:"/rejectmr",
     delleaderroomApi:"/delleaderroom",
     deleteRentRoomAssignmentApi:"/delassignroom",
-    createLeaderAssignApi:"/assignleaderroom"
+    createLeaderAssignApi:"/assignleaderroom",
+    editRentContractDetailApi:"/editrentcontractdetail"
     
 }
 export default constantsJinhui;

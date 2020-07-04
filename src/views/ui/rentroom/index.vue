@@ -52,7 +52,6 @@
             </div>
         </div>
         <dialog-bar v-model="sendVal" type="danger" title="是否要删除" :content="deleteTarget.text" v-on:cancel="clickCancel()" @danger="clickConfirmDelete()" @confirm="clickConfirmDelete()" dangerText="确认删除"></dialog-bar>
-
         <div>
             <sui-modal class="modal2" v-model="open">
                 <sui-modal-content scrolling>
@@ -98,7 +97,7 @@
                                 </div>
                             </sui-tab-pane>
                             <sui-tab-pane title="地图定位" :attached="false" :disabled="!editMode">
-                                <div class="imageForm" :key="ComponentKey">
+                                <div class="imageForm">
                                     <sui-form>
                                         <sui-form-fields inline>
                                             <label> 经度
@@ -165,7 +164,8 @@ import {
     assignRentAssignmentApi,
     getUnitApi,
     listRentRoomAssignmentApi,
-    deleteRentRoomAssignmentApi
+    deleteRentRoomAssignmentApi,
+    editRentContractDetailApi
 } from "@/api/roomDataAPI";
 import {
     notifySomething
@@ -301,11 +301,6 @@ export default {
                 });
             }
         },
-        openContractModal(rowData) {
-            this.contractForm.open = true;
-            this.contractForm.room_id = rowData.room_id;
-            this.$refs.formComponentContract.singleContract = this.contractForm;
-        },
         dragend: function (e) {
             //this.loading = true;
             // alert("what")
@@ -323,15 +318,30 @@ export default {
         createRentContract: function () {
             this.selectedRoomContract.room_id = this.selectedRoom.id;
             var context = this;
+            console.log(this.selectedRoomContract);
             createRentContractApi(this.selectedRoomContract).then((result) => {
-                this.selectedRoomContract = {};
+                this.closeModal();
                 if (result.data.code == 0) {
-                    context.$notify({
-                        group: 'foo',
-                        title: '创建合同成功',
-                        text: '创建合同成功',
-                        type: "success"
-                    });
+                    getRentRoomContractListApi({
+                        room_id: this.selectedRoom.id
+                    }).then((result) => {
+                        var latestOne = result.data.data.length;
+                        this.selectedRoomContract.contract_id = result.data.data[latestOne - 1].id;
+                        editRentContractDetailApi({
+                            contract_id:this.selectedRoomContract.contract_id,
+                            valuelist:JSON.stringify(this.selectedRoomContract.spaces)
+                        }).then((result)=>{
+                            if(result.data.code==0)
+                            {
+                                notifySomething("'创建合同成功'",'创建合同成功','success');
+                            }else
+                            {
+                               notifySomething("'创建合同失败'",'创建合同失败','error');
+                            }
+                        })
+                        this.loading = false;
+                    })
+                    
                 } else {
                     context.$notify({
                         group: 'foo',

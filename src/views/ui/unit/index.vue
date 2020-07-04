@@ -429,7 +429,6 @@ export default {
                 }
             })
         },
-
         addNode() {
             var node = new TreeNode({
                 name: 'new node',

@@ -219,14 +219,21 @@ export default {
             this.openComfirmDialog();
         },
         editWeixiuShenqing(props) {
+            console.log("editdebug")
             this.selectedWeixiu = props;
             this.modelTitle = "编辑";
             this.loading = true;
+            const context = this;
             if (this.selectedWeixiu.room_id && this.selectedWeixiu.building_id) {
                 var flooroptions = [];
                 var buildingoptions = [];
-                const context = this;
                 getBuildingListApi(context.selectedWeixiu).then((data) => {
+                    if (data.data.code != 0) {
+                        notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
+                        this.loading = false;
+                        return;
+                    }
+
                     data.data.data.map((one) => {
                         buildingoptions.push({
                             text: one.name,
@@ -254,7 +261,10 @@ export default {
                     notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                 });
             } else {
+                this.loading = false;
                 context.openWeiXiuForm("edit");
+                notifySomething(constants.GENERALERROR, constants.GENERALERROR + ":数据错误", constants.typeError);
+
             }
 
         },
@@ -425,9 +435,9 @@ export default {
                     if (result.data.code == 0) {
                         one.roomname = result.data.data.roomname;
                         one.address = result.data.data.address;
-                        console.log(one.address);
-                        console.log(this.localData.data);
                         this.componentKey++;
+                    } else {
+                        notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                     }
                 }).catch(function (error) {
                     this.loading = false;
