@@ -4,25 +4,25 @@
         <sui-form-fields inline>
             <sui-form-field>
                 <label>出租方:</label>
-                <sui-input placeholder="出租方" v-model="singleEntry.rentowner" />
+                <sui-input placeholder="出租方" v-model="singleEntry.rentowner" :transparent="disabled" :disabled="disabled" />
             </sui-form-field>
             <sui-form-field>
                 <label>出租方地址:</label>
-                <sui-input placeholder="出租方地址" v-model="singleEntry.rentaddress" />
+                <sui-input placeholder="出租方地址" v-model="singleEntry.rentaddress" :transparent="disabled" :disabled="disabled" />
             </sui-form-field>
             <sui-form-field>
                 <label>出租方联系人:</label>
-                <sui-input placeholder="出租方联系人" v-model="singleEntry.rentcontact" />
+                <sui-input placeholder="出租方联系人" v-model="singleEntry.rentcontact" :transparent="disabled" :disabled="disabled" />
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields inline>
             <sui-form-field>
                 <label>出租方联系人电话:</label>
-                <sui-input placeholder="出租方联系人电话" v-model="singleEntry.rentmobile" />
+                <sui-input placeholder="出租方联系人电话" v-model="singleEntry.rentmobile" :transparent="disabled" :disabled="disabled" />
             </sui-form-field>
             <sui-form-field>
                 <label>出租方联系人职务:</label>
-                <sui-input placeholder="出租方联系人职务" v-model="singleEntry.title" />
+                <sui-input placeholder="出租方联系人职务" v-model="singleEntry.title" :transparent="disabled" :disabled="disabled" />
             </sui-form-field>
             <!-- <sui-form-field>
                 <label>出租方</label>
@@ -32,58 +32,60 @@
         <sui-form-fields inline>
             <sui-form-field>
                 <label>签约金额:</label>
-                <sui-input placeholder="签约金额" v-model="singleEntry.rent_amt" type="number" />
+                <sui-input placeholder="签约金额" v-model="singleEntry.rent_amt" type="number" :transparent="disabled" :disabled="disabled" />
             </sui-form-field>
             <sui-form-field>
                 <label>增长规则:</label>
-                <sui-input placeholder="增长规则" v-model="singleEntry.rule" />
+                <sui-input placeholder="增长规则" v-model="singleEntry.rule" :transparent="disabled" :disabled="disabled" />
             </sui-form-field>
         </sui-form-fields>
         <div :key="componentKey" v-for="(item, index) in singleEntry.priceinfo">
             <sui-form-fields inline>
                 <sui-form-field>
                     <label>面积:</label>
-                    <sui-input placeholder="面积" v-model="singleEntry.priceinfo[index].space" type="number" required />
+                    <sui-input placeholder="面积" v-model="singleEntry.priceinfo[index].space" type="number" required :transparent="disabled" :disabled="disabled" />
                 </sui-form-field>
                 <sui-form-field>
                     <label>单价:</label>
-                    <sui-input placeholder="单价" v-model="singleEntry.priceinfo[index].price" type="number" />
+                    <sui-input placeholder="单价" v-model="singleEntry.priceinfo[index].price" type="number" :transparent="disabled" :disabled="disabled" />
                 </sui-form-field>
                 <sui-form-field>
                     <label>描述:</label>
-                    <sui-input placeholder="描述" v-model="singleEntry.priceinfo[index].pricename" type="text" />
+                    <sui-input placeholder="描述" v-model="singleEntry.priceinfo[index].pricename" type="text" :transparent="disabled" :disabled="disabled" />
                 </sui-form-field>
-                <sui-button circular icon="add" @click.prevent="addOneMore" v-show="index == singleEntry.priceinfo.length - 1" />
-                <sui-button circular icon="minus" @click.prevent="deleteOne(index)" v-show="singleEntry.priceinfo.length > 1" />
+                <span v-show="!disabled">
+                    <sui-button circular icon="add" @click.prevent="addOneMore" v-show="index == singleEntry.priceinfo.length - 1" />
+                    <sui-button circular icon="minus" @click.prevent="deleteOne(index)" v-show="singleEntry.priceinfo.length > 1" />
+                </span>
             </sui-form-fields>
         </div>
         <sui-form-fields inline>
             <sui-form-field>
                 <label>起始时间:</label>
-                <datepicker :value="singleEntry.starttime" v-model="singleEntry.starttime" :language="lang['zh']"></datepicker>
+                <datepicker :value="singleEntry.starttime" v-model="singleEntry.starttime" :language="lang['zh']" :transparent="disabled" :disabled="disabled"></datepicker>
             </sui-form-field>
             <sui-form-field>
                 <label>结束时间:</label>
-                <datepicker :value="singleEntry.endtime" v-model="singleEntry.endtime" :language="lang['zh']"></datepicker>
+                <datepicker :value="singleEntry.endtime" v-model="singleEntry.endtime" :language="lang['zh']" :transparent="disabled" :disabled="disabled"></datepicker>
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields inline>
             <label>是否包含物业费:</label>
             <sui-form-field>
-                <sui-checkbox label="是" radio value="1" v-model="value2" />
+                <sui-checkbox label="是" radio value="1" v-model="value2" :transparent="disabled" :disabled="disabled" />
             </sui-form-field>
             <sui-form-field>
-                <sui-checkbox label="否" radio value="2" v-model="value2" />
+                <sui-checkbox label="否" radio value="2" v-model="value2" :transparent="disabled" :disabled="disabled" />
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields inline>
             <sui-form-field>
                 <label>总面积</label>
-                <sui-input placeholder="总面积" v-model="total" />
+                <sui-input placeholder="总面积" v-model="total" :transparent="disabled" :disabled="disabled" />
             </sui-form-field>
             <sui-form-field>
                 <label>总价</label>
-                <sui-input placeholder="总价" v-model="totalPrice" />
+                <sui-input placeholder="总价" v-model="totalPrice" :transparent="disabled" :disabled="disabled" />
             </sui-form-field>
             <sui-button animated="vertical" @click.prevent="calculateTotal">
                 <sui-button-content hidden>刷新</sui-button-content>
@@ -109,7 +111,7 @@ export default {
     components: {
         Datepicker,
     },
-    props: ["singleEntry", "mianji"],
+    props: ["singleEntry", "mianji","disabled"],
     data() {
         return {
             componentKey: 0,
@@ -119,7 +121,6 @@ export default {
             floorLoading: false,
             louLoading: false,
             lang: lang,
-            disabled: false,
             total: 0,
             value: "1",
             totalPrice: 0,
@@ -202,6 +203,7 @@ export default {
         },
     },
     created() {
+        this.disabled = true;
         if (!this.singleEntry.priceinfo || this.singleEntry.priceinfo.length == 0) {
             this.singleEntry.priceinfo = [{
                 space: "",

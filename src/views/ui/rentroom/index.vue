@@ -64,10 +64,12 @@
                             </sui-tab-pane>
                             <sui-tab-pane title="合同信息" :attached="false" :disabled="!editMode" :key="componentFenpeikey">
                                 <div>
-
-                                    <contract-form :singleEntry="selectedRoomContract" :mianji="selectedRoom.value"></contract-form>
-                                    <sui-button content="创建新合同" v-on:click="createRentContract()" />
-
+                                    <!-- <sui-dropdown placeholder="选择合同(默认最新)" selection :options="listContract" v-model="selectedRoomContract.id" @input="changeContract" /> -->
+                                    <sui-button basic color="blue" @click="changeMode">新建</sui-button>
+                                    <contract-form :singleEntry="selectedRoomContract" :mianji="selectedRoom.value" :disabled="!(selectedRoomContract.mode&&selectedRoomContract.mode=='new')"></contract-form>
+                                    <div v-show="selectedRoomContract.mode&&selectedRoomContract.mode=='new'">
+                                        <sui-button content="创建新合同" v-on:click="createRentContract()" />
+                                    </div>
                                 </div>
                             </sui-tab-pane>
                             <sui-tab-pane title="分配单位" :attached="false" :disabled="!editMode" :key="componentFenpeikey">
@@ -196,6 +198,7 @@ export default {
                 diji: ""
             },
             unitoptions: [],
+            listContract: [],
             componentAssignListkey: 1,
             componentFenpeikey: 1,
             defaultTab: 0,
@@ -227,6 +230,25 @@ export default {
     },
 
     methods: {
+        changeContract() {
+            this.listContract.map((one) => {
+                if (one.one.id == this.selectedRoomContract.id) {
+                    this.selectedRoomContract = one.one;
+                    console.log(this.selectedRoomContract);
+                }
+            })
+
+        },
+        changeMode() {
+            this.selectedRoomContract = {
+                mode: "new",
+                priceinfo: [{
+                    pricename: "",
+                    price: "",
+                    space: "",
+                }]
+            }
+        },
         setFirstPoint(pois) {
             this.point = pois[0].point;
             this.selectedRoom.lon = this.point.lng;
@@ -336,7 +358,7 @@ export default {
                         this.selectedRoomContract.contract_id = result.data.data[latestOne - 1].id;
                         editRentContractDetailApi({
                             contract_id: this.selectedRoomContract.contract_id,
-                            valuelist: JSON.stringify(this.selectedRoomContract.spaces)
+                            valuelist: JSON.stringify(this.selectedRoomContract.priceinfo)
                         }).then((result) => {
                             if (result.data.code == 0) {
                                 notifySomething("'创建合同成功'", '创建合同成功', 'success');
@@ -398,12 +420,20 @@ export default {
                 getRentRoomContractListApi({
                     room_id: this.selectedRoom.id
                 }).then((result) => {
-                    console.log(result.data.data);
+
                     var latestOne = result.data.data.length;
                     if (latestOne == 0) {
                         this.selectedRoomContract = {}
                     } else {
+                        this.listContract = [];
                         this.selectedRoomContract = result.data.data[latestOne - 1];
+                        result.data.data.map((one) => {
+                            this.listContract.push({
+                                value: one.id,
+                                text: one.rentcontact,
+                                one
+                            })
+                        })
                     }
                     this.loading = false;
                 })
