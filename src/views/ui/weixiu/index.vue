@@ -19,7 +19,7 @@
                 </div>
                 <div slot="action" slot-scope="props">
                     <sui-button text="编辑" basic color="blue" v-on:click="editWeixiuShenqing(props.rowData)">编辑</sui-button>
-                    <sui-button text="删除" basic color="red" @change="handleChange(props)">删除</sui-button>
+                    <!-- <sui-button text="删除" basic color="red" @change="handleChange(props)">删除</sui-button> -->
                 </div>
             </vuetable>
             <div class="pagination ui basic segment grid">
@@ -28,7 +28,7 @@
             </div>
         </div>
 
-        <dialog-bar :commentData="deleteTarget.reason" v-model="sendVal" type="danger" title="确认" :content="deleteTarget.text" v-on:cancel="clickCancel()" @danger="clickConfirmDelete()" @confirm="clickConfirmDelete()" :dangerText="deleteTarget.dangerText">
+        <dialog-bar :mode="deleteTarget.mode" ref="dialog" :singleTime="deleteTarget" :commentData="deleteTarget.reason" v-model="sendVal" type="danger" title="确认" :content="deleteTarget.text" v-on:cancel="clickCancel()" @danger="clickConfirmDelete()" @confirm="clickConfirmDelete()" :dangerText="deleteTarget.dangerText">
         </dialog-bar>
         <div>
             <sui-modal class="modal2" v-model="weixiuForm.open">
@@ -150,6 +150,7 @@ export default {
         clickConfirmDelete() {
             this.loading = true;
             var context = this;
+            this.deleteTarget.reason = this.$refs.dialog.commentData;
             if (this.deleteTarget.mode == "approve") {
                 approveMRApi(this.deleteTarget).then((result) => {
                     context.loading = false;
@@ -207,6 +208,8 @@ export default {
             this.deleteTarget.dangerText = "确认";
             this.deleteTarget.reason = "无";
             this.deleteTarget.id = props.id;
+            this.deleteTarget.starttime = "";
+            this.deleteTarget.endtime = "";
             this.openComfirmDialog();
         },
         rejectContract(props) {

@@ -2,7 +2,6 @@
 <div>
     <sui-form>
         <sui-form-fields>
-
             <sui-form-field>
                 <label>权证号</label>
                 <sui-input placeholder="权证号" v-model="singleRoom.certid" :disabled="disabled" />

@@ -370,11 +370,13 @@ export default {
             this.loading = true;
             this.defaultTab = 0;
             this.selectedRoom = data;
-            this.selectedRoom.spaces = [{
-                mianji: "",
-                price: "",
-                miaoshu: ""
-            }];
+            if (!this.selectedRoom.priceinfo || this.selectedRoom.priceinfo.length == 0) {
+                this.selectedRoom.priceinfo = [{
+                    space: 0,
+                    price: 0,
+                    pricename: ""
+                }]
+            }
             this.modelTitle = "修改租赁房屋";
             this.editMode = true;
             if (data.lat === null || data.lat == "") {

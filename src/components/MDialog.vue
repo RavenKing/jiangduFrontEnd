@@ -4,9 +4,29 @@
         <div class="dialog-title">{{title}}</div>
         <div class="content" v-html="content">
         </div>
-        <div class="content" v-show="commentData!=undefined">
-        <textarea v-model="commentData" class="content" />
+        <div class="content" v-show="mode=='approve'">
+            <sui-form>
+                <sui-form-fields>
+                    <sui-form-field>
+                        <label>预计开始时间</label>
+                        <datepicker :value="starttime" v-model="singleTime.starttime" :language="lang['zh']"></datepicker>
+                    </sui-form-field>
+                    <sui-form-field>
+                        <label>预计结束时间</label>
+                        <datepicker :value="endtime" v-model="singleTime.endtime" :language="lang['zh']"></datepicker>
+                    </sui-form-field>
+                </sui-form-fields>
+            </sui-form>
         </div>
+        <div class="content" v-show="commentData!=undefined">
+            <sui-form>
+                <sui-form-fields>
+                    <sui-form-field>
+                        <label>原因</label> <textarea v-model="commentData" />
+                        </sui-form-field>  
+                </sui-form-fields>
+                </sui-form>         
+            </div>
         <div class="btns">
                 <div v-if="type != 'confirm'" class="default-btn" @click="closeBtn">
                     {{cancelText}}
@@ -25,6 +45,8 @@
 </template>
 
 <script>
+import Datepicker from 'vuejs-datepicker';
+import * as lang from "vuejs-datepicker/src/locale";
 export default {
     props: {
         value: {},
@@ -55,12 +77,23 @@ export default {
         },
         commentData: {
             type: String
+        },
+        singleTime: {},
+        mode: {
+            type: String,
+            default: "empty"
         }
     },
     data() {
         return {
+            lang: lang,
             showMask: false,
+            starttime: "",
+            endtime: ""
         }
+    },
+    components: {
+        Datepicker
     },
     methods: {
         closeMask() {
@@ -105,7 +138,7 @@ export default {
 
     .dialog-container {
         width: 500px;
-        height: 180px;
+        min-height: 200px;
         background: #ffffff;
         position: absolute;
         top: 50%;
@@ -129,6 +162,7 @@ export default {
             line-height: 26px;
             padding: 0 20px;
             box-sizing: border-box;
+            padding-bottom: 20px;
         }
 
         .inp {
