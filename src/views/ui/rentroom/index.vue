@@ -280,7 +280,7 @@ export default {
                 }
             }).catch(function (error) {
                 this.loading = false;
-                notifySomething(constants.FEIPEICREATEFAILED, constants.FEIPEICREATEFAILED + result.data.code, constants.typeError);
+                notifySomething(constants.FEIPEICREATEFAILED, constants.FEIPEICREATEFAILED + result.data.code+"房屋已分配或者面积不足", constants.typeError);
             });
 
         },

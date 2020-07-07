@@ -1,7 +1,7 @@
 <template>
 <wl-container class="wlui-login" :use-scroll="false">
-  <div class="headerNew">
-      <div class="logoTitle">奉贤区行政事业单位办公用房信息化平台</div>
+    <div class="headerNew">
+        <div class="logoTitle">奉贤区行政事业单位办公用房信息化平台</div>
     </div>
     <b-container class="bv-example-row">
         <b-row>
@@ -107,23 +107,25 @@ export default {
 </script>
 
 <style lang="scss">
+.bv-example-row {
+    margin-top: 100px;
+}
 
-.bv-example-row{
-  margin-top:100px;
+.logoTitle {
+    margin-left: 80px;
+    margin-top: 25px;
+    color: white;
+    font-size: 2em;
 }
-.logoTitle{
-  margin-left:80px;
-  margin-top: 25px;
-  color:white;
-  font-size: 2em;
-}
+
 .headerNew {
-  overflow: hidden;
-  background-color: rgb(49, 48, 48);
-  color:white;
-  height:80px;
- // padding: 20px 10px;
+    overflow: hidden;
+    background-color: rgb(49, 48, 48);
+    color: white;
+    height: 80px;
+    // padding: 20px 10px;
 }
+
 .title-position {
     position: relative;
     margin-top: 100px;
@@ -133,8 +135,11 @@ export default {
 
 .wlui-login {
     background-image: url("https://fengxianjiguanju.oss-cn-shanghai.aliyuncs.com/bailian.png");
-  background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
     padding: 0px;
+
     .login-form {
         display: flex;
         // position: absolute;
@@ -142,7 +147,7 @@ export default {
         // right: 100px;
         // bottom: 0;
         // //  left: 0;
-         margin: auto;
+        margin: auto;
         width: 410px;
         height: 460px;
         border-radius: 4px;

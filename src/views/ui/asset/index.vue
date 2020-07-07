@@ -788,7 +788,7 @@ export default {
                             type: "success"
                         });
                     } else {
-                        notifySomething("更新失败", "更新失败", "error");
+                        notifySomething("更新自有房屋失败", "更新自有房屋失败", "error");
                         this.refreshRooms();
                     }
                     this.loading = false;
