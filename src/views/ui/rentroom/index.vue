@@ -85,14 +85,12 @@
                                     </sui-message>
                                     <sui-form-fields inline>
                                         <sui-form-field required :error="validationCheck.unit_id">
-                                            <label>单位 </label>
                                             <sui-dropdown @input="changeUnit" placeholder="选择单位" selection :options="unitoptions" v-model="selectedRoom.unit_id" />
                                         </sui-form-field>
                                         <sui-form-field required :error="validationCheck.space">
-                                            <label>面积</label>
                                             <sui-input type="text" placeholder="输入面积" v-model="selectedRoom.space_assign" />
                                         </sui-form-field>
-                                        <sui-button basic color="red" content="添加单位" @click.prevent="assignRentRoom()" />
+                                        <sui-button primary icon="add" content="添加单位" @click.prevent="assignRentRoom()" />
                                     </sui-form-fields>
                                 </sui-form>
                                 <div class="vue2Table">
@@ -241,8 +239,6 @@ export default {
     methods: {
 
         changeUnit() {
-            console.log(this.selectedRoom.assignList);
-            console.log(this.selectedRoom.unit_id);
             let count = 0;
             this.selectedRoom.assignList.map((one) => {
                 if (this.selectedRoom.unit_id == one.unit_id) {
@@ -439,6 +435,7 @@ export default {
                     lat: data.lat
                 }
             }
+            this.validationCheck.status = "";
             this.open = true;
             listRentRoomAssignmentApi({
                 room_id: this.selectedRoom.id
