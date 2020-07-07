@@ -57,9 +57,8 @@
     </div>
 </wl-container>
 </template>
-
 <script>
-import dialogBar from '@/components/MDialog'
+import dialogBar from '@/components/MDialogNewV'
 import Vuetable from "vuetable-2/src/components/Vuetable";
 import VuetablePagination from "vuetable-2/src/components/VuetablePagination";
 import VuetablePaginationInfo from "vuetable-2/src/components/VuetablePaginationInfo";

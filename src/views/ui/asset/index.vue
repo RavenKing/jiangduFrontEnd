@@ -272,6 +272,7 @@ import chanZhengForm from "@/components/chanZhengForm";
 import ziChanForm from "@/components/ziChanForm";
 import mianjiForm from "@/components/mianjiForm";
 import FormCreate from "@/components/createForm";
+import constants from "@/util/constants";
 import pdf from 'vue-pdf'
 import {
     VueTreeList,
@@ -742,7 +743,7 @@ export default {
                 usage: "",
                 space: "",
                 optional: "",
-                age: "",
+                age: "2000",
                 built_date: "",
                 origin_value: "",
                 room_value: "",
@@ -751,7 +752,8 @@ export default {
                 dep_rate: "",
                 internal_info: "",
                 cur_status: "",
-                area: "奉贤区"
+                area: "奉贤区",
+                usage1:"1"
             };
         },
         toggle() {
@@ -763,17 +765,20 @@ export default {
             if (formdata.usage == "") {
                 formdata.usage = null
             }
+            var context = this;
             if (this.modalMode == "create") {
                 this.open = !this.open;
                 createRoomApi(this.$refs.formComponent.singleRoom).then((result) => {
-                    this.loading = false;
+                    context.loading = false;
+                    console.log("success")
                     if (result.data.code == 0) {
-                        this.refreshRooms();
+                        context.refreshRooms();
+                        notifySomething("创建自有房屋成功", "创建自有房屋成功", constants.typeSuccess);
                     } else {
                         notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                     }
                 }).catch(function (error) {
-                    this.loading = false;
+                    context.loading = false;
                     notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                 });
             } else if (this.modalMode == "edit") {
@@ -783,8 +788,8 @@ export default {
                         this.refreshRooms();
                         this.$notify({
                             group: 'foo',
-                            title: '更新成功',
-                            text: '更新成功',
+                            title: '更新自有房屋成功',
+                            text: '更新自有房屋成功',
                             type: "success"
                         });
                     } else {
