@@ -76,11 +76,17 @@
                                 <sui-dimmer :active="loading" inverted>
                                     <sui-loader content="Loading..." />
                                 </sui-dimmer>
-                                <sui-form>
+                                <sui-form :warning="validationCheck.status=='warning'">
+                                    <sui-message warning>
+                                        <sui-message-header>{{validationCheck.header}}</sui-message-header>
+                                        <p>
+                                            {{validationCheck.text}}
+                                        </p>
+                                    </sui-message>
                                     <sui-form-fields inline>
                                         <sui-form-field required :error="validationCheck.unit_id">
                                             <label>单位 </label>
-                                            <sui-dropdown placeholder="选择单位" selection :options="unitoptions" v-model="selectedRoom.unit_id" />
+                                            <sui-dropdown @input="changeUnit" placeholder="选择单位" selection :options="unitoptions" v-model="selectedRoom.unit_id" />
                                         </sui-form-field>
                                         <sui-form-field required :error="validationCheck.space">
                                             <label>面积</label>
@@ -187,7 +193,10 @@ export default {
         return {
             validationCheck: {
                 unit_id: false,
-                space: false
+                space: false,
+                text: "",
+                header: "",
+                status: ""
             },
             sendVal: false,
             modelTitle: "",
@@ -230,11 +239,27 @@ export default {
     },
 
     methods: {
+
+        changeUnit() {
+            console.log(this.selectedRoom.assignList);
+            console.log(this.selectedRoom.unit_id);
+            let count = 0;
+            this.selectedRoom.assignList.map((one) => {
+                if (this.selectedRoom.unit_id == one.unit_id) {
+                    this.validationCheck.header = "单位已经被分配过了";
+                    this.validationCheck.text = "单位已经被分配过了,再分配会覆盖原有的分配";
+                    this.validationCheck.status = "warning";
+                    count = 1;
+                }
+            })
+            if (count == 0) {
+                this.validationCheck.status = "";
+            }
+        },
         changeContract() {
             this.listContract.map((one) => {
                 if (one.one.id == this.selectedRoomContract.id) {
                     this.selectedRoomContract = one.one;
-                    console.log(this.selectedRoomContract);
                 }
             })
 
@@ -256,10 +281,12 @@ export default {
         },
         assignRentRoom() {
             this.loading = true;
-            console.log(this.selectedRoom.unit_id);
             if (this.selectedRoom.unit_id == undefined || this.selectedRoom.unit_id == "") {
                 this.validationCheck.unit_id = true;
                 this.validationCheck.space = true;
+                this.validationCheck.header = "请选择单位和面积";
+                this.validationCheck.text = "请选择单位和面积";
+                this.loading = false;
                 return;
             }
             this.validationCheck.unit_id = false;
@@ -280,7 +307,7 @@ export default {
                 }
             }).catch(function (error) {
                 this.loading = false;
-                notifySomething(constants.FEIPEICREATEFAILED, constants.FEIPEICREATEFAILED + result.data.code+"房屋已分配或者面积不足", constants.typeError);
+                notifySomething(constants.FEIPEICREATEFAILED, constants.FEIPEICREATEFAILED + result.data.code + "房屋已分配或者面积不足", constants.typeError);
             });
 
         },

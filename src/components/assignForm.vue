@@ -36,15 +36,12 @@ export default {
     created() {
         getUnitApi().then((data) => {
             //this.localData = data.data.data;
-            console.log(data.data.data);
             data.data.data.map((one) => {
                 this.options.push({
                     text: one.name,
                     value: one.id,
                 })
             });
-
-            console.log(this.options);
         });
     }
 };
