@@ -16,29 +16,18 @@
         <sui-form-fields>
             <sui-form-field v-if="singleRoom.roomtype == '1'" class="width300">
                 <label>选择房屋</label>
-                <model-select :options="singleRoom.ziyousource" v-model="item" placeholder="select item" width="300px" @input="handleOnInput">
+                <model-select :options="singleRoom.ziyousource" v-model="item" placeholder="" width="300px" @input="handleOnInput">
                 </model-select>
                 <!-- <sui-dropdown placeholder="选择房屋"  selection :options="singleRoom.ziyouroomoptions" v-model="singleRoom.room" /> -->
             </sui-form-field>
-            <!-- <sui-form-field v-if="singleRoom.roomtype == '1'" class="width300">
-                <label>房</label>
-                <sui-dropdown placeholder="选择房" selection :options="louOptions" v-model="singleRoom.building_id" @input="setFloor()" :loading="louLoading" :disabled="louLoading" />
-
-            </sui-form-field>
-            <sui-form-field v-if="singleRoom.roomtype == '1'" class="width300">
-                <label>楼</label>
-                <sui-dropdown floating direction="upward" placeholder="选择楼" selection :options="floorOptions" v-model="singleRoom.floor_id" :loading="floorLoading" :disabled="floorLoading" />
-            </sui-form-field> -->
-        </sui-form-fields>
-        <sui-form-fields>
-            <sui-form-field v-if="singleRoom.roomtype == '2'">
+            <sui-form-field v-if="singleRoom.roomtype == '2'" class="width300">
                 <label>选择租赁房屋</label>
-                <model-select :options="singleRoom.rentroomoptions" v-model="itemrent" placeholder="select item" width="300px" @input="handleOnInputRent">
+                <model-select :options="singleRoom.rentroomoptions" v-model="itemrent" placeholder="" width="300px" @input="handleOnInputRent">
                 </model-select>
             </sui-form-field>
         </sui-form-fields>
     </sui-form>
-    <div class="transfet-box">
+    <div class="transfet-box" v-if="singleRoom.roomtype == '1'">
         <wl-tree-transfer :key="transferKey" ref="wl-tree-transfer" filter high-light default-transfer :mode="mode" :title="title" :to_data="toData" :from_data="fromData" :filterNode="filterNode" :defaultProps="defaultProps" :defaultCheckedKeys="defaultCheckedKeys" :defaultExpandedKeys="[2,3]" @right-check-change="rightCheckChange" @left-check-change="leftCheckChange" @removeBtn="remove" @addBtn="add" height="540px" node_key="id">
             <span slot="title-right" class="my-title-right" @click="handleTitleRight">楼</span>
         </wl-tree-transfer>

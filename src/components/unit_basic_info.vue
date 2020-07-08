@@ -2,10 +2,13 @@
 <div>
     <sui-form>
         <sui-form-fields>
-            <sui-form-field>
+            <sui-form-field inline>
                 <label>单位名称</label>
                 <sui-input class="ui disabled input" :placeholder="singleRoom.name" :disabled="disabled" />
-            </sui-form-field>
+            </sui-form-field inline>
+            
+        </sui-form-fields>
+        <sui-form-fields>
             <sui-form-field >
                 <label>单位类别</label>
                 <!-- <label> {{}} </label> -->
@@ -15,8 +18,6 @@
                 <label>单位级别</label>
                 <sui-input class="ui disabled input" :placeholder="singleRoom.level" :disabled="disabled" />
             </sui-form-field>
-        </sui-form-fields>
-        <sui-form-fields>
             <sui-form-field>
                 <label>组织机构代码</label>
                 <sui-input class="ui disabled input" :placeholder="singleRoom.code" :disabled="disabled" />
@@ -65,6 +66,9 @@
                 <label>副科</label>
                 <sui-input placeholder="副科" v-model="singleRoom.fuke" :disabled="disabled" />
             </sui-form-field>
+            
+        </sui-form-fields>
+        <sui-form-fields>
             <sui-form-field>
                 <label>其他</label>
                 <sui-input placeholder="其他" v-model="singleRoom.other" :disabled="disabled" />
@@ -110,6 +114,8 @@
                 <label>副科</label>
                 <sui-input placeholder="副科" v-model="singleRoom.fuke_r" :disabled="disabled" />
             </sui-form-field>
+        </sui-form-fields>
+        <sui-form-fields>
             <sui-form-field>
                 <label>其他</label>
                 <sui-input placeholder="其他" v-model="singleRoom.other_r" :disabled="disabled" />

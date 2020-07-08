@@ -250,7 +250,8 @@ import {
     delleaderroomApi,
     getBuildingListApi,
     getBuildingFloorApi,
-    createLeaderAssignApi
+    createLeaderAssignApi,
+    assignRentRoomApi
 } from "@/api/roomDataAPI";
 import {
     getMRApi,
@@ -428,6 +429,10 @@ export default {
 
         onClick(params) {
             this.selectedRoom = params;
+
+
+
+
             var building_info = params['building_info']
             var temp_points = []
             var temp_x = 0
@@ -454,7 +459,17 @@ export default {
 
             getUnitApiByid(params.id).then((data) => {
                 var res_data = data.data.data['building_info']
+                var ziyou_source = []
+                console.log('hello')
                 console.log(res_data)
+                for (var i = res_data.length - 1; i >= 0; i--) {
+                ziyou_source.push({
+                    text: res_data[i]['roomname'],
+                    value: res_data[i]['id']
+                })
+            }
+            this.selectedfenpei['ziyousource'] = ziyou_source
+                
                 for (var i = res_data.length - 1; i >= 0; i--) {
                     if(res_data[i]['type1'] == 'self')
                         res_data[i]['type1'] = '自有房屋'
@@ -677,7 +692,12 @@ export default {
                 input['unit_id'] = this.selectedfenpei.unit_id
 
                 createAssignmentApi(input).then((data) => {
-                    console.log(data)
+                    if (result.data.code == 0) {
+                    notifySomething("分配成功", "创建领导分配成功", "success");
+                    this.refreshLeaderAssignment(this.selectedRoom.id);
+                }
+
+
                 })
             }
             if (this.selectedfenpei.roomtype == '2') {
@@ -688,6 +708,10 @@ export default {
                 input['unit_id'] = this.selectedfenpei.unit_id
 
                 assignRentRoomApi(input).then((data) => {
+                    if (result.data.code == 0) {
+                    notifySomething("分配成功", "创建领导分配成功", "success");
+                    this.refreshLeaderAssignment(this.selectedRoom.id);
+                }
                     console.log(data)
                 })
             }
