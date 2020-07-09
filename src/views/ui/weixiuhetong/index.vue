@@ -11,7 +11,7 @@
         </div>
 
         <div class="wl-gantt-demo">
-            <wlGantt :data="hetongdataNewData" use-real-time default-expand-all date-type="monthAndDay" start-date="2020-6-06" end-date="2020-7-02" @timeChange="timeChange" @preChange="preChange" @expand-change="expandChange"></wlGantt>
+            <wlGantt :data="hetongdataNewData" use-real-time default-expand-all date-type="yearAndMonth" start-date="2020-6-06" end-date="2023-7-02" @timeChange="timeChange" @preChange="preChange" @expand-change="expandChange"></wlGantt>
         </div>
         <!-- 
         <div class="vue2Table">
@@ -37,19 +37,19 @@
                             <sui-step :active="currentStep==1">
                                 <sui-icon name="truck" />
                                 <sui-step-content>
-                                    <sui-step-title>项目列表</sui-step-title>
+                                    <sui-step-title>房屋清单</sui-step-title>
                                 </sui-step-content>
                             </sui-step>
 
                             <sui-step :active="currentStep==2">
                                 <sui-icon name="payment" />
                                 <!-- Shorthand -->
-                                <sui-step-content title="填写合同信息" />
+                                <sui-step-content title="填写项目信息" />
                             </sui-step>
 
                             <sui-step :active="currentStep==3">
                                 <sui-icon name="info" />
-                                <sui-step-content title="上传合同" />
+                                <sui-step-content title="上传附件" />
                             </sui-step>
                         </sui-step-group>
 
@@ -73,27 +73,23 @@
                     <sui-segment v-show="currentStep==2">
                         <sui-form>
                             <sui-form-fields inline>
-                                <label>维修时间</label>
+                                <label>项目名称</label>
                                 <sui-form-field>
-                                    <datepicker :value="weixiuhetong.starttime" v-model="weixiuhetong.starttime" :language="lang['zh']"></datepicker>
+                                    <input type="text" placeholder="请选择" v-model="weixiuhetong.name" />
                                 </sui-form-field>
-                                <label> 到</label>
+                                <label>项目金额</label>
                                 <sui-form-field>
-                                    <datepicker :value="weixiuhetong.endtime" v-model="weixiuhetong.endtime" :language="lang['zh']"></datepicker>
-                                </sui-form-field>
-                                <label>合同状态</label>
-                                <sui-form-field>
-                                    <input type="text" placeholder="请选择" v-model="weixiuhetong.status" />
+                                    <input type="text" placeholder="请选择" v-model="weixiuhetong.budget" />
                                 </sui-form-field>
                             </sui-form-fields>
                             <sui-form-fields inline>
-                                <label>维修单位</label>
+                                <label>项目开始时间</label>
                                 <sui-form-field>
-                                    <input type="text" placeholder="请选择" v-model="weixiuhetong.rep_unit" />
+                                    <datepicker :value="weixiuhetong.starttime" v-model="weixiuhetong.starttime" :language="lang['zh']"></datepicker>
                                 </sui-form-field>
-                                <label> 维修金额</label>
+                                <label> 项目结束时间</label>
                                 <sui-form-field>
-                                    <input type="text" placeholder="请选择" v-model="weixiuhetong.rep_contact" />
+                                    <datepicker :value="weixiuhetong.endtime" v-model="weixiuhetong.endtime" :language="lang['zh']"></datepicker>
                                 </sui-form-field>
                             </sui-form-fields>
                         </sui-form>
@@ -306,25 +302,25 @@ export default {
                     ganttData = {
                         id: index,
                         pid: index,
-                        name: one.memo,
+                        name: one.name,
                         startDate: one.starttime,
                         endDate: one.endtime,
                     }
                     this.hetongdataNewData.push(ganttData);
 
-                    switch (one.status) {
-                        case 1:
-                            one.statusText = "未开始";
-                            break;
-                        case 2:
-                            one.statusText = "开始维修";
-                            break;
-                        case 3:
-                            one.statusText = "维修完成";
-                            break;
-                        default:
-                            break;
-                    }
+                    // switch (one.status) {
+                    //     case 1:
+                    //         one.statusText = "未开始";
+                    //         break;
+                    //     case 2:
+                    //         one.statusText = "开始维修";
+                    //         break;
+                    //     case 3:
+                    //         one.statusText = "维修完成";
+                    //         break;
+                    //     default:
+                    //         break;
+                    // }
 
                 });
             }).catch(function (error) {
@@ -458,8 +454,6 @@ export default {
                     if (result.data.code == 0) {
                         one.roomname = result.data.data.roomname;
                         one.address = result.data.data.address;
-                        console.log(one.address);
-                        console.log(this.localData.data);
                         this.componentKey++;
                     }
                 }).catch(function (error) {
@@ -505,10 +499,23 @@ export default {
                 ganttData = {
                     id: index,
                     pid: index,
-                    name: one.memo,
+                    name: one.name,
                     startDate: one.starttime,
                     endDate: one.endtime,
+                    children: []
                 }
+                one.step_info.map((child) => {
+                        var child = {
+                            id: index*100 + child.id,
+                            pid: index,
+                            name: child.name,
+                            startDate: child.starttime,
+                            endDate: child.endtime
+                        }
+                        ganttData.children.push(child);
+                    }
+                )
+
                 if (this.maxStartDate == 0) {
                     this.maxStartDate = one.starttime;
                     this.minEndDate = one.endtime;
