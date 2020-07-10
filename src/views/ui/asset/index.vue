@@ -273,7 +273,6 @@ import ziChanForm from "@/components/ziChanForm";
 import mianjiForm from "@/components/mianjiForm";
 import FormCreate from "@/components/createForm";
 import constants from "@/util/constants";
-import pdf from 'vue-pdf'
 import {
     VueTreeList,
     Tree,
@@ -309,7 +308,6 @@ export default {
     name: "MyVuetable",
     components: {
         VueTreeList,
-        pdf,
         'dialog-bar': dialogBar,
         Vuetable,
         VuetablePagination,
