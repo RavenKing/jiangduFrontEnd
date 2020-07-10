@@ -27,10 +27,10 @@
                     </sui-grid-column>
                     <sui-grid-column :width="3">
                         <div>
-                            <sui-button content="创建房屋" @click.native="createRoomModel" icon="add green" />
+                            <sui-button basic color="blue" content="新建" @click.native="createRoomModel" icon="add blue" />
                             <!-- <sui-button content="修改" icon="edit yellow" />
         <sui-button content="删除" icon="delete red" /> -->
-                            <sui-button content="导出" v-on:click="exportToExcel" icon="file green" />
+                            <sui-button basic color="blue" content="导出" v-on:click="exportToExcel" icon="file blue" />
                         </div>
                     </sui-grid-column>
                 </sui-grid-row>

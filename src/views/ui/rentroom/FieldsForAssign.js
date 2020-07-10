@@ -17,11 +17,6 @@ export default [
     width: "15%"
   },
   {
-    name: "created_on",
-    title: '创建时间',
-    width: "15%"
-  },
-  {
     name: "action",
     title: '操作',
     width: "15%"
