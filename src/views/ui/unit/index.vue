@@ -429,10 +429,6 @@ export default {
 
         onClick(params) {
             this.selectedRoom = params;
-
-
-
-
             var building_info = params['building_info']
             var temp_points = []
             var temp_x = 0
@@ -460,15 +456,14 @@ export default {
             getUnitApiByid(params.id).then((data) => {
                 var res_data = data.data.data['building_info']
                 var ziyou_source = []
-                console.log('hello')
-                console.log(res_data)
-                for (var i = res_data.length - 1; i >= 0; i--) {
-                ziyou_source.push({
-                    text: res_data[i]['roomname'],
-                    value: res_data[i]['id']
-                })
-            }
-            this.selectedfenpei['ziyousource'] = ziyou_source
+                // console.log(res_data)
+            //     for (var i = res_data.length - 1; i >= 0; i--) {
+            //     ziyou_source.push({
+            //         text: res_data[i]['roomname'],
+            //         value: res_data[i]['id']
+            //     })
+            // }
+            // this.selectedfenpei['ziyousource'] = ziyou_source
                 
                 for (var i = res_data.length - 1; i >= 0; i--) {
                     if(res_data[i]['type1'] == 'self')
@@ -684,17 +679,25 @@ export default {
             this.fenpeiopen = false
         },
         newfenpei() {
+            console.log('clicked')
+            console.log(this.selectedRoom)
             if (this.selectedfenpei.roomtype == '1') {
                 var input = {}
                 input['room_id'] = this.selectedfenpei.room_id
                 input['building_id'] = this.selectedfenpei.building_id
                 input['floor_id'] = this.selectedfenpei.floor_id
-                input['unit_id'] = this.selectedfenpei.unit_id
+                input['unit_id'] = this.selectedRoom.id
+                input['space'] = parseInt(this.selectedfenpei.space)
 
                 createAssignmentApi(input).then((data) => {
-                    if (result.data.code == 0) {
+                    if (data.data.code == 0) {
                     notifySomething("分配成功", "创建领导分配成功", "success");
                     this.refreshLeaderAssignment(this.selectedRoom.id);
+                    this.fenpeiopen = false;    
+                }else{
+                    notifySomething("分配失败", "创建领导分配失败", "fail");
+                    this.refreshLeaderAssignment(this.selectedRoom.id);
+                    this.fenpeiopen = false;    
                 }
 
 
@@ -702,15 +705,21 @@ export default {
             }
             if (this.selectedfenpei.roomtype == '2') {
                 var input = {}
+                console.log(this.selectedfenpei)
                 input['room_id'] = this.selectedfenpei.room_id
-                input['building_id'] = this.selectedfenpei.building_id
-                input['floor_id'] = this.selectedfenpei.floor_id
-                input['unit_id'] = this.selectedfenpei.unit_id
+                input['unit_id'] = this.selectedRoom.id
+                input['space'] = parseInt(this.selectedfenpei.space)
 
+                console.log(input)
                 assignRentRoomApi(input).then((data) => {
-                    if (result.data.code == 0) {
+                    if (data.data.code == 0) {
                     notifySomething("分配成功", "创建领导分配成功", "success");
                     this.refreshLeaderAssignment(this.selectedRoom.id);
+                    this.fenpeiopen = false;    
+                }else{
+                    notifySomething("分配失败", "创建领导分配失败", "fail");
+                    this.refreshLeaderAssignment(this.selectedRoom.id);
+                    this.fenpeiopen = false;    
                 }
                     console.log(data)
                 })
@@ -727,7 +736,7 @@ export default {
             for (var i = res_data.length - 1; i >= 0; i--) {
                 fenpei_options.push({
                     text: res_data[i]['roomname'],
-                    value: res_data[i]['room_id']
+                    value: res_data[i]['id']
                 })
             }
             this.selectedfenpei = {
@@ -741,17 +750,17 @@ export default {
 
             var res_data = data.data.data
             for (var i = res_data.length - 1; i >= 0; i--) {
-                rent_options.push({
-                    text: res_data[i]['roomname'],
-                    value: res_data[i]['id']
-                })
+                // rent_options.push({
+                //     text: res_data[i]['roomname'],
+                //     value: res_data[i]['id']
+                // })
                 ziyou_source.push({
                     text: res_data[i]['roomname'],
                     value: res_data[i]['id']
                 })
             }
             this.selectedfenpei['ziyousource'] = ziyou_source
-            this.selectedfenpei['ziyouroomoptions'] = rent_options
+            // this.selectedfenpei['ziyouroomoptions'] = rent_options
         })
 
         getUnitApi().then((data) => {
