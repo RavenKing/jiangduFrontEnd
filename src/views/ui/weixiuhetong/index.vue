@@ -7,7 +7,7 @@
             </sui-dimmer>
         </div>
         <div class="filterBiaoDan">
-            <sui-button content="创建项目" @click.native="openWeiXiuJihua" icon="add green" />
+            <sui-button basic color="blue" content="新建" @click.native="openWeiXiuJihua" icon="add blue" />
         </div>
 
         <div class="wl-gantt-demo">
@@ -185,6 +185,9 @@ export default {
     },
 
     methods: {
+        timeChange(row) {
+            alert(row)
+        },
         editHeTongData(props) {
             this.resetStep();
             this.mode = "edit";
@@ -305,6 +308,8 @@ export default {
                         name: one.name,
                         startDate: one.starttime,
                         endDate: one.endtime,
+                        realStartDate: one.starttime,
+                        realEndDatee: one.endtime
                     }
                     this.hetongdataNewData.push(ganttData);
 
@@ -502,19 +507,22 @@ export default {
                     name: one.name,
                     startDate: one.starttime,
                     endDate: one.endtime,
+                    realStartDate: one.starttime,
+                    realEndDate: one.endtime,
                     children: []
                 }
                 one.step_info.map((child) => {
-                        var child = {
-                            id: index*100 + child.id,
-                            pid: index,
-                            name: child.name,
-                            startDate: child.starttime,
-                            endDate: child.endtime
-                        }
-                        ganttData.children.push(child);
+                    var child = {
+                        id: index * 100 + child.id,
+                        pid: index,
+                        name: child.name,
+                        startDate: child.starttime,
+                        endDate: child.endtime,
+                        realStartDate: one.starttime,
+                        realEndDatee: one.endtime
                     }
-                )
+                    ganttData.children.push(child);
+                })
 
                 if (this.maxStartDate == 0) {
                     this.maxStartDate = one.starttime;
