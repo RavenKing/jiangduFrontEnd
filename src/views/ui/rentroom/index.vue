@@ -84,13 +84,14 @@
                                         </p>
                                     </sui-message>
                                     <sui-form-fields inline>
-                                        <sui-form-field required :error="validationCheck.unit_id">
-                                            <sui-dropdown @input="changeUnit" placeholder="选择单位" selection :options="unitoptions" v-model="selectedRoom.unit_id" />
+                                        <sui-form-field required :error="validationCheck.unit_id" class="width300">
+                                            <model-select :options="unitoptions" v-model="selectedRoom.unit_id" placeholder="选择单位" @input="changeUnit">
+                                            </model-select>
                                         </sui-form-field>
                                         <sui-form-field required :error="validationCheck.space">
                                             <sui-input type="text" placeholder="输入面积" v-model="selectedRoom.space_assign" />
                                         </sui-form-field>
-                                        <sui-button primary icon="add" content="添加单位" @click.prevent="assignRentRoom()" />
+                                        <sui-button basic color="blue" icon="add" content="添加单位" @click.prevent="assignRentRoom()" />
                                     </sui-form-fields>
                                 </sui-form>
                                 <div class="vue2Table">
@@ -157,6 +158,9 @@ import FieldsAssign from "./FieldsForAssign.js";
 import contractForm from "@/components/rentContractForm";
 import rentHeTongForm from "@/components/rentHeTongForm";
 import {
+    ModelSelect
+} from 'vue-search-select'
+import {
     export_json_to_excel
 } from "@/util/Export2Excel";
 import constants from "@/util/constants";
@@ -179,6 +183,7 @@ import {
 export default {
     name: "MyVuetable",
     components: {
+        'model-select': ModelSelect,
         'dialog-bar': dialogBar,
         Vuetable,
         VuetablePagination,
@@ -635,8 +640,9 @@ export default {
     margin: 20px
 }
 
-.vue2Table {
-    margin: 20px;
+.width300 {
+    width: 300px;
+    margin-left: 20px !important;
 }
 
 .pagination {
@@ -649,6 +655,10 @@ export default {
 
 .BMap_cpyCtrl {
     display: none;
+}
+
+.vue2Table {
+    margin: 20px;
 }
 
 .anchorBL {

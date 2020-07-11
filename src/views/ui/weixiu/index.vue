@@ -7,7 +7,7 @@
             </sui-dimmer>
         </div>
         <div class="filterBiaoDan" v-show="role!=1">
-            <sui-button content="申请维修" @click.native="openWeiXiuForm" icon="add green" />
+            <sui-button basic color="blue" content="申请维修" @click.native="openWeiXiuForm" icon="add blue" />
         </div>
 
         <div class="vue2Table">
@@ -57,6 +57,7 @@
     </div>
 </wl-container>
 </template>
+
 <script>
 import dialogBar from '@/components/MDialogNewV'
 import Vuetable from "vuetable-2/src/components/Vuetable";
