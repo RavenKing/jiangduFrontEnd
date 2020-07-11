@@ -456,7 +456,7 @@ export default {
             getUnitApiByid(params.id).then((data) => {
                 var res_data = data.data.data['building_info']
                 var ziyou_source = []
-                // console.log(res_data)
+                console.log(res_data)
             //     for (var i = res_data.length - 1; i >= 0; i--) {
             //     ziyou_source.push({
             //         text: res_data[i]['roomname'],

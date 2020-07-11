@@ -17,6 +17,12 @@ export default [
     width: "15%",
   },
   {
+    name: "buildingname",
+    sortField: "buildingname",
+    title: '楼',
+    width: "15%",
+  },
+  {
     name: "floorname",
     sortField: "floorname",
     title: '楼层',
