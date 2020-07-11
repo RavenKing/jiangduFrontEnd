@@ -455,16 +455,7 @@ export default {
 
             getUnitApiByid(params.id).then((data) => {
                 var res_data = data.data.data['building_info']
-                var ziyou_source = []
-                // console.log(res_data)
-            //     for (var i = res_data.length - 1; i >= 0; i--) {
-            //     ziyou_source.push({
-            //         text: res_data[i]['roomname'],
-            //         value: res_data[i]['id']
-            //     })
-            // }
-            // this.selectedfenpei['ziyousource'] = ziyou_source
-                
+                var ziyou_source = []    
                 for (var i = res_data.length - 1; i >= 0; i--) {
                     if(res_data[i]['type1'] == 'self')
                         res_data[i]['type1'] = '自有房屋'
@@ -524,8 +515,36 @@ export default {
         clickConfirmDelete() {
             this.loading = true;
             if (this.deletetype == 'fenpei') {
-                deleteBuildingFloorAssignmentApi(this.deleteTarget).then((result) => {
-                    this.refreshUnits();
+                var input = {}
+                input['room_id'] = this.deleteTarget.room_id
+                input['building_id'] = this.deleteTarget.building_id
+                input['floor_id'] = this.deleteTarget.floor_id
+                input['unit_id'] = this.selectedRoom.id
+
+
+                deleteBuildingFloorAssignmentApi(input).then((result) => {
+                    getUnitApiByid(this.selectedRoom.id).then((data) => {
+                    var res_data = data.data.data['building_info']
+                    var ziyou_source = []    
+                    for (var i = res_data.length - 1; i >= 0; i--) {
+                        if(res_data[i]['type1'] == 'self')
+                            res_data[i]['type1'] = '自有房屋'
+                        else
+                            res_data[i]['type1'] = '租赁房屋'
+                    }
+                    this.fenpeilocalData = {
+                        total: 16,
+                        per_page: 5,
+                        current_page: 1,
+                        last_page: 4,
+                        next_page_url: "data.data.data?page=2",
+                        prev_page_url: null,
+                        from: 1,
+                        to: 5,
+                        data: res_data
+                    }
+                })
+                    this.loading = false
                 });
             }
             if (this.deletetype == 'leader') {
