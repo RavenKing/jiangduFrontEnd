@@ -13,9 +13,9 @@ import 'wl-tree-transfer/lib/wl-tree-transfer.css'
 // import WlAddress from "wl-address";
 // import "wl-address/lib/wl-address.css"
 
-Vue.use(WlAddress);
-Vue.use(WlBimViewer);
+// Vue.use(WlAddress);
+// Vue.use(WlBimViewer);
 Vue.use(WlTreeTransfer)
 Vue.use(WlSelect);
-Vue.use(WlExplorer);
+// Vue.use(WlExplorer);
 Vue.use(WlGantt)
