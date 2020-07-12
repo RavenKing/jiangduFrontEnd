@@ -20,20 +20,6 @@
                     <model-select :options="singleRoom.ziyousource" v-model="item" placeholder="" width="300px" @input="handleOnInput">
                     </model-select>
                 </sui-form-field>
-                <!-- <sui-form-field v-if="singleRoom.roomtype == '1'" class="width300">
-                    <label>房</label>
-                    <sui-dropdown placeholder="选择房" selection :options="louOptions" v-model="singleRoom.building_id" @input="setFloor()" :loading="louLoading" :disabled="louLoading" />
-                </sui-form-field>
-                <sui-form-field v-if="singleRoom.roomtype == '1'" class="width300">
-                    <label>楼</label>
-                    <sui-dropdown floating direction="upward" placeholder="选择楼" selection :options="floorOptions" v-model="singleRoom.floor_id" :loading="floorLoading" :disabled="floorLoading" />
-                </sui-form-field> -->
-        </sui-form-fields>
-        <sui-form-fields>
-            <sui-form-field inline>
-                <label>面积</label>
-                <sui-input placeholder="面积" v-model="singleRoom.space" />
-            </sui-form-field inline>
         </sui-form-fields>
         <sui-form-fields>
             <sui-form-field v-if="singleRoom.roomtype == '2'" class="width300">
@@ -47,8 +33,16 @@
         <wl-tree-transfer :key="transferKey" ref="wl-tree-transfer" filter high-light default-transfer :mode="mode" :title="title" :to_data="toData" :from_data="fromData" :filterNode="filterNode" :defaultProps="defaultProps" :defaultCheckedKeys="defaultCheckedKeys" :defaultExpandedKeys="[2,3]" @right-check-change="rightCheckChange" @left-check-change="leftCheckChange" @removeBtn="remove" @addBtn="add" height="540px" node_key="id">
             <span slot="title-right" class="my-title-right" @click="handleTitleRight">楼</span>
         </wl-tree-transfer>
+        
 
     </div>
+    <sui-form-fields v-if="checked_node == true">
+            <sui-form-field v-for="fenpei in fenpei_data" inline>
+                <label>   {{fenpei.name}}    </label>
+                <sui-input  placeholder="面积" v-model="fenpei.space" width="800px"/>
+            </sui-form-field inline>
+            
+        </sui-form-fields>
 </div>
 </template>
 
@@ -77,7 +71,9 @@ export default {
             floorLoading: false,
             louLoading: false,
             louOptions: [],
+            checked_node: false,
             floorOptions: [],
+            fenpei_data: [],
             roomoptions: [{
                     text: 'Male',
                     value: 1,
@@ -233,6 +229,27 @@ export default {
         rightCheckChange(nodeObj, treeObj, checkAll) {
             console.log(nodeObj);
             console.log(treeObj);
+            treeObj.checkedNodes
+            var fenpei_data = []
+            for (var i = treeObj.checkedNodes.length - 1; i >= 0; i--) {
+                if(treeObj.checkedNodes[i].children){
+                    var building_id = treeObj.checkedNodes[i].id
+                    var children_list = treeObj.checkedNodes[i].children
+                    for (var i = children_list.length - 1; i >= 0; i--) {
+                        var floor_id = children_list[i].id
+                        fenpei_data.push({
+                            'building_id': building_id,
+                            'floor_id': floor_id,
+                            'name': children_list[i].name,
+                            'space': ''
+                        })
+                    }
+                }
+            }
+            this.fenpei_data = fenpei_data
+            this.checked_node = true
+
+
             console.log(checkAll);
         },
         // 自定义节点 仅树形结构支持
