@@ -54,9 +54,10 @@
                                     </div>
                                     <div slot="action" slot-scope="props">
                                         <span v-show="role!==1">
-                                            <sui-button basic color="blue" content="申请维修" v-on:click="" /></span>
+                                            <sui-button basic color="blue" content="申请维修" v-on:click="applyRepair(props.rowData)" />
+                                        </span>
                                         <sui-button basic color="red" content="删除" v-on:click="deletefenpei(props.rowData)" />
-                                        <sui-button basic color="red" content="申请维修" v-on:click="applyRepair(props.rowData)" />
+                                        
                                     </div>
                                 </vuetable>
                             </div>
@@ -88,7 +89,7 @@
                                     <sui-modal-header>{{modelTitle}}</sui-modal-header>
                                     <sui-modal-content scrolling>
                                         <div>
-                                            <form-fenpei :singleRoom="selectedfenpei"></form-fenpei>
+                                            <form-fenpei ref='FormFenpei' :singleRoom="selectedfenpei"></form-fenpei>
                                         </div>
                                     </sui-modal-content>
                                     <sui-modal-actions>
@@ -674,7 +675,7 @@ export default {
 
         updateUnit() {
             let formdata = this.$refs.FormCreate.singleRoom;
-            console.log(this.$refs)
+            
             updateUnitApi(formdata).then((result) => {
                 this.loading = false;
             });
@@ -698,16 +699,25 @@ export default {
             this.fenpeiopen = false
         },
         newfenpei() {
-            console.log('clicked')
-            console.log(this.selectedRoom)
+            console.log('fenpei')
+            console.log(this.$refs.FormFenpei)
+            var fenpei_data = this.$refs.FormFenpei.fenpei_data
+            var value_list = []
+            for (var i = fenpei_data.length - 1; i >= 0; i--) {
+                value_list.push({
+                    'building_id': fenpei_data[i].building_id,
+                    'floor_id': fenpei_data[i].floor_id,
+                    'space':parseInt(fenpei_data[i].space)
+                })
+            }
+
+
             if (this.selectedfenpei.roomtype == '1') {
                 var input = {}
                 input['room_id'] = this.selectedfenpei.room_id
-                input['building_id'] = this.selectedfenpei.building_id
-                input['floor_id'] = this.selectedfenpei.floor_id
                 input['unit_id'] = this.selectedRoom.id
-                input['space'] = parseInt(this.selectedfenpei.space)
-
+                input['valuelist'] = JSON.stringify(value_list)
+                console.log(input)
                 createAssignmentApi(input).then((data) => {
                     if (data.data.code == 0) {
                     notifySomething("分配成功", "创建领导分配成功", "success");
