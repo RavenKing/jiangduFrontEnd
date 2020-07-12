@@ -54,9 +54,10 @@
                                     </div>
                                     <div slot="action" slot-scope="props">
                                         <span v-show="role!==1">
-                                            <sui-button basic color="blue" content="申请维修" v-on:click="" /></span>
+                                            <sui-button basic color="blue" content="申请维修" v-on:click="applyRepair(props.rowData)" />
+                                        </span>
                                         <sui-button basic color="red" content="删除" v-on:click="deletefenpei(props.rowData)" />
-                                        <sui-button basic color="red" content="申请维修" v-on:click="applyRepair(props.rowData)" />
+                                        
                                     </div>
                                 </vuetable>
                             </div>
@@ -698,8 +699,6 @@ export default {
             this.fenpeiopen = false
         },
         newfenpei() {
-            console.log('clicked')
-            console.log(this.selectedRoom)
             if (this.selectedfenpei.roomtype == '1') {
                 var input = {}
                 input['room_id'] = this.selectedfenpei.room_id
@@ -707,7 +706,7 @@ export default {
                 input['floor_id'] = this.selectedfenpei.floor_id
                 input['unit_id'] = this.selectedRoom.id
                 input['space'] = parseInt(this.selectedfenpei.space)
-
+                console.log(input)
                 createAssignmentApi(input).then((data) => {
                     if (data.data.code == 0) {
                     notifySomething("分配成功", "创建领导分配成功", "success");

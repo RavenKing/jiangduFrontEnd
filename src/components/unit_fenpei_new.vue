@@ -19,14 +19,14 @@
                     <model-select :options="singleRoom.ziyousource" v-model="item" placeholder="" width="300px" @input="handleOnInput">
                     </model-select>
                 </sui-form-field>
-                <sui-form-field v-if="singleRoom.roomtype == '1'" class="width300">
+                <!-- <sui-form-field v-if="singleRoom.roomtype == '1'" class="width300">
                     <label>房</label>
                     <sui-dropdown placeholder="选择房" selection :options="louOptions" v-model="singleRoom.building_id" @input="setFloor()" :loading="louLoading" :disabled="louLoading" />
                 </sui-form-field>
                 <sui-form-field v-if="singleRoom.roomtype == '1'" class="width300">
                     <label>楼</label>
                     <sui-dropdown floating direction="upward" placeholder="选择楼" selection :options="floorOptions" v-model="singleRoom.floor_id" :loading="floorLoading" :disabled="floorLoading" />
-                </sui-form-field>
+                </sui-form-field> -->
         </sui-form-fields>
         <sui-form-fields>
             <sui-form-field inline>
