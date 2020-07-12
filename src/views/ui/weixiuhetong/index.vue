@@ -11,7 +11,7 @@
         </div>
 
         <div class="wl-gantt-demo">
-            <wlGantt :data="hetongdataNewData" use-real-time default-expand-all date-type="yearAndMonth" start-date="2020-6-06" end-date="2023-7-02" @timeChange="timeChange" @preChange="preChange" @expand-change="expandChange"></wlGantt>
+            <wlGantt @nameChange="nameChange" @taskRemove="removeTasks" @row-dblclick="handleRowDbClick" :data="hetongdataNewData" use-real-time date-type="yearAndMonth" start-date="2020-6-06" end-date="2023-7-02" @timeChange="timeChange" @preChange="preChange" @expand-change="expandChange"></wlGantt>
         </div>
         <!-- 
         <div class="vue2Table">
@@ -28,7 +28,25 @@
             </div>
         </div> -->
         <dialog-bar :commentData="deleteTarget.comment" v-model="sendVal" type="danger" title="是否要删除" :content="deleteTarget.text" v-on:cancel="clickCancel()" @danger="clickConfirmDelete()" @confirm="clickConfirmDelete()" dangerText="确认删除"></dialog-bar>
+        <div>
+            <sui-modal class="modal2" v-model="project.open">
+                <sui-modal-header>
+                    <h4 is="sui-header">项目信息
+                    </h4>
+                </sui-modal-header>
+                <sui-modal-content scrolling>
 
+                </sui-modal-content>
+                <sui-modal-actions>
+                    <sui-button basic color="red" @click.native="">
+                        取消
+                    </sui-button>
+                    <sui-button basic color="blue" @click.native="">
+                        保存
+                    </sui-button>
+                </sui-modal-actions>
+            </sui-modal>
+        </div>
         <div>
             <sui-modal class="modal2" v-model="open">
                 <sui-modal-content scrolling>
@@ -156,6 +174,9 @@ export default {
     },
     data() {
         return {
+            project: {
+                open: false
+            },
             fields2: Fields2,
             lang: lang,
             hetongdata: [],
@@ -185,8 +206,28 @@ export default {
     },
 
     methods: {
+        nameChange(row)
+        {
+            console.log(row);
+        },
+        removeTasks(row) {
+
+        },
+        handleRowDbClick(row) {
+            this.project.open = true;
+        },
         timeChange(row) {
-            alert(row)
+            console.log("时间修改:", row);
+        },
+        //
+        /**
+         * 前置任务发生更改
+         * row: Object 当前行数据
+         * oldval: [String, Array] 前置修改前的旧数据
+         * handle: Boolean 是否用户编辑产生的改变
+         */
+        preChange(row, oldval, handle) {
+            console.log("前置修改:", row, oldval, handle);
         },
         editHeTongData(props) {
             this.resetStep();
@@ -353,7 +394,6 @@ export default {
                 }
                 this.localData.data.map((one) => {
                     getroombyid(one).then((result) => {
-                        console.log(result);
                         if (result.data.code == 0) {
                             one.roomname = result.data.data.roomname;
                             one.address = result.data.data.address;
@@ -436,7 +476,6 @@ export default {
     mounted() {
         //this.localData = data.data.data;
         this.loading = true;
-
         getMRApi({
             status: 2
         }).then((data) => {
@@ -455,7 +494,6 @@ export default {
             }
             this.localData.data.map((one) => {
                 getroombyid(one).then((result) => {
-                    console.log(result);
                     if (result.data.code == 0) {
                         one.roomname = result.data.data.roomname;
                         one.address = result.data.data.address;
@@ -487,7 +525,6 @@ export default {
         getMCApi().then((data) => {
             //this.localData = data.data.data;
             this.loading = false;
-            console.log(data.data.data);
             this.hetongdata = {
                 total: 16,
                 per_page: 5,

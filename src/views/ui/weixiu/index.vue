@@ -38,7 +38,7 @@
                     </h4>
                 </sui-modal-header>
                 <sui-modal-content scrolling>
-                    <weixiu-form :singleEntry="selectedWeixiu" ref="weixiuForm"> </weixiu-form>
+                    <weixiu-form :singleEntry="selectedWeixiu" ref="weixiuForm" :mode="modalMode"> </weixiu-form>
                 </sui-modal-content>
                 <sui-modal-actions>
                     <sui-button basic color="red" @click.native="closeWeiXiuForm">
