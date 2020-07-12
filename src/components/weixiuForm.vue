@@ -22,6 +22,26 @@
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields>
+            <sui-form-field disabled>
+                <label>计划维修时间</label>
+                <sui-input placeholder="维修时间" v-model="singleEntry.starttime" />
+            </sui-form-field>
+            <sui-form-field disabled>
+                <label>维修金额</label>
+                <sui-input placeholder="维修金额" v-model="singleEntry.repair_amt" />
+            </sui-form-field>
+        </sui-form-fields>
+        <sui-form-fields>
+            <sui-form-field disabled>
+                <label>申报时间</label>
+                <sui-input placeholder="申报时间" v-model="singleEntry.created_on" />
+            </sui-form-field>
+            <sui-form-field disabled>
+                <label>申报单位</label>
+                <sui-input placeholder="申报单位" v-model="singleEntry.repair_amt" />
+            </sui-form-field>
+        </sui-form-fields>
+        <sui-form-fields>
             <sui-form-field>
                 <label>维修理由</label>
                 <textarea v-model="singleEntry.reason" />
@@ -43,7 +63,7 @@
               <sui-dropdown  floating direction="upward" placeholder="选择楼" selection :options="floorOptions" v-model="singleEntry.floor_id"  :loading="floorLoading" :disabled="floorLoading"/>
             </sui-form-field>
         </sui-form-fields>
-        
+
         <!-- <sui-form-fields> -->
 <!-- 
             <sui-form-field>
@@ -145,9 +165,9 @@ export default {
     }
 };
 </script>
+
 <style>
 .marginBottom30 {
-margin-bottom: 60px;
+    margin-bottom: 60px;
 }
-
 </style>
