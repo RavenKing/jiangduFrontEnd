@@ -226,6 +226,18 @@ export default {
                 }).catch(() => {
                     notifySomething(constants.GENERALERROR, constants.GENERALERROR + result.data.code, constants.typeError);
                 })
+            } else if (this.deleteTarget.type == "step") {
+                delStepApi(this.deleteTarget).then((resule) => {
+                    if (result.data.code == 0) {
+                        this.loading = false;
+                        this.refreshHetongList();
+                        notifySomething("删除步骤成功", "删除步骤成功", constants.typeSuccess);
+                    } else {
+                        notifySomething(constants.GENERALERROR, constants.GENERALERROR + result.data.code, constants.typeError);
+                    }
+                }).catch(() => {
+                    notifySomething(constants.GENERALERROR, constants.GENERALERROR + result.data.code, constants.typeError);
+                })
             }
 
         },
