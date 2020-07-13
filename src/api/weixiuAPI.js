@@ -141,6 +141,15 @@ function rejectMRApi(data)
   return  generalRequet(data,constants.rejectMRApi)
 
 }
+function delProjectApi(data)
+{
+    return generalRequet(data,constants.delProjectApi);
+}
+function delStepApi(data)
+{
+    return generalRequet(data,constants.delStepApi);
+
+}
 export {
     getMRApi,
     createMRApi,
@@ -152,5 +161,5 @@ export {
     getMCApi,
     updateMCApi,
     approveMRApi,
-    rejectMRApi
+    rejectMRApi,delProjectApi,delStepApi
 }

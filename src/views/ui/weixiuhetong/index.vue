@@ -11,7 +11,7 @@
         </div>
 
         <div class="wl-gantt-demo">
-            <wlGantt @nameChange="nameChange" @taskRemove="removeTasks" @row-dblclick="handleRowDbClick" :data="hetongdataNewData" use-real-time date-type="yearAndMonth" start-date="2020-6-06" end-date="2023-7-02" @timeChange="timeChange" @preChange="preChange" @expand-change="expandChange"></wlGantt>
+            <wlGantt @nameChange="nameChange" default-expand-all @taskRemove="removeTasks" @row-dblclick="handleRowDbClick" :data="hetongdataNewData" use-real-time date-type="yearAndMonth" start-date="2020-6-06" end-date="2023-7-02" @timeChange="timeChange"></wlGantt>
         </div>
         <!-- 
         <div class="vue2Table">
@@ -27,7 +27,7 @@
                 <vuetable-pagination ref="pagination" @vuetable-pagination:change-page="onChangePage"></vuetable-pagination>
             </div>
         </div> -->
-        <dialog-bar :commentData="deleteTarget.comment" v-model="sendVal" type="danger" title="是否要删除" :content="deleteTarget.text" v-on:cancel="clickCancel()" @danger="clickConfirmDelete()" @confirm="clickConfirmDelete()" dangerText="确认删除"></dialog-bar>
+        <dialog-bar v-model="sendVal" type="danger" title="是否要删除" :content="deleteTarget.text" v-on:cancel="clickCancel()" @danger="clickConfirmDelete()" @confirm="clickConfirmDelete()" dangerText="确认删除"></dialog-bar>
         <div>
             <sui-modal class="modal2" v-model="project.open">
                 <sui-modal-header>
@@ -154,12 +154,18 @@ import {
     notifySomething
 } from "@/util/utils"
 import {
+    fromShitFormat,
+    toShitFormat
+} from "@/util/time"
+import {
     getMRApi,
     createMRApi,
     getroombyid,
     createMCApi,
     getMCApi,
-    updateMCApi
+    updateMCApi,
+    delProjectApi,
+    delStepApi
 } from "@/api/weixiuAPI";
 export default {
     name: "MyVuetable",
@@ -193,7 +199,7 @@ export default {
                 open: false,
             },
             selectedWeixiu: {},
-            deleteTarget: "",
+            deleteTarget: {},
             loading: true,
             localData: [],
             hetongFields: FieldHetong,
@@ -206,15 +212,47 @@ export default {
     },
 
     methods: {
-        nameChange(row)
-        {
+        clickConfirmDelete() {
+            this.loading = true;
+            if (this.deleteTarget.type == "project") {
+                delProjectApi(this.deleteTarget).then((result) => {
+                    if (result.data.code == 0) {
+                        this.loading = false;
+                        this.refreshHetongList();
+                        notifySomething("删除项目成功", "删除项目成功", constants.typeSuccess);
+                    } else {
+                        notifySomething(constants.GENERALERROR, constants.GENERALERROR + result.data.code, constants.typeError);
+                    }
+                }).catch(() => {
+                    notifySomething(constants.GENERALERROR, constants.GENERALERROR + result.data.code, constants.typeError);
+                })
+            }
+
+        },
+        nameChange(row) {
             console.log(row);
         },
         removeTasks(row) {
-
+            console.log(row.type);
+            this.deleteTarget.type = row.type;
+            if (row.type && row.type == "project") {
+                this.deleteTarget.text = "是否要删除项目" + row.name;
+                this.deleteTarget.id = row.project_id;
+                this.sendVal = true;
+            } else if (row.type == "step") {
+                this.deleteTarget.text = "是否要删除步骤" + row.name;
+                this.deleteTarget.id = row.step_id;
+                this.sendVal = true;
+            }
         },
         handleRowDbClick(row) {
-            this.project.open = true;
+            var selectedRow = {};
+            this.hetongdata.data.map((one) => {
+                if (one.id == row.project_id) {
+                    selectedRow = one;
+                }
+            });
+            this.editHeTongData(selectedRow);
         },
         timeChange(row) {
             console.log("时间修改:", row);
@@ -258,6 +296,7 @@ export default {
                 this.weixiuhetong.mrlist.push(one.id);
             });
             this.weixiuhetong.mrlist = JSON.stringify(this.weixiuhetong.mrlist);
+            this.weixiuhetong.starttime = toShitFormat(this.weixiuhetong.starttime);
             this.loading = true;
             var context = this;
             this.closeHetongModal();
@@ -282,7 +321,7 @@ export default {
 
                     }
                 }).catch(function (error) {
-                    this.loading = false;
+                    context.loading = false;
                     context.$notify({
                         group: 'foo',
                         title: '创建失败',
@@ -330,6 +369,7 @@ export default {
             getMCApi().then((data) => {
                 //this.localData = data.data.data;
                 this.loading = false;
+                this.hetongdataNewData = [];
                 this.hetongdata = {
                     total: 16,
                     per_page: 5,
@@ -346,27 +386,49 @@ export default {
                     ganttData = {
                         id: index,
                         pid: index,
+                        project_id: one.id,
+                        type: "project",
                         name: one.name,
                         startDate: one.starttime,
                         endDate: one.endtime,
                         realStartDate: one.starttime,
-                        realEndDatee: one.endtime
+                        realEndDate: one.endtime,
+                        children: []
+                    }
+                    one.step_info.map((child) => {
+                        var child = {
+                            id: index * 100 + child.id,
+                            pid: index,
+                            name: child.name,
+                            type: "step",
+                            step_id: child.id,
+                            startDate: child.starttime,
+                            endDate: child.endtime,
+                            realStartDate: one.starttime,
+                            realEndDatee: one.endtime
+                        }
+                        ganttData.children.push(child);
+                    })
+
+                    if (this.maxStartDate == 0) {
+                        this.maxStartDate = one.starttime;
+                        this.minEndDate = one.endtime;
                     }
                     this.hetongdataNewData.push(ganttData);
 
-                    // switch (one.status) {
-                    //     case 1:
-                    //         one.statusText = "未开始";
-                    //         break;
-                    //     case 2:
-                    //         one.statusText = "开始维修";
-                    //         break;
-                    //     case 3:
-                    //         one.statusText = "维修完成";
-                    //         break;
-                    //     default:
-                    //         break;
-                    // }
+                    switch (one.status) {
+                        case 1:
+                            one.statusText = "未开始";
+                            break;
+                        case 2:
+                            one.statusText = "开始维修";
+                            break;
+                        case 3:
+                            one.statusText = "维修完成";
+                            break;
+                        default:
+                            break;
+                    }
 
                 });
             }).catch(function (error) {
@@ -524,6 +586,7 @@ export default {
 
         getMCApi().then((data) => {
             //this.localData = data.data.data;
+
             this.loading = false;
             this.hetongdata = {
                 total: 16,
@@ -538,9 +601,12 @@ export default {
             }
             this.hetongdata.data.map((one, index) => {
                 var ganttData = {};
+                one.starttime = fromShitFormat(one.starttime);
                 ganttData = {
                     id: index,
                     pid: index,
+                    project_id: one.id,
+                    type: "project",
                     name: one.name,
                     startDate: one.starttime,
                     endDate: one.endtime,
@@ -553,9 +619,11 @@ export default {
                         id: index * 100 + child.id,
                         pid: index,
                         name: child.name,
-                        startDate: child.starttime,
+                        type: "step",
+                        step_id: child.id,
+                        startDate: fromShitFormat(child.plantime),
                         endDate: child.endtime,
-                        realStartDate: one.starttime,
+                        realStartDate: fromShitFormat(child.plantime),
                         realEndDatee: one.endtime
                     }
                     ganttData.children.push(child);

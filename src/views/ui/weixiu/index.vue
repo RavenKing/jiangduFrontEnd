@@ -87,7 +87,7 @@ import {
     createMCApi,
     getMCApi,
     approveMRApi,
-    rejectMRApi
+    rejectMRApi,
 } from "@/api/weixiuAPI";
 import {
     getRoomDataApi,
