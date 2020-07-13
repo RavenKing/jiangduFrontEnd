@@ -112,10 +112,10 @@ export default {
 }
 
 .logoTitle {
-    margin-left: 80px;
-    margin-top: 25px;
+    margin-left: 5%;
     color: white;
     font-size: 2em;
+    line-height: 80px;
 }
 
 .headerNew {
@@ -131,6 +131,7 @@ export default {
     margin-top: 100px;
     font-size: 3em;
     color: white;
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.2)
 }
 
 .wlui-login {
@@ -149,7 +150,7 @@ export default {
         // //  left: 0;
         margin: auto;
         width: 410px;
-        height: 460px;
+        padding-bottom: 25px;
         border-radius: 4px;
         // box-shadow: 2px 2px 5px rgba(28, 28, 28, 0.2),
         //   -2px -2px 5px rgba(28, 28, 28, 0.2);

@@ -6,7 +6,7 @@
                 <sui-loader content="Loading..." />
             </sui-dimmer>
         </div>
-        <div class="filterBiaoDan">
+        <div class="filterBiaoDan" style="padding-left:15px;">
 
             <sui-grid>
                 <sui-grid-row>
@@ -66,7 +66,7 @@
                                 <div>
                                     <!-- <sui-dropdown placeholder="选择合同(默认最新)" selection :options="listContract" v-model="selectedRoomContract.id" @input="changeContract" /> -->
                                     <sui-button basic color="blue" @click="changeMode">新建</sui-button>
-                                    <contract-form :singleEntry="selectedRoomContract" :mianji="selectedRoom.value" :disabled="!(selectedRoomContract.mode&&selectedRoomContract.mode=='new')"></contract-form>
+                                    <contract-form style="margin-top:15px;" :singleEntry="selectedRoomContract" :mianji="selectedRoom.value" :disabled="!(selectedRoomContract.mode&&selectedRoomContract.mode=='new')"></contract-form>
                                     <div v-show="selectedRoomContract.mode&&selectedRoomContract.mode=='new'">
                                         <sui-button content="创建新合同" v-on:click="createRentContract()" />
                                     </div>
@@ -608,7 +608,9 @@ export default {
     left: auto;
     height: auto !important;
 }
-
+.ui.modal>.content{
+    padding: 0 15px 15px 15px;
+}
 .map {
     width: 100%;
     height: 400px;
@@ -637,12 +639,12 @@ export default {
 }
 
 .filterBiaoDan {
-    margin: 20px
+    margin: 15px 0
 }
 
 .width300 {
     width: 300px;
-    margin-left: 20px !important;
+    /* margin-left: 20px !important; */
 }
 
 .pagination {
@@ -658,7 +660,7 @@ export default {
 }
 
 .vue2Table {
-    margin: 20px;
+    /* margin: 20px; */
 }
 
 .anchorBL {

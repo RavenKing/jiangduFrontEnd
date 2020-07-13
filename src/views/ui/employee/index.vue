@@ -32,7 +32,7 @@
     <dialog-bar v-model="tokenMessage.tokenExpired" type="danger" :title="tokenMessage.text" :content="tokenMessage.content" :dangerText="tokenMessage.dangerText"></dialog-bar>
     <div>
         <sui-modal class="modal2" v-model="open">
-            <sui-modal-header>{{modelTitle}}</sui-modal-header>
+            <sui-modal-header style="border-bottom:0;">{{modelTitle}}</sui-modal-header>
             <sui-modal-content image>
                 <employee-form ref='formComponent'></employee-form>
             </sui-modal-content>
@@ -263,7 +263,9 @@ export default {
     left: auto;
     height: auto !important;
 }
-
+.ui.modal>.content{
+    padding: 0 15px 15px 15px;
+}
 .ui.table thead th {
     padding: 2px !important;
     background-color: #75ADBF !important;
@@ -277,11 +279,11 @@ export default {
 }
 
 .filterBiaoDan {
-    margin: 20px
+    margin: 15px 0
 }
 
 .vue2Table {
-    margin: 20px;
+    /* margin: 20px; */
 }
 
 .pagination {

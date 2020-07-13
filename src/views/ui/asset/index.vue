@@ -6,7 +6,7 @@
                 <sui-loader content="Loading..." />
             </sui-dimmer>
         </div>
-        <div class="filterBiaoDan">
+        <div class="filterBiaoDan" style="padding-left:15px;">
             <sui-grid>
                 <sui-grid-row>
                     <sui-grid-column :width="13">
@@ -55,7 +55,7 @@
 
         <div>
             <sui-modal class="modal2" v-model="open">
-                <sui-modal-header>{{modelTitle}}</sui-modal-header>
+                <sui-modal-header style="border-bottom:0;">{{modelTitle}}</sui-modal-header>
                 <sui-modal-content>
                     <div>
                         <form-create ref='formComponent' :singleRoom="selectedRoom"></form-create>
@@ -88,7 +88,7 @@
         </div>
         <div>
             <sui-modal class="imageModal" v-model="buildingImage.open" :key="imgeComponentKey">
-                <sui-modal-header>放大图</sui-modal-header>
+                <sui-modal-header style="border-bottom:0;">放大图</sui-modal-header>
                 <sui-modal-content image>
 
                     <sui-item-group divided>
@@ -112,7 +112,7 @@
         </div>
         <div>
             <sui-modal class="modal2" v-model="assignForm.open">
-                <sui-modal-header>分配楼层</sui-modal-header>
+                <sui-modal-header style="border-bottom:0;">分配楼层</sui-modal-header>
                 <sui-modal-content image>
                     <assign-form ref='formComponentAssign'>
                     </assign-form>
@@ -920,17 +920,20 @@ export default {
     top: auto;
     left: auto;
     height: auto !important;
-    min-height: 500px !important;
+    /* min-height: 500px !important; */
 }
 
 .ui.modal>.actions {
-    position: fixed;
-    bottom: 0;
-    right: 0;
-    border: 0px !important;
-    background: white !important;
+    background: rgb(249, 250, 251);
+    border-bottom-left-radius: 0.285714rem;
+    border-bottom-right-radius: 0.285714rem;
+    padding: 1rem;
+    border-top: 1px solid rgba(34, 36, 38, 0.15);
+    text-align: center;
 }
-
+.ui.modal>.content{
+    padding: 0px 15px 15px 15px;
+}
 .ui.table {
     font-size: 13px;
 }
@@ -954,11 +957,11 @@ export default {
 }
 
 .filterBiaoDan {
-    margin: 20px
+    margin: 15px 0
 }
 
 .vue2Table {
-    margin: 20px;
+    /* margin: 20px; */
 }
 
 .buttonBuildingFloor {

@@ -1,5 +1,6 @@
 <template lang="html">
 <div>
+    <sui-segment>
     <sui-form>
         <sui-form-fields>
             <sui-form-field>
@@ -36,6 +37,7 @@
             </sui-form-field>
         </sui-form-fields>
     </sui-form>
+    </sui-segment>
 </div>
 </template>
 

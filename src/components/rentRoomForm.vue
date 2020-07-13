@@ -97,6 +97,9 @@ export default {
 </script>
 
 <style>
+.ui.modal>.actions{
+    text-align: center;
+}
 .width600 {
     width: 600px !important;
 }
