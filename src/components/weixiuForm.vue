@@ -45,11 +45,11 @@
                 </model-select> -->
             </sui-form-field>
         </sui-form-fields>
-
-        <sui-form-field>
-            <label>维修理由</label>
-            <textarea v-model="singleEntry.reason" />
-            </sui-form-field>
+        <sui-form-fields>
+            <sui-form-field style="width:100%">
+                <label>维修理由</label>
+                <textarea v-model="singleEntry.reason" />
+                </sui-form-field>
         </sui-form-fields>
                 <sui-form-fields>
             <sui-form-field :disabled="mode=='edit'">
@@ -195,7 +195,11 @@ export default {
 
 <style>
 .marginBottom30 {
-    margin-bottom: 60px;
+    margin-bottom: 15px;
+}
+
+.ui.modal>.actions {
+    text-align: center;
 }
 
 .width300 {

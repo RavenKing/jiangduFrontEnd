@@ -15,10 +15,7 @@
     <div class="wl-container-footer" v-if="$slots.footer">
       <slot name="footer"></slot>
     </div>
-    <!-- 网站默认脚部信息 -->
-    <footer class="wlui-footer">
-      Copyright@2018 www.xxx.cn All Rights Reserved 上海奉贤人民政府 ICP 备案： 沪05003300号
-    </footer>
+    
   </div>
 </template>
 
@@ -45,7 +42,7 @@ export default {
   right: 0;
   bottom: 0;
   left: 0;
-  padding: 8px;
+  padding: 15px;
 
   > .wl-container-scroll {
     flex: 1;
@@ -62,16 +59,6 @@ export default {
     flex-shrink: 1;
   }
 
-  .wlui-footer {
-    text-align: center;
-    font-size: 14px;
-    background: #2e2f30;
-    line-height: 26px;
-    color:white;
-    border-radius: 2px;
-    > .beianhao {
-      color: white;
-    }
-  }
+  
 }
 </style>

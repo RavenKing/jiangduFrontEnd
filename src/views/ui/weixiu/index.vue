@@ -32,14 +32,18 @@
         </dialog-bar>
         <div>
             <sui-modal class="modal2" v-model="weixiuForm.open">
-                <sui-modal-header>{{modelTitle}}维修
-                    <h4 is="sui-header" :color="selectedWeixiu.status==2?'green':'red'">
+                <sui-modal-header style="border-bottom:0;">{{modelTitle}}维修
+                    <h4 style="margin-top:10px" is="sui-header" :color="selectedWeixiu.status==2?'green':'red'">
                         {{selectedWeixiu.statusText}}
                     </h4>
                 </sui-modal-header>
+
                 <sui-modal-content scrolling>
-                    <weixiu-form :singleEntry="selectedWeixiu" ref="weixiuForm" :mode="modalMode"> </weixiu-form>
+                    <sui-segment>
+                        <weixiu-form :singleEntry="selectedWeixiu" ref="weixiuForm" :mode="modalMode"> </weixiu-form>
+                    </sui-segment>
                 </sui-modal-content>
+
                 <sui-modal-actions>
                     <sui-button basic color="red" @click.native="closeWeiXiuForm">
                         取消
@@ -47,10 +51,8 @@
                     <sui-button basic color="blue" @click.native="createShenbao">
                         保存
                     </sui-button>
-                    <span v-show="role==1&&modalMode=='edit'">
-                        <sui-button color="green" v-on:click="approveContract(selectedWeixiu)">同意</sui-button>
-                        <sui-button basic color="red" v-on:click="rejectContract(selectedWeixiu)">拒绝</sui-button>
-                    </span>
+                    <sui-button v-show="role==1&&modalMode=='edit'" color="green" v-on:click="approveContract(selectedWeixiu)">同意</sui-button>
+                    <sui-button v-show="role==1&&modalMode=='edit'" basic color="red" v-on:click="rejectContract(selectedWeixiu)">拒绝</sui-button>
                 </sui-modal-actions>
             </sui-modal>
         </div>
@@ -480,6 +482,10 @@ export default {
     height: auto !important;
 }
 
+.ui.modal>.content {
+    padding: 0 15px 15px 15px;
+}
+
 .map {
     width: 100%;
     height: 400px;
@@ -508,11 +514,11 @@ export default {
 }
 
 .filterBiaoDan {
-    margin: 20px
+    margin: 15px 0
 }
 
 .vue2Table {
-    margin: 20px;
+    /* margin: 20px; */
 }
 
 .pagination {

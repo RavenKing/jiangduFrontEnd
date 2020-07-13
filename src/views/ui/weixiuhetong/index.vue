@@ -50,7 +50,7 @@
         <div>
             <sui-modal class="modal2" v-model="open">
                 <sui-modal-content scrolling>
-                    <div>
+                    <div style="padding-top:15px;font-size:0">
                         <sui-step-group>
                             <sui-step :active="currentStep==1">
                                 <sui-icon name="truck" />
@@ -682,7 +682,9 @@ export default {
     left: auto;
     height: auto !important;
 }
-
+.ui.modal>.content{
+    padding: 0px 15px 15px 15px;
+}
 .map {
     width: 100%;
     height: 400px;
@@ -711,11 +713,11 @@ export default {
 }
 
 .filterBiaoDan {
-    margin: 20px
+    margin: 15px 0
 }
 
 .vue2Table {
-    margin: 20px;
+    /* margin: 20px; */
 }
 
 .pagination {
@@ -724,5 +726,15 @@ export default {
 
 .vuetable-head-wrapper table.vuetable th.sortable {
     cursor: pointer
+}
+.ui.modal>.actions {
+    background: #f9fafb;
+    padding: 1rem 1rem;
+    border-top: 1px solid rgba(34,36,38,.15);
+    text-align: center;
+}
+.ui.segment{
+    margin: 0;
+    margin-top: 15px;
 }
 </style>

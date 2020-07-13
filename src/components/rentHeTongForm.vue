@@ -62,11 +62,11 @@
         <sui-form-fields inline>
             <sui-form-field>
                 <label>起始时间:</label>
-                <datepicker :value="singleEntry.starttime" v-model="singleEntry.starttime" :language="lang['zh']" :transparent="disabled" :disabled="disabled"></datepicker>
+                <datepicker style="margin-top:10px;" :value="singleEntry.starttime" v-model="singleEntry.starttime" :language="lang['zh']" :transparent="disabled" :disabled="disabled"></datepicker>
             </sui-form-field>
             <sui-form-field>
                 <label>结束时间:</label>
-                <datepicker :value="singleEntry.endtime" v-model="singleEntry.endtime" :language="lang['zh']" :transparent="disabled" :disabled="disabled"></datepicker>
+                <datepicker style="margin-top:10px;" :value="singleEntry.endtime" v-model="singleEntry.endtime" :language="lang['zh']" :transparent="disabled" :disabled="disabled"></datepicker>
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields inline>

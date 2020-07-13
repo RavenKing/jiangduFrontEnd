@@ -1,13 +1,15 @@
 <template lang="html">
 <div>
+    <sui-segment style="margin-top:15px;">
     <sui-form>
         <sui-form-fields inline>
+            <label>领导级别</label>
             <sui-form-field>
-                <label>领导级别</label>
+                
                 <sui-dropdown placeholder="选择领导级别" selection :options="leaderLevel" v-model="singleRoom.leader" />
             </sui-form-field>
         </sui-form-fields>
-        <sui-form-fields>
+        <sui-form-fields inline>
             <label for="roomtype">请选择房屋类型:</label>
             <sui-form-field>
                 <sui-checkbox radio name="type" label="自有房屋" value="1" v-model="singleRoom.roomtype" />
@@ -17,37 +19,39 @@
             </sui-form-field>
         </sui-form-fields>
 
-        <sui-form-fields>
-            <sui-form-field v-if="singleRoom.roomtype == '1'" class="width300">
-                <label>选择房屋</label>
-                <model-select :options="singleRoom.ziyousource" v-model="item" placeholder="select item" width="300px" @input="handleOnInput">
-                </model-select>
+        <sui-form-fields inline v-if="singleRoom.roomtype == '1'">
+            <sui-form-field class="width300">
+                <label style="float:left;line-height:36px;">选择房屋</label>
+                <div style="padding-left:60px;">
+                    <model-select :options="singleRoom.ziyousource" v-model="item" placeholder="select item" @input="handleOnInput">
+                    </model-select>
+                </div>
                 <!-- <sui-dropdown placeholder="选择房屋"  selection :options="singleRoom.ziyouroomoptions" v-model="singleRoom.room" /> -->
             </sui-form-field>
-            <sui-form-field v-if="singleRoom.roomtype == '1'" class="width300">
+            <sui-form-field class="width300">
                 <label>房</label>
                 <sui-dropdown placeholder="选择房" selection :options="louOptions" v-model="singleRoom.building_id" @input="setFloor()" :loading="louLoading" :disabled="louLoading" />
             </sui-form-field>
-            <sui-form-field v-if="singleRoom.roomtype == '1'" class="width300">
+            <sui-form-field class="width300">
                 <label>楼</label>
                 <sui-dropdown floating direction="upward" placeholder="选择楼" selection :options="floorOptions" v-model="singleRoom.floor_id" :loading="floorLoading" :disabled="floorLoading" />
             </sui-form-field>
         </sui-form-fields>
-        <sui-form-fields>
-            <sui-form-field v-if="singleRoom.roomtype == '2'">
-                <label>选择租赁房屋</label>
-                <model-select :options="singleRoom.rentroomoptions" v-model="itemrent" placeholder="select item" width="300px" @input="handleOnInputRent">
+        <sui-form-fields inline v-if="singleRoom.roomtype == '2'">
+            <label>选择租赁房屋</label>
+            <sui-form-field>
+                <model-select :options="singleRoom.rentroomoptions" v-model="itemrent" placeholder="select item" @input="handleOnInputRent">
                 </model-select>
             </sui-form-field>
         </sui-form-fields>
-        <sui-form-fields>
+        <sui-form-fields inline>
+            <label>面积</label>
             <sui-form-field>
-                <label>面积</label>
-                <sui-input v-model="singleRoom.space" placeholder="输入面积" width="300px" type="number">
-                </sui-input>
+                <sui-input v-model="singleRoom.space" placeholder="输入面积" width="300px" type="number"></sui-input>
             </sui-form-field>
         </sui-form-fields>
     </sui-form>
+    </sui-segment>
 </div>
 </template>
 
