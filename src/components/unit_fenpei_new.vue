@@ -229,6 +229,7 @@ export default {
         rightCheckChange(nodeObj, treeObj, checkAll) {
             console.log(nodeObj);
             console.log(treeObj);
+            console.log('clicked')
             treeObj.checkedNodes
             var fenpei_data = []
             for (var i = treeObj.checkedNodes.length - 1; i >= 0; i--) {
@@ -246,11 +247,28 @@ export default {
                     }
                 }
             }
+            for (var i = treeObj.halfCheckedNodes.length - 1; i >= 0; i--) {
+                if(treeObj.halfCheckedNodes[i].children){
+                    var building_id = treeObj.halfCheckedNodes[i].id
+                    var children_list = treeObj.halfCheckedNodes[i].children
+
+                    for (var j = children_list.length - 1; j >= 0; j--) {
+                        var floor_id = children_list[j].id
+                        for (var k = treeObj.checkedNodes.length - 1; k >= 0; k--) {
+                            if(children_list[j].id == treeObj.checkedNodes[k].id){
+                                fenpei_data.push({
+                                'building_id': building_id,
+                                'floor_id': floor_id,
+                                'name': children_list[j].name,
+                                'space': ''
+                                })    
+                            }  
+                        }
+                    }
+                }
+            }
             this.fenpei_data = fenpei_data
             this.checked_node = true
-
-
-            console.log(checkAll);
         },
         // 自定义节点 仅树形结构支持
         // 标题自定义区点击事件
