@@ -47,7 +47,6 @@
                 </div>
             </vuetable>
             <div class="pagination ui basic segment grid">
-                <vuetable-pagination-info ref="paginationInfo"></vuetable-pagination-info>
                 <vuetable-pagination ref="pagination" @vuetable-pagination:change-page="onChangePage"></vuetable-pagination>
             </div>
         </div>
@@ -705,20 +704,12 @@ export default {
         },
         refreshRooms() {
             this.loading = true;
-            getRoomDataApi().then((data) => {
-                console.log(data);
+            getRoomDataApi({
+                page: 1
+            }).then((data) => {
+                //this.localData = data.data.data;
                 this.loading = false;
-                this.localData = {
-                    total: 16,
-                    per_page: 5,
-                    current_page: 1,
-                    last_page: 4,
-                    next_page_url: "data.data.data?page=2",
-                    prev_page_url: null,
-                    from: 1,
-                    to: 5,
-                    data: data.data.data
-                }
+                this.localData = data.data.data
             }).catch(function (error) {
                 this.loading = false;
                 notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
@@ -751,7 +742,7 @@ export default {
                 internal_info: "",
                 cur_status: "",
                 area: "奉贤区",
-                usage1:"1"
+                usage1: "1"
             };
         },
         toggle() {
@@ -816,6 +807,17 @@ export default {
             this.$refs.paginationInfo.setPaginationData(paginationData);
         },
         onChangePage(page) {
+            this.loading = true;
+            getRoomDataApi({
+                page: page
+            }).then((data) => {
+                //this.localData = data.data.data;
+                this.loading = false;
+                this.localData = data.data.data
+            }).catch(function (error) {
+                this.loading = false;
+                notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
+            });
             this.$refs.vuetable.changePage(page);
         },
         closeModal: function () {
@@ -873,20 +875,12 @@ export default {
     },
 
     created() {
-        getRoomDataApi().then((data) => {
+        getRoomDataApi({
+            page: 1
+        }).then((data) => {
             //this.localData = data.data.data;
             this.loading = false;
-            this.localData = {
-                total: 16,
-                per_page: 5,
-                current_page: 1,
-                last_page: 4,
-                next_page_url: "data.data.data?page=2",
-                prev_page_url: null,
-                from: 1,
-                to: 5,
-                data: data.data.data
-            }
+            this.localData = data.data.data
         }).catch(function (error) {
             this.loading = false;
             notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
@@ -931,9 +925,11 @@ export default {
     border-top: 1px solid rgba(34, 36, 38, 0.15);
     text-align: center;
 }
-.ui.modal>.content{
+
+.ui.modal>.content {
     padding: 0px 15px 15px 15px;
 }
+
 .ui.table {
     font-size: 13px;
 }

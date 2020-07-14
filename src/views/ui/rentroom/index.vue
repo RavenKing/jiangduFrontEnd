@@ -47,7 +47,6 @@
                 </div>
             </vuetable>
             <div class="pagination ui basic segment grid">
-                <vuetable-pagination-info ref="paginationInfo"></vuetable-pagination-info>
                 <vuetable-pagination ref="pagination" @vuetable-pagination:change-page="onChangePage"></vuetable-pagination>
             </div>
         </div>
@@ -242,7 +241,6 @@ export default {
     },
 
     methods: {
-
         changeUnit() {
             let count = 0;
             this.selectedRoom.assignList.map((one) => {
@@ -506,20 +504,14 @@ export default {
         },
         refreshRooms() {
             this.loading = true;
-            getRentRoomDataApi().then((data) => {
-                console.log(data);
+            getRentRoomDataApi({
+                page: 1
+            }).then((data) => {
                 this.loading = false;
-                this.localData = {
-                    total: 16,
-                    per_page: 5,
-                    current_page: 1,
-                    last_page: 4,
-                    next_page_url: "data.data.data?page=2",
-                    prev_page_url: null,
-                    from: 1,
-                    to: 5,
-                    data: data.data.data
-                }
+                this.localData = data.data.data
+            }).catch(function (error) {
+                this.loading = false;
+                notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
             });
         },
         createRoomModel() {
@@ -573,22 +565,7 @@ export default {
 
     },
     created() {
-
-        getRentRoomDataApi().then((data) => {
-            //this.localData = data.data.data;
-            this.loading = false;
-            this.localData = {
-                total: 16,
-                per_page: 5,
-                current_page: 1,
-                last_page: 4,
-                next_page_url: "data.data.data?page=2",
-                prev_page_url: null,
-                from: 1,
-                to: 5,
-                data: data.data.data
-            }
-        });
+        this.refreshRooms();
         getUnitApi().then((data) => {
             var res_data = data.data.data
             for (var i = res_data.length - 1; i >= 0; i--) {
@@ -608,9 +585,11 @@ export default {
     left: auto;
     height: auto !important;
 }
-.ui.modal>.content{
+
+.ui.modal>.content {
     padding: 0 15px 15px 15px;
 }
+
 .map {
     width: 100%;
     height: 400px;
