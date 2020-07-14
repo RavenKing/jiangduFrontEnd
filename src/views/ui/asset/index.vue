@@ -6,7 +6,7 @@
                 <sui-loader content="Loading..." />
             </sui-dimmer>
         </div>
-        <div class="filterBiaoDan">
+        <div class="filterBiaoDan" style="padding-left:15px;">
             <sui-grid>
                 <sui-grid-row>
                     <sui-grid-column :width="13">
@@ -47,7 +47,6 @@
                 </div>
             </vuetable>
             <div class="pagination ui basic segment grid">
-                <vuetable-pagination-info ref="paginationInfo"></vuetable-pagination-info>
                 <vuetable-pagination ref="pagination" @vuetable-pagination:change-page="onChangePage"></vuetable-pagination>
             </div>
         </div>
@@ -55,7 +54,7 @@
 
         <div>
             <sui-modal class="modal2" v-model="open">
-                <sui-modal-header>{{modelTitle}}</sui-modal-header>
+                <sui-modal-header style="border-bottom:0;">{{modelTitle}}</sui-modal-header>
                 <sui-modal-content>
                     <div>
                         <form-create ref='formComponent' :singleRoom="selectedRoom"></form-create>
@@ -88,7 +87,7 @@
         </div>
         <div>
             <sui-modal class="imageModal" v-model="buildingImage.open" :key="imgeComponentKey">
-                <sui-modal-header>放大图</sui-modal-header>
+                <sui-modal-header style="border-bottom:0;">放大图</sui-modal-header>
                 <sui-modal-content image>
 
                     <sui-item-group divided>
@@ -112,7 +111,7 @@
         </div>
         <div>
             <sui-modal class="modal2" v-model="assignForm.open">
-                <sui-modal-header>分配楼层</sui-modal-header>
+                <sui-modal-header style="border-bottom:0;">分配楼层</sui-modal-header>
                 <sui-modal-content image>
                     <assign-form ref='formComponentAssign'>
                     </assign-form>
@@ -610,7 +609,9 @@ export default {
             this.loading = true;
             if (this.deleteTarget.type == "Room") {
                 deleteRoomApi(this.deleteTarget).then(() => {
-                    this.refreshRooms();
+                    this.refreshRooms({
+                        page: 1
+                    });
                     this.$notify({
                         group: 'foo',
                         title: '删除自有房屋成功',
@@ -703,22 +704,12 @@ export default {
                 type: "BuildingFloorAssignment"
             };
         },
-        refreshRooms() {
+        refreshRooms(payload) {
             this.loading = true;
-            getRoomDataApi().then((data) => {
-                console.log(data);
+            getRoomDataApi(payload).then((data) => {
+                //this.localData = data.data.data;
                 this.loading = false;
-                this.localData = {
-                    total: 16,
-                    per_page: 5,
-                    current_page: 1,
-                    last_page: 4,
-                    next_page_url: "data.data.data?page=2",
-                    prev_page_url: null,
-                    from: 1,
-                    to: 5,
-                    data: data.data.data
-                }
+                this.localData = data.data.data
             }).catch(function (error) {
                 this.loading = false;
                 notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
@@ -751,7 +742,7 @@ export default {
                 internal_info: "",
                 cur_status: "",
                 area: "奉贤区",
-                usage1:"1"
+                usage1: "1"
             };
         },
         toggle() {
@@ -770,7 +761,9 @@ export default {
                     context.loading = false;
                     console.log("success")
                     if (result.data.code == 0) {
-                        context.refreshRooms();
+                        context.refreshRooms({
+                            page: 1
+                        });
                         notifySomething("创建自有房屋成功", "创建自有房屋成功", constants.typeSuccess);
                     } else {
                         notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
@@ -783,7 +776,9 @@ export default {
                 this.assignList.open = false;
                 updateRoomApi(this.selectedRoom).then((result) => {
                     if (result.data.code == 0) {
-                        this.refreshRooms();
+                        this.refreshRooms({
+                            page: 1
+                        });
                         this.$notify({
                             group: 'foo',
                             title: '更新自有房屋成功',
@@ -792,7 +787,9 @@ export default {
                         });
                     } else {
                         notifySomething("更新自有房屋失败", "更新自有房屋失败", "error");
-                        this.refreshRooms();
+                        this.refreshRooms({
+                            page: 1
+                        });
                     }
                     this.loading = false;
                 }).catch(function (error) {
@@ -816,6 +813,10 @@ export default {
             this.$refs.paginationInfo.setPaginationData(paginationData);
         },
         onChangePage(page) {
+            this.loading = true;
+            this.refreshRooms({
+                page: page
+            });
             this.$refs.vuetable.changePage(page);
         },
         closeModal: function () {
@@ -825,7 +826,9 @@ export default {
             this.buildingFloorForm.open = false;
             this.buildingImage.open = false;
             this.assignList.open = false;
-            this.refreshRooms();
+            this.refreshRooms({
+                page: 1
+            });
         },
         uploadFile: function (e) {
             let formData = new FormData();
@@ -873,24 +876,7 @@ export default {
     },
 
     created() {
-        getRoomDataApi().then((data) => {
-            //this.localData = data.data.data;
-            this.loading = false;
-            this.localData = {
-                total: 16,
-                per_page: 5,
-                current_page: 1,
-                last_page: 4,
-                next_page_url: "data.data.data?page=2",
-                prev_page_url: null,
-                from: 1,
-                to: 5,
-                data: data.data.data
-            }
-        }).catch(function (error) {
-            this.loading = false;
-            notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
-        });
+       this.refreshRooms({page:1})
     }
 };
 </script>
@@ -920,15 +906,20 @@ export default {
     top: auto;
     left: auto;
     height: auto !important;
-    min-height: 500px !important;
+    /* min-height: 500px !important; */
 }
 
 .ui.modal>.actions {
-    position: fixed;
-    bottom: 0;
-    right: 0;
-    border: 0px !important;
-    background: white !important;
+    background: rgb(249, 250, 251);
+    border-bottom-left-radius: 0.285714rem;
+    border-bottom-right-radius: 0.285714rem;
+    padding: 1rem;
+    border-top: 1px solid rgba(34, 36, 38, 0.15);
+    text-align: center;
+}
+
+.ui.modal>.content {
+    padding: 0px 15px 15px 15px;
 }
 
 .ui.table {
@@ -954,11 +945,11 @@ export default {
 }
 
 .filterBiaoDan {
-    margin: 20px
+    margin: 15px 0
 }
 
 .vue2Table {
-    margin: 20px;
+    /* margin: 20px; */
 }
 
 .buttonBuildingFloor {

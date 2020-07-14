@@ -150,10 +150,10 @@ export default {
             width: 100%;
             height: 60px;
             // line-height: 60px;
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            text-align: right;
+            // position: absolute;
+            // bottom: 0;
+            // left: 0;
+            text-align: center;
             padding: 0 16px;
             box-sizing: border-box;
 

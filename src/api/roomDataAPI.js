@@ -5,19 +5,8 @@ import {
     localGet
 } from "@/util/storage"; // 导入存储函数
 // 登录接口
-function getRoomDataApi() {
-
-    let local_auth = localGet(global.project_key, true);
-    //console.log(local_auth);
-    const newFormData = {
-        "token": local_auth
-    }
-
-    return request({
-        url: constants.roomGetAPI,
-        method: 'post',
-        data: newFormData
-    });
+function getRoomDataApi(data) {
+    return generalRequet(data,constants.roomGetAPI)
 }
 function updateRoomApi(data)
 {
@@ -63,20 +52,9 @@ function deleteBuildingApi(data)
         data: data
     });
 }
-function getRentRoomDataApi()
-{
-    let local_auth = localGet(global.project_key, true);
-    //console.log(local_auth);
-    const newFormData = {
-        "token": local_auth
-    }
-
-    return request({
-        url: constants.rentRoomGetAPI,
-        method: 'post',
-        data: newFormData
-    });
-
+function getRentRoomDataApi(data)
+{   
+     return generalRequet(data,constants.rentRoomGetAPI)
 }
 function createRentRoomApi(data)
 {

@@ -28,7 +28,7 @@
 
         <div>
             <sui-modal class="modal2" v-model="open">
-                <sui-modal-header>{{modelTitle}}</sui-modal-header>
+                <sui-modal-header style="border-bottom:0;">{{modelTitle}}</sui-modal-header>
                 <sui-modal-content image>
                     <unit-form ref='formComponent'></unit-form>
                 </sui-modal-content>
@@ -45,7 +45,7 @@
 
         <div>
             <sui-modal class="modalForm" v-model="contractForm.open">
-                <sui-modal-header>创建合同 </sui-modal-header>
+                <sui-modal-header style="border-bottom:0;">创建合同 </sui-modal-header>
                 <sui-modal-content image>
                     <contract-form ref='formComponentContract'></contract-form>
                 </sui-modal-content>
@@ -303,16 +303,19 @@ export default {
     top: auto;
     left: auto;
     height:auto !important;
-    min-height: 500px !important;
+    /* min-height: 500px !important; */
 }
 .ui.modal>.actions{
-    position:fixed; 
-    bottom:0;
-    right:0;
-    border:0px !important;
-    background: white !important;
+    background: rgb(249, 250, 251);
+    border-bottom-left-radius: 0.285714rem;
+    border-bottom-right-radius: 0.285714rem;
+    padding: 1rem;
+    border-top: 1px solid rgba(34, 36, 38, 0.15);
+    text-align: center;
 }
-
+.ui.modal>.content{
+    padding: 0 15px 15px 15px;
+}
 
 .ui.table {
     font-size: 13px;
@@ -341,11 +344,11 @@ export default {
 }
 
 .filterBiaoDan {
-    margin: 20px
+    margin: 15px 0
 }
 
 .vue2Table {
-    margin: 20px;
+    /* margin: 20px; */
 }
 
 .pagination {

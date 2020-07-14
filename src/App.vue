@@ -1,7 +1,13 @@
 <template>
 <div id="app">
-    <router-view />
-    <notifications group="foo" position="top center" type="success"/>
+    <div style="height: calc(100vh - 36px);">
+        <router-view />
+        <notifications group="foo" position="top center" type="success"/>
+    </div>
+    <!-- 网站默认脚部信息 -->
+    <footer class="wlui-footer">
+      Copyright@2018 www.xxx.cn All Rights Reserved 上海奉贤人民政府 ICP 备案： 沪05003300号
+    </footer>
 </div>
 </template>
 
@@ -21,4 +27,16 @@ body {
         left: 0;
     }
 }
+.wlui-footer {
+    text-align: center;
+    font-size: 14px;
+    background: #2e2f30;
+    line-height: 36px;
+    color:white;
+    position: relative;
+    z-index: 2;
+    > .beianhao {
+      color: white;
+    }
+  }
 </style>

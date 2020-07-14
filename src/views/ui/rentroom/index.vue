@@ -6,7 +6,7 @@
                 <sui-loader content="Loading..." />
             </sui-dimmer>
         </div>
-        <div class="filterBiaoDan">
+        <div class="filterBiaoDan" style="padding-left:15px;">
 
             <sui-grid>
                 <sui-grid-row>
@@ -47,7 +47,6 @@
                 </div>
             </vuetable>
             <div class="pagination ui basic segment grid">
-                <vuetable-pagination-info ref="paginationInfo"></vuetable-pagination-info>
                 <vuetable-pagination ref="pagination" @vuetable-pagination:change-page="onChangePage"></vuetable-pagination>
             </div>
         </div>
@@ -66,7 +65,7 @@
                                 <div>
                                     <!-- <sui-dropdown placeholder="选择合同(默认最新)" selection :options="listContract" v-model="selectedRoomContract.id" @input="changeContract" /> -->
                                     <sui-button basic color="blue" @click="changeMode">新建</sui-button>
-                                    <contract-form :singleEntry="selectedRoomContract" :mianji="selectedRoom.value" :disabled="!(selectedRoomContract.mode&&selectedRoomContract.mode=='new')"></contract-form>
+                                    <contract-form style="margin-top:15px;" :singleEntry="selectedRoomContract" :mianji="selectedRoom.value" :disabled="!(selectedRoomContract.mode&&selectedRoomContract.mode=='new')"></contract-form>
                                     <div v-show="selectedRoomContract.mode&&selectedRoomContract.mode=='new'">
                                         <sui-button content="创建新合同" v-on:click="createRentContract()" />
                                     </div>
@@ -242,7 +241,6 @@ export default {
     },
 
     methods: {
-
         changeUnit() {
             let count = 0;
             this.selectedRoom.assignList.map((one) => {
@@ -347,7 +345,9 @@ export default {
             } else {
                 deleteRentRoomApi(this.deleteTarget).then((result) => {
                     if (result.data.code == 0) {
-                        this.refreshRooms();
+                        this.refreshRooms({
+                            page: 1
+                        });
                         notifySomething(constants.DELETESUCCESS, constants.DELETESUCCESS, constants.typeSuccess);
                     } else {
                         notifySomething(constants.DELETEFAILED, constants.DELETEFAILED, constants.typeError);
@@ -504,22 +504,14 @@ export default {
             //     console.log(result)
             // });
         },
-        refreshRooms() {
+        refreshRooms(payload) {
             this.loading = true;
-            getRentRoomDataApi().then((data) => {
-                console.log(data);
+            getRentRoomDataApi(payload).then((data) => {
                 this.loading = false;
-                this.localData = {
-                    total: 16,
-                    per_page: 5,
-                    current_page: 1,
-                    last_page: 4,
-                    next_page_url: "data.data.data?page=2",
-                    prev_page_url: null,
-                    from: 1,
-                    to: 5,
-                    data: data.data.data
-                }
+                this.localData = data.data.data
+            }).catch(function (error) {
+                this.loading = false;
+                notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
             });
         },
         createRoomModel() {
@@ -538,14 +530,18 @@ export default {
             if (!this.editMode) {
                 createRentRoomApi(this.selectedRoom).then((result) => {
                     console.log(result);
-                    this.refreshRooms();
+                    this.refreshRooms({
+                        page: 1
+                    });
                     this.loading = false;
                     notifySomething(constants.CREATESUCCESS, constants.CREATESUCCESS, constants.typeSuccess);
                 });
             } else if (this.editMode) {
                 updateRentRoomApi(this.selectedRoom).then((result) => {
                     console.log(result);
-                    this.refreshRooms();
+                    this.refreshRooms({
+                        page: 1
+                    });
                     notifySomething(constants.EDITSUCCESS, constants.EDITSUCCESS, constants.typeSuccess);
                     this.loading = false;
                 });
@@ -563,31 +559,23 @@ export default {
             this.$refs.paginationInfo.setPaginationData(paginationData);
         },
         onChangePage(page) {
+            this.refreshRooms({
+                page: page
+            })
             this.$refs.vuetable.changePage(page);
         },
         closeModal: function () {
-            this.refreshRooms();
+            this.refreshRooms({
+                page: 1
+            });
             this.open = false;
             this.contractForm.open = false;
         },
 
     },
     created() {
-
-        getRentRoomDataApi().then((data) => {
-            //this.localData = data.data.data;
-            this.loading = false;
-            this.localData = {
-                total: 16,
-                per_page: 5,
-                current_page: 1,
-                last_page: 4,
-                next_page_url: "data.data.data?page=2",
-                prev_page_url: null,
-                from: 1,
-                to: 5,
-                data: data.data.data
-            }
+        this.refreshRooms({
+            page: 1
         });
         getUnitApi().then((data) => {
             var res_data = data.data.data
@@ -607,6 +595,10 @@ export default {
     top: auto;
     left: auto;
     height: auto !important;
+}
+
+.ui.modal>.content {
+    padding: 0 15px 15px 15px;
 }
 
 .map {
@@ -637,12 +629,12 @@ export default {
 }
 
 .filterBiaoDan {
-    margin: 20px
+    margin: 15px 0
 }
 
 .width300 {
     width: 300px;
-    margin-left: 20px !important;
+    /* margin-left: 20px !important; */
 }
 
 .pagination {
@@ -658,7 +650,7 @@ export default {
 }
 
 .vue2Table {
-    margin: 20px;
+    /* margin: 20px; */
 }
 
 .anchorBL {

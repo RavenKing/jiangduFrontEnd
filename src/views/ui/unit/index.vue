@@ -16,11 +16,12 @@
             <sui-grid-row>
                 <sui-grid-column :width="3">
                     <div class="filterBiaoDan">
-                        <vue-tree-list :key="componentKey" @click="onClick" :model="tree" default-tree-node-name="new node" default-leaf-node-name="new leaf" v-bind:default-expanded="false">
+                        <vue-tree-list class="addListIcon" :key="componentKey" @click="onClick" :model="tree" default-tree-node-name="new node" default-leaf-node-name="new leaf" v-bind:default-expanded="false">
                             <span class="icon" slot="addTreeNodeIcon"></span>
                             <span class="icon" slot="addLeafNodeIcon"></span>
                             <span class="icon" slot="leafNodeIcon">
-                                <sui-icon name="home" /></span>
+                                <sui-icon name="home" />
+                                </span>
                             <span class="icon" slot="treeNodeIcon">
                                 <sui-icon name="building outline" /></span>
                         </vue-tree-list>
@@ -33,16 +34,18 @@
                                 <form-create ref='FormCreate' :singleRoom="selectedRoom"></form-create>
                             </div>
                             <sui-modal-actions>
+                                <div style="background: #f9fafb; border-bottom-left-radius: .28571429rem; border-bottom-right-radius: .28571429rem; margin:0 -14px -14px -14px;   padding: 1rem 1rem;    border-top: 1px solid rgba(34,36,38,.15);    text-align: left;">
                                 <sui-button basic color="blue" @click.native="updateUnit">
                                     保存
                                 </sui-button>
+                                </div>
                             </sui-modal-actions>
                         </sui-tab-pane>
                         <sui-tab-pane title="分配列表" :disabled="selectedRoom.name==''">
                             <div>
                                 <sui-button content="新增" @click.native="createRoomModel" icon="add green" />
                             </div>
-                            <div>
+                            <div style="margin-top:15px;">
                                 <form-weixiu ref='WeixiuForm' :singleRoom="selectedRoom"></form-weixiu>
                             </div>
                             <div>
@@ -64,7 +67,7 @@
 
                             <div>
                                 <sui-modal class="modal2" v-model="weixiuopen">
-                                    <sui-modal-header>申请维修</sui-modal-header>
+                                    <sui-modal-header style="border-bottom:0;">申请维修</sui-modal-header>
                                     <sui-modal-content scrolling>
                                         <div>
                                         <form-weixiu ref='FormWeixiu' :singleEntry="selectedWeixiu"></form-weixiu>
@@ -86,7 +89,7 @@
 
                             <div>
                                 <sui-modal class="modal2" v-model="fenpeiopen">
-                                    <sui-modal-header>{{modelTitle}}</sui-modal-header>
+                                    <sui-modal-header style="border-bottom:0;">{{modelTitle}}</sui-modal-header>
                                     <sui-modal-content scrolling>
                                         <div>
                                             <form-fenpei ref='FormFenpei' :singleRoom="selectedfenpei"></form-fenpei>
@@ -108,7 +111,7 @@
                                 <sui-button basic color="blue" @click.native="assignLeader">
                                     新增
                                 </sui-button>
-                                <vuetable ref="vuetable" :api-mode="false" :data="lingdaoData" :fields="lingdaofields" :sort-order="sortOrder" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
+                                <vuetable style="margin-top:15px;" ref="vuetable" :api-mode="false" :data="lingdaoData" :fields="lingdaofields" :sort-order="sortOrder" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
                                     <div slot="name" slot-scope="props">
                                         <div :class="props.rowData.status!=99?'center aligned':'' ">
                                             {{props.rowData.name}}
@@ -154,7 +157,7 @@
         <dialog-bar v-model="sendVal" type="danger" title="是否要删除" :content="deleteTarget.text" v-on:cancel="clickCancel()" @danger="clickConfirmDelete()" @confirm="clickConfirmDelete()" dangerText="确认删除"></dialog-bar>
         <div>
             <sui-modal class="modal2" v-model="open">
-                <sui-modal-header>{{modelTitle}}</sui-modal-header>
+                <sui-modal-header style="border-bottom:0;">{{modelTitle}}</sui-modal-header>
                 <sui-modal-content scrolling>
                     <div>
                         <form-create ref='formComponent' :singleRoom="selectedfenpei"></form-create>
@@ -188,7 +191,7 @@
 
         <div>
             <sui-modal class="modal2" v-model="open">
-                <sui-modal-header>{{modelTitle}}</sui-modal-header>
+                <sui-modal-header style="border-bottom:0;">{{modelTitle}}</sui-modal-header>
                 <sui-modal-content image>
                     <unit-form ref='formComponent'></unit-form>
                 </sui-modal-content>
@@ -935,7 +938,9 @@ export default {
     left: auto;
     height: auto !important;
 }
-
+.ui.modal>.content{
+    padding: 0 15px 15px 15px;
+}
 .ui.table {
     font-size: 13px;
 }
@@ -964,11 +969,11 @@ export default {
 }
 
 .filterBiaoDan {
-    margin: 20px
+    margin: 15px 0
 }
 
 .vue2Table {
-    margin: 20px;
+    /* margin: 20px; */
 }
 
 .pagination {
@@ -977,5 +982,21 @@ export default {
 
 .vuetable-head-wrapper table.vuetable th.sortable {
     cursor: pointer
+}
+.addListIcon .vtl{
+    position: relative;
+    /* padding-left: 26px; */
+    cursor: pointer;
+}
+.addListIcon .vtl span{
+    position: absolute;
+    top: 5px;
+    left: 10px;
+}
+.addListIcon .vtl-node-main{
+    display: block;
+}
+.addListIcon .vtl-node-content{
+    padding-left: 26px;
 }
 </style>

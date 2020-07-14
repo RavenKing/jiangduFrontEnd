@@ -19,7 +19,7 @@ export default [
       return moment(value).format("YYYY-MM-DD");
     }
   },  {
-    name: "unit_detail.name",
+    name: "unit_name",
     title: '单位',
     width: "15%"
   },  {

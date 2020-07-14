@@ -1,8 +1,8 @@
 <template>
 <div class="the-nav">
     <!-- 菜单折叠按钮 -->
-    <div class="nav-handle-collapse">
-    </div>
+    <!-- <div class="nav-handle-collapse">
+    </div> -->
     <div class="nav-main">
         奉贤区行政事业单位办公用房信息化平台
     </div>
