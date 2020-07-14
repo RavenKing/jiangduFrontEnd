@@ -345,7 +345,9 @@ export default {
             } else {
                 deleteRentRoomApi(this.deleteTarget).then((result) => {
                     if (result.data.code == 0) {
-                        this.refreshRooms();
+                        this.refreshRooms({
+                            page: 1
+                        });
                         notifySomething(constants.DELETESUCCESS, constants.DELETESUCCESS, constants.typeSuccess);
                     } else {
                         notifySomething(constants.DELETEFAILED, constants.DELETEFAILED, constants.typeError);
@@ -502,11 +504,9 @@ export default {
             //     console.log(result)
             // });
         },
-        refreshRooms() {
+        refreshRooms(payload) {
             this.loading = true;
-            getRentRoomDataApi({
-                page: 1
-            }).then((data) => {
+            getRentRoomDataApi(payload).then((data) => {
                 this.loading = false;
                 this.localData = data.data.data
             }).catch(function (error) {
@@ -530,14 +530,18 @@ export default {
             if (!this.editMode) {
                 createRentRoomApi(this.selectedRoom).then((result) => {
                     console.log(result);
-                    this.refreshRooms();
+                    this.refreshRooms({
+                        page: 1
+                    });
                     this.loading = false;
                     notifySomething(constants.CREATESUCCESS, constants.CREATESUCCESS, constants.typeSuccess);
                 });
             } else if (this.editMode) {
                 updateRentRoomApi(this.selectedRoom).then((result) => {
                     console.log(result);
-                    this.refreshRooms();
+                    this.refreshRooms({
+                        page: 1
+                    });
                     notifySomething(constants.EDITSUCCESS, constants.EDITSUCCESS, constants.typeSuccess);
                     this.loading = false;
                 });
@@ -555,17 +559,24 @@ export default {
             this.$refs.paginationInfo.setPaginationData(paginationData);
         },
         onChangePage(page) {
+            this.refreshRooms({
+                page: page
+            })
             this.$refs.vuetable.changePage(page);
         },
         closeModal: function () {
-            this.refreshRooms();
+            this.refreshRooms({
+                page: 1
+            });
             this.open = false;
             this.contractForm.open = false;
         },
 
     },
     created() {
-        this.refreshRooms();
+        this.refreshRooms({
+            page: 1
+        });
         getUnitApi().then((data) => {
             var res_data = data.data.data
             for (var i = res_data.length - 1; i >= 0; i--) {

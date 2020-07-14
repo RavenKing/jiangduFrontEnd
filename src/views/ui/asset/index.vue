@@ -609,7 +609,9 @@ export default {
             this.loading = true;
             if (this.deleteTarget.type == "Room") {
                 deleteRoomApi(this.deleteTarget).then(() => {
-                    this.refreshRooms();
+                    this.refreshRooms({
+                        page: 1
+                    });
                     this.$notify({
                         group: 'foo',
                         title: '删除自有房屋成功',
@@ -702,11 +704,9 @@ export default {
                 type: "BuildingFloorAssignment"
             };
         },
-        refreshRooms() {
+        refreshRooms(payload) {
             this.loading = true;
-            getRoomDataApi({
-                page: 1
-            }).then((data) => {
+            getRoomDataApi(payload).then((data) => {
                 //this.localData = data.data.data;
                 this.loading = false;
                 this.localData = data.data.data
@@ -761,7 +761,9 @@ export default {
                     context.loading = false;
                     console.log("success")
                     if (result.data.code == 0) {
-                        context.refreshRooms();
+                        context.refreshRooms({
+                            page: 1
+                        });
                         notifySomething("创建自有房屋成功", "创建自有房屋成功", constants.typeSuccess);
                     } else {
                         notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
@@ -774,7 +776,9 @@ export default {
                 this.assignList.open = false;
                 updateRoomApi(this.selectedRoom).then((result) => {
                     if (result.data.code == 0) {
-                        this.refreshRooms();
+                        this.refreshRooms({
+                            page: 1
+                        });
                         this.$notify({
                             group: 'foo',
                             title: '更新自有房屋成功',
@@ -783,7 +787,9 @@ export default {
                         });
                     } else {
                         notifySomething("更新自有房屋失败", "更新自有房屋失败", "error");
-                        this.refreshRooms();
+                        this.refreshRooms({
+                            page: 1
+                        });
                     }
                     this.loading = false;
                 }).catch(function (error) {
@@ -808,15 +814,8 @@ export default {
         },
         onChangePage(page) {
             this.loading = true;
-            getRoomDataApi({
+            this.refreshRooms({
                 page: page
-            }).then((data) => {
-                //this.localData = data.data.data;
-                this.loading = false;
-                this.localData = data.data.data
-            }).catch(function (error) {
-                this.loading = false;
-                notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
             });
             this.$refs.vuetable.changePage(page);
         },
@@ -827,7 +826,9 @@ export default {
             this.buildingFloorForm.open = false;
             this.buildingImage.open = false;
             this.assignList.open = false;
-            this.refreshRooms();
+            this.refreshRooms({
+                page: 1
+            });
         },
         uploadFile: function (e) {
             let formData = new FormData();
@@ -875,16 +876,7 @@ export default {
     },
 
     created() {
-        getRoomDataApi({
-            page: 1
-        }).then((data) => {
-            //this.localData = data.data.data;
-            this.loading = false;
-            this.localData = data.data.data
-        }).catch(function (error) {
-            this.loading = false;
-            notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
-        });
+       this.refreshRooms({page:1})
     }
 };
 </script>
