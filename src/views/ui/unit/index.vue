@@ -763,7 +763,7 @@ export default {
     mounted() {
         this.role = localGet("role");
         var fenpei_options = []
-        getRentRoomDataApi().then((data) => {
+        getRentRoomDataApi({}).then((data) => {
             var res_data = data.data.data
             for (var i = res_data.length - 1; i >= 0; i--) {
                 fenpei_options.push({
@@ -778,7 +778,7 @@ export default {
 
         var rent_options = []
         var ziyou_source = []
-        getRoomDataApi().then((data) => {
+        getRoomDataApi({}).then((data) => {
 
             var res_data = data.data.data
             for (var i = res_data.length - 1; i >= 0; i--) {
