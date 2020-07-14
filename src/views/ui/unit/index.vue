@@ -720,7 +720,7 @@ export default {
                 input['room_id'] = this.selectedfenpei.room_id
                 input['unit_id'] = this.selectedRoom.id
                 input['valuelist'] = JSON.stringify(value_list)
-                console.log(input)
+                
                 createAssignmentApi(input).then((data) => {
                     if (data.data.code == 0) {
                     notifySomething("分配成功", "创建领导分配成功", "success");
@@ -740,8 +740,12 @@ export default {
                 console.log(this.selectedfenpei)
                 input['room_id'] = this.selectedfenpei.room_id
                 input['unit_id'] = this.selectedRoom.id
-                input['space'] = parseInt(this.selectedfenpei.space)
-
+                var rent_list = [{
+                    'space':parseInt(this.$refs.FormFenpei.rentspace),
+                    'building_id': -1,
+                    'floor_id': -1,
+                }]
+                input['valuelist'] = JSON.stringify(rent_list)
                 console.log(input)
                 assignRentRoomApi(input).then((data) => {
                     if (data.data.code == 0) {
@@ -800,6 +804,8 @@ export default {
             var parent_data = []
             var son_data = []
             var filtered_data = []
+            console.log('unit list')
+            console.log(res_data)
             this.selectedfenpei['unitoptions'] = []
 
             for (var i = res_data.length - 1; i >= 0; i--) {
@@ -851,8 +857,6 @@ export default {
                 if (res_data[i]["parent_id"] == 0) {
                     parent_data.push(res_data[i])
                 } else {
-                    // res_data[i]['bianzhi_num'] = parseInt(res_data[i]['zhengju']) + parseInt(res_data[i]['fuju']) + parseInt(res_data[i]['zhengchu']) + parseInt(res_data[i]['fuchu']) + parseInt(res_data[i]['zhengke'])+parseInt(res_data[i]['fuke'])+parseInt(res_data[i]['other'])
-                    // res_data[i]['shiji_num'] = parseInt(res_data[i]['zhengju_r']) + parseInt(res_data[i]['fuju_r']) + parseInt(res_data[i]['zhengchu_r']) + parseInt(res_data[i]['fuchu_r']) + parseInt(res_data[i]['zhengke_r'])+parseInt(res_data[i]['fuke_r'])+parseInt(res_data[i]['other_r'])
                     son_data.push(res_data[i])
                 }
                 this.selectedfenpei['unitoptions'].push({
@@ -865,7 +869,7 @@ export default {
                 abstract_parent["status"] = 99
                 for (var j = son_data.length - 1; j >= 0; j--) {
                     if (son_data[j]["parent_id"] == abstract_parent["id"])
-                        abstract_parent["enumber"] = parseInt(abstract_parent["enumber"]) + parseInt(son_data[j]["enumber"])
+                    abstract_parent["enumber"] = parseInt(abstract_parent["enumber"]) + parseInt(son_data[j]["enumber"])
                     abstract_parent["zhengting"] = parseInt(abstract_parent["zhengting"]) + parseInt(son_data[j]["zhengting"])
                     abstract_parent["futing"] = parseInt(abstract_parent["futing"]) + parseInt(son_data[j]["futing"])
                     abstract_parent["zhengchu"] = parseInt(abstract_parent["zhengchu"]) + parseInt(son_data[j]["zhengchu"])
@@ -910,6 +914,7 @@ export default {
                     tree_list[tree_list.length - 1]["children"].push(children_node)
                 }
             }
+
             this.tree = new Tree(tree_list)
             this.loading = false;
             this.localData = {
