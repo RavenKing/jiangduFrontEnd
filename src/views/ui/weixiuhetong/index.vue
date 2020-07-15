@@ -260,21 +260,7 @@ export default {
             this.editHeTongData(selectedRow);
         },
         timeChange(row) {
-<<<<<<< HEAD
             // alert(row)
-=======
-            console.log("时间修改:", row);
-        },
-        //
-        /**
-         * 前置任务发生更改
-         * row: Object 当前行数据
-         * oldval: [String, Array] 前置修改前的旧数据
-         * handle: Boolean 是否用户编辑产生的改变
-         */
-        preChange(row, oldval, handle) {
-            console.log("前置修改:", row, oldval, handle);
->>>>>>> 4204a71a98212b0c14498d92f4bd8d35f4e7e49a
         },
         editHeTongData(props) {
             this.resetStep();
