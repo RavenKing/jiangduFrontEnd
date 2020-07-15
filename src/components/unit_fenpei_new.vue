@@ -36,15 +36,18 @@
             <span slot="title-right" class="my-title-right" @click="handleTitleRight">楼</span>
         </wl-tree-transfer>
         
-
+        
     </div>
-    <sui-form-fields v-if="checked_node == true">
+    <sui-form-fields v-if="checked_node == true && singleRoom.roomtype == '1'">
             <sui-form-field v-for="fenpei in fenpei_data" inline>
                 <label>   {{fenpei.name}}    </label>
                 <sui-input  placeholder="面积" v-model="fenpei.space" width="800px"/>
             </sui-form-field inline>
             
         </sui-form-fields>
+        <sui-form-fields v-if="singleRoom.roomtype == '2'">
+            <sui-input  placeholder="面积" v-model="rentspace" width="800px"/>
+        </sui-form-fields>    
 </div>
 </template>
 
@@ -70,6 +73,7 @@ export default {
             zoomlevel: 14,
             item: "",
             itemrent: "",
+            rentspace: '',
             floorLoading: false,
             louLoading: false,
             louOptions: [],
