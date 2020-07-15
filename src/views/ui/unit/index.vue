@@ -742,8 +742,8 @@ export default {
                 input['unit_id'] = this.selectedRoom.id
                 var rent_list = [{
                     'space':parseInt(this.$refs.FormFenpei.rentspace),
-                    'building_id': -1,
-                    'floor_id': -1,
+                    'building_id': 0,
+                    'floor_id': 0,
                 }]
                 input['valuelist'] = JSON.stringify(rent_list)
                 console.log(input)
