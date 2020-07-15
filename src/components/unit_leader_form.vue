@@ -5,49 +5,7 @@
         <sui-form-fields inline>
             <label>领导级别</label>
             <sui-form-field>
-                
                 <sui-dropdown placeholder="选择领导级别" selection :options="leaderLevel" v-model="singleRoom.leader" />
-            </sui-form-field>
-        </sui-form-fields>
-        <sui-form-fields inline>
-            <label for="roomtype">请选择房屋类型</label>
-            <sui-form-field>
-                <sui-checkbox radio name="type" label="自有房屋" value="1" v-model="singleRoom.roomtype" />
-            </sui-form-field>
-            <sui-form-field>
-                <sui-checkbox radio name="type" label="租赁房屋" value="2" v-model="singleRoom.roomtype" />
-            </sui-form-field>
-        </sui-form-fields>
-
-        <sui-form-fields inline v-if="singleRoom.roomtype == '1'">
-            <sui-form-field class="width300">
-                <label style="float:left;line-height:36px;">选择房屋</label>
-                <div style="padding-left:60px;">
-                    <model-select :options="singleRoom.ziyousource" v-model="item" placeholder="select item" @input="handleOnInput">
-                    </model-select>
-                </div>
-                <!-- <sui-dropdown placeholder="选择房屋"  selection :options="singleRoom.ziyouroomoptions" v-model="singleRoom.room" /> -->
-            </sui-form-field>
-            <sui-form-field class="width300">
-                <label>房</label>
-                <sui-dropdown placeholder="选择房" selection :options="louOptions" v-model="singleRoom.building_id" @input="setFloor()" :loading="louLoading" :disabled="louLoading" />
-            </sui-form-field>
-            <sui-form-field class="width300">
-                <label>楼</label>
-                <sui-dropdown floating direction="upward" placeholder="选择楼" selection :options="floorOptions" v-model="singleRoom.floor_id" :loading="floorLoading" :disabled="floorLoading" />
-            </sui-form-field>
-        </sui-form-fields>
-        <sui-form-fields inline v-if="singleRoom.roomtype == '2'">
-            <label>选择租赁房屋</label>
-            <sui-form-field>
-                <model-select :options="singleRoom.rentroomoptions" v-model="itemrent" placeholder="select item" @input="handleOnInputRent">
-                </model-select>
-            </sui-form-field>
-        </sui-form-fields>
-        <sui-form-fields inline>
-            <label>面积</label>
-            <sui-form-field>
-                <sui-input v-model="singleRoom.space" placeholder="输入面积" width="300px" type="number"></sui-input>
             </sui-form-field>
         </sui-form-fields>
     </sui-form>
@@ -56,19 +14,10 @@
 </template>
 
 <script>
-import {
-    ModelSelect
-} from 'vue-search-select'
-import {
-    getRoomDataApi,
-    getBuildingListApi,
-    getBuildingFloorApi
-} from "@/api/roomDataAPI";
 export default {
     props: ['singleRoom'],
     name: 'form-fenpei',
     components: {
-        'model-select': ModelSelect
     },
     data() {
         return {
@@ -115,43 +64,6 @@ export default {
             console.log(this.singleRoom);
             this.singleRoom.room_id = props;
             this.setFang();
-        },
-        setFloor() {
-            this.floorOptions = [];
-            this.floorLoading = true;
-            if (this.singleRoom.building_id != null) {
-                getBuildingFloorApi(this.singleRoom).then((result) => {
-                    var floors = result.data.data;
-                    floors.map((floor) => {
-                        this.floorOptions.push({
-                            text: floor.name,
-                            value: floor.id,
-                        })
-                    });
-                    this.floorLoading = false;
-                })
-            }
-            this.louLoading = false;
-        },
-        setFang() {
-            console.log(this.singleRoom.room_id);
-            this.louOptions = [];
-            this.louLoading = true;
-            if (this.singleRoom.room_id != null) {
-                getBuildingListApi(this.singleRoom).then((data) => {
-                    this.fromData = [];
-                    data.data.data.map((one, index) => {
-                        this.louOptions.push({
-                            text: one.name,
-                            value: one.id,
-                        })
-                    });
-                    console.log(this.fromData)
-                    this.louLoading = false;
-
-                })
-            }
-
         },
         // 清除选中
         clearChecked() {

@@ -60,6 +60,7 @@
                                             <sui-button basic color="blue" content="申请维修" v-on:click="applyRepair(props.rowData)" />
                                         </span>
                                         <sui-button basic color="red" content="删除" v-on:click="deletefenpei(props.rowData)" />
+                                        <sui-button basic color="blue" content="分配" v-on:click="assignLeader(props.rowData)" />
                                         
                                     </div>
                                 </vuetable>
@@ -108,9 +109,9 @@
                         </sui-tab-pane>
                         <sui-tab-pane title="领导办公" :attached="false" :disabled="selectedRoom.name==''">
                             <div>
-                                <sui-button basic color="blue" @click.native="assignLeader">
+                                <!-- <sui-button basic color="blue" @click.native="assignLeader">
                                     新增
-                                </sui-button>
+                                </sui-button> -->
                                 <vuetable style="margin-top:15px;" ref="vuetable" :api-mode="false" :data="lingdaoData" :fields="lingdaofields" :sort-order="sortOrder" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
                                     <div slot="name" slot-scope="props">
                                         <div :class="props.rowData.status!=99?'center aligned':'' ">
@@ -291,6 +292,7 @@ export default {
             modalMode: "create",
             open: false,
             fenpeiopen: false,
+
             weixiuopen: false,
             deleteTarget: "",
             loading: true,
@@ -365,6 +367,7 @@ export default {
                 roomtype: '',
                 roomname: ''
             },
+            leaderfenpei:{},
             listField: FieldsDefList,
             fields: FieldsDef
         };
@@ -376,15 +379,16 @@ export default {
         },
         createLeaderAssign() {
             console.log(this.selectedRoom);
-            console.log(this.selectedfenpei);
+            console.log(this.leaderfenpei);
             var payload = {
-                room_id: this.selectedfenpei.room_id,
-                building_id: this.selectedfenpei.building_id,
-                floor_id: this.selectedfenpei.floor_id,
-                space: this.selectedfenpei.space,
+                room_id: this.leaderfenpei.room_id,
+                building_id: this.leaderfenpei.building_id,
+                floor_id: this.leaderfenpei.floor_id,
+                space: this.leaderfenpei.space,
                 unit_id: this.selectedRoom.id,
                 leader: this.selectedfenpei.leader
             }
+            console.log(payload)
             this.loading = true;
             createLeaderAssignApi(payload).then((result) => {
                 this.loading = false;
@@ -411,7 +415,8 @@ export default {
                 });
 
         },
-        assignLeader() {
+        assignLeader(data) {
+            this.leaderfenpei = data
             this.leader.open = true;
         },
         //tree
