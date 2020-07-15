@@ -36,15 +36,18 @@
             <span slot="title-right" class="my-title-right" @click="handleTitleRight">楼</span>
         </wl-tree-transfer>
         
-
+        
     </div>
-    <sui-form-fields v-if="checked_node == true">
+    <sui-form-fields v-if="checked_node == true && singleRoom.roomtype == '1'">
             <sui-form-field v-for="fenpei in fenpei_data" inline>
                 <label>   {{fenpei.name}}    </label>
                 <sui-input  placeholder="面积" v-model="fenpei.space" width="800px"/>
             </sui-form-field inline>
             
         </sui-form-fields>
+        <sui-form-fields v-if="singleRoom.roomtype == '2'">
+            <sui-input  placeholder="面积" v-model="rentspace" width="800px"/>
+        </sui-form-fields>    
 </div>
 </template>
 
@@ -70,6 +73,7 @@ export default {
             zoomlevel: 14,
             item: "",
             itemrent: "",
+            rentspace: '',
             floorLoading: false,
             louLoading: false,
             louOptions: [],
@@ -231,6 +235,7 @@ export default {
         rightCheckChange(nodeObj, treeObj, checkAll) {
             console.log(nodeObj);
             console.log(treeObj);
+            console.log('clicked')
             treeObj.checkedNodes
             var fenpei_data = []
             for (var i = treeObj.checkedNodes.length - 1; i >= 0; i--) {
@@ -248,11 +253,28 @@ export default {
                     }
                 }
             }
+            for (var i = treeObj.halfCheckedNodes.length - 1; i >= 0; i--) {
+                if(treeObj.halfCheckedNodes[i].children){
+                    var building_id = treeObj.halfCheckedNodes[i].id
+                    var children_list = treeObj.halfCheckedNodes[i].children
+
+                    for (var j = children_list.length - 1; j >= 0; j--) {
+                        var floor_id = children_list[j].id
+                        for (var k = treeObj.checkedNodes.length - 1; k >= 0; k--) {
+                            if(children_list[j].id == treeObj.checkedNodes[k].id){
+                                fenpei_data.push({
+                                'building_id': building_id,
+                                'floor_id': floor_id,
+                                'name': children_list[j].name,
+                                'space': ''
+                                })    
+                            }  
+                        }
+                    }
+                }
+            }
             this.fenpei_data = fenpei_data
             this.checked_node = true
-
-
-            console.log(checkAll);
         },
         // 自定义节点 仅树形结构支持
         // 标题自定义区点击事件

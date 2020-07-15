@@ -57,7 +57,7 @@ function registerRouteGuard() {
               
               _menu[0].children.push( {
                 id: "3-28",
-                title: "维修列表",
+                title: "维修申请审批",
                 url: "/ui/weixiu"
               });
               _menu[0].children.push( {

@@ -1,3 +1,4 @@
+/* eslint-disable vue/valid-v-for */
 <template lang="html">
 <div>
     <sui-form>
@@ -26,11 +27,19 @@
                 <sui-input placeholder="增长规则" v-model="singleEntry.rule" :transparent="disabled" :readonly="disabled" />
             </sui-form-field>
         </sui-form-fields>
+<<<<<<< HEAD
         <div :key="componentKey" v-for="(item, index) in singleEntry.priceinfo">
             <sui-form-fields inline style="position: relative;">
                 <sui-form-field style="width:33%">
                     <label>面积</label>
                     <sui-input placeholder="面积" v-model="singleEntry.priceinfo[index].space" type="number" required :transparent="disabled" :readonly="disabled" />
+=======
+        <div v-for="(item, index) in singleEntry.priceinfo" :key="componentKey"> // eslint-disable-next-line vue/valid-v-for
+            <sui-form-fields inline>
+                <sui-form-field>
+                    <label>面积:</label>
+                    <sui-input placeholder="面积" v-model="singleEntry.priceinfo[index].space" type="number" required :transparent="disabled" :disabled="disabled" />
+>>>>>>> 4204a71a98212b0c14498d92f4bd8d35f4e7e49a
                 </sui-form-field>
                 <sui-form-field style="width:33%">
                     <label>单价</label>
@@ -113,7 +122,7 @@ export default {
     components: {
         Datepicker,
     },
-    props: ["singleEntry", "mianji","disabled"],
+    props: ["singleEntry", "mianji", "disabled"],
     data() {
         return {
             componentKey: 0,

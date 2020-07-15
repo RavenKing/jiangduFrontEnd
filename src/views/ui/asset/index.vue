@@ -47,7 +47,6 @@
                 </div>
             </vuetable>
             <div class="pagination ui basic segment grid">
-                <vuetable-pagination-info ref="paginationInfo"></vuetable-pagination-info>
                 <vuetable-pagination ref="pagination" @vuetable-pagination:change-page="onChangePage"></vuetable-pagination>
             </div>
         </div>
@@ -187,7 +186,7 @@
                                         <sui-list v-show="assignList.selectedFloor.name!==undefined">
                                             <sui-list-item v-for="unit in assignList.selectedFloor.unitlist" :key="unit[0]">
                                                 {{unit[1]}} {{unit[2]}}平米
-                                                <sui-button @click.native="">
+                                                <sui-button>
                                                     编辑
                                                 </sui-button>
                                                 <sui-button @click.native="deleteBuildingFloorAssignment(unit)">
@@ -261,10 +260,8 @@
 
 <script>
 import dialogBar from '@/components/MDialog'
-import BuildingFloorForm from "@/components/buildingFloorForm"
 import Vuetable from "vuetable-2/src/components/Vuetable";
 import VuetablePagination from "vuetable-2/src/components/VuetablePagination";
-import VuetablePaginationInfo from "vuetable-2/src/components/VuetablePaginationInfo";
 import FieldsDef from "./FieldsDef.js";
 import FieldsDefList from "./FieldsDefList.js";
 import BuildingForm from "@/components/buildingForm";
@@ -299,7 +296,6 @@ import {
     getBuildingListApi,
     createBuildingFloorApi,
     createAssignmentApi,
-    getAssignRoomList,
     deleteBuildingApi,
     deleteBuildingFloorAssignmentApi,
     getBuildingFloorApi,
@@ -312,12 +308,10 @@ export default {
         'dialog-bar': dialogBar,
         Vuetable,
         VuetablePagination,
-        VuetablePaginationInfo,
         FormCreate,
         'zichan-form': ziChanForm,
         'chanzheng-form': chanZhengForm,
         'building-form': BuildingForm,
-        'buildingFloor-form': BuildingFloorForm,
         'assign-form': AssignForm,
         'mianji-form': mianjiForm
     },
@@ -428,7 +422,7 @@ export default {
                     console.log(file);
                     this.buildingImage.open = true;
                     this.loading = false;
-                }).catch(function (error) {
+                }).catch(function () {
                     this.loading = false;
                     notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                 });
@@ -452,7 +446,7 @@ export default {
                 } else {
                     notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                 }
-            }).catch(function (error) {
+            }).catch(function () {
                 this.loading = false;
                 notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
             });
@@ -478,7 +472,7 @@ export default {
                     lower: "",
                     detail: ""
                 };
-            }).catch(function (error) {
+            }).catch(function () {
                 this.loading = false;
                 notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
             });
@@ -512,7 +506,7 @@ export default {
             this.selectedRoom.lat = this.point.lat;
             updateRoomApi(this.selectedRoom).then(() => {
                 this.loading = false;
-            }).catch(function (error) {
+            }).catch(function () {
                 this.loading = false;
                 notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
             });
@@ -574,7 +568,7 @@ export default {
                     building.children = [];
                     root.push(building);
                     this.getBuildingFloorSection(building);
-                }).catch(function (error) {
+                }).catch(function () {
                     this.loading = false;
                     notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                 });
@@ -600,7 +594,7 @@ export default {
                     floor.floor_id = floor.id;
                     floor.disabled = true;
                     building.children.push(floor)
-                }).catch(function (error) {
+                }).catch(function () {
                     this.loading = false;
                     notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                 });
@@ -611,7 +605,9 @@ export default {
             this.loading = true;
             if (this.deleteTarget.type == "Room") {
                 deleteRoomApi(this.deleteTarget).then(() => {
-                    this.refreshRooms();
+                    this.refreshRooms({
+                        page: 1
+                    });
                     this.$notify({
                         group: 'foo',
                         title: '删除自有房屋成功',
@@ -628,11 +624,11 @@ export default {
                             text: '删除房成功'
                         });
                     }
-                }).catch(function (error) {
+                }).catch(function () {
                     this.loading = false;
                     notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                 });
-            } else if (this.deleteTarget.type = "buildingFloorAssignment") {
+            } else if (this.deleteTarget.type == "buildingFloorAssignment") {
                 deleteBuildingFloorAssignmentApi(this.deleteTarget).then((result) => {
                     // this.ComponentKey++;
                     if (result.data.code == 0) {
@@ -643,7 +639,7 @@ export default {
                             text: '删除房成功'
                         });
                     }
-                }).catch(function (error) {
+                }).catch(function () {
                     this.loading = false;
                     notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                 });
@@ -658,7 +654,7 @@ export default {
                 this.getBuildingSection();
                 this.$refs.formComponentBuilding.singleBuilding.building_id = result.data.data;
                 this.createBuildingFloor(this.$refs.formComponentBuilding.singleBuilding);
-            }).catch(function (error) {
+            }).catch(function () {
                 this.loading = false;
                 notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
             });
@@ -704,23 +700,13 @@ export default {
                 type: "BuildingFloorAssignment"
             };
         },
-        refreshRooms() {
+        refreshRooms(payload) {
             this.loading = true;
-            getRoomDataApi().then((data) => {
-                console.log(data);
+            getRoomDataApi(payload).then((data) => {
+                //this.localData = data.data.data;
                 this.loading = false;
-                this.localData = {
-                    total: 16,
-                    per_page: 5,
-                    current_page: 1,
-                    last_page: 4,
-                    next_page_url: "data.data.data?page=2",
-                    prev_page_url: null,
-                    from: 1,
-                    to: 5,
-                    data: data.data.data
-                }
-            }).catch(function (error) {
+                this.localData = data.data.data
+            }).catch(function () {
                 this.loading = false;
                 notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
             });
@@ -752,7 +738,7 @@ export default {
                 internal_info: "",
                 cur_status: "",
                 area: "奉贤区",
-                usage1:"1"
+                usage1: "1"
             };
         },
         toggle() {
@@ -771,12 +757,14 @@ export default {
                     context.loading = false;
                     console.log("success")
                     if (result.data.code == 0) {
-                        context.refreshRooms();
+                        context.refreshRooms({
+                            page: 1
+                        });
                         notifySomething("创建自有房屋成功", "创建自有房屋成功", constants.typeSuccess);
                     } else {
                         notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                     }
-                }).catch(function (error) {
+                }).catch(function () {
                     context.loading = false;
                     notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                 });
@@ -784,7 +772,9 @@ export default {
                 this.assignList.open = false;
                 updateRoomApi(this.selectedRoom).then((result) => {
                     if (result.data.code == 0) {
-                        this.refreshRooms();
+                        this.refreshRooms({
+                            page: 1
+                        });
                         this.$notify({
                             group: 'foo',
                             title: '更新自有房屋成功',
@@ -793,10 +783,12 @@ export default {
                         });
                     } else {
                         notifySomething("更新自有房屋失败", "更新自有房屋失败", "error");
-                        this.refreshRooms();
+                        this.refreshRooms({
+                            page: 1
+                        });
                     }
                     this.loading = false;
-                }).catch(function (error) {
+                }).catch(function () {
                     this.loading = false;
                     notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                 });
@@ -817,6 +809,10 @@ export default {
             this.$refs.paginationInfo.setPaginationData(paginationData);
         },
         onChangePage(page) {
+            this.loading = true;
+            this.refreshRooms({
+                page: page
+            });
             this.$refs.vuetable.changePage(page);
         },
         closeModal: function () {
@@ -826,7 +822,9 @@ export default {
             this.buildingFloorForm.open = false;
             this.buildingImage.open = false;
             this.assignList.open = false;
-            this.refreshRooms();
+            this.refreshRooms({
+                page: 1
+            });
         },
         uploadFile: function (e) {
             let formData = new FormData();
@@ -838,7 +836,7 @@ export default {
                     this.updateFloorInfo(result);
                     this.closeImageModal();
                     //uppdate file ppath
-                }).catch(function (error) {
+                }).catch(function () {
                     this.loading = false;
                     notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                 });
@@ -851,13 +849,15 @@ export default {
             this.loading = false;
             updateFloorApi(this.assignList.selectedFloor).then((result) => {
                 this.loading = false;
-                this.$notify({
-                    group: 'foo',
-                    title: '成功上传',
-                    text: '成功上传',
-                    type: "success"
-                });
-            }).catch(function (error) {
+                if (result.data.code == 0) {
+                    this.$notify({
+                        group: 'foo',
+                        title: '成功上传',
+                        text: '成功上传',
+                        type: "success"
+                    });
+                }
+            }).catch(function () {
                 this.loading = false;
                 notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
             });
@@ -874,24 +874,9 @@ export default {
     },
 
     created() {
-        getRoomDataApi().then((data) => {
-            //this.localData = data.data.data;
-            this.loading = false;
-            this.localData = {
-                total: 16,
-                per_page: 5,
-                current_page: 1,
-                last_page: 4,
-                next_page_url: "data.data.data?page=2",
-                prev_page_url: null,
-                from: 1,
-                to: 5,
-                data: data.data.data
-            }
-        }).catch(function (error) {
-            this.loading = false;
-            notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
-        });
+        this.refreshRooms({
+            page: 1
+        })
     }
 };
 </script>
@@ -932,10 +917,12 @@ export default {
     border-top: 1px solid rgba(34, 36, 38, 0.15);
     text-align: center;
 }
-.ui.modal>.content{
+
+.ui.modal>.content {
     padding: 0px 15px 15px 15px;
     box-sizing: border-box;
 }
+
 .ui.table {
     font-size: 13px;
 }

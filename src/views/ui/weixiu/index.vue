@@ -32,18 +32,18 @@
         </dialog-bar>
         <div>
             <sui-modal class="modal2" v-model="weixiuForm.open">
-                <sui-modal-header style="border-bottom:0;">{{modelTitle}}维修 
+                <sui-modal-header style="border-bottom:0;">{{modelTitle}}维修
                     <h4 style="margin-top:10px" is="sui-header" :color="selectedWeixiu.status==2?'green':'red'">
                         {{selectedWeixiu.statusText}}
                     </h4>
                 </sui-modal-header>
-                
+
                 <sui-modal-content scrolling>
                     <sui-segment>
-                    <weixiu-form :singleEntry="selectedWeixiu" ref="weixiuForm"> </weixiu-form>
+                        <weixiu-form :singleEntry="selectedWeixiu" ref="weixiuForm" :mode="modalMode"> </weixiu-form>
                     </sui-segment>
                 </sui-modal-content>
-               
+
                 <sui-modal-actions>
                     <sui-button basic color="red" @click.native="closeWeiXiuForm">
                         取消
@@ -70,14 +70,10 @@ import constants from "@/util/constants";
 import Fields2 from "./fields2.js";
 import FieldHetong from "./fieldsHetong.js";
 import WeiXiuForm from "@/components/weixiuForm";
-import Datepicker from 'vuejs-datepicker';
 import * as lang from "vuejs-datepicker/src/locale";
 import {
     localGet
 } from "@/util/storage";
-import {
-    export_json_to_excel
-} from "@/util/Export2Excel";
 import {
     notifySomething
 } from "@/util/utils"
@@ -87,25 +83,21 @@ import {
     editMRApi,
     getroombyid,
     createMCApi,
-    getMCApi,
     approveMRApi,
-    rejectMRApi
+    rejectMRApi,
 } from "@/api/weixiuAPI";
 import {
-    getRoomDataApi,
     getBuildingListApi,
     getBuildingFloorApi
 } from "@/api/roomDataAPI";
 export default {
     name: "MyVuetable",
     components: {
-        Datepicker,
         'dialog-bar': dialogBar,
         Vuetable,
         VuetablePagination,
         VuetablePaginationInfo,
         'weixiu-form': WeiXiuForm
-
     },
     data() {
         return {
@@ -168,7 +160,7 @@ export default {
                     } else {
                         notifySomething(constants.CREATEFAILED, constants.CREATEFAILED, constants.typeError);
                     }
-                }).catch(function (error) {
+                }).catch(function () {
                     context.loading = false;
                     notifySomething(constants.CREATEFAILED, constants.CREATEFAILED, constants.typeError);
                 });
@@ -187,7 +179,7 @@ export default {
                     } else {
                         notifySomething(constants.CREATEFAILED, constants.CREATEFAILED, constants.typeError);
                     }
-                }).catch(function (error) {
+                }).catch(function () {
                     context.loading = false;
                     notifySomething(constants.CREATEFAILED, constants.CREATEFAILED, constants.typeError);
 
@@ -257,11 +249,11 @@ export default {
                         context.$refs.weixiuForm.floorOptions = flooroptions;
                         this.loading = false;
                         context.openWeiXiuForm("edit");
-                    }).catch(function (error) {
+                    }).catch(function () {
                         this.loading = false;
                         notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                     });
-                }).catch(function (error) {
+                }).catch(function () {
                     this.loading = false;
                     notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                 });
@@ -281,8 +273,7 @@ export default {
             });
             this.weixiuhetong.memo = "test";
             this.loading = true;
-            var context = this;
-            closeHetongModal();
+            this.closeHetongModal();
             createMCApi(this.weixiuhetong).then((result) => {
                 this.loading = false;
                 if (result.data.code == 0) {
@@ -290,7 +281,7 @@ export default {
                 } else {
                     notifySomething(constants.CREATEFAILED, constants.CREATEFAILED, constants.typeError);
                 }
-            }).catch(function (error) {
+            }).catch(function () {
                 this.loading = false;
                 notifySomething(constants.CREATEFAILED, constants.CREATEFAILED, constants.typeError);
 
@@ -302,12 +293,12 @@ export default {
         createShenbao() {
             this.loading = true;
             if (this.modalMode == "create") {
-                createMRApi(this.selectedWeixiu).then((result) => {
+                createMRApi(this.selectedWeixiu).then(() => {
                     this.loading = false;
                     this.closeWeiXiuForm();
                     this.refreshWeixiuList();
                     notifySomething(constants.CREATESUCCESS, constants.CREATESUCCESS, constants.typeSuccess);
-                }).catch(function (error) {
+                }).catch(function () {
                     this.loading = false;
                     notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                 });
@@ -321,7 +312,7 @@ export default {
                     } else {
                         notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                     }
-                }).catch(function (error) {
+                }).catch(function () {
                     this.loading = false;
                     notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                 });
@@ -361,7 +352,7 @@ export default {
                             console.log(this.localData.data);
                             this.componentKey++;
                         }
-                    }).catch(function (error) {
+                    }).catch(function () {
                         this.loading = false;
                         notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                     });
@@ -381,7 +372,7 @@ export default {
 
                 });
 
-            }).catch(function (error) {
+            }).catch(function () {
                 this.loading = false;
                 notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
             });
@@ -444,7 +435,7 @@ export default {
                     } else {
                         notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                     }
-                }).catch(function (error) {
+                }).catch(function () {
                     this.loading = false;
                     notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                 });
@@ -462,7 +453,7 @@ export default {
                         break;
                 }
             });
-        }).catch(function (error) {
+        }).catch(function () {
             this.loading = false;
             notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
         });
@@ -481,10 +472,12 @@ export default {
     left: auto;
     height: auto !important;
 }
-.ui.modal>.content{
+
+.ui.modal>.content {
     padding: 0 15px 15px 15px;
     box-sizing: border-box;
 }
+
 .map {
     width: 100%;
     height: 400px;

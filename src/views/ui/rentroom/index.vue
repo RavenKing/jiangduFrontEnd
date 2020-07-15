@@ -47,7 +47,6 @@
                 </div>
             </vuetable>
             <div class="pagination ui basic segment grid">
-                <vuetable-pagination-info ref="paginationInfo"></vuetable-pagination-info>
                 <vuetable-pagination ref="pagination" @vuetable-pagination:change-page="onChangePage"></vuetable-pagination>
             </div>
         </div>
@@ -152,10 +151,8 @@ import dialogBar from '@/components/MDialog'
 import RentRoomForm from "@/components/rentRoomForm";
 import Vuetable from "vuetable-2/src/components/Vuetable";
 import VuetablePagination from "vuetable-2/src/components/VuetablePagination";
-import VuetablePaginationInfo from "vuetable-2/src/components/VuetablePaginationInfo";
 import FieldsDef from "./FieldsDef.js";
 import FieldsAssign from "./FieldsForAssign.js";
-import contractForm from "@/components/rentContractForm";
 import rentHeTongForm from "@/components/rentHeTongForm";
 import {
     ModelSelect
@@ -187,7 +184,6 @@ export default {
         'dialog-bar': dialogBar,
         Vuetable,
         VuetablePagination,
-        VuetablePaginationInfo,
         'rentroom-form': RentRoomForm,
         'contract-form': rentHeTongForm
 
@@ -242,7 +238,6 @@ export default {
     },
 
     methods: {
-
         changeUnit() {
             let count = 0;
             this.selectedRoom.assignList.map((one) => {
@@ -306,9 +301,9 @@ export default {
                 } else {
                     notifySomething(constants.FEIPEICREATEFAILED, constants.FEIPEICREATEFAILED + result.data.code, constants.typeError);
                 }
-            }).catch(function (error) {
+            }).catch(function () {
                 this.loading = false;
-                notifySomething(constants.FEIPEICREATEFAILED, constants.FEIPEICREATEFAILED + result.data.code + "房屋已分配或者面积不足", constants.typeError);
+                notifySomething(constants.FEIPEICREATEFAILED, constants.FEIPEICREATEFAILED  + "房屋已分配或者面积不足", constants.typeError);
             });
 
         },
@@ -347,7 +342,9 @@ export default {
             } else {
                 deleteRentRoomApi(this.deleteTarget).then((result) => {
                     if (result.data.code == 0) {
-                        this.refreshRooms();
+                        this.refreshRooms({
+                            page: 1
+                        });
                         notifySomething(constants.DELETESUCCESS, constants.DELETESUCCESS, constants.typeSuccess);
                     } else {
                         notifySomething(constants.DELETEFAILED, constants.DELETEFAILED, constants.typeError);
@@ -406,7 +403,7 @@ export default {
                     });
 
                 }
-            }).catch(function (error) {
+            }).catch(function () {
                 context.$notify({
                     group: 'foo',
                     title: '创建合同失败',
@@ -504,22 +501,14 @@ export default {
             //     console.log(result)
             // });
         },
-        refreshRooms() {
+        refreshRooms(payload) {
             this.loading = true;
-            getRentRoomDataApi().then((data) => {
-                console.log(data);
+            getRentRoomDataApi(payload).then((data) => {
                 this.loading = false;
-                this.localData = {
-                    total: 16,
-                    per_page: 5,
-                    current_page: 1,
-                    last_page: 4,
-                    next_page_url: "data.data.data?page=2",
-                    prev_page_url: null,
-                    from: 1,
-                    to: 5,
-                    data: data.data.data
-                }
+                this.localData = data.data.data
+            }).catch(function () {
+                this.loading = false;
+                notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
             });
         },
         createRoomModel() {
@@ -538,14 +527,18 @@ export default {
             if (!this.editMode) {
                 createRentRoomApi(this.selectedRoom).then((result) => {
                     console.log(result);
-                    this.refreshRooms();
+                    this.refreshRooms({
+                        page: 1
+                    });
                     this.loading = false;
                     notifySomething(constants.CREATESUCCESS, constants.CREATESUCCESS, constants.typeSuccess);
                 });
             } else if (this.editMode) {
                 updateRentRoomApi(this.selectedRoom).then((result) => {
                     console.log(result);
-                    this.refreshRooms();
+                    this.refreshRooms({
+                        page: 1
+                    });
                     notifySomething(constants.EDITSUCCESS, constants.EDITSUCCESS, constants.typeSuccess);
                     this.loading = false;
                 });
@@ -563,31 +556,23 @@ export default {
             this.$refs.paginationInfo.setPaginationData(paginationData);
         },
         onChangePage(page) {
+            this.refreshRooms({
+                page: page
+            })
             this.$refs.vuetable.changePage(page);
         },
         closeModal: function () {
-            this.refreshRooms();
+            this.refreshRooms({
+                page: 1
+            });
             this.open = false;
             this.contractForm.open = false;
         },
 
     },
     created() {
-
-        getRentRoomDataApi().then((data) => {
-            //this.localData = data.data.data;
-            this.loading = false;
-            this.localData = {
-                total: 16,
-                per_page: 5,
-                current_page: 1,
-                last_page: 4,
-                next_page_url: "data.data.data?page=2",
-                prev_page_url: null,
-                from: 1,
-                to: 5,
-                data: data.data.data
-            }
+        this.refreshRooms({
+            page: 1
         });
         getUnitApi().then((data) => {
             var res_data = data.data.data
@@ -608,10 +593,12 @@ export default {
     left: auto;
     height: auto !important;
 }
-.ui.modal>.content{
+
+.ui.modal>.content {
     padding: 0 15px 15px 15px;
     box-sizing: border-box;
 }
+
 .map {
     width: 100%;
     height: 400px;
