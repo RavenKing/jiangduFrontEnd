@@ -73,21 +73,21 @@
                     <sui-segment v-show="currentStep==2">
                         <sui-form>
                             <sui-form-fields inline>
-                                <label>项目名称</label>
+                                <label style="width:80px;">项目名称</label>
                                 <sui-form-field>
                                     <input type="text" placeholder="请选择" v-model="weixiuhetong.name" />
                                 </sui-form-field>
-                                <label>项目金额</label>
+                                <label style="width:80px;">项目金额</label>
                                 <sui-form-field>
                                     <input type="text" placeholder="请选择" v-model="weixiuhetong.budget" />
                                 </sui-form-field>
                             </sui-form-fields>
                             <sui-form-fields inline>
-                                <label>项目开始时间</label>
+                                <label style="width:80px;">项目开始时间</label>
                                 <sui-form-field>
                                     <datepicker :value="weixiuhetong.starttime" v-model="weixiuhetong.starttime" :language="lang['zh']"></datepicker>
                                 </sui-form-field>
-                                <label> 项目结束时间</label>
+                                <label style="width:80px;"> 项目结束时间</label>
                                 <sui-form-field>
                                     <datepicker :value="weixiuhetong.endtime" v-model="weixiuhetong.endtime" :language="lang['zh']"></datepicker>
                                 </sui-form-field>
@@ -186,7 +186,7 @@ export default {
 
     methods: {
         timeChange(row) {
-            alert(row)
+            // alert(row)
         },
         editHeTongData(props) {
             this.resetStep();
@@ -567,6 +567,7 @@ export default {
 }
 .ui.modal>.content{
     padding: 0px 15px 15px 15px;
+    box-sizing: border-box;
 }
 .map {
     width: 100%;

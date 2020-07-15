@@ -940,6 +940,7 @@ export default {
 }
 .ui.modal>.content{
     padding: 0 15px 15px 15px;
+    box-sizing: border-box;
 }
 .ui.table {
     font-size: 13px;
@@ -998,5 +999,8 @@ export default {
 }
 .addListIcon .vtl-node-content{
     padding-left: 26px;
+}
+.ui.modal .scrolling.content{
+    max-height:none !important;
 }
 </style>

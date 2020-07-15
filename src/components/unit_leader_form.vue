@@ -10,7 +10,7 @@
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields inline>
-            <label for="roomtype">请选择房屋类型:</label>
+            <label for="roomtype">请选择房屋类型</label>
             <sui-form-field>
                 <sui-checkbox radio name="type" label="自有房屋" value="1" v-model="singleRoom.roomtype" />
             </sui-form-field>

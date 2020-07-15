@@ -483,6 +483,7 @@ export default {
 }
 .ui.modal>.content{
     padding: 0 15px 15px 15px;
+    box-sizing: border-box;
 }
 .map {
     width: 100%;

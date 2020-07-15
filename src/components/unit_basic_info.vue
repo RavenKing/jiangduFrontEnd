@@ -27,9 +27,7 @@
         
         <sui-form-fields>
             <sui-form-field inline>
-                <label>编制人数：</label>
-            </sui-form-field>
-            <sui-form-field inline>
+                <label>编制人数</label>
                 <sui-input class="ui disabled input" :placeholder="singleRoom.bianzhi_num" :disabled="disabled" />
             </sui-form-field>
         </sui-form-fields>
@@ -76,9 +74,7 @@
         </sui-form-fields>
         <sui-form-fields>
             <sui-form-field inline>
-                <label>实际人数：</label>
-            </sui-form-field>
-            <sui-form-field inline>
+                <label>实际人数</label>
                 <sui-input class="ui disabled input" :placeholder="singleRoom.shiji_num" :disabled="disabled" />
             </sui-form-field>
         </sui-form-fields>

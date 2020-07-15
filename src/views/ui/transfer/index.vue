@@ -23,7 +23,7 @@
         @left-check-change="leftCheckChange"
         @removeBtn="remove"
         @addBtn="add"
-        height="540px"
+        height="400px"
         node_key="id"
       >
         <span slot="title-right" class="my-title-right" @click="handleTitleRight">自定义内容</span>
