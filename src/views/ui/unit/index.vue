@@ -969,7 +969,7 @@ export default {
 }
 
 .filterBiaoDan {
-    margin: 15px 0
+    margin: 15px 15px
 }
 
 .vue2Table {
