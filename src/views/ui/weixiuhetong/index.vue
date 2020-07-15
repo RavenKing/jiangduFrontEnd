@@ -38,10 +38,10 @@
 
                 </sui-modal-content>
                 <sui-modal-actions>
-                    <sui-button basic color="red" @click.native="">
+                    <sui-button basic color="red">
                         取消
                     </sui-button>
-                    <sui-button basic color="blue" @click.native="">
+                    <sui-button basic color="blue">
                         保存
                     </sui-button>
                 </sui-modal-actions>
@@ -142,12 +142,8 @@ import Vuetable from "vuetable-2/src/components/Vuetable";
 import VuetablePagination from "vuetable-2/src/components/VuetablePagination";
 import VuetablePaginationInfo from "vuetable-2/src/components/VuetablePaginationInfo";
 import FieldHetong from "./fieldsHetong.js";
-import WeiXiuForm from "@/components/weixiuForm";
 import Datepicker from 'vuejs-datepicker';
 import * as lang from "vuejs-datepicker/src/locale";
-import {
-    export_json_to_excel
-} from "@/util/Export2Excel";
 import Fields2 from "./fields2.js";
 import constants from "@/util/constants";
 import {
@@ -159,7 +155,6 @@ import {
 } from "@/util/time"
 import {
     getMRApi,
-    createMRApi,
     getroombyid,
     createMCApi,
     getMCApi,
@@ -175,8 +170,6 @@ export default {
         Vuetable,
         VuetablePagination,
         VuetablePaginationInfo,
-        'weixiu-form': WeiXiuForm
-
     },
     data() {
         return {
@@ -224,10 +217,10 @@ export default {
                         notifySomething(constants.GENERALERROR, constants.GENERALERROR + result.data.code, constants.typeError);
                     }
                 }).catch(() => {
-                    notifySomething(constants.GENERALERROR, constants.GENERALERROR + result.data.code, constants.typeError);
+                    notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                 })
             } else if (this.deleteTarget.type == "step") {
-                delStepApi(this.deleteTarget).then((resule) => {
+                delStepApi(this.deleteTarget).then((result) => {
                     if (result.data.code == 0) {
                         this.loading = false;
                         this.refreshHetongList();
@@ -236,7 +229,7 @@ export default {
                         notifySomething(constants.GENERALERROR, constants.GENERALERROR + result.data.code, constants.typeError);
                     }
                 }).catch(() => {
-                    notifySomething(constants.GENERALERROR, constants.GENERALERROR + result.data.code, constants.typeError);
+                    notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                 })
             }
 
@@ -332,7 +325,7 @@ export default {
                         });
 
                     }
-                }).catch(function (error) {
+                }).catch(function () {
                     context.loading = false;
                     context.$notify({
                         group: 'foo',
@@ -361,7 +354,7 @@ export default {
                         });
 
                     }
-                }).catch(function (error) {
+                }).catch(function () {
                     this.loading = false;
                     context.$notify({
                         group: 'foo',
@@ -408,7 +401,7 @@ export default {
                         children: []
                     }
                     one.step_info.map((child) => {
-                        var child = {
+                        var childOne = {
                             id: index * 100 + child.id,
                             pid: index,
                             name: child.name,
@@ -419,7 +412,7 @@ export default {
                             realStartDate: one.starttime,
                             realEndDatee: one.endtime
                         }
-                        ganttData.children.push(child);
+                        ganttData.children.push(childOne);
                     })
 
                     if (this.maxStartDate == 0) {
@@ -443,7 +436,7 @@ export default {
                     }
 
                 });
-            }).catch(function (error) {
+            }).catch(function () {
                 this.loading = false;
                 notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
             });
@@ -475,7 +468,7 @@ export default {
                             console.log(this.localData.data);
                             this.componentKey++;
                         }
-                    }).catch(function (error) {
+                    }).catch(function () {
                         this.loading = false;
                         notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                     });
@@ -493,7 +486,7 @@ export default {
                             break;
                     }
                 });
-            }).catch(function (error) {
+            }).catch(function () {
                 this.loading = false;
                 notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
             });
@@ -522,7 +515,9 @@ export default {
             console.log(this.weixiuList);
             var count = 0;
             this.weixiuList.map((item, index) => {
-                if (item.id !== data.rowData.id) {} else {
+                if (item.id !== data.rowData.id) {
+                    console.log("do nothing")
+                } else {
 
                     count++;
                     this.weixiuList.splice(index, 1);
@@ -573,7 +568,7 @@ export default {
                         one.address = result.data.data.address;
                         this.componentKey++;
                     }
-                }).catch(function (error) {
+                }).catch(function () {
                     this.loading = false;
                     notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                 });
@@ -591,7 +586,7 @@ export default {
                         break;
                 }
             });
-        }).catch(function (error) {
+        }).catch(function () {
             this.loading = false;
             notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
         });
@@ -627,7 +622,7 @@ export default {
                     children: []
                 }
                 one.step_info.map((child) => {
-                    var child = {
+                    var childOne = {
                         id: index * 100 + child.id,
                         pid: index,
                         name: child.name,
@@ -638,7 +633,7 @@ export default {
                         realStartDate: fromShitFormat(child.plantime),
                         realEndDatee: one.endtime
                     }
-                    ganttData.children.push(child);
+                    ganttData.children.push(childOne);
                 })
 
                 if (this.maxStartDate == 0) {
@@ -663,7 +658,7 @@ export default {
                 }
 
             });
-        }).catch(function (error) {
+        }).catch(function () {
             this.loading = false;
             notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
         });
@@ -682,9 +677,11 @@ export default {
     left: auto;
     height: auto !important;
 }
-.ui.modal>.content{
+
+.ui.modal>.content {
     padding: 0px 15px 15px 15px;
 }
+
 .map {
     width: 100%;
     height: 400px;
@@ -727,13 +724,15 @@ export default {
 .vuetable-head-wrapper table.vuetable th.sortable {
     cursor: pointer
 }
+
 .ui.modal>.actions {
     background: #f9fafb;
     padding: 1rem 1rem;
-    border-top: 1px solid rgba(34,36,38,.15);
+    border-top: 1px solid rgba(34, 36, 38, .15);
     text-align: center;
 }
-.ui.segment{
+
+.ui.segment {
     margin: 0;
     margin-top: 15px;
 }

@@ -151,10 +151,8 @@ import dialogBar from '@/components/MDialog'
 import RentRoomForm from "@/components/rentRoomForm";
 import Vuetable from "vuetable-2/src/components/Vuetable";
 import VuetablePagination from "vuetable-2/src/components/VuetablePagination";
-import VuetablePaginationInfo from "vuetable-2/src/components/VuetablePaginationInfo";
 import FieldsDef from "./FieldsDef.js";
 import FieldsAssign from "./FieldsForAssign.js";
-import contractForm from "@/components/rentContractForm";
 import rentHeTongForm from "@/components/rentHeTongForm";
 import {
     ModelSelect
@@ -186,7 +184,6 @@ export default {
         'dialog-bar': dialogBar,
         Vuetable,
         VuetablePagination,
-        VuetablePaginationInfo,
         'rentroom-form': RentRoomForm,
         'contract-form': rentHeTongForm
 
@@ -304,9 +301,9 @@ export default {
                 } else {
                     notifySomething(constants.FEIPEICREATEFAILED, constants.FEIPEICREATEFAILED + result.data.code, constants.typeError);
                 }
-            }).catch(function (error) {
+            }).catch(function () {
                 this.loading = false;
-                notifySomething(constants.FEIPEICREATEFAILED, constants.FEIPEICREATEFAILED + result.data.code + "房屋已分配或者面积不足", constants.typeError);
+                notifySomething(constants.FEIPEICREATEFAILED, constants.FEIPEICREATEFAILED  + "房屋已分配或者面积不足", constants.typeError);
             });
 
         },
@@ -406,7 +403,7 @@ export default {
                     });
 
                 }
-            }).catch(function (error) {
+            }).catch(function () {
                 context.$notify({
                     group: 'foo',
                     title: '创建合同失败',
@@ -509,7 +506,7 @@ export default {
             getRentRoomDataApi(payload).then((data) => {
                 this.loading = false;
                 this.localData = data.data.data
-            }).catch(function (error) {
+            }).catch(function () {
                 this.loading = false;
                 notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
             });

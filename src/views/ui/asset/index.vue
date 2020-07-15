@@ -185,7 +185,7 @@
                                         <sui-list v-show="assignList.selectedFloor.name!==undefined">
                                             <sui-list-item v-for="unit in assignList.selectedFloor.unitlist" :key="unit[0]">
                                                 {{unit[1]}} {{unit[2]}}平米
-                                                <sui-button @click.native="">
+                                                <sui-button>
                                                     编辑
                                                 </sui-button>
                                                 <sui-button @click.native="deleteBuildingFloorAssignment(unit)">
@@ -259,10 +259,8 @@
 
 <script>
 import dialogBar from '@/components/MDialog'
-import BuildingFloorForm from "@/components/buildingFloorForm"
 import Vuetable from "vuetable-2/src/components/Vuetable";
 import VuetablePagination from "vuetable-2/src/components/VuetablePagination";
-import VuetablePaginationInfo from "vuetable-2/src/components/VuetablePaginationInfo";
 import FieldsDef from "./FieldsDef.js";
 import FieldsDefList from "./FieldsDefList.js";
 import BuildingForm from "@/components/buildingForm";
@@ -297,7 +295,6 @@ import {
     getBuildingListApi,
     createBuildingFloorApi,
     createAssignmentApi,
-    getAssignRoomList,
     deleteBuildingApi,
     deleteBuildingFloorAssignmentApi,
     getBuildingFloorApi,
@@ -310,12 +307,10 @@ export default {
         'dialog-bar': dialogBar,
         Vuetable,
         VuetablePagination,
-        VuetablePaginationInfo,
         FormCreate,
         'zichan-form': ziChanForm,
         'chanzheng-form': chanZhengForm,
         'building-form': BuildingForm,
-        'buildingFloor-form': BuildingFloorForm,
         'assign-form': AssignForm,
         'mianji-form': mianjiForm
     },
@@ -426,7 +421,7 @@ export default {
                     console.log(file);
                     this.buildingImage.open = true;
                     this.loading = false;
-                }).catch(function (error) {
+                }).catch(function () {
                     this.loading = false;
                     notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                 });
@@ -450,7 +445,7 @@ export default {
                 } else {
                     notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                 }
-            }).catch(function (error) {
+            }).catch(function () {
                 this.loading = false;
                 notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
             });
@@ -476,7 +471,7 @@ export default {
                     lower: "",
                     detail: ""
                 };
-            }).catch(function (error) {
+            }).catch(function () {
                 this.loading = false;
                 notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
             });
@@ -510,7 +505,7 @@ export default {
             this.selectedRoom.lat = this.point.lat;
             updateRoomApi(this.selectedRoom).then(() => {
                 this.loading = false;
-            }).catch(function (error) {
+            }).catch(function () {
                 this.loading = false;
                 notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
             });
@@ -572,7 +567,7 @@ export default {
                     building.children = [];
                     root.push(building);
                     this.getBuildingFloorSection(building);
-                }).catch(function (error) {
+                }).catch(function () {
                     this.loading = false;
                     notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                 });
@@ -598,7 +593,7 @@ export default {
                     floor.floor_id = floor.id;
                     floor.disabled = true;
                     building.children.push(floor)
-                }).catch(function (error) {
+                }).catch(function () {
                     this.loading = false;
                     notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                 });
@@ -628,11 +623,11 @@ export default {
                             text: '删除房成功'
                         });
                     }
-                }).catch(function (error) {
+                }).catch(function () {
                     this.loading = false;
                     notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                 });
-            } else if (this.deleteTarget.type = "buildingFloorAssignment") {
+            } else if (this.deleteTarget.type == "buildingFloorAssignment") {
                 deleteBuildingFloorAssignmentApi(this.deleteTarget).then((result) => {
                     // this.ComponentKey++;
                     if (result.data.code == 0) {
@@ -643,7 +638,7 @@ export default {
                             text: '删除房成功'
                         });
                     }
-                }).catch(function (error) {
+                }).catch(function () {
                     this.loading = false;
                     notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                 });
@@ -658,7 +653,7 @@ export default {
                 this.getBuildingSection();
                 this.$refs.formComponentBuilding.singleBuilding.building_id = result.data.data;
                 this.createBuildingFloor(this.$refs.formComponentBuilding.singleBuilding);
-            }).catch(function (error) {
+            }).catch(function () {
                 this.loading = false;
                 notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
             });
@@ -710,7 +705,7 @@ export default {
                 //this.localData = data.data.data;
                 this.loading = false;
                 this.localData = data.data.data
-            }).catch(function (error) {
+            }).catch(function () {
                 this.loading = false;
                 notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
             });
@@ -768,7 +763,7 @@ export default {
                     } else {
                         notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                     }
-                }).catch(function (error) {
+                }).catch(function () {
                     context.loading = false;
                     notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                 });
@@ -792,7 +787,7 @@ export default {
                         });
                     }
                     this.loading = false;
-                }).catch(function (error) {
+                }).catch(function () {
                     this.loading = false;
                     notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                 });
@@ -840,7 +835,7 @@ export default {
                     this.updateFloorInfo(result);
                     this.closeImageModal();
                     //uppdate file ppath
-                }).catch(function (error) {
+                }).catch(function () {
                     this.loading = false;
                     notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                 });
@@ -853,13 +848,15 @@ export default {
             this.loading = false;
             updateFloorApi(this.assignList.selectedFloor).then((result) => {
                 this.loading = false;
-                this.$notify({
-                    group: 'foo',
-                    title: '成功上传',
-                    text: '成功上传',
-                    type: "success"
-                });
-            }).catch(function (error) {
+                if (result.data.code == 0) {
+                    this.$notify({
+                        group: 'foo',
+                        title: '成功上传',
+                        text: '成功上传',
+                        type: "success"
+                    });
+                }
+            }).catch(function () {
                 this.loading = false;
                 notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
             });
@@ -876,7 +873,9 @@ export default {
     },
 
     created() {
-       this.refreshRooms({page:1})
+        this.refreshRooms({
+            page: 1
+        })
     }
 };
 </script>
