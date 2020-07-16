@@ -48,6 +48,56 @@
             </sui-modal>
         </div>
         <div>
+            <sui-modal class="modal2" v-model="selectedStep.open">
+                <sui-modal-header>
+                    <h4 is="sui-header">步骤控制
+                    </h4>
+                </sui-modal-header>
+                <sui-modal-content scrolling>
+                    <div>
+                        <sui-button size="massive" content="编辑" @click.native="stepEdit" />
+                        <sui-button size="massive" content="马克" @click.native="stepMark" />
+                    </div>
+                    <div v-show="selectedStep.mode=='edit'">
+                        <sui-form>
+                            <sui-form-fields>
+                                <sui-form-field>
+                                    <label>开始时间:</label>
+                                    <datepicker :value="selectedStep.data.startDate" v-model="selectedStep.data.startDate" :language="lang['zh']"></datepicker>
+                                </sui-form-field>
+                                <sui-form-field>
+                                    <label>计划开始:</label>
+                                    <datepicker :value="selectedStep.data.realStartDate" v-model="selectedStep.data.realStartDate" :language="lang['zh']"></datepicker>
+                                </sui-form-field>
+                                <sui-form-field>
+                                    <label>计划结束时间:</label>
+                                    <datepicker :value="selectedStep.data.realEndDate" v-model="selectedStep.data.realEndDate" :language="lang['zh']"></datepicker>
+                                </sui-form-field>
+                            </sui-form-fields>
+                        </sui-form>
+                    </div>
+                    <div v-show="selectedStep.mode=='mark'">
+                        <sui-form>
+                            <sui-form-fields>
+                                <sui-form-field>
+                                    <label>结束时间:</label>
+                                    <datepicker :value="selectedStep.data.endtime" v-model="selectedStep.data.endtime" :language="lang['zh']"></datepicker>
+                                </sui-form-field>
+                            </sui-form-fields>
+                        </sui-form>
+                    </div>
+                </sui-modal-content>
+                <sui-modal-actions>
+                    <sui-button basic color="red" @click.native="closeStepModal">
+                        取消
+                    </sui-button>
+                    <sui-button basic color="blue" @click.native="saveModel">
+                        保存
+                    </sui-button>
+                </sui-modal-actions>
+            </sui-modal>
+        </div>
+        <div>
             <sui-modal class="modal2" v-model="open">
                 <sui-modal-content scrolling>
                     <div style="padding-top:15px;font-size:0">
@@ -160,7 +210,9 @@ import {
     getMCApi,
     updateMCApi,
     delProjectApi,
-    delStepApi
+    delStepApi,
+    markStepApi,
+    editStepApi
 } from "@/api/weixiuAPI";
 export default {
     name: "MyVuetable",
@@ -191,6 +243,11 @@ export default {
             weixiuForm: {
                 open: false,
             },
+            selectedStep: {
+                mode: "default",
+                open: false,
+                data: {}
+            },
             selectedWeixiu: {},
             deleteTarget: {},
             loading: true,
@@ -205,6 +262,61 @@ export default {
     },
 
     methods: {
+        saveModel() {
+            this.selectedStep.open = false;
+            this.loading = true;
+            var payload;
+            if (this.selectedStep.mode == "edit") {
+                payload = {
+                    id: this.selectedStep.data.step_id,
+                    starttime: toShitFormat(this.selectedStep.data.startDate),
+                    plantime: toShitFormat(this.selectedStep.data.realStartDate),
+                    planendtime: toShitFormat(this.selectedStep.data.realEndDate),
+                }
+                editStepApi(payload).then((one) => {
+                    this.loading = false;
+                    if (one.data.code == 0) {
+                        notifySomething("编辑成功", "编辑成功", constants.typeSuccess);
+                    } else {
+                        notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError)
+                    }
+                }).catch(() => {
+                    this.loading = false;
+                    notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError)
+
+                })
+
+            } else if (this.selectedStep.mode == "mark") {
+                console.log(this.selectedStep.data);
+                payload = {
+                    id: this.selectedStep.data.step_id,
+                    endtime: toShitFormat(this.selectedStep.data.endtime)
+                }
+                markStepApi(payload).then((one) => {
+                    this.loading = false;
+                    if (one.data.code == 0) {
+                        notifySomething("马克成功", "马克成功", constants.typeSuccess);
+                    } else {
+                        notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError)
+                    }
+                }).catch(() => {
+                    this.loading = false;
+                    notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError)
+
+                })
+
+            }
+
+        },
+        stepEdit() {
+            this.selectedStep.mode = "edit";
+        },
+        stepMark() {
+            this.selectedStep.mode = "mark";
+        },
+        closeStepModal() {
+            this.selectedStep.open = false;
+        },
         clickConfirmDelete() {
             this.loading = true;
             if (this.deleteTarget.type == "project") {
@@ -252,12 +364,19 @@ export default {
         },
         handleRowDbClick(row) {
             var selectedRow = {};
-            this.hetongdata.data.map((one) => {
-                if (one.id == row.project_id) {
-                    selectedRow = one;
-                }
-            });
-            this.editHeTongData(selectedRow);
+            if (row.type == "project") {
+                this.hetongdata.data.map((one) => {
+                    if (one.id == row.project_id) {
+                        selectedRow = one;
+                    }
+                });
+                this.editHeTongData(selectedRow);
+            } else if (row.type == "step") {
+                // this.selectedStep = row;
+                this.selectedStep.open = true;
+                this.selectedStep.data = row;
+
+            }
         },
         timeChange(row) {
             console.log("时间修改:", row);
@@ -617,8 +736,8 @@ export default {
                     name: one.name,
                     startDate: one.starttime,
                     endDate: one.endtime,
-                    realStartDate: one.starttime,
-                    realEndDate: one.endtime,
+                    realStartDate: one.plantime,
+                    realEndDate: one.planendtime,
                     children: []
                 }
                 one.step_info.map((child) => {
@@ -629,9 +748,9 @@ export default {
                         type: "step",
                         step_id: child.id,
                         startDate: fromShitFormat(child.plantime),
-                        endDate: child.endtime,
+                        endDate: fromShitFormat(child.endtime),
                         realStartDate: fromShitFormat(child.plantime),
-                        realEndDatee: one.endtime
+                        realEndDatee: fromShitFormat(child.planendtime)
                     }
                     ganttData.children.push(childOne);
                 })

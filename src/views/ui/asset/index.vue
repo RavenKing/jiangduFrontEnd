@@ -127,7 +127,7 @@
             </sui-modal>
         </div>
         <div>
-            <sui-modal class="modal2" v-model="assignList.open" :key="ComponentKey">
+            <sui-modal v-model="assignList.open" :key="ComponentKey" class="modal2">
                 <sui-modal-content scrolling>
                     <div>
                         <sui-tab :menu="{ text: true }">

@@ -19,15 +19,18 @@ function isAfter(date1, date2, unit = "second") {
   return moment(date1).isAfter(date2, unit); // false
 }
 function fromShitFormat(stringshit){
-
+  if(stringshit==null||stringshit=="")
+  {
+    return null;
+  }
   var correctDate = stringshit.substring(0, 4) + "-" + stringshit.substring(4, 6) + "-" + stringshit.substring(6, 8);
   return correctDate;
 
 }
 
 function toShitFormat(shitDate){
+   shitDate=new Date(shitDate);
   var shitTimeformat = shitDate.getFullYear();
-
   var monthDate=shitDate.getMonth()+1;
   if (monthDate+1< 10) {
       shitTimeformat = shitTimeformat + "0"

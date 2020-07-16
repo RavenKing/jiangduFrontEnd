@@ -150,6 +150,13 @@ function delStepApi(data)
     return generalRequet(data,constants.delStepApi);
 
 }
+function markStepApi(data)
+{
+    return generalRequet(data,constants.markStepApi)
+}function editStepApi(data)
+{
+    return generalRequet(data,constants.editStepApi)
+}
 export {
     getMRApi,
     createMRApi,
@@ -161,5 +168,7 @@ export {
     getMCApi,
     updateMCApi,
     approveMRApi,
-    rejectMRApi,delProjectApi,delStepApi
+    rejectMRApi,delProjectApi,delStepApi,
+    markStepApi,
+    editStepApi
 }
