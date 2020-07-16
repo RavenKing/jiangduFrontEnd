@@ -12,25 +12,23 @@
             <sui-form-field inline>
                 <label>单位类别</label>
                 <!-- <label> {{}} </label> -->
-                <sui-input class="ui disabled input" :placeholder="singleRoom.kind"/>
+                <sui-input  :placeholder="singleRoom.kind"/>
             </sui-form-field>
             <sui-form-field inline>
                 <label>单位级别</label>
-                <sui-input class="ui disabled input" :placeholder="singleRoom.level" :disabled="disabled" />
+                <sui-input  :placeholder="singleRoom.level" :disabled="disabled" />
             </sui-form-field>
             <sui-form-field inline>
                 <label>组织机构代码</label>
-                <sui-input class="ui disabled input" :placeholder="singleRoom.code" :disabled="disabled" />
+                <sui-input  :placeholder="singleRoom.code" :disabled="disabled" />
             </sui-form-field>
 
         </sui-form-fields>
         
         <sui-form-fields>
             <sui-form-field inline>
-                <label>编制人数：</label>
-            </sui-form-field>
-            <sui-form-field inline>
-                <sui-input class="ui disabled input" :placeholder="singleRoom.bianzhi_num" :disabled="disabled" />
+                <label>编制人数</label>
+                <sui-input  :placeholder="singleRoom.bianzhi_num" :disabled="disabled" />
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields>
@@ -76,10 +74,8 @@
         </sui-form-fields>
         <sui-form-fields>
             <sui-form-field inline>
-                <label>实际人数：</label>
-            </sui-form-field>
-            <sui-form-field inline>
-                <sui-input class="ui disabled input" :placeholder="singleRoom.shiji_num" :disabled="disabled" />
+                <label>实际人数</label>
+                <sui-input  :placeholder="singleRoom.shiji_num" :disabled="disabled" />
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields>

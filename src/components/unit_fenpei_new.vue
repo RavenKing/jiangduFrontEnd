@@ -3,7 +3,7 @@
     <sui-segment>
     <sui-form>
         <sui-form-fields inline>
-            <label for="roomtype">请选择房屋类型:</label>
+            <label for="roomtype">请选择房屋类型</label>
         </sui-form-fields>
         <sui-form-fields>
             <sui-form-field>
@@ -31,8 +31,8 @@
         </sui-form-fields>
     </sui-form>
     </sui-segment>
-    <div class="transfet-box" v-if="singleRoom.roomtype == '1'">
-        <wl-tree-transfer :key="transferKey" ref="wl-tree-transfer" filter high-light default-transfer :mode="mode" :title="title" :to_data="toData" :from_data="fromData" :filterNode="filterNode" :defaultProps="defaultProps" :defaultCheckedKeys="defaultCheckedKeys" :defaultExpandedKeys="[2,3]" @right-check-change="rightCheckChange" @left-check-change="leftCheckChange" @removeBtn="remove" @addBtn="add" height="540px" node_key="id">
+    <div class="transfet-box" style="margin-top:20px;" v-if="singleRoom.roomtype == '1'">
+        <wl-tree-transfer :key="transferKey" ref="wl-tree-transfer" filter high-light default-transfer :mode="mode" :title="title" :to_data="toData" :from_data="fromData" :filterNode="filterNode" :defaultProps="defaultProps" :defaultCheckedKeys="defaultCheckedKeys" :defaultExpandedKeys="[2,3]" @right-check-change="rightCheckChange" @left-check-change="leftCheckChange" @removeBtn="remove" @addBtn="add" height="400px" node_key="id">
             <span slot="title-right" class="my-title-right" @click="handleTitleRight">楼</span>
         </wl-tree-transfer>
         

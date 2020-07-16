@@ -4,7 +4,7 @@
         <div class="dialog-title">{{title}}</div>
         <div class="content" v-html="content">
         </div>
-        <div class="content" v-show="mode=='approve'">
+        <div class="content" v-show="mode=='approve'" style="margin-top:15px;">
             <sui-form>
                 <sui-form-fields>
                     <sui-form-field>
@@ -165,7 +165,7 @@ export default {
             line-height: 26px;
             padding: 0 20px;
             box-sizing: border-box;
-            padding-bottom: 20px;
+            // padding-bottom: 20px;
         }
 
         .inp {

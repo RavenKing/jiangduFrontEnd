@@ -55,11 +55,12 @@
         <div>
             <sui-modal class="modal2" v-model="open">
                 <sui-modal-header style="border-bottom:0;">{{modelTitle}}</sui-modal-header>
-                <sui-modal-content>
-                    <div>
-                        <form-create ref='formComponent' :singleRoom="selectedRoom"></form-create>
-                    </div>
-                </sui-modal-content>
+                
+                    <sui-modal-content>
+                        <sui-segment>
+                            <form-create ref='formComponent' :singleRoom="selectedRoom"></form-create>
+                        </sui-segment>
+                    </sui-modal-content>
                 <sui-modal-actions>
                     <sui-button basic color="red" @click.native="closeModal">
                         取消
@@ -919,6 +920,7 @@ export default {
 
 .ui.modal>.content {
     padding: 0px 15px 15px 15px;
+    box-sizing: border-box;
 }
 
 .ui.table {

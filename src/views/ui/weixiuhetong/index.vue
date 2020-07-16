@@ -141,21 +141,21 @@
                     <sui-segment v-show="currentStep==2">
                         <sui-form>
                             <sui-form-fields inline>
-                                <label>项目名称</label>
+                                <label style="width:80px;">项目名称</label>
                                 <sui-form-field>
                                     <input type="text" placeholder="请选择" v-model="weixiuhetong.name" />
                                 </sui-form-field>
-                                <label>项目金额</label>
+                                <label style="width:80px;">项目金额</label>
                                 <sui-form-field>
                                     <input type="text" placeholder="请选择" v-model="weixiuhetong.budget" />
                                 </sui-form-field>
                             </sui-form-fields>
                             <sui-form-fields inline>
-                                <label>项目开始时间</label>
+                                <label style="width:80px;">项目开始时间</label>
                                 <sui-form-field>
                                     <datepicker :value="weixiuhetong.starttime" v-model="weixiuhetong.starttime" :language="lang['zh']"></datepicker>
                                 </sui-form-field>
-                                <label> 项目结束时间</label>
+                                <label style="width:80px;"> 项目结束时间</label>
                                 <sui-form-field>
                                     <datepicker :value="weixiuhetong.endtime" v-model="weixiuhetong.endtime" :language="lang['zh']"></datepicker>
                                 </sui-form-field>
@@ -379,17 +379,7 @@ export default {
             }
         },
         timeChange(row) {
-            console.log("时间修改:", row);
-        },
-        //
-        /**
-         * 前置任务发生更改
-         * row: Object 当前行数据
-         * oldval: [String, Array] 前置修改前的旧数据
-         * handle: Boolean 是否用户编辑产生的改变
-         */
-        preChange(row, oldval, handle) {
-            console.log("前置修改:", row, oldval, handle);
+            // alert(row)
         },
         editHeTongData(props) {
             this.resetStep();
@@ -799,6 +789,7 @@ export default {
 
 .ui.modal>.content {
     padding: 0px 15px 15px 15px;
+    box-sizing: border-box;
 }
 
 .map {
