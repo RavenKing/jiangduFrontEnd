@@ -378,9 +378,6 @@ export default {
 
             }
         },
-        timeChange(row) {
-            // alert(row)
-        },
         editHeTongData(props) {
             this.resetStep();
             this.mode = "edit";
