@@ -41,7 +41,7 @@
                                 </div>
                             </sui-modal-actions>
                         </sui-tab-pane>
-                        <sui-tab-pane title="分配列表" :disabled="selectedRoom.name==''">
+                        <sui-tab-pane title="办公用房信息" :disabled="selectedRoom.name==''">
                             <div>
                                 <sui-button content="新增" @click.native="createRoomModel" icon="add green" />
                             </div>
@@ -107,7 +107,7 @@
                                 </sui-modal>
                             </div>
                         </sui-tab-pane>
-                        <sui-tab-pane title="领导办公" :attached="false" :disabled="selectedRoom.name==''">
+                        <sui-tab-pane title="领导办公室情况" :attached="false" :disabled="selectedRoom.name==''">
                             <div>
                                 <!-- <sui-button basic color="blue" @click.native="assignLeader">
                                     新增
@@ -503,6 +503,29 @@ export default {
                 }
             })
         },
+        refreshFenpei(id){
+            getUnitApiByid(id).then((data) => {
+                var res_data = data.data.data['building_info']
+                var ziyou_source = []    
+                for (var i = res_data.length - 1; i >= 0; i--) {
+                    if(res_data[i]['type1'] == 'self')
+                        res_data[i]['type1'] = '自有房屋'
+                    else
+                        res_data[i]['type1'] = '租赁房屋'
+                }
+                this.fenpeilocalData = {
+                    total: 16,
+                    per_page: 5,
+                    current_page: 1,
+                    last_page: 4,
+                    next_page_url: "data.data.data?page=2",
+                    prev_page_url: null,
+                    from: 1,
+                    to: 5,
+                    data: res_data
+                }
+            })
+        },
         addNode() {
             var node = new TreeNode({
                 name: 'new node',
@@ -725,15 +748,15 @@ export default {
                 input['room_id'] = this.selectedfenpei.room_id
                 input['unit_id'] = this.selectedRoom.id
                 input['valuelist'] = JSON.stringify(value_list)
-                
+                console.log(input)
                 createAssignmentApi(input).then((data) => {
                     if (data.data.code == 0) {
                     notifySomething("分配成功", "创建领导分配成功", "success");
-                    this.refreshLeaderAssignment(this.selectedRoom.id);
+                    this.refreshFenpei(this.selectedRoom.id);
                     this.fenpeiopen = false;    
                 }else{
                     notifySomething("分配失败", "创建领导分配失败", "fail");
-                    this.refreshLeaderAssignment(this.selectedRoom.id);
+                    this.refreshFenpei(this.selectedRoom.id);
                     this.fenpeiopen = false;    
                 }
 
