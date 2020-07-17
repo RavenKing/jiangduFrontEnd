@@ -11,7 +11,7 @@
         </div>
 
         <div class="wl-gantt-demo">
-            <wlGantt :key="componentKey" @nameChange="nameChange" default-expand-all @taskRemove="removeTasks" @row-dblclick="handleRowDbClick" :data="hetongdataNewData" use-real-time date-type="yearAndMonth" start-date="2020-6-06" end-date="2023-7-02" @timeChange="timeChange"></wlGantt>
+            <wlGantt @expand-change="expandChange" :key="componentKey" default-expand-all @taskRemove="removeTasks" @row-dblclick="handleRowDbClick" :data="hetongdataNewData" use-real-time date-type="yearAndMonth" :start-date="maxStartDate" :end-date="minEndDate" @timeChange="timeChange"></wlGantt>
         </div>
         <!-- 
         <div class="vue2Table">
@@ -60,6 +60,10 @@
                                 <sui-form-field>
                                     <label>开始时间:</label>
                                     <datepicker :value="selectedStep.data.startDate" v-model="selectedStep.data.startDate" :language="lang['zh']"></datepicker>
+                                </sui-form-field>
+                                <sui-form-field>
+                                    <label>结束时间:</label>
+                                    <datepicker :value="selectedStep.data.endDate" v-model="selectedStep.data.endDate" :language="lang['zh']"></datepicker>
                                 </sui-form-field>
                             </sui-form-fields>
                             <sui-form-fields inline>
@@ -257,12 +261,13 @@ export default {
             sortOrder: [{}],
             steps: [],
             weixiuhetong: {},
-            maxStartDate: 0,
-            minEndDate: 0
+            maxStartDate: "2020-01-01",
+            minEndDate: "2021-07-31"
         };
     },
 
     methods: {
+        expandChange() {},
         changeStepModal() {
             this.selectedStep.mode = "mark"
         },
@@ -274,6 +279,7 @@ export default {
                 payload = {
                     id: this.selectedStep.data.step_id,
                     starttime: toShitFormat(this.selectedStep.data.startDate),
+                    endtime: toShitFormat(this.selectedStep.data.endDate),
                     plantime: toShitFormat(this.selectedStep.data.realStartDate),
                     planendtime: toShitFormat(this.selectedStep.data.realEndDate),
                 }
@@ -485,9 +491,20 @@ export default {
                 this.hetongdata = {
                     data: data.data.data
                 }
+                var testData = [];
                 this.hetongdata.data.map((one, index) => {
                     var ganttData = {};
-                    one.starttime = fromShitFormat(one.starttime);
+                    index = index + 1;
+                    switch (one.status) {
+                        case 1:
+                            one.status = "未开始";
+                            break;
+                        case 2:
+                            one.status = "完成";
+                            break;
+                        default:
+                            break;
+                    }
                     ganttData = {
                         id: index,
                         pid: index,
@@ -501,7 +518,26 @@ export default {
                         status: one.status,
                         children: []
                     }
+                    if(new Date(ganttData.startDate)<new Date(this.maxStartDate))
+                    {
+                        this.maxStartDate=ganttData.startDate;
+                    }
+                    if(new Date(ganttData.endDate)>new Date(this.minEndDate))
+                    {
+                        this.minEndDate=ganttData.endDate;
+                    }
+                    
                     one.step_info.map((child) => {
+                        switch (child.status) {
+                            case 1:
+                                child.status = "未开始";
+                                break;
+                            case 2:
+                                child.status = "完成";
+                                break;
+                            default:
+                                break;
+                        }
                         var childOne = {
                             id: index * 100 + child.id,
                             pid: index,
@@ -522,7 +558,7 @@ export default {
                         this.minEndDate = one.endtime;
                     }
 
-                    this.hetongdataNewData.push(ganttData);
+                    testData.push(ganttData);
 
                     switch (one.status) {
                         case 1:
@@ -539,6 +575,7 @@ export default {
                     }
 
                 });
+                this.hetongdataNewData = testData;
                 this.componentKey++;
             }).catch(function () {
                 this.loading = false;

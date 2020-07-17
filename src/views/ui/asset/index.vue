@@ -55,12 +55,14 @@
         <div>
             <sui-modal class="modal2" v-model="open">
                 <sui-modal-header style="border-bottom:0;">{{modelTitle}}</sui-modal-header>
-                
-                    <sui-modal-content>
-                        <sui-segment>
-                            <form-create ref='formComponent' :singleRoom="selectedRoom"></form-create>
-                        </sui-segment>
-                    </sui-modal-content>
+
+                <sui-modal-content>
+                    <sui-segment>
+                        <form-create ref='formComponent' :singleRoom="selectedRoom"></form-create>
+                        <zichan-form ref='zichanForm' :singleRoom="selectedRoom" v-show="selectedRoom.hasproperty"></zichan-form>
+
+                    </sui-segment>
+                </sui-modal-content>
                 <sui-modal-actions>
                     <sui-button basic color="red" @click.native="closeModal">
                         取消
