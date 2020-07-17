@@ -11,7 +11,7 @@
         </div>
 
         <div class="wl-gantt-demo">
-            <wlGantt @nameChange="nameChange" default-expand-all @taskRemove="removeTasks" @row-dblclick="handleRowDbClick" :data="hetongdataNewData" use-real-time date-type="yearAndMonth" start-date="2020-6-06" end-date="2023-7-02" @timeChange="timeChange"></wlGantt>
+            <wlGantt :key="componentKey" @nameChange="nameChange" default-expand-all @taskRemove="removeTasks" @row-dblclick="handleRowDbClick" :data="hetongdataNewData" use-real-time date-type="yearAndMonth" start-date="2020-6-06" end-date="2023-7-02" @timeChange="timeChange"></wlGantt>
         </div>
         <!-- 
         <div class="vue2Table">
@@ -54,17 +54,15 @@
                     </h4>
                 </sui-modal-header>
                 <sui-modal-content scrolling>
-                    <div>
-                        <sui-button size="massive" content="编辑" @click.native="stepEdit" />
-                        <sui-button size="massive" content="马克" @click.native="stepMark" />
-                    </div>
                     <div v-show="selectedStep.mode=='edit'">
                         <sui-form>
-                            <sui-form-fields>
+                            <sui-form-fields inline>
                                 <sui-form-field>
                                     <label>开始时间:</label>
                                     <datepicker :value="selectedStep.data.startDate" v-model="selectedStep.data.startDate" :language="lang['zh']"></datepicker>
                                 </sui-form-field>
+                            </sui-form-fields>
+                            <sui-form-fields inline>
                                 <sui-form-field>
                                     <label>计划开始:</label>
                                     <datepicker :value="selectedStep.data.realStartDate" v-model="selectedStep.data.realStartDate" :language="lang['zh']"></datepicker>
@@ -93,6 +91,9 @@
                     </sui-button>
                     <sui-button basic color="blue" @click.native="saveModel">
                         保存
+                    </sui-button>
+                    <sui-button basic color="blue" @click.native="changeStepModal">
+                        完成步骤
                     </sui-button>
                 </sui-modal-actions>
             </sui-modal>
@@ -262,6 +263,9 @@ export default {
     },
 
     methods: {
+        changeStepModal() {
+            this.selectedStep.mode = "mark"
+        },
         saveModel() {
             this.selectedStep.open = false;
             this.loading = true;
@@ -276,6 +280,7 @@ export default {
                 editStepApi(payload).then((one) => {
                     this.loading = false;
                     if (one.data.code == 0) {
+                        this.refreshHetongList();
                         notifySomething("编辑成功", "编辑成功", constants.typeSuccess);
                     } else {
                         notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError)
@@ -295,6 +300,7 @@ export default {
                 markStepApi(payload).then((one) => {
                     this.loading = false;
                     if (one.data.code == 0) {
+                        this.refreshHetongList();
                         notifySomething("马克成功", "马克成功", constants.typeSuccess);
                     } else {
                         notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError)
@@ -307,12 +313,6 @@ export default {
 
             }
 
-        },
-        stepEdit() {
-            this.selectedStep.mode = "edit";
-        },
-        stepMark() {
-            this.selectedStep.mode = "mark";
         },
         closeStepModal() {
             this.selectedStep.open = false;
@@ -372,6 +372,7 @@ export default {
                 });
                 this.editHeTongData(selectedRow);
             } else if (row.type == "step") {
+                this.selectedStep.mode = "edit";
                 // this.selectedStep = row;
                 this.selectedStep.open = true;
                 this.selectedStep.data = row;
@@ -477,33 +478,27 @@ export default {
         },
         refreshHetongList() {
             this.loading = true;
+            this.hetongdataNewData = [];
             getMCApi().then((data) => {
                 //this.localData = data.data.data;
                 this.loading = false;
-                this.hetongdataNewData = [];
                 this.hetongdata = {
-                    total: 16,
-                    per_page: 5,
-                    current_page: 1,
-                    last_page: 4,
-                    next_page_url: "data.data.data?page=2",
-                    prev_page_url: null,
-                    from: 1,
-                    to: 5,
                     data: data.data.data
                 }
                 this.hetongdata.data.map((one, index) => {
                     var ganttData = {};
+                    one.starttime = fromShitFormat(one.starttime);
                     ganttData = {
                         id: index,
                         pid: index,
                         project_id: one.id,
                         type: "project",
                         name: one.name,
-                        startDate: one.starttime,
-                        endDate: one.endtime,
-                        realStartDate: one.starttime,
-                        realEndDate: one.endtime,
+                        startDate: fromShitFormat(one.starttime),
+                        endDate: fromShitFormat(one.endtime),
+                        realStartDate: fromShitFormat(one.plantime),
+                        realEndDate: fromShitFormat(one.planendtime),
+                        status: one.status,
                         children: []
                     }
                     one.step_info.map((child) => {
@@ -513,10 +508,11 @@ export default {
                             name: child.name,
                             type: "step",
                             step_id: child.id,
-                            startDate: child.starttime,
-                            endDate: child.endtime,
-                            realStartDate: one.starttime,
-                            realEndDatee: one.endtime
+                            startDate: fromShitFormat(child.plantime),
+                            endDate: fromShitFormat(child.endtime),
+                            realStartDate: fromShitFormat(child.plantime),
+                            realEndDate: fromShitFormat(child.planendtime),
+                            status: child.status,
                         }
                         ganttData.children.push(childOne);
                     })
@@ -525,6 +521,7 @@ export default {
                         this.maxStartDate = one.starttime;
                         this.minEndDate = one.endtime;
                     }
+
                     this.hetongdataNewData.push(ganttData);
 
                     switch (one.status) {
@@ -542,6 +539,7 @@ export default {
                     }
 
                 });
+                this.componentKey++;
             }).catch(function () {
                 this.loading = false;
                 notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
@@ -648,7 +646,7 @@ export default {
             // this.contractForm.open = false;
         },
     },
-    mounted() {
+    created() {
         //this.localData = data.data.data;
         this.loading = true;
         getMRApi({
@@ -697,77 +695,7 @@ export default {
             notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
         });
 
-        getMCApi().then((data) => {
-            //this.localData = data.data.data;
-
-            this.loading = false;
-            this.hetongdata = {
-                total: 16,
-                per_page: 5,
-                current_page: 1,
-                last_page: 4,
-                next_page_url: "data.data.data?page=2",
-                prev_page_url: null,
-                from: 1,
-                to: 5,
-                data: data.data.data
-            }
-            this.hetongdata.data.map((one, index) => {
-                var ganttData = {};
-                one.starttime = fromShitFormat(one.starttime);
-                ganttData = {
-                    id: index,
-                    pid: index,
-                    project_id: one.id,
-                    type: "project",
-                    name: one.name,
-                    startDate: one.starttime,
-                    endDate: one.endtime,
-                    realStartDate: one.plantime,
-                    realEndDate: one.planendtime,
-                    children: []
-                }
-                one.step_info.map((child) => {
-                    var childOne = {
-                        id: index * 100 + child.id,
-                        pid: index,
-                        name: child.name,
-                        type: "step",
-                        step_id: child.id,
-                        startDate: fromShitFormat(child.plantime),
-                        endDate: fromShitFormat(child.endtime),
-                        realStartDate: fromShitFormat(child.plantime),
-                        realEndDatee: fromShitFormat(child.planendtime)
-                    }
-                    ganttData.children.push(childOne);
-                })
-
-                if (this.maxStartDate == 0) {
-                    this.maxStartDate = one.starttime;
-                    this.minEndDate = one.endtime;
-                }
-
-                this.hetongdataNewData.push(ganttData);
-
-                switch (one.status) {
-                    case 1:
-                        one.statusText = "未开始";
-                        break;
-                    case 2:
-                        one.statusText = "开始维修";
-                        break;
-                    case 3:
-                        one.statusText = "维修完成";
-                        break;
-                    default:
-                        break;
-                }
-
-            });
-        }).catch(function () {
-            this.loading = false;
-            notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
-        });
+        this.refreshHetongList();
 
     }
 };
