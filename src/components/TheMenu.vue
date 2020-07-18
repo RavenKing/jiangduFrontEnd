@@ -156,8 +156,24 @@ export default {
         font-weight: 600;
     }
     .el-menu-item{
-        padding: 0 30px !important;
+        padding: 0 30px 0 24px !important;
         min-width: auto;
+        i{
+            width: 20px;
+            height: 20px;
+            display: block;
+            float: left;
+            margin-right: 5px;
+            margin-top: 15px;
+            line-height: 20px;
+            font-size: 14px;
+            color: #fff;
+        }
+    }
+    .is-active.el-menu-item {
+        i{
+            color: rgb(255, 208, 75);
+        }
     }
 }
 
