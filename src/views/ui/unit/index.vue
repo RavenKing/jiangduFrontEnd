@@ -778,11 +778,11 @@ export default {
                 assignRentRoomApi(input).then((data) => {
                     if (data.data.code == 0) {
                     notifySomething("分配成功", "创建领导分配成功", "success");
-                    this.refreshLeaderAssignment(this.selectedRoom.id);
+                    this.refreshFenpei(this.selectedRoom.id);
                     this.fenpeiopen = false;    
                 }else{
                     notifySomething("分配失败", "创建领导分配失败", "fail");
-                    this.refreshLeaderAssignment(this.selectedRoom.id);
+                    this.refreshFenpei(this.selectedRoom.id);
                     this.fenpeiopen = false;    
                 }
                     console.log(data)
