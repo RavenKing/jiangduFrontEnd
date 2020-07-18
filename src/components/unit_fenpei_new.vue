@@ -15,15 +15,15 @@
         </sui-form-fields>
 
 
-            <sui-form-fields>
-                <sui-form-field v-if="singleRoom.roomtype == '1'" class="width300">
+            <sui-form-fields v-if="singleRoom.roomtype == '1'">
+                <sui-form-field class="width300" style="margin-bottom:0px;">
                     <label>选择房屋</label>
                     <model-select :options="singleRoom.ziyousource" v-model="item" placeholder="" width="300px" @input="handleOnInput">
                     </model-select>
                 </sui-form-field>
         </sui-form-fields>
-        <sui-form-fields>
-            <sui-form-field v-if="singleRoom.roomtype == '2'" class="width300">
+        <sui-form-fields v-if="singleRoom.roomtype == '2'">
+            <sui-form-field class="width300" style="margin-bottom:0px;">
                 <label>选择租赁房屋</label>
                 <model-select :options="singleRoom.rentroomoptions" v-model="item" placeholder="" width="300px" @input="handleOnInputRent">
                 </model-select>
@@ -31,14 +31,14 @@
         </sui-form-fields>
     </sui-form>
     </sui-segment>
-    <div class="transfet-box" style="margin-top:20px;" v-if="singleRoom.roomtype == '1'">
+    <div class="transfet-box" style="margin-top:15px;" v-if="singleRoom.roomtype == '1'">
         <wl-tree-transfer :key="transferKey" ref="wl-tree-transfer" filter high-light default-transfer :mode="mode" :title="title" :to_data="toData" :from_data="fromData" :filterNode="filterNode" :defaultProps="defaultProps" :defaultCheckedKeys="defaultCheckedKeys" :defaultExpandedKeys="[2,3]" @right-check-change="rightCheckChange" @left-check-change="leftCheckChange" @removeBtn="remove" @addBtn="add" height="400px" node_key="id">
             <span slot="title-right" class="my-title-right" @click="handleTitleRight">楼</span>
         </wl-tree-transfer>
         
         
     </div>
-    <sui-form-fields v-if="checked_node == true && singleRoom.roomtype == '1'">
+    <sui-form-fields v-if="checked_node == true && singleRoom.roomtype == '1'" style="margin-top:15px;">
             <sui-form-field v-for="fenpei in fenpei_data" inline>
                 <label>   {{fenpei.name}}    </label>
                 <sui-input  placeholder="面积" v-model="fenpei.space" width="800px"/>

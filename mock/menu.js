@@ -4,19 +4,22 @@ const menus = [{
     children: [{
       id: "3-6",
       title: "单位信息",
-      url: "/ui/unit"
+      url: "/ui/unit",
+      icon:"home icon"
     },
       {
         id: "3-2",
         title: "办公用房信息",
         name: "办公用房信息",
-        url: "/ui/asset"
+        url: "/ui/asset",
+        icon:"keyboard icon"
       },
       {
         id: "3-8",
         title: "租赁房屋",
         name: "租赁房屋",
-        url: "/ui/rentroom"
+        url: "/ui/rentroom",
+        icon:"building icon"
       },
       // {
       //   id: "3-3",

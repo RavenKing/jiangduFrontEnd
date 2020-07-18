@@ -6,11 +6,11 @@
                 <sui-loader content="Loading..." />
             </sui-dimmer>
         </div>
-        <div class="filterBiaoDan" style="padding-left:15px;">
+        <div class="filterBiaoDan" style="padding-left:15px;margin:0;">
 
             <sui-grid>
                 <sui-grid-row>
-                    <sui-grid-column :width="13">
+                    <sui-grid-column :width="12">
                         <sui-form>
                             <sui-form-fields inline>
                                 <label> 产证面积</label>
@@ -25,8 +25,8 @@
                             </sui-form-fields>
                         </sui-form>
                     </sui-grid-column>
-                    <sui-grid-column :width="3">
-                        <div>
+                    <sui-grid-column :width="4" style="padding-right:0">
+                        <div style="float:right;">
                             <sui-button basic color="blue" content="新建" @click.native="createRoomModel" icon="add blue" />
                             <!-- <sui-button content="修改" icon="edit yellow" />
         <sui-button content="删除" icon="delete red" /> -->
@@ -55,7 +55,7 @@
             <sui-modal class="modal2" v-model="open">
                 <sui-modal-content scrolling>
                     <div>
-                        <sui-tab :menu="{ text: true }" :active-index.sync="defaultTab">
+                        <sui-tab :menu="{ attached: false }" :active-index.sync="defaultTab">
                             <sui-tab-pane title="基本信息" :attached="false">
                                 <div>
                                     <rentroom-form :singleRoom="selectedRoom"></rentroom-form>
@@ -115,8 +115,8 @@
                                             <sui-form-field>
                                                 <sui-input type="text" placeholder="请选择" v-model="selectedRoom.lat" />
                                             </sui-form-field>
+                                            <label>地址</label>
                                             <sui-form-field>
-                                                <label>地址</label>
                                                 <sui-input type="text" placeholder="输入地址" v-model="keyword" />
                                             </sui-form-field>
                                         </sui-form-fields>
@@ -595,8 +595,9 @@ export default {
 }
 
 .ui.modal>.content {
-    padding: 0 15px 15px 15px;
+    padding: 15px 15px 15px 15px;
     box-sizing: border-box;
+    max-height: none !important;
 }
 
 .map {
@@ -610,7 +611,7 @@ export default {
 
 .ui.table thead th {
     cursor: auto;
-    background: #f9fafb;
+    background: #F5F7FA;
     text-align: inherit;
     color: rgba(0, 0, 0, .87);
     padding: .92857143em .78571429em;
@@ -627,7 +628,7 @@ export default {
 }
 
 .filterBiaoDan {
-    margin: 15px 0
+    margin: 0 0 15px 0
 }
 
 .width300 {
@@ -658,5 +659,8 @@ export default {
 .map {
     width: 100%;
     height: 400px;
+}
+.ui.modal .scrolling.content{
+    max-height:none !important;
 }
 </style>

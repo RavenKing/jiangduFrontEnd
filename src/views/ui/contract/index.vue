@@ -314,7 +314,7 @@ export default {
     text-align: center;
 }
 .ui.modal>.content{
-    padding: 0 15px 15px 15px;
+    padding: 15px 15px 15px 15px;
     box-sizing: border-box;
 }
 
@@ -324,7 +324,7 @@ export default {
 
 .ui.table thead th {
     cursor: auto;
-    background: #f9fafb;
+    background: #F5F7FA;
     text-align: inherit;
     color: rgba(0, 0, 0, .87);
     padding: .92857143em .78571429em;
@@ -345,7 +345,7 @@ export default {
 }
 
 .filterBiaoDan {
-    margin: 15px 0
+    margin: 0 0 15px 0
 }
 
 .vue2Table {
