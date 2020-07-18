@@ -43,12 +43,14 @@ function registerRouteGuard() {
                 {
                   id: "3-6",
                   title: "单位管理",
-                  url: "/ui/unit"
+                  url: "/ui/unit",
+                  icon:"calendar check icon"
                 },
                 {
                 id: "3-28",
                 title: "项目管理",
-                url: "/ui/weixiu"
+                url: "/ui/weixiu",
+                icon:"address book icon"
               }
               );
 
@@ -58,12 +60,14 @@ function registerRouteGuard() {
               _menu[0].children.push( {
                 id: "3-28",
                 title: "维修申请审批",
-                url: "/ui/weixiu"
+                url: "/ui/weixiu",
+                icon:"calendar check icon"
               });
               _menu[0].children.push( {
                 id: "3-29",
                 title: "项目管理",
-                url: "/ui/weixiuhetong"
+                url: "/ui/weixiuhetong",
+                icon:"address book icon"
               });
 
             }

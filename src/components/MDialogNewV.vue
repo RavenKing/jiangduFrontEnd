@@ -166,6 +166,7 @@ export default {
             padding: 0 20px;
             box-sizing: border-box;
             // padding-bottom: 20px;
+            max-height: none !important;
         }
 
         .inp {

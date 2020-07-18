@@ -310,8 +310,8 @@ export default {
     border-top: 1px solid rgba(34, 36, 38, 0.15);
     text-align: center;
 }
-.ui.modal>.content{
-    padding: 0 15px 15px 15px;
+.ui.modal .content{
+    padding: 15px;
     box-sizing: border-box;
 }
 .ui.table thead th {
@@ -332,7 +332,7 @@ export default {
 }
 
 .filterBiaoDan {
-    margin: 15px 0
+    margin: 0 0 15px 0
 }
 
 .vue2Table {

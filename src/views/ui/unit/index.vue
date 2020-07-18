@@ -28,13 +28,13 @@
                     </div>
                 </sui-grid-column>
                 <sui-grid-column :width="13">
-                    <sui-tab :menu="{ text: true }">
+                    <sui-tab :menu="{ attached: false }">
                         <sui-tab-pane title="基本信息" :attached="false">
                             <div>
                                 <form-create ref='FormCreate' :singleRoom="selectedRoom"></form-create>
                             </div>
                             <sui-modal-actions>
-                                <div style="background: #f9fafb; border-bottom-left-radius: .28571429rem; border-bottom-right-radius: .28571429rem; margin:0 -14px -14px -14px;   padding: 1rem 1rem;    border-top: 1px solid rgba(34,36,38,.15);    text-align: left;">
+                                <div style="background: #F5F7FA; border-bottom-left-radius: .28571429rem; border-bottom-right-radius: .28571429rem; margin:0 -14px -14px -14px;   padding: 1rem 1rem;    border-top: 1px solid rgba(34,36,38,.15);    text-align: left;">
                                 <sui-button basic color="blue" @click.native="updateUnit">
                                     保存
                                 </sui-button>
@@ -90,7 +90,7 @@
 
                             <div>
                                 <sui-modal class="modal2" v-model="fenpeiopen">
-                                    <sui-modal-header style="border-bottom:0;">{{modelTitle}}</sui-modal-header>
+                                    <sui-modal-header style="border-bottom:0; margin-bottom:-15px;">{{modelTitle}}</sui-modal-header>
                                     <sui-modal-content scrolling>
                                         <div>
                                             <form-fenpei ref='FormFenpei' :singleRoom="selectedfenpei"></form-fenpei>
@@ -112,7 +112,7 @@
                                 <!-- <sui-button basic color="blue" @click.native="assignLeader">
                                     新增
                                 </sui-button> -->
-                                <vuetable style="margin-top:15px;" ref="vuetable" :api-mode="false" :data="lingdaoData" :fields="lingdaofields" :sort-order="sortOrder" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
+                                <vuetable ref="vuetable" :api-mode="false" :data="lingdaoData" :fields="lingdaofields" :sort-order="sortOrder" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
                                     <div slot="name" slot-scope="props">
                                         <div :class="props.rowData.status!=99?'center aligned':'' ">
                                             {{props.rowData.name}}
@@ -124,7 +124,7 @@
                                 </vuetable>
                             </div>
                         </sui-tab-pane>
-                        <sui-tab-pane title="地图定位" :attached="false" :disabled="selectedRoom.name==''">
+                        <!-- <sui-tab-pane title="地图定位" :attached="false" :disabled="selectedRoom.name==''">
                             <div class="imageForm" :key="ComponentKey">
                                 <sui-form>
                                     <sui-form-fields inline>
@@ -146,7 +146,7 @@
                                 <bm-marker v-for="(item,i) in points" :position="{lng: item.lng, lat: item.lat}" :key="i">
                                 </bm-marker>
                             </baidu-map>
-                        </sui-tab-pane>
+                        </sui-tab-pane> -->
 
                     </sui-tab>
 
@@ -158,7 +158,7 @@
         <dialog-bar v-model="sendVal" type="danger" title="是否要删除" :content="deleteTarget.text" v-on:cancel="clickCancel()" @danger="clickConfirmDelete()" @confirm="clickConfirmDelete()" dangerText="确认删除"></dialog-bar>
         <div>
             <sui-modal class="modal2" v-model="open">
-                <sui-modal-header style="border-bottom:0;">{{modelTitle}}</sui-modal-header>
+                <sui-modal-header style="border-bottom:0; margin-bottom:-15px;">{{modelTitle}}</sui-modal-header>
                 <sui-modal-content scrolling>
                     <div>
                         <form-create ref='formComponent' :singleRoom="selectedfenpei"></form-create>
@@ -192,7 +192,7 @@
 
         <div>
             <sui-modal class="modal2" v-model="open">
-                <sui-modal-header style="border-bottom:0;">{{modelTitle}}</sui-modal-header>
+                <sui-modal-header style="border-bottom:0; margin-bottom:-15px;">{{modelTitle}}</sui-modal-header>
                 <sui-modal-content image>
                     <unit-form ref='formComponent'></unit-form>
                 </sui-modal-content>
@@ -504,6 +504,7 @@ export default {
             })
         },
         refreshFenpei(id){
+            console.log('refresh fenpei')
             getUnitApiByid(id).then((data) => {
                 var res_data = data.data.data['building_info']
                 var ziyou_source = []    
@@ -513,6 +514,7 @@ export default {
                     else
                         res_data[i]['type1'] = '租赁房屋'
                 }
+                console.log(res_data)
                 this.fenpeilocalData = {
                     total: 16,
                     per_page: 5,
@@ -730,8 +732,6 @@ export default {
             this.fenpeiopen = false
         },
         newfenpei() {
-            console.log('fenpei')
-            console.log(this.$refs.FormFenpei)
             var fenpei_data = this.$refs.FormFenpei.fenpei_data
             var value_list = []
             for (var i = fenpei_data.length - 1; i >= 0; i--) {
@@ -748,7 +748,7 @@ export default {
                 input['room_id'] = this.selectedfenpei.room_id
                 input['unit_id'] = this.selectedRoom.id
                 input['valuelist'] = JSON.stringify(value_list)
-                console.log(input)
+                // console.log(input)
                 createAssignmentApi(input).then((data) => {
                     if (data.data.code == 0) {
                     notifySomething("分配成功", "创建领导分配成功", "success");
@@ -765,7 +765,7 @@ export default {
             }
             if (this.selectedfenpei.roomtype == '2') {
                 var input = {}
-                console.log(this.selectedfenpei)
+                // console.log(this.selectedfenpei)
                 input['room_id'] = this.selectedfenpei.room_id
                 input['unit_id'] = this.selectedRoom.id
                 var rent_list = [{
@@ -774,18 +774,18 @@ export default {
                     'floor_id': 0,
                 }]
                 input['valuelist'] = JSON.stringify(rent_list)
-                console.log(input)
+                // console.log(input)
                 assignRentRoomApi(input).then((data) => {
                     if (data.data.code == 0) {
                     notifySomething("分配成功", "创建领导分配成功", "success");
-                    this.refreshLeaderAssignment(this.selectedRoom.id);
+                    this.refreshFenpei(this.selectedRoom.id);
                     this.fenpeiopen = false;    
                 }else{
                     notifySomething("分配失败", "创建领导分配失败", "fail");
-                    this.refreshLeaderAssignment(this.selectedRoom.id);
+                    this.refreshFenpei(this.selectedRoom.id);
                     this.fenpeiopen = false;    
                 }
-                    console.log(data)
+                    // console.log(data)
                 })
             }
 
@@ -832,8 +832,8 @@ export default {
             var parent_data = []
             var son_data = []
             var filtered_data = []
-            console.log('unit list')
-            console.log(res_data)
+            // console.log('unit list')
+            // console.log(res_data)
             this.selectedfenpei['unitoptions'] = []
 
             for (var i = res_data.length - 1; i >= 0; i--) {
@@ -971,8 +971,8 @@ export default {
     left: auto;
     height: auto !important;
 }
-.ui.modal>.content{
-    padding: 0 15px 15px 15px;
+.ui.modal .content{
+    padding: 15px;
     box-sizing: border-box;
 }
 .ui.table {
@@ -981,7 +981,7 @@ export default {
 
 .ui.table thead th {
     cursor: auto;
-    background: #f9fafb;
+    background: #F5F7FA;
     text-align: inherit;
     color: rgba(0, 0, 0, .87);
     padding: .92857143em .78571429em;
@@ -1003,7 +1003,7 @@ export default {
 }
 
 .filterBiaoDan {
-    margin: 15px 15px
+    margin: 0 0 15px 0
 }
 
 .vue2Table {
@@ -1023,17 +1023,24 @@ export default {
     cursor: pointer;
 }
 .addListIcon .vtl span{
-    position: absolute;
+    /* position: absolute;
     top: 5px;
-    left: 10px;
+    left: 10px; */
+    float: left;
 }
 .addListIcon .vtl-node-main{
     display: block;
 }
 .addListIcon .vtl-node-content{
-    padding-left: 26px;
+    padding-left: 34px;
+}
+.addListIcon .vtl-tree-margin .vtl-node-content{
+    padding-left: 20px;
 }
 .ui.modal .scrolling.content{
     max-height:none !important;
+}
+.addListIcon .vtl-node-main .vtl-caret{
+    margin: 0;
 }
 </style>
