@@ -129,6 +129,7 @@ export default {
             line-height: 26px;
             padding: 0 20px;
             box-sizing: border-box;
+            max-height: none !important;
         }
 
         .inp {

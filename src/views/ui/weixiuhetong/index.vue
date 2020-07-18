@@ -105,23 +105,23 @@
         <div>
             <sui-modal class="modal2" v-model="open">
                 <sui-modal-content scrolling>
-                    <div style="padding-top:15px;font-size:0">
-                        <sui-step-group>
+                    <div style="font-size:0">
+                        <sui-step-group size="mini" style="width:100%;">
                             <sui-step :active="currentStep==1">
-                                <sui-icon name="truck" />
+                                <sui-icon style="font-size:16px;" name="truck" />
                                 <sui-step-content>
                                     <sui-step-title>房屋清单</sui-step-title>
                                 </sui-step-content>
                             </sui-step>
 
                             <sui-step :active="currentStep==2">
-                                <sui-icon name="payment" />
+                                <sui-icon style="font-size:16px;" name="payment" />
                                 <!-- Shorthand -->
                                 <sui-step-content title="填写项目信息" />
                             </sui-step>
 
                             <sui-step :active="currentStep==3">
-                                <sui-icon name="info" />
+                                <sui-icon style="font-size:16px;" name="info" />
                                 <sui-step-content title="上传附件" />
                             </sui-step>
                         </sui-step-group>
@@ -750,8 +750,9 @@ export default {
 }
 
 .ui.modal>.content {
-    padding: 0px 15px 15px 15px;
+    padding: 15px 15px 15px 15px;
     box-sizing: border-box;
+    max-height: none !important;
 }
 
 .map {
@@ -765,7 +766,7 @@ export default {
 
 .ui.table thead th {
     cursor: auto;
-    background: #f9fafb;
+    background: #F5F7FA;
     text-align: inherit;
     color: rgba(0, 0, 0, .87);
     padding: .92857143em .78571429em;
@@ -782,7 +783,7 @@ export default {
 }
 
 .filterBiaoDan {
-    margin: 15px 0
+    margin: 0 0 15px 0
 }
 
 .vue2Table {
@@ -798,7 +799,7 @@ export default {
 }
 
 .ui.modal>.actions {
-    background: #f9fafb;
+    background: #F5F7FA;
     padding: 1rem 1rem;
     border-top: 1px solid rgba(34, 36, 38, .15);
     text-align: center;
@@ -807,5 +808,12 @@ export default {
 .ui.segment {
     margin: 0;
     margin-top: 15px;
+}
+.ui.step, .ui.steps .step{
+    text-align: left;
+    justify-content: left;
+}
+.wl-gantt-demo .el-table{
+    border-radius: .28571429rem;
 }
 </style>

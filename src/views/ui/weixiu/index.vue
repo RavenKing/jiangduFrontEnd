@@ -32,10 +32,13 @@
         </dialog-bar>
         <div>
             <sui-modal class="modal2" v-model="weixiuForm.open">
-                <sui-modal-header style="border-bottom:0;">{{modelTitle}}维修
-                    <h4 style="margin-top:10px" is="sui-header" :color="selectedWeixiu.status==2?'green':'red'">
-                        {{selectedWeixiu.statusText}}
-                    </h4>
+                <sui-modal-header style="border-bottom:0;">
+                    <div style="float:left;">{{modelTitle}}维修</div>
+                    <div style="float:right;">
+                        <h4 style="line-height:25px;" is="sui-header" :color="selectedWeixiu.status==2?'green':'red'">
+                            {{selectedWeixiu.statusText}}
+                        </h4>
+                    </div>
                 </sui-modal-header>
 
                 <sui-modal-content scrolling>
@@ -474,8 +477,9 @@ export default {
 }
 
 .ui.modal>.content {
-    padding: 0 15px 15px 15px;
+    padding: 15px 15px 15px 15px;
     box-sizing: border-box;
+    max-height: none !important;
 }
 
 .map {
@@ -489,7 +493,7 @@ export default {
 
 .ui.table thead th {
     cursor: auto;
-    background: #f9fafb;
+    background: #F5F7FA;
     text-align: inherit;
     color: rgba(0, 0, 0, .87);
     padding: .92857143em .78571429em;
@@ -506,7 +510,7 @@ export default {
 }
 
 .filterBiaoDan {
-    margin: 15px 0
+    margin: 0 0 15px 0
 }
 
 .vue2Table {

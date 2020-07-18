@@ -8,7 +8,7 @@
             </sui-form-field inline>
             
         </sui-form-fields>
-        <sui-form-fields>
+        <sui-form-fields style="border-bottom: 1px solid rgba(34,36,38,.15); padding-bottom: 15px;">
             <sui-form-field inline>
                 <label>单位类别</label>
                 <!-- <label> {{}} </label> -->
@@ -66,7 +66,7 @@
             </sui-form-field>
             
         </sui-form-fields>
-        <sui-form-fields>
+        <sui-form-fields style="border-bottom: 1px solid rgba(34,36,38,.15); padding-bottom: 15px;">
             <sui-form-field inline>
                 <label>其他</label>
                 <sui-input placeholder="其他" v-model="singleRoom.other" :disabled="disabled" />
@@ -153,5 +153,13 @@ export default {
 .map {
     width: 100%;
     height: 400px;
+}
+.ui.form .field label {
+    display: block !important;
+    margin: 0 0 .28571429rem 0 !important;
+    color: rgba(0,0,0,.87);
+    font-size: .92857143em;
+    font-weight: 700;
+    text-transform: none;
 }
 </style>

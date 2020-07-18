@@ -10,8 +10,6 @@
                 <label>申报日期</label>
                 <datepicker :value="singleEntry.appdate" v-model="singleEntry.appdate" :language="lang['zh']"></datepicker>
             </sui-form-field>
-        </sui-form-fields>
-        <sui-form-fields>
             <sui-form-field :disabled="mode=='edit'">
                 <label>联系人</label>
                 <sui-input placeholder="联系人" v-model="singleEntry.contract" />
@@ -30,8 +28,6 @@
                 <label>维修金额</label>
                 <sui-input placeholder="维修金额" v-model="singleEntry.repair_amt" />
             </sui-form-field>
-        </sui-form-fields>
-        <sui-form-fields>
             <sui-form-field disabled>
                 <label>申报时间</label>
 

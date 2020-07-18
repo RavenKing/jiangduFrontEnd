@@ -264,7 +264,7 @@ export default {
     height: auto !important;
 }
 .ui.modal>.content{
-    padding: 0 15px 15px 15px;
+    padding: 15px 15px 15px 15px;
     box-sizing: border-box;
 }
 .ui.table thead th {
@@ -280,7 +280,7 @@ export default {
 }
 
 .filterBiaoDan {
-    margin: 15px 0
+    margin: 0 0 15px 0
 }
 
 .vue2Table {

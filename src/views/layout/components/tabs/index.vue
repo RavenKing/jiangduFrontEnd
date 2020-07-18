@@ -125,7 +125,8 @@ export default {
   .el-tabs--card > .el-tabs__header {
     background: #f7f7f7;
     // margin-bottom: 10px;
-    margin-bottom: 6px;
+    // margin-bottom: 6px;
+    margin: 0;
     .el-tabs__item.is-active {
       border-bottom-color: $main-base-color;
     }
