@@ -1,4 +1,3 @@
-import VuetableFieldSwitch from './VuetableFieldSwitch.vue'
 
 export default [
   {

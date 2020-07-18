@@ -94,9 +94,6 @@
 </template>
 
 <script>
-import {
-    ModelSelect
-} from 'vue-search-select'
 import Datepicker from 'vuejs-datepicker';
 import * as lang from "vuejs-datepicker/src/locale";
 import {
@@ -109,7 +106,6 @@ export default {
     name: 'weixiu-form',
     components: {
         Datepicker,
-        'model-select': ModelSelect
     },
     props: ['singleEntry', 'mode'],
     data() {
