@@ -124,7 +124,7 @@
                                 </vuetable>
                             </div>
                         </sui-tab-pane>
-                        <sui-tab-pane title="地图定位" :attached="false" :disabled="selectedRoom.name==''">
+                        <!-- <sui-tab-pane title="地图定位" :attached="false" :disabled="selectedRoom.name==''">
                             <div class="imageForm" :key="ComponentKey">
                                 <sui-form>
                                     <sui-form-fields inline>
@@ -146,7 +146,7 @@
                                 <bm-marker v-for="(item,i) in points" :position="{lng: item.lng, lat: item.lat}" :key="i">
                                 </bm-marker>
                             </baidu-map>
-                        </sui-tab-pane>
+                        </sui-tab-pane> -->
 
                     </sui-tab>
 
@@ -504,6 +504,7 @@ export default {
             })
         },
         refreshFenpei(id){
+            console.log('refresh fenpei')
             getUnitApiByid(id).then((data) => {
                 var res_data = data.data.data['building_info']
                 var ziyou_source = []    
@@ -513,6 +514,7 @@ export default {
                     else
                         res_data[i]['type1'] = '租赁房屋'
                 }
+                console.log(res_data)
                 this.fenpeilocalData = {
                     total: 16,
                     per_page: 5,
@@ -730,8 +732,6 @@ export default {
             this.fenpeiopen = false
         },
         newfenpei() {
-            console.log('fenpei')
-            console.log(this.$refs.FormFenpei)
             var fenpei_data = this.$refs.FormFenpei.fenpei_data
             var value_list = []
             for (var i = fenpei_data.length - 1; i >= 0; i--) {
