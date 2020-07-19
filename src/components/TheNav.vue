@@ -21,6 +21,7 @@
 </template>
 
 <script>
+import store from "@/store";
 import {
     mapActions
 } from "vuex";
@@ -83,10 +84,14 @@ export default {
             this.$message("暂未开通，敬请期待");
         },
         logout() {
+            console.log("logout")
             this.setToken("");
             this.setKeepPage([], true);
             this.setCurrentPage("");
             localDel(this.GLOBAL.project_key);
+            store.dispatch('menu/setUserMenuList', []);
+            store.dispatch('menu/setUserMenu', []);
+
             this.$router.push("/login");
         },
         ...mapActions("app", ["setToken"]),
