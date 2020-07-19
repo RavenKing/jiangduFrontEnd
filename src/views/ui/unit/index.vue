@@ -21,7 +21,7 @@
                             <span class="icon" slot="addLeafNodeIcon"></span>
                             <span class="icon" slot="leafNodeIcon">
                                 <sui-icon name="home" />
-                                </span>
+                            </span>
                             <span class="icon" slot="treeNodeIcon">
                                 <sui-icon name="building outline" /></span>
                         </vue-tree-list>
@@ -35,9 +35,9 @@
                             </div>
                             <sui-modal-actions>
                                 <div style="background: #F5F7FA; border-bottom-left-radius: .28571429rem; border-bottom-right-radius: .28571429rem; margin:0 -14px -14px -14px;   padding: 1rem 1rem;    border-top: 1px solid rgba(34,36,38,.15);    text-align: left;">
-                                <sui-button basic color="blue" @click.native="updateUnit">
-                                    保存
-                                </sui-button>
+                                    <sui-button basic color="blue" @click.native="updateUnit">
+                                        保存
+                                    </sui-button>
                                 </div>
                             </sui-modal-actions>
                         </sui-tab-pane>
@@ -61,7 +61,7 @@
                                         </span>
                                         <sui-button basic color="red" content="删除" v-on:click="deletefenpei(props.rowData)" />
                                         <sui-button basic color="blue" content="分配" v-on:click="assignLeader(props.rowData)" />
-                                        
+
                                     </div>
                                 </vuetable>
                             </div>
@@ -71,22 +71,20 @@
                                     <sui-modal-header style="border-bottom:0;">申请维修</sui-modal-header>
                                     <sui-modal-content scrolling>
                                         <div>
-                                        <form-weixiu ref='FormWeixiu' :singleEntry="selectedWeixiu"></form-weixiu>
-                                    </div>
+                                            <form-weixiu ref='FormWeixiu' :singleEntry="selectedWeixiu"></form-weixiu>
+                                        </div>
                                     </sui-modal-content>
                                     <sui-modal-actions>
-                                    <sui-button basic color="red" @click.native="closeWeiXiuForm">
-                                        取消
-                                    </sui-button>
-                                    <sui-button basic color="blue" @click.native="createShenbao">
-                                        保存
-                                    </sui-button>
-                                </sui-modal-actions>
-                                    
+                                        <sui-button basic color="red" @click.native="closeWeiXiuForm">
+                                            取消
+                                        </sui-button>
+                                        <sui-button basic color="blue" @click.native="createShenbao">
+                                            保存
+                                        </sui-button>
+                                    </sui-modal-actions>
+
                                 </sui-modal>
                             </div>
-
-
 
                             <div>
                                 <sui-modal class="modal2" v-model="fenpeiopen">
@@ -215,6 +213,8 @@
 import {
     notifySomething
 } from "@/util/utils";
+import store from "@/store";
+
 import constants from "@/util/constants";
 import FormCreate from "@/components/unit_basic_info";
 import FormFenpei from "@/components/unit_fenpei_new";
@@ -223,8 +223,6 @@ import FormWeixiu from "@/components/weixiuForm";
 import dialogBar from '@/components/MDialog'
 import UnitForm from "@/components/unitForm";
 import Vuetable from "vuetable-2/src/components/Vuetable";
-import VuetablePagination from "vuetable-2/src/components/VuetablePagination";
-import VuetablePaginationInfo from "vuetable-2/src/components/VuetablePaginationInfo";
 import FieldsDef from "./FieldsDef.js";
 import FenpeiDef from "./FenpeiDef.js";
 import LingdaoDef from "./LingdaoDef.js";
@@ -241,32 +239,21 @@ import {
     export_json_to_excel
 } from "@/util/Export2Excel";
 import {
+    deleteRoomApi,
     getUnitApi,
-    createUnitApi,
     updateUnitApi,
-    deleteUnitApi,
     getlistleaderroomApi,
     getUnitApiByid,
     getRentRoomDataApi,
-    roomGetAPI,
     getRoomDataApi,
     createAssignmentApi,
     deleteBuildingFloorAssignmentApi,
     delleaderroomApi,
-    getBuildingListApi,
-    getBuildingFloorApi,
     createLeaderAssignApi,
     assignRentRoomApi
 } from "@/api/roomDataAPI";
 import {
-    getMRApi,
-    createMRApi,
-    editMRApi,
-    getroombyid,
-    createMCApi,
-    getMCApi,
-    approveMRApi,
-    rejectMRApi
+    createMRApi
 } from "@/api/weixiuAPI";
 export default {
     name: "MyVuetable",
@@ -274,8 +261,6 @@ export default {
         VueTreeList,
         'dialog-bar': dialogBar,
         Vuetable,
-        VuetablePagination,
-        VuetablePaginationInfo,
         UnitForm,
         FormFenpei,
         FormCreate,
@@ -318,10 +303,6 @@ export default {
                 open: false
             },
             // copied
-            sendVal: false,
-            modelTitle: "",
-            modalMode: "create",
-            open: false,
             filterString: {
                 jiadi: "",
                 diji: ""
@@ -355,9 +336,6 @@ export default {
                 building_id: null
             },
             selectedBuildingID: null,
-            deleteTarget: "",
-            loading: true,
-            localData: [],
             selectedRoom: {
                 name: ""
             },
@@ -367,9 +345,8 @@ export default {
                 roomtype: '',
                 roomname: ''
             },
-            leaderfenpei:{},
+            leaderfenpei: {},
             listField: FieldsDefList,
-            fields: FieldsDef
         };
     },
 
@@ -398,7 +375,7 @@ export default {
                     notifySomething("创建成功", "创建领导分配成功", "success");
                     this.refreshLeaderAssignment(this.selectedRoom.id);
                 }
-            }).catch((exception) => {
+            }).catch(() => {
                 this.loading = false;
                 notifySomething("创建失败", "创建失败", "Error")
             });
@@ -406,14 +383,14 @@ export default {
         createShenbao() {
             this.loading = true;
             console.log(this.selectedWeixiu)
-                createMRApi(this.selectedWeixiu).then((result) => {
-                    this.loading = false;
-                    this.closeWeiXiuForm();
-                    notifySomething(constants.CREATESUCCESS, constants.CREATESUCCESS, constants.typeSuccess);
-                }).catch(function (error) {
-                    this.loading = false;
-                    notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
-                });
+            createMRApi(this.selectedWeixiu).then(() => {
+                this.loading = false;
+                this.closeWeiXiuForm();
+                notifySomething(constants.CREATESUCCESS, constants.CREATESUCCESS, constants.typeSuccess);
+            }).catch(function () {
+                this.loading = false;
+                notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
+            });
 
         },
         assignLeader(data) {
@@ -429,7 +406,7 @@ export default {
         onChangeName(params) {
             console.log(params)
         },
-        closeWeiXiuForm(){
+        closeWeiXiuForm() {
             this.weixiuopen = false
         },
 
@@ -465,9 +442,8 @@ export default {
 
             getUnitApiByid(params.id).then((data) => {
                 var res_data = data.data.data['building_info']
-                var ziyou_source = []    
                 for (var i = res_data.length - 1; i >= 0; i--) {
-                    if(res_data[i]['type1'] == 'self')
+                    if (res_data[i]['type1'] == 'self')
                         res_data[i]['type1'] = '自有房屋'
                     else
                         res_data[i]['type1'] = '租赁房屋'
@@ -504,13 +480,12 @@ export default {
                 }
             })
         },
-        refreshFenpei(id){
+        refreshFenpei(id) {
             console.log('refresh fenpei')
             getUnitApiByid(id).then((data) => {
                 var res_data = data.data.data['building_info']
-                var ziyou_source = []    
                 for (var i = res_data.length - 1; i >= 0; i--) {
-                    if(res_data[i]['type1'] == 'self')
+                    if (res_data[i]['type1'] == 'self')
                         res_data[i]['type1'] = '自有房屋'
                     else
                         res_data[i]['type1'] = '租赁房屋'
@@ -556,29 +531,27 @@ export default {
                 input['floor_id'] = this.deleteTarget.floor_id
                 input['unit_id'] = this.selectedRoom.id
 
-
-                deleteBuildingFloorAssignmentApi(input).then((result) => {
+                deleteBuildingFloorAssignmentApi(input).then(() => {
                     getUnitApiByid(this.selectedRoom.id).then((data) => {
-                    var res_data = data.data.data['building_info']
-                    var ziyou_source = []    
-                    for (var i = res_data.length - 1; i >= 0; i--) {
-                        if(res_data[i]['type1'] == 'self')
-                            res_data[i]['type1'] = '自有房屋'
-                        else
-                            res_data[i]['type1'] = '租赁房屋'
-                    }
-                    this.fenpeilocalData = {
-                        total: 16,
-                        per_page: 5,
-                        current_page: 1,
-                        last_page: 4,
-                        next_page_url: "data.data.data?page=2",
-                        prev_page_url: null,
-                        from: 1,
-                        to: 5,
-                        data: res_data
-                    }
-                })
+                        var res_data = data.data.data['building_info']
+                        for (var i = res_data.length - 1; i >= 0; i--) {
+                            if (res_data[i]['type1'] == 'self')
+                                res_data[i]['type1'] = '自有房屋'
+                            else
+                                res_data[i]['type1'] = '租赁房屋'
+                        }
+                        this.fenpeilocalData = {
+                            total: 16,
+                            per_page: 5,
+                            current_page: 1,
+                            last_page: 4,
+                            next_page_url: "data.data.data?page=2",
+                            prev_page_url: null,
+                            from: 1,
+                            to: 5,
+                            data: res_data
+                        }
+                    })
                     this.loading = false
                 });
             }
@@ -662,7 +635,7 @@ export default {
                     else
                         son_data.push(res_data[i])
                 }
-                for (var i = parent_data.length - 1; i >= 0; i--) {
+                for (i = parent_data.length - 1; i >= 0; i--) {
                     var abstract_parent = JSON.parse(JSON.stringify(parent_data[i]))
                     for (var j = son_data.length - 1; j >= 0; j--) {
                         if (son_data[j]["parent_id"] == abstract_parent["id"])
@@ -677,7 +650,7 @@ export default {
                     }
                     filtered_data.push(abstract_parent)
                     filtered_data.push(parent_data[i])
-                    for (var j = son_data.length - 1; j >= 0; j--) {
+                    for (j = son_data.length - 1; j >= 0; j--) {
                         if (son_data[j]["parent_id"] == parent_data[i]["id"])
                             filtered_data.push(son_data[j])
                     }
@@ -685,14 +658,6 @@ export default {
 
                 this.loading = false;
                 this.localData = {
-                    total: 16,
-                    per_page: 5,
-                    current_page: 1,
-                    last_page: 4,
-                    next_page_url: "data.data.data?page=2",
-                    prev_page_url: null,
-                    from: 1,
-                    to: 5,
                     data: filtered_data
                 }
             });
@@ -703,22 +668,22 @@ export default {
             this.fenpeiopen = true;
         },
 
-        applyRepair(data){
+        applyRepair() {
             this.weixiuopen = true
         },
 
         updateUnit() {
             let formdata = this.$refs.FormCreate.singleRoom;
-            
+
             updateUnitApi(formdata).then((result) => {
                 if (result.data.code == 0) {
                     notifySomething("保存成功", "基本信息保存成功", "success");
 
-                }else{
+                } else {
                     notifySomething("保存失败", "基本信息保存失败", "Error")
                 }
                 this.loading = false;
-                
+
             });
         },
 
@@ -746,10 +711,9 @@ export default {
                 value_list.push({
                     'building_id': fenpei_data[i].building_id,
                     'floor_id': fenpei_data[i].floor_id,
-                    'space':parseInt(fenpei_data[i].space)
+                    'space': parseInt(fenpei_data[i].space)
                 })
             }
-
 
             if (this.selectedfenpei.roomtype == '1') {
                 var input = {}
@@ -759,25 +723,24 @@ export default {
                 // console.log(input)
                 createAssignmentApi(input).then((data) => {
                     if (data.data.code == 0) {
-                    notifySomething("分配成功", "创建领导分配成功", "success");
-                    this.refreshFenpei(this.selectedRoom.id);
-                    this.fenpeiopen = false;    
-                }else{
-                    notifySomething("分配失败", "创建领导分配失败", "fail");
-                    this.refreshFenpei(this.selectedRoom.id);
-                    this.fenpeiopen = false;    
-                }
-
+                        notifySomething("分配成功", "创建领导分配成功", "success");
+                        this.refreshFenpei(this.selectedRoom.id);
+                        this.fenpeiopen = false;
+                    } else {
+                        notifySomething("分配失败", "创建领导分配失败", "fail");
+                        this.refreshFenpei(this.selectedRoom.id);
+                        this.fenpeiopen = false;
+                    }
 
                 })
             }
             if (this.selectedfenpei.roomtype == '2') {
-                var input = {}
+                input = {}
                 // console.log(this.selectedfenpei)
                 input['room_id'] = this.selectedfenpei.room_id
                 input['unit_id'] = this.selectedRoom.id
                 var rent_list = [{
-                    'space':parseInt(this.$refs.FormFenpei.rentspace),
+                    'space': parseInt(this.$refs.FormFenpei.rentspace),
                     'building_id': 0,
                     'floor_id': 0,
                 }]
@@ -785,14 +748,14 @@ export default {
                 // console.log(input)
                 assignRentRoomApi(input).then((data) => {
                     if (data.data.code == 0) {
-                    notifySomething("分配成功", "创建领导分配成功", "success");
-                    this.refreshFenpei(this.selectedRoom.id);
-                    this.fenpeiopen = false;    
-                }else{
-                    notifySomething("分配失败", "创建领导分配失败", "fail");
-                    this.refreshFenpei(this.selectedRoom.id);
-                    this.fenpeiopen = false;    
-                }
+                        notifySomething("分配成功", "创建领导分配成功", "success");
+                        this.refreshFenpei(this.selectedRoom.id);
+                        this.fenpeiopen = false;
+                    } else {
+                        notifySomething("分配失败", "创建领导分配失败", "fail");
+                        this.refreshFenpei(this.selectedRoom.id);
+                        this.fenpeiopen = false;
+                    }
                     // console.log(data)
                 })
             }
@@ -800,11 +763,12 @@ export default {
         }
 
     },
-    mounted() {
+    created() {
         this.role = localGet("role");
         this.unitid = localGet('unit_id')
-
+        console.log("ggg");
         var fenpei_options = []
+
         getRentRoomDataApi({}).then((data) => {
             var res_data = data.data.data
             for (var i = res_data.length - 1; i >= 0; i--) {
@@ -818,10 +782,8 @@ export default {
             };
         })
 
-        var rent_options = []
         var ziyou_source = []
         getRoomDataApi({}).then((data) => {
-
             var res_data = data.data.data
             for (var i = res_data.length - 1; i >= 0; i--) {
                 // rent_options.push({
@@ -837,176 +799,174 @@ export default {
             // this.selectedfenpei['ziyouroomoptions'] = rent_options
         })
 
-        if(this.role == 2){
+        var tree_list = [];
+
+        console.log(store.getters.unit.unit.length);
+
+        if (store.getters.unit.unit.length > 0) {
+            this.loading = false;
+            this.tree = new Tree(store.getters.unit.unit);
+            return;
+
+        }
+        //store.getters.unit.unit=[];
+        //tree_list=;
+        //console.log(tree_list.length);
+
+        if (this.role == 2) {
             getUnitApiByid(this.unitid).then((data) => {
                 this.selectedRoom = data.data.data
                 console.log(this.selectedRoom)
                 var res_data = data.data.data['building_info']
-                var ziyou_source = []    
                 for (var i = res_data.length - 1; i >= 0; i--) {
-                    if(res_data[i]['type1'] == 'self')
+                    if (res_data[i]['type1'] == 'self')
                         res_data[i]['type1'] = '自有房屋'
                     else
                         res_data[i]['type1'] = '租赁房屋'
                 }
                 this.fenpeilocalData = {
-                    total: 16,
-                    per_page: 5,
-                    current_page: 1,
-                    last_page: 4,
-                    next_page_url: "data.data.data?page=2",
-                    prev_page_url: null,
-                    from: 1,
-                    to: 5,
+
                     data: res_data
                 }
             })
             this.refreshLeaderAssignment(this.unitid);
         }
 
-        if(this.role == 1){
-            
+        if (this.role == 1) {
+            getUnitApi().then((data) => {
+                var res_data = data.data.data
+                var parent_data = []
+                var son_data = []
+                var filtered_data = []
+                // console.log('unit list')
+                // console.log(res_data)
+                this.selectedfenpei['unitoptions'] = []
 
-        getUnitApi().then((data) => {
-            var res_data = data.data.data
-            var parent_data = []
-            var son_data = []
-            var filtered_data = []
-            // console.log('unit list')
-            // console.log(res_data)
-            this.selectedfenpei['unitoptions'] = []
+                for (var i = res_data.length - 1; i >= 0; i--) {
+                    res_data[i]['bianzhi_num'] = 0
+                    res_data[i]['shiji_num'] = 0
+                    if (parseInt(res_data[i]['zhengju'])) {
+                        res_data[i]['bianzhi_num'] = res_data[i]['bianzhi_num'] + parseInt(res_data[i]['zhengju'])
+                    }
+                    if (parseInt(res_data[i]['fuju'])) {
+                        res_data[i]['bianzhi_num'] = res_data[i]['bianzhi_num'] + parseInt(res_data[i]['fuju'])
+                    }
+                    if (parseInt(res_data[i]['zhengchu'])) {
+                        res_data[i]['bianzhi_num'] = res_data[i]['bianzhi_num'] + parseInt(res_data[i]['zhengchu'])
+                    }
+                    if (parseInt(res_data[i]['fuchu'])) {
+                        res_data[i]['bianzhi_num'] = res_data[i]['bianzhi_num'] + parseInt(res_data[i]['fuchu'])
+                    }
+                    if (parseInt(res_data[i]['zhengke'])) {
+                        res_data[i]['bianzhi_num'] = res_data[i]['bianzhi_num'] + parseInt(res_data[i]['zhengke'])
+                    }
+                    if (parseInt(res_data[i]['fuke'])) {
+                        res_data[i]['bianzhi_num'] = res_data[i]['bianzhi_num'] + parseInt(res_data[i]['fuke'])
+                    }
+                    if (parseInt(res_data[i]['other'])) {
+                        res_data[i]['bianzhi_num'] = res_data[i]['bianzhi_num'] + parseInt(res_data[i]['other'])
+                    }
+                    if (parseInt(res_data[i]['zhengju_r'])) {
+                        res_data[i]['shiji_num'] = res_data[i]['shiji_num'] + parseInt(res_data[i]['zhengju_r'])
+                    }
+                    if (parseInt(res_data[i]['fuju_r'])) {
+                        res_data[i]['shiji_num'] = res_data[i]['shiji_num'] + parseInt(res_data[i]['fuju_r'])
+                    }
+                    if (parseInt(res_data[i]['zhengchu_r'])) {
+                        res_data[i]['shiji_num'] = res_data[i]['shiji_num'] + parseInt(res_data[i]['zhengchu_r'])
+                    }
+                    if (parseInt(res_data[i]['fuchu_r'])) {
+                        res_data[i]['shiji_num'] = res_data[i]['shiji_num'] + parseInt(res_data[i]['fuchu_r'])
+                    }
+                    if (parseInt(res_data[i]['zhengke_r'])) {
+                        res_data[i]['shiji_num'] = res_data[i]['shiji_num'] + parseInt(res_data[i]['zhengke_r'])
+                    }
+                    if (parseInt(res_data[i]['fuke_r'])) {
+                        res_data[i]['shiji_num'] = res_data[i]['shiji_num'] + parseInt(res_data[i]['fuke_r'])
+                    }
+                    if (parseInt(res_data[i]['other_r'])) {
+                        res_data[i]['shiji_num'] = res_data[i]['shiji_num'] + parseInt(res_data[i]['other_r'])
+                    }
 
-            for (var i = res_data.length - 1; i >= 0; i--) {
-                res_data[i]['bianzhi_num'] = 0
-                res_data[i]['shiji_num'] = 0
-                if (parseInt(res_data[i]['zhengju'])) {
-                    res_data[i]['bianzhi_num'] = res_data[i]['bianzhi_num'] + parseInt(res_data[i]['zhengju'])
+                    if (res_data[i]["parent_id"] == 0) {
+                        parent_data.push(res_data[i])
+                    } else {
+                        son_data.push(res_data[i])
+                    }
+                    this.selectedfenpei['unitoptions'].push({
+                        'text': res_data[i]['name'],
+                        'value': res_data[i]['id']
+                    })
                 }
-                if (parseInt(res_data[i]['fuju'])) {
-                    res_data[i]['bianzhi_num'] = res_data[i]['bianzhi_num'] + parseInt(res_data[i]['fuju'])
-                }
-                if (parseInt(res_data[i]['zhengchu'])) {
-                    res_data[i]['bianzhi_num'] = res_data[i]['bianzhi_num'] + parseInt(res_data[i]['zhengchu'])
-                }
-                if (parseInt(res_data[i]['fuchu'])) {
-                    res_data[i]['bianzhi_num'] = res_data[i]['bianzhi_num'] + parseInt(res_data[i]['fuchu'])
-                }
-                if (parseInt(res_data[i]['zhengke'])) {
-                    res_data[i]['bianzhi_num'] = res_data[i]['bianzhi_num'] + parseInt(res_data[i]['zhengke'])
-                }
-                if (parseInt(res_data[i]['fuke'])) {
-                    res_data[i]['bianzhi_num'] = res_data[i]['bianzhi_num'] + parseInt(res_data[i]['fuke'])
-                }
-                if (parseInt(res_data[i]['other'])) {
-                    res_data[i]['bianzhi_num'] = res_data[i]['bianzhi_num'] + parseInt(res_data[i]['other'])
-                }
-                if (parseInt(res_data[i]['zhengju_r'])) {
-                    res_data[i]['shiji_num'] = res_data[i]['shiji_num'] + parseInt(res_data[i]['zhengju_r'])
-                }
-                if (parseInt(res_data[i]['fuju_r'])) {
-                    res_data[i]['shiji_num'] = res_data[i]['shiji_num'] + parseInt(res_data[i]['fuju_r'])
-                }
-                if (parseInt(res_data[i]['zhengchu_r'])) {
-                    res_data[i]['shiji_num'] = res_data[i]['shiji_num'] + parseInt(res_data[i]['zhengchu_r'])
-                }
-                if (parseInt(res_data[i]['fuchu_r'])) {
-                    res_data[i]['shiji_num'] = res_data[i]['shiji_num'] + parseInt(res_data[i]['fuchu_r'])
-                }
-                if (parseInt(res_data[i]['zhengke_r'])) {
-                    res_data[i]['shiji_num'] = res_data[i]['shiji_num'] + parseInt(res_data[i]['zhengke_r'])
-                }
-                if (parseInt(res_data[i]['fuke_r'])) {
-                    res_data[i]['shiji_num'] = res_data[i]['shiji_num'] + parseInt(res_data[i]['fuke_r'])
-                }
-                if (parseInt(res_data[i]['other_r'])) {
-                    res_data[i]['shiji_num'] = res_data[i]['shiji_num'] + parseInt(res_data[i]['other_r'])
+                for (i = parent_data.length - 1; i >= 0; i--) {
+                    var abstract_parent = JSON.parse(JSON.stringify(parent_data[i]))
+                    abstract_parent["status"] = 99
+                    for (var j = son_data.length - 1; j >= 0; j--) {
+                        if (son_data[j]["parent_id"] == abstract_parent["id"])
+                            abstract_parent["enumber"] = parseInt(abstract_parent["enumber"]) + parseInt(son_data[j]["enumber"])
+                        abstract_parent["zhengting"] = parseInt(abstract_parent["zhengting"]) + parseInt(son_data[j]["zhengting"])
+                        abstract_parent["futing"] = parseInt(abstract_parent["futing"]) + parseInt(son_data[j]["futing"])
+                        abstract_parent["zhengchu"] = parseInt(abstract_parent["zhengchu"]) + parseInt(son_data[j]["zhengchu"])
+                        abstract_parent["fuchu"] = parseInt(abstract_parent["fuchu"]) + parseInt(son_data[j]["fuchu"])
+                        abstract_parent["zhengke"] = parseInt(abstract_parent["zhengke"]) + parseInt(son_data[j]["zhengke"])
+                        abstract_parent["fuke"] = parseInt(abstract_parent["fuke"]) + parseInt(son_data[j]["fuke"])
+                        abstract_parent["keji"] = parseInt(abstract_parent["keji"]) + parseInt(son_data[j]["keji"])
+                    }
+                    filtered_data.push(abstract_parent)
+                    filtered_data.push(parent_data[i])
+                    for (j = son_data.length - 1; j >= 0; j--) {
+                        if (son_data[j]["parent_id"] == parent_data[i]["id"])
+                            filtered_data.push(son_data[j])
+                    }
                 }
 
-                if (res_data[i]["parent_id"] == 0) {
-                    parent_data.push(res_data[i])
-                } else {
-                    son_data.push(res_data[i])
+                for (i = 0; i < filtered_data.length; i++) {
+                    if (filtered_data[i]["status"] == 99) {
+                        var paraent_node = {}
+                        paraent_node["name"] = filtered_data[i]["name"]
+                        paraent_node["id"] = filtered_data[i]["id"]
+                        paraent_node["children"] = []
+                        paraent_node.dragDisabled = true;
+                        paraent_node.addTreeNodeDisabled = true;
+                        paraent_node.addLeafNodeDisabled = true;
+                        paraent_node.editLeafNodeDisabled = true;
+                        paraent_node.delLeafNodeDisabled = true;
+                        paraent_node.editNodeDisabled = true;
+                        paraent_node.delNodeDisabled = true;
+                        tree_list.push(paraent_node)
+                    } else {
+                        var children_node = {}
+                        children_node = filtered_data[i]
+                        children_node["isLeaf"] = true
+                        children_node.dragDisabled = true;
+                        children_node.addTreeNodeDisabled = true;
+                        children_node.addLeafNodeDisabled = true;
+                        children_node.editLeafNodeDisabled = true;
+                        children_node.delLeafNodeDisabled = true;
+                        children_node.editNodeDisabled = true;
+                        children_node.delNodeDisabled = true;
+                        tree_list[tree_list.length - 1]["children"].push(children_node)
+                    }
                 }
-                this.selectedfenpei['unitoptions'].push({
-                    'text': res_data[i]['name'],
-                    'value': res_data[i]['id']
-                })
-            }
-            for (var i = parent_data.length - 1; i >= 0; i--) {
-                var abstract_parent = JSON.parse(JSON.stringify(parent_data[i]))
-                abstract_parent["status"] = 99
-                for (var j = son_data.length - 1; j >= 0; j--) {
-                    if (son_data[j]["parent_id"] == abstract_parent["id"])
-                    abstract_parent["enumber"] = parseInt(abstract_parent["enumber"]) + parseInt(son_data[j]["enumber"])
-                    abstract_parent["zhengting"] = parseInt(abstract_parent["zhengting"]) + parseInt(son_data[j]["zhengting"])
-                    abstract_parent["futing"] = parseInt(abstract_parent["futing"]) + parseInt(son_data[j]["futing"])
-                    abstract_parent["zhengchu"] = parseInt(abstract_parent["zhengchu"]) + parseInt(son_data[j]["zhengchu"])
-                    abstract_parent["fuchu"] = parseInt(abstract_parent["fuchu"]) + parseInt(son_data[j]["fuchu"])
-                    abstract_parent["zhengke"] = parseInt(abstract_parent["zhengke"]) + parseInt(son_data[j]["zhengke"])
-                    abstract_parent["fuke"] = parseInt(abstract_parent["fuke"]) + parseInt(son_data[j]["fuke"])
-                    abstract_parent["keji"] = parseInt(abstract_parent["keji"]) + parseInt(son_data[j]["keji"])
+                store.dispatch("unit/setUnit", tree_list);
+                this.tree = new Tree(tree_list)
+                this.loading = false;
+                this.localData = {
+                    data: filtered_data
                 }
-                filtered_data.push(abstract_parent)
-                filtered_data.push(parent_data[i])
-                for (var j = son_data.length - 1; j >= 0; j--) {
-                    if (son_data[j]["parent_id"] == parent_data[i]["id"])
-                        filtered_data.push(son_data[j])
-                }
-            }
-            var tree_list = []
-            for (var i = 0; i < filtered_data.length; i++) {
-                if (filtered_data[i]["status"] == 99) {
-                    var paraent_node = {}
-                    paraent_node["name"] = filtered_data[i]["name"]
-                    paraent_node["id"] = filtered_data[i]["id"]
-                    paraent_node["children"] = []
-                    paraent_node.dragDisabled = true;
-                    paraent_node.addTreeNodeDisabled = true;
-                    paraent_node.addLeafNodeDisabled = true;
-                    paraent_node.editLeafNodeDisabled = true;
-                    paraent_node.delLeafNodeDisabled = true;
-                    paraent_node.editNodeDisabled = true;
-                    paraent_node.delNodeDisabled = true;
-                    tree_list.push(paraent_node)
-                } else {
-                    var children_node = {}
-                    children_node = filtered_data[i]
-                    children_node["isLeaf"] = true
-                    children_node.dragDisabled = true;
-                    children_node.addTreeNodeDisabled = true;
-                    children_node.addLeafNodeDisabled = true;
-                    children_node.editLeafNodeDisabled = true;
-                    children_node.delLeafNodeDisabled = true;
-                    children_node.editNodeDisabled = true;
-                    children_node.delNodeDisabled = true;
-                    tree_list[tree_list.length - 1]["children"].push(children_node)
-                }
-            }
-
-            this.tree = new Tree(tree_list)
-            this.loading = false;
-            this.localData = {
-                total: 16,
-                per_page: 5,
-                current_page: 1,
-                last_page: 4,
-                next_page_url: "data.data.data?page=2",
-                prev_page_url: null,
-                from: 1,
-                to: 5,
-                data: filtered_data
-            }
-        });
-    }
+            });
         }
-        
+    }
+
 };
 </script>
 
 <style>
-.ui.disabled.input, .ui.input:not(.disabled) input[disabled]{
-    opacity: 1!important;
+.ui.disabled.input,
+.ui.input:not(.disabled) input[disabled] {
+    opacity: 1 !important;
 }
+
 .ui.positive.button {
     background-color: #75ADBF !important;
 }
@@ -1016,16 +976,20 @@ export default {
     left: auto;
     height: auto !important;
 }
-.ui.modal .content{
+
+.ui.modal .content {
     padding: 15px;
     box-sizing: border-box;
 }
+
 .ui.table {
     font-size: 13px;
 }
-.width800{
-    width:800px;
+
+.width800 {
+    width: 800px;
 }
+
 .ui.table thead th {
     cursor: auto;
     background: #F5F7FA;
@@ -1064,30 +1028,37 @@ export default {
 .vuetable-head-wrapper table.vuetable th.sortable {
     cursor: pointer
 }
-.addListIcon .vtl{
+
+.addListIcon .vtl {
     position: relative;
     /* padding-left: 26px; */
     cursor: pointer;
 }
-.addListIcon .vtl span{
+
+.addListIcon .vtl span {
     /* position: absolute;
     top: 5px;
     left: 10px; */
     float: left;
 }
-.addListIcon .vtl-node-main{
+
+.addListIcon .vtl-node-main {
     display: block;
 }
-.addListIcon .vtl-node-content{
+
+.addListIcon .vtl-node-content {
     padding-left: 34px;
 }
-.addListIcon .vtl-tree-margin .vtl-node-content{
+
+.addListIcon .vtl-tree-margin .vtl-node-content {
     padding-left: 20px;
 }
-.ui.modal .scrolling.content{
-    max-height:none !important;
+
+.ui.modal .scrolling.content {
+    max-height: none !important;
 }
-.addListIcon .vtl-node-main .vtl-caret{
+
+.addListIcon .vtl-node-main .vtl-caret {
     margin: 0;
 }
 </style>
