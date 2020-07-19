@@ -7,6 +7,18 @@
             <sui-form-field>
                 <sui-dropdown placeholder="选择领导级别" selection :options="leaderLevel" v-model="singleRoom.leader" />
             </sui-form-field>
+
+            
+        </sui-form-fields>
+        <sui-form-fields>
+            <sui-form-field inline>
+                <label>房屋面积</label>
+                <sui-input  :placeholder="singleRoom.space" :disabled="disabled" width="800px"/>
+            </sui-form-field inline>
+            <sui-form-field inline>
+                <label>房屋号</label>
+                <sui-input  :placeholder="singleRoom.room" :disabled="disabled" width="800px"/>
+            </sui-form-field inline>
         </sui-form-fields>
     </sui-form>
     </sui-segment>

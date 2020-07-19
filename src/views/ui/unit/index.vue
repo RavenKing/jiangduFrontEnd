@@ -14,7 +14,7 @@
 
         <sui-grid>
             <sui-grid-row>
-                <sui-grid-column :width="3">
+                <sui-grid-column :width="3" v-show="role==1">
                     <div class="filterBiaoDan">
                         <vue-tree-list class="addListIcon" :key="componentKey" @click="onClick" :model="tree" default-tree-node-name="new node" default-leaf-node-name="new leaf" v-bind:default-expanded="false">
                             <span class="icon" slot="addTreeNodeIcon"></span>
@@ -292,7 +292,7 @@ export default {
             modalMode: "create",
             open: false,
             fenpeiopen: false,
-
+            unitid: 0,
             weixiuopen: false,
             deleteTarget: "",
             loading: true,
@@ -384,9 +384,10 @@ export default {
                 room_id: this.leaderfenpei.room_id,
                 building_id: this.leaderfenpei.building_id,
                 floor_id: this.leaderfenpei.floor_id,
-                space: this.leaderfenpei.space,
                 unit_id: this.selectedRoom.id,
-                leader: this.selectedfenpei.leader
+                leader: this.selectedfenpei.leader,
+                room: this.selectedfenpei.room,
+                space: this.selectedfenpei.space
             }
             console.log(payload)
             this.loading = true;
@@ -801,6 +802,8 @@ export default {
     },
     mounted() {
         this.role = localGet("role");
+        this.unitid = localGet('unit_id')
+
         var fenpei_options = []
         getRentRoomDataApi({}).then((data) => {
             var res_data = data.data.data
@@ -833,6 +836,36 @@ export default {
             this.selectedfenpei['ziyousource'] = ziyou_source
             // this.selectedfenpei['ziyouroomoptions'] = rent_options
         })
+
+        if(this.role == 2){
+            getUnitApiByid(this.unitid).then((data) => {
+                this.selectedRoom = data.data.data
+                console.log(this.selectedRoom)
+                var res_data = data.data.data['building_info']
+                var ziyou_source = []    
+                for (var i = res_data.length - 1; i >= 0; i--) {
+                    if(res_data[i]['type1'] == 'self')
+                        res_data[i]['type1'] = '自有房屋'
+                    else
+                        res_data[i]['type1'] = '租赁房屋'
+                }
+                this.fenpeilocalData = {
+                    total: 16,
+                    per_page: 5,
+                    current_page: 1,
+                    last_page: 4,
+                    next_page_url: "data.data.data?page=2",
+                    prev_page_url: null,
+                    from: 1,
+                    to: 5,
+                    data: res_data
+                }
+            })
+            this.refreshLeaderAssignment(this.unitid);
+        }
+
+        if(this.role == 1){
+            
 
         getUnitApi().then((data) => {
             var res_data = data.data.data
@@ -965,6 +998,8 @@ export default {
             }
         });
     }
+        }
+        
 };
 </script>
 
