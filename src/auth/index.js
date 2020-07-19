@@ -28,7 +28,7 @@ function registerRouteGuard() {
       }
       // 没过期自动登录
       store.dispatch('app/setToken', local_auth)
-      // 判断当前用户是否已拉取权限菜单
+      // 判断当前用户是否已拉取权限菜单 
       if (store.getters.menu.length === 0) {
         getMenuDataApi()
           .then(({ data }) => {

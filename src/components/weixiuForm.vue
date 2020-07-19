@@ -95,8 +95,7 @@ import * as lang from "vuejs-datepicker/src/locale";
 import {
     getRoomDataApi,
     getBuildingListApi,
-    getBuildingFloorApi,
-    getUnitApi
+    getBuildingFloorApi
 } from "@/api/roomDataAPI";
 export default {
     name: 'weixiu-form',
@@ -112,8 +111,7 @@ export default {
             floorLoading: false,
             louLoading: false,
             lang: lang,
-            disabled: false,
-            unitoptions: []
+            disabled: false
         };
     },
     methods: {
@@ -163,16 +161,8 @@ export default {
         }
     },
     mounted() {
-        getUnitApi().then((data) => {
-            var res_data = data.data.data
-            for (var i = res_data.length - 1; i >= 0; i--) {
-                this.unitoptions.push({
-                    'text': res_data[i]['name'],
-                    'value': res_data[i]['id']
-                })
-            }
-        });
-        getRoomDataApi().then((data) => {
+        console.log("somethig")
+        getRoomDataApi({}).then((data) => {
             //this.localData = data.data.data;
             data.data.data.map((one) => {
                 this.options.push({

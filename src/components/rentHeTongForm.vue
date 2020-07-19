@@ -219,7 +219,7 @@ export default {
 
         this.total = 0;
         this.totalPrice = 0;
-        getRoomDataApi().then((data) => {
+        getRoomDataApi({}).then((data) => {
             //this.localData = data.data.data;
             data.data.data.map((one) => {
                 this.options.push({
