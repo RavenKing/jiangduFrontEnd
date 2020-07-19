@@ -3,3 +3,4 @@
 ./src/views/ui/unit/index.vue
 ./src/components/unit_fenpei_new.vue
 ./src/views/ui/unit/index.vue
+./src/components/rentHeTongForm.vue
