@@ -1004,6 +1004,9 @@ export default {
 </script>
 
 <style>
+.ui.disabled.input, .ui.input:not(.disabled) input[disabled]{
+    opacity: 1!important;
+}
 .ui.positive.button {
     background-color: #75ADBF !important;
 }
@@ -1020,7 +1023,9 @@ export default {
 .ui.table {
     font-size: 13px;
 }
-
+.width800{
+    width:800px;
+}
 .ui.table thead th {
     cursor: auto;
     background: #F5F7FA;
