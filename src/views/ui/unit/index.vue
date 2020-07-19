@@ -710,7 +710,14 @@ export default {
             let formdata = this.$refs.FormCreate.singleRoom;
             
             updateUnitApi(formdata).then((result) => {
+                if (result.data.code == 0) {
+                    notifySomething("保存成功", "基本信息保存成功", "success");
+
+                }else{
+                    notifySomething("保存失败", "基本信息保存失败", "Error")
+                }
                 this.loading = false;
+                
             });
         },
 
