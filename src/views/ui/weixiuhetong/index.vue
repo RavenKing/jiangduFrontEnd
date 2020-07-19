@@ -11,7 +11,7 @@
         </div>
 
         <div class="wl-gantt-demo">
-            <wlGantt @expand-change="expandChange" :key="componentKey" default-expand-all @taskRemove="removeTasks" @row-dblclick="handleRowDbClick" :data="hetongdataNewData" use-real-time date-type="yearAndMonth" :start-date="maxStartDate" :end-date="minEndDate" @timeChange="timeChange"></wlGantt>
+            <wlGantt @expand-change="expandChange" :key="componentKey"  @taskRemove="removeTasks" @row-dblclick="handleRowDbClick" :data="hetongdataNewData" use-real-time date-type="yearAndMonth" :start-date="maxStartDate" :end-date="minEndDate" @timeChange="timeChange"></wlGantt>
         </div>
         <!-- 
         <div class="vue2Table">
@@ -103,8 +103,8 @@
             </sui-modal>
         </div>
         <div>
-            <sui-modal class="modal2" v-model="open">
-                <sui-modal-content scrolling>
+            <sui-modal v-model="open">
+                <sui-modal-content scrolling class="modalStep">
                     <div style="font-size:0">
                         <sui-step-group size="mini" style="width:100%;">
                             <sui-step :active="currentStep==1">
@@ -136,10 +136,6 @@
                                     <sui-checkbox @change="handleChange(props)" v-model="props.rowData.select" />
                                 </div>
                             </vuetable>
-                            <div class="pagination ui basic segment grid">
-                                <vuetable-pagination-info ref="paginationInfo"></vuetable-pagination-info>
-                                <vuetable-pagination ref="pagination" @vuetable-pagination:change-page="onChangePage"></vuetable-pagination>
-                            </div>
                         </div>
                     </sui-segment>
 
@@ -194,8 +190,6 @@
 <script>
 import dialogBar from '@/components/MDialog'
 import Vuetable from "vuetable-2/src/components/Vuetable";
-import VuetablePagination from "vuetable-2/src/components/VuetablePagination";
-import VuetablePaginationInfo from "vuetable-2/src/components/VuetablePaginationInfo";
 import FieldHetong from "./fieldsHetong.js";
 import Datepicker from 'vuejs-datepicker';
 import * as lang from "vuejs-datepicker/src/locale";
@@ -225,8 +219,6 @@ export default {
         Datepicker,
         'dialog-bar': dialogBar,
         Vuetable,
-        VuetablePagination,
-        VuetablePaginationInfo,
     },
     data() {
         return {
@@ -518,15 +510,13 @@ export default {
                         status: one.status,
                         children: []
                     }
-                    if(new Date(ganttData.startDate)<new Date(this.maxStartDate))
-                    {
-                        this.maxStartDate=ganttData.startDate;
+                    if (new Date(ganttData.startDate) < new Date(this.maxStartDate)) {
+                        this.maxStartDate = ganttData.startDate;
                     }
-                    if(new Date(ganttData.endDate)>new Date(this.minEndDate))
-                    {
-                        this.minEndDate=ganttData.endDate;
+                    if (new Date(ganttData.endDate) > new Date(this.minEndDate)) {
+                        this.minEndDate = ganttData.endDate;
                     }
-                    
+
                     one.step_info.map((child) => {
                         switch (child.status) {
                             case 1:
@@ -755,6 +745,10 @@ export default {
     max-height: none !important;
 }
 
+.modalStep {
+    min-height: 500px;
+}
+
 .map {
     width: 100%;
     height: 400px;
@@ -809,11 +803,14 @@ export default {
     margin: 0;
     margin-top: 15px;
 }
-.ui.step, .ui.steps .step{
+
+.ui.step,
+.ui.steps .step {
     text-align: left;
     justify-content: left;
 }
-.wl-gantt-demo .el-table{
+
+.wl-gantt-demo .el-table {
     border-radius: .28571429rem;
 }
 </style>

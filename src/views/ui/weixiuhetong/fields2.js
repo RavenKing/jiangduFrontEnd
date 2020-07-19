@@ -28,10 +28,5 @@ export default [
     name: "apppdate",
     title: '申报时间',
     width: "15%"
-  },
-  {
-    name: "statusText",
-    title: '状态',
-    width: "15%"
   }
 ];
