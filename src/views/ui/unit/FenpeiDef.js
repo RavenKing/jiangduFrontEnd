@@ -1,6 +1,6 @@
 export default [
   {
-    name: "buildingname",
+    name: "roomname",
     title: '房屋名称',
     width: "20%",
     height:"100px",
