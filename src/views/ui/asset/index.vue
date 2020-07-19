@@ -59,7 +59,7 @@
                 <sui-modal-content>
                     <sui-segment>
                         <form-create ref='formComponent' :singleRoom="selectedRoom"></form-create>
-                        <zichan-form ref='zichanForm' :singleRoom="selectedRoom" v-show="selectedRoom.hasproperty"></zichan-form>
+                        <chanzheng-form ref='chanZhengForm' :singleRoom="selectedRoom" v-show="selectedRoom.hasproperty"></chanzheng-form>
 
                     </sui-segment>
                 </sui-modal-content>
