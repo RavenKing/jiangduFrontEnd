@@ -63,7 +63,7 @@ import {
 export default {
     data() {
         return {
-            loading:false,
+            loading: false,
             login_form: {
                 act: "admin",
                 pass: "123456",
@@ -88,9 +88,9 @@ export default {
     methods: {
         // 登录表单提交
         submitLogin(formName) {
-            this.loading=true;
+            this.loading = true;
             this.$refs[formName].validate(valid => {
-                this.loading=false;
+                this.loading = false;
                 if (valid) {
                     loginApi(this.login_form).then(({
                         data

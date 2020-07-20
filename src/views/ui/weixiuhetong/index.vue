@@ -11,7 +11,7 @@
         </div>
 
         <div class="wl-gantt-demo">
-            <wlGantt @expand-change="expandChange" :key="componentKey"  @taskRemove="removeTasks" @row-dblclick="handleRowDbClick" :data="hetongdataNewData" use-real-time date-type="yearAndMonth" :start-date="maxStartDate" :end-date="minEndDate" @timeChange="timeChange"></wlGantt>
+            <wlGantt @expand-change="expandChange" :key="componentKey" @taskRemove="removeTasks" @row-dblclick="handleRowDbClick" :data="hetongdataNewData" use-real-time date-type="yearAndMonth" :start-date="maxStartDate" :end-date="minEndDate" @timeChange="timeChange"></wlGantt>
         </div>
         <!-- 
         <div class="vue2Table">
@@ -196,7 +196,8 @@ import * as lang from "vuejs-datepicker/src/locale";
 import Fields2 from "./fields2.js";
 import constants from "@/util/constants";
 import {
-    notifySomething
+    notifySomething,
+    goToLogin
 } from "@/util/utils"
 import {
     fromShitFormat,
@@ -680,6 +681,12 @@ export default {
             status: 2
         }).then((data) => {
             //this.localData = data.data.data;
+
+            if (data.data.code == 2) {
+                notifySomething("重复登陆 请重新登陆", constants.GENERALERROR, constants.typeError);
+                goToLogin();
+                this.$router.push("/login");
+            }
             this.loading = false;
             this.localData = {
                 total: 16,

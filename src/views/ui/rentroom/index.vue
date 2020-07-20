@@ -153,6 +153,7 @@ import Vuetable from "vuetable-2/src/components/Vuetable";
 import VuetablePagination from "vuetable-2/src/components/VuetablePagination";
 import FieldsDef from "./FieldsDef.js";
 import FieldsAssign from "./FieldsForAssign.js";
+
 import rentHeTongForm from "@/components/rentHeTongForm";
 import {
     ModelSelect
@@ -161,6 +162,7 @@ import {
     export_json_to_excel
 } from "@/util/Export2Excel";
 import constants from "@/util/constants";
+
 import {
     getRentRoomDataApi,
     createRentRoomApi,
@@ -175,7 +177,8 @@ import {
     editRentContractDetailApi
 } from "@/api/roomDataAPI";
 import {
-    notifySomething
+    notifySomething,
+    goToLogin
 } from "@/util/utils"
 export default {
     name: "MyVuetable",
@@ -510,7 +513,8 @@ export default {
                     this.localData = data.data.data
                 } else if (data.data.code == 2) {
                     notifySomething("重复登陆 请重新登陆", constants.GENERALERROR, constants.typeError);
-
+                    goToLogin();
+                    this.$router.push("/login");
                 }
             }).catch(function () {
                 this.loading = false;
