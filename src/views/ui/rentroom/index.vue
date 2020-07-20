@@ -303,7 +303,7 @@ export default {
                 }
             }).catch(function () {
                 this.loading = false;
-                notifySomething(constants.FEIPEICREATEFAILED, constants.FEIPEICREATEFAILED  + "房屋已分配或者面积不足", constants.typeError);
+                notifySomething(constants.FEIPEICREATEFAILED, constants.FEIPEICREATEFAILED + "房屋已分配或者面积不足", constants.typeError);
             });
 
         },
@@ -504,8 +504,14 @@ export default {
         refreshRooms(payload) {
             this.loading = true;
             getRentRoomDataApi(payload).then((data) => {
-                this.loading = false;
-                this.localData = data.data.data
+
+                if (data.data.code == 0) {
+                    this.loading = false;
+                    this.localData = data.data.data
+                } else if (data.data.code == 2) {
+                    notifySomething("重复登陆 请重新登陆", constants.GENERALERROR, constants.typeError);
+
+                }
             }).catch(function () {
                 this.loading = false;
                 notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
@@ -660,7 +666,8 @@ export default {
     width: 100%;
     height: 400px;
 }
-.ui.modal .scrolling.content{
-    max-height:none !important;
+
+.ui.modal .scrolling.content {
+    max-height: none !important;
 }
 </style>

@@ -746,7 +746,7 @@ export default {
 }
 
 .modalStep {
-    min-height: 500px;
+    height: 500px;
 }
 
 .map {

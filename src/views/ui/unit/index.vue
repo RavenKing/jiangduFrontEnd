@@ -12,7 +12,7 @@
             <sui-button content="导出" v-on:click="exportToExcel" icon="file green" />
         </div>
 
-        <sui-grid>
+        <sui-grid class="margin20">
             <sui-grid-row>
                 <sui-grid-column :width="3" v-show="role==1">
                     <div class="filterBiaoDan">
@@ -1045,7 +1045,9 @@ export default {
 .addListIcon .vtl-node-main {
     display: block;
 }
-
+.margin20{
+    margin:20px!important;
+}
 .addListIcon .vtl-node-content {
     padding-left: 34px;
 }
