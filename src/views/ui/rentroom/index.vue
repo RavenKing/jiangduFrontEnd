@@ -299,7 +299,7 @@ export default {
                     this.loading = true;
                     this.refreshAssignment();
                 } else {
-                    notifySomething(constants.FEIPEICREATEFAILED, constants.FEIPEICREATEFAILED + result.data.code, constants.typeError);
+                    notifySomething(constants.FEIPEICREATEFAILED, constants.FEIPEICREATEFAILED + result.data.data, constants.typeError);
                 }
             }).catch(function () {
                 this.loading = false;
