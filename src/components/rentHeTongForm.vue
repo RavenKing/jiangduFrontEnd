@@ -37,11 +37,11 @@
             </sui-form-field>
             <sui-form-field>
                 第
-                <sui-input placeholder="增长规则" v-model="singleEntry.year" :readonly="disabled" transparent />年
+                <sui-input  v-model="singleEntry.year" :readonly="disabled" transparent />年
             </sui-form-field>
             <sui-form-field>
                 按
-                <sui-input placeholder="按照%增长" v-model="singleEntry.rate" :readonly="disabled" transparent />%增长
+                <sui-input  v-model="singleEntry.rate" :readonly="disabled" transparent />%增长
             </sui-form-field>
         </sui-form-fields>
         <div :key="componentKey" v-for="(item, index) in singleEntry.priceinfo">
