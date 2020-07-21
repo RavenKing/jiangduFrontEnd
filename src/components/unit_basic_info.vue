@@ -27,6 +27,20 @@
 
         <sui-form-fields>
             <sui-form-field inline>
+                <label>联系人</label>
+                <sui-input :placeholder="singleRoom.contact" :disabled="disabled" />
+            </sui-form-field>
+            <sui-form-field inline>
+                <label>联系人电话</label>
+                <sui-input :placeholder="singleRoom.contact_tel" :disabled="disabled" />
+            </sui-form-field>
+            <sui-form-field inline>
+                <label>单位地址</label>
+                <sui-input :placeholder="singleRoom.address" :disabled="disabled" />
+            </sui-form-field>
+        </sui-form-fields>
+        <sui-form-fields>
+            <sui-form-field inline>
                 <label>编制人数</label>
                 <sui-input :placeholder="singleRoom.bianzhi_num" :disabled="disabled" />
             </sui-form-field>
