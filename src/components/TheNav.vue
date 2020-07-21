@@ -84,7 +84,6 @@ export default {
             this.$message("暂未开通，敬请期待");
         },
         logout() {
-            console.log("logout")
             this.setToken("");
             this.setKeepPage([], true);
             this.setCurrentPage("");

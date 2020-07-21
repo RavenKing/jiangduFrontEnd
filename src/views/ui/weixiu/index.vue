@@ -78,7 +78,8 @@ import {
     localGet
 } from "@/util/storage";
 import {
-    notifySomething
+    notifySomething,
+    goToLogin
 } from "@/util/utils"
 import {
     getMRApi,
@@ -415,6 +416,12 @@ export default {
             }
         }
         getMRApi(params).then((data) => {
+
+            if (data.data.code == 2) {
+                notifySomething("重复登陆 请重新登陆", constants.GENERALERROR, constants.typeError);
+                goToLogin();
+                this.$router.push("/login");
+            }
             //this.localData = data.data.data;
             this.loading = false;
             this.localData = {

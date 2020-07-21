@@ -1,5 +1,10 @@
 <template>
-<wl-container class="wlui-login" :use-scroll="false">
+<wl-container class="wlui-login" :use-scroll="false">、
+    <div>
+        <sui-dimmer :active="loading" inverted>
+            <sui-loader content="Loading..." />
+        </sui-dimmer>
+    </div>
     <div class="headerNew">
         <div class="logoTitle">奉贤区行政事业单位办公用房信息化平台</div>
     </div>
@@ -58,6 +63,7 @@ import {
 export default {
     data() {
         return {
+            loading: false,
             login_form: {
                 act: "admin",
                 pass: "123456",
@@ -82,7 +88,9 @@ export default {
     methods: {
         // 登录表单提交
         submitLogin(formName) {
+            this.loading = true;
             this.$refs[formName].validate(valid => {
+                this.loading = false;
                 if (valid) {
                     loginApi(this.login_form).then(({
                         data

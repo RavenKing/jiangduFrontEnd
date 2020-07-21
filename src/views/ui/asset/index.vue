@@ -287,7 +287,8 @@ import {
     //getRentRoomContractListApi
 } from "@/api/utilApi";
 import {
-    notifySomething
+    notifySomething,
+    goToLogin
 } from "@/util/utils"
 import {
     getRoomDataApi,
@@ -706,8 +707,15 @@ export default {
             this.loading = true;
             getRoomDataApi(payload).then((data) => {
                 //this.localData = data.data.data;
-                this.loading = false;
-                this.localData = data.data.data
+                if (data.data.code == 0) {
+
+                    this.loading = false;
+                    this.localData = data.data.data
+                } else if (data.data.code == 2) {
+                    notifySomething("重复登陆 请重新登陆", constants.GENERALERROR, constants.typeError);
+                    goToLogin();
+                    this.$router.push("/login");
+                }
             }).catch(function () {
                 this.loading = false;
                 notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);

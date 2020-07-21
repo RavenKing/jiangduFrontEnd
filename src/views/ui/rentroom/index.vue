@@ -153,6 +153,7 @@ import Vuetable from "vuetable-2/src/components/Vuetable";
 import VuetablePagination from "vuetable-2/src/components/VuetablePagination";
 import FieldsDef from "./FieldsDef.js";
 import FieldsAssign from "./FieldsForAssign.js";
+
 import rentHeTongForm from "@/components/rentHeTongForm";
 import {
     ModelSelect
@@ -161,6 +162,7 @@ import {
     export_json_to_excel
 } from "@/util/Export2Excel";
 import constants from "@/util/constants";
+
 import {
     getRentRoomDataApi,
     createRentRoomApi,
@@ -175,7 +177,8 @@ import {
     editRentContractDetailApi
 } from "@/api/roomDataAPI";
 import {
-    notifySomething
+    notifySomething,
+    goToLogin
 } from "@/util/utils"
 export default {
     name: "MyVuetable",
@@ -299,11 +302,11 @@ export default {
                     this.loading = true;
                     this.refreshAssignment();
                 } else {
-                    notifySomething(constants.FEIPEICREATEFAILED, constants.FEIPEICREATEFAILED + result.data.code, constants.typeError);
+                    notifySomething(constants.FEIPEICREATEFAILED, constants.FEIPEICREATEFAILED + result.data.data, constants.typeError);
                 }
             }).catch(function () {
                 this.loading = false;
-                notifySomething(constants.FEIPEICREATEFAILED, constants.FEIPEICREATEFAILED  + "房屋已分配或者面积不足", constants.typeError);
+                notifySomething(constants.FEIPEICREATEFAILED, constants.FEIPEICREATEFAILED + "房屋已分配或者面积不足", constants.typeError);
             });
 
         },
@@ -504,8 +507,15 @@ export default {
         refreshRooms(payload) {
             this.loading = true;
             getRentRoomDataApi(payload).then((data) => {
-                this.loading = false;
-                this.localData = data.data.data
+
+                if (data.data.code == 0) {
+                    this.loading = false;
+                    this.localData = data.data.data
+                } else if (data.data.code == 2) {
+                    notifySomething("重复登陆 请重新登陆", constants.GENERALERROR, constants.typeError);
+                    goToLogin();
+                    this.$router.push("/login");
+                }
             }).catch(function () {
                 this.loading = false;
                 notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
@@ -660,7 +670,8 @@ export default {
     width: 100%;
     height: 400px;
 }
-.ui.modal .scrolling.content{
-    max-height:none !important;
+
+.ui.modal .scrolling.content {
+    max-height: none !important;
 }
 </style>
