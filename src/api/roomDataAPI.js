@@ -21,6 +21,7 @@ function updateRoomApi(data)
 function createRoomApi(data){
     let local_auth = localGet(global.project_key, true);
   //console.log(local_auth);
+
     // //console.log(local_auth);
     // // const newFormData = {
     // //     "token": local_auth
@@ -161,10 +162,8 @@ function createUnitApi(data)
 }
 function updateUnitApi(data)
 {
-    
     let local_auth = localGet(global.project_key, true);
     console.log('data is  ', data)
-    console.log(local_auth)
     data.token=local_auth;
     
     return request({

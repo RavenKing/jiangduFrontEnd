@@ -175,7 +175,7 @@
         <div>
             <sui-modal class="modal2" v-model="leader.open">
                 <sui-modal-content scrolling>
-                    <leader-form :singleRoom="selectedfenpei"></leader-form>
+                    <leader-form ref='LeaderForm' :singleRoom="selectedfenpei"></leader-form>
                 </sui-modal-content>
                 <sui-modal-actions>
                     <sui-button basic color="red" @click.native="closeLeaderModal">
@@ -355,16 +355,15 @@ export default {
             this.leader.open = false;
         },
         createLeaderAssign() {
-            console.log(this.selectedRoom);
-            console.log(this.leaderfenpei);
+            console.log(this.$refs);
             var payload = {
                 room_id: this.leaderfenpei.room_id,
                 building_id: this.leaderfenpei.building_id,
                 floor_id: this.leaderfenpei.floor_id,
                 unit_id: this.selectedRoom.id,
                 leader: this.selectedfenpei.leader,
-                room: this.selectedfenpei.room,
-                space: this.selectedfenpei.space
+                room: this.$refs.LeaderForm.singleRoom.room,
+                space: this.$refs.LeaderForm.singleRoom.space
             }
             console.log(payload)
             this.loading = true;
@@ -467,6 +466,7 @@ export default {
             getlistleaderroomApi(data).then((data) => {
                 this.loading = false;
                 var res_data = data.data.data
+                console.log(res_data)
                 this.lingdaoData = {
                     total: 16,
                     per_page: 5,
@@ -673,9 +673,12 @@ export default {
         },
 
         updateUnit() {
+            console.log('xxxx')
             let formdata = this.$refs.FormCreate.singleRoom;
-
+            delete formdata.parent
+            delete formdata.building_info
             updateUnitApi(formdata).then((result) => {
+                console.log(result)
                 if (result.data.code == 0) {
                     notifySomething("保存成功", "基本信息保存成功", "success");
 
@@ -706,6 +709,7 @@ export default {
         },
         newfenpei() {
             var fenpei_data = this.$refs.FormFenpei.fenpei_data
+
             var value_list = []
             for (var i = fenpei_data.length - 1; i >= 0; i--) {
                 value_list.push({
