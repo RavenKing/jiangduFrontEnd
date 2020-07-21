@@ -838,8 +838,8 @@ export default {
                 var parent_data = []
                 var son_data = []
                 var filtered_data = []
-                // console.log('unit list')
-                // console.log(res_data)
+                console.log('unit list')
+                console.log(res_data)
                 this.selectedfenpei['unitoptions'] = []
 
                 for (var i = res_data.length - 1; i >= 0; i--) {
