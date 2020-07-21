@@ -294,7 +294,7 @@ export default {
                 room_id: this.selectedRoom.id,
                 space: this.selectedRoom.space_assign,
                 unit_id: this.selectedRoom.unit_id,
-                type:2
+                type: 2
             }
             assignRentAssignmentApi(nPayload).then((result) => {
                 this.loading = false;
@@ -542,16 +542,27 @@ export default {
                         page: 1
                     });
                     this.loading = false;
-                    notifySomething(constants.CREATESUCCESS, constants.CREATESUCCESS, constants.typeSuccess);
+                    if (result.data.code == 0) {
+                        notifySomething(constants.CREATESUCCESS, constants.CREATESUCCESS, constants.typeSuccess);
+                        this.loading = false;
+                    } else {
+                        notifySomething(constants.CREATEFAILED, constants.CREATEFAILED + ":" + result.data.msg, constants.typeError);
+                    }
                 });
             } else if (this.editMode) {
                 updateRentRoomApi(this.selectedRoom).then((result) => {
-                    console.log(result);
                     this.refreshRooms({
                         page: 1
                     });
-                    notifySomething(constants.EDITSUCCESS, constants.EDITSUCCESS, constants.typeSuccess);
                     this.loading = false;
+                    if (result.data.code == 0) {
+                        notifySomething(constants.EDITSUCCESS, constants.EDITSUCCESS, constants.typeSuccess);
+                    } else {
+
+                        notifySomething(constants.EDITFAILED, constants.EDITFAILED + ":" + result.data.msg, constants.typeError);
+
+                    }
+
                 });
             }
 
