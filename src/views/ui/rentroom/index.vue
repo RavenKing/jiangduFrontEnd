@@ -293,7 +293,8 @@ export default {
             var nPayload = {
                 room_id: this.selectedRoom.id,
                 space: this.selectedRoom.space_assign,
-                unit_id: this.selectedRoom.unit_id
+                unit_id: this.selectedRoom.unit_id,
+                type:2
             }
             assignRentAssignmentApi(nPayload).then((result) => {
                 this.loading = false;
