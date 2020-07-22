@@ -655,6 +655,19 @@ export default {
                             filtered_data.push(son_data[j])
                     }
                 }
+                for (i = 0; i < filtered_data.length; i++) {
+                    if(filtered_data[i]['kind'] == '1'){
+                            filtered_data[i]['kind'] = '机关单位'
+                        }
+                        if(filtered_data[i]['kind'] == '2'){
+                            filtered_data[i]['kind'] = '事业单位'
+                        }
+                        if(filtered_data[i]['kind'] == '3'){
+                            filtered_data[i]['kind'] = '参公单位'
+                        }
+                }
+
+
 
                 this.loading = false;
                 this.localData = {
@@ -726,6 +739,8 @@ export default {
                 input['valuelist'] = JSON.stringify(value_list)
                 // console.log(input)
                 createAssignmentApi(input).then((data) => {
+                    console.log(input)
+                    console.log(data)
                     if (data.data.code == 0) {
                         notifySomething("分配成功", "创建领导分配成功", "success");
                         this.refreshFenpei(this.selectedRoom.id);
@@ -925,10 +940,22 @@ export default {
                 }
 
                 for (i = 0; i < filtered_data.length; i++) {
+                    filtered_data[i]['name'] = filtered_data[i]['seq_code'] +  filtered_data[i]['name']
+                    if(filtered_data[i]['kind'] == '1'){
+                        filtered_data[i]['kind'] = '机关单位'
+                    }
+                    if(filtered_data[i]['kind'] == '2'){
+                        filtered_data[i]['kind'] = '事业单位'
+                    }
+                    if(filtered_data[i]['kind'] == '3'){
+                        filtered_data[i]['kind'] = '参公单位'
+                    }
+
                     if (filtered_data[i]["status"] == 99) {
                         var paraent_node = {}
                         paraent_node["name"] = filtered_data[i]["name"]
                         paraent_node["id"] = filtered_data[i]["id"]
+                        paraent_node["seq_code"] = filtered_data[i]["seq_code"]
                         paraent_node["children"] = []
                         paraent_node.dragDisabled = true;
                         paraent_node.addTreeNodeDisabled = true;
@@ -952,6 +979,9 @@ export default {
                         tree_list[tree_list.length - 1]["children"].push(children_node)
                     }
                 }
+
+                tree_list = tree_list.sort(function(a,b){return parseInt(a['seq_code'])-parseInt(b['seq_code'])});
+
                 store.dispatch("unit/setUnit", tree_list);
                 this.tree = new Tree(tree_list)
                 this.loading = false;
