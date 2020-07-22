@@ -9,10 +9,10 @@ export default [
     dataClass: "aligned",
   },
   {
-    name: "room",
+    name: "roomname",
     title: '房屋名称',
     width: "20%",
-    sortField: "room",
+    sortField: "roomname",
     titleClass: "center aligned",
     dataClass: "center aligned",
   },
@@ -25,8 +25,8 @@ export default [
     dataClass: "center aligned",
   },
   {
-    name: "room_id",
-    sortField: "room_id",
+    name: "room",
+    sortField: "room",
     title: '房间号',
     width: "15%",
     titleClass: "center aligned",

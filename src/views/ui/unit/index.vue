@@ -175,7 +175,7 @@
         <div>
             <sui-modal class="modal2" v-model="leader.open">
                 <sui-modal-content scrolling>
-                    <leader-form :singleRoom="selectedfenpei"></leader-form>
+                    <leader-form ref='LeaderForm' :singleRoom="selectedfenpei"></leader-form>
                 </sui-modal-content>
                 <sui-modal-actions>
                     <sui-button basic color="red" @click.native="closeLeaderModal">
@@ -355,16 +355,15 @@ export default {
             this.leader.open = false;
         },
         createLeaderAssign() {
-            console.log(this.selectedRoom);
-            console.log(this.leaderfenpei);
+            console.log(this.$refs);
             var payload = {
                 room_id: this.leaderfenpei.room_id,
                 building_id: this.leaderfenpei.building_id,
                 floor_id: this.leaderfenpei.floor_id,
                 unit_id: this.selectedRoom.id,
                 leader: this.selectedfenpei.leader,
-                room: this.selectedfenpei.room,
-                space: this.selectedfenpei.space
+                room: this.$refs.LeaderForm.singleRoom.room,
+                space: this.$refs.LeaderForm.singleRoom.space
             }
             console.log(payload)
             this.loading = true;
@@ -467,6 +466,7 @@ export default {
             getlistleaderroomApi(data).then((data) => {
                 this.loading = false;
                 var res_data = data.data.data
+                console.log(res_data)
                 this.lingdaoData = {
                     total: 16,
                     per_page: 5,
@@ -655,6 +655,19 @@ export default {
                             filtered_data.push(son_data[j])
                     }
                 }
+                for (i = 0; i < filtered_data.length; i++) {
+                    if(filtered_data[i]['kind'] == '1'){
+                            filtered_data[i]['kind'] = '机关单位'
+                        }
+                        if(filtered_data[i]['kind'] == '2'){
+                            filtered_data[i]['kind'] = '事业单位'
+                        }
+                        if(filtered_data[i]['kind'] == '3'){
+                            filtered_data[i]['kind'] = '参公单位'
+                        }
+                }
+
+
 
                 this.loading = false;
                 this.localData = {
@@ -673,9 +686,12 @@ export default {
         },
 
         updateUnit() {
+            console.log('xxxx')
             let formdata = this.$refs.FormCreate.singleRoom;
-
+            delete formdata.parent
+            delete formdata.building_info
             updateUnitApi(formdata).then((result) => {
+                console.log(result)
                 if (result.data.code == 0) {
                     notifySomething("保存成功", "基本信息保存成功", "success");
 
@@ -706,6 +722,7 @@ export default {
         },
         newfenpei() {
             var fenpei_data = this.$refs.FormFenpei.fenpei_data
+
             var value_list = []
             for (var i = fenpei_data.length - 1; i >= 0; i--) {
                 value_list.push({
@@ -722,6 +739,8 @@ export default {
                 input['valuelist'] = JSON.stringify(value_list)
                 // console.log(input)
                 createAssignmentApi(input).then((data) => {
+                    console.log(input)
+                    console.log(data)
                     if (data.data.code == 0) {
                         notifySomething("分配成功", "创建领导分配成功", "success");
                         this.refreshFenpei(this.selectedRoom.id);
@@ -921,10 +940,22 @@ export default {
                 }
 
                 for (i = 0; i < filtered_data.length; i++) {
+                    filtered_data[i]['name'] = filtered_data[i]['seq_code'] +  filtered_data[i]['name']
+                    if(filtered_data[i]['kind'] == '1'){
+                        filtered_data[i]['kind'] = '机关单位'
+                    }
+                    if(filtered_data[i]['kind'] == '2'){
+                        filtered_data[i]['kind'] = '事业单位'
+                    }
+                    if(filtered_data[i]['kind'] == '3'){
+                        filtered_data[i]['kind'] = '参公单位'
+                    }
+
                     if (filtered_data[i]["status"] == 99) {
                         var paraent_node = {}
                         paraent_node["name"] = filtered_data[i]["name"]
                         paraent_node["id"] = filtered_data[i]["id"]
+                        paraent_node["seq_code"] = filtered_data[i]["seq_code"]
                         paraent_node["children"] = []
                         paraent_node.dragDisabled = true;
                         paraent_node.addTreeNodeDisabled = true;
@@ -948,6 +979,9 @@ export default {
                         tree_list[tree_list.length - 1]["children"].push(children_node)
                     }
                 }
+
+                tree_list = tree_list.sort(function(a,b){return parseInt(a['seq_code'])-parseInt(b['seq_code'])});
+
                 store.dispatch("unit/setUnit", tree_list);
                 this.tree = new Tree(tree_list)
                 this.loading = false;
