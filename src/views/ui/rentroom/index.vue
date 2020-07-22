@@ -61,13 +61,17 @@
                                     <rentroom-form :singleRoom="selectedRoom"></rentroom-form>
                                 </div>
                             </sui-tab-pane>
-                            <sui-tab-pane title="合同信息" :attached="false" :disabled="!editMode" :key="componentFenpeikey">
+                            <sui-tab-pane title="合同信息" :attached="false" :disabled="!editMode">
+                                <sui-dimmer :active="loading" inverted>
+                                    <sui-loader content="Loading..." />
+                                </sui-dimmer>
                                 <div>
                                     <!-- <sui-dropdown placeholder="选择合同(默认最新)" selection :options="listContract" v-model="selectedRoomContract.id" @input="changeContract" /> -->
-                                    <sui-button basic color="blue" @click="changeMode">新建</sui-button>
-                                    <contract-form style="margin-top:15px;" :singleEntry="selectedRoomContract" :mianji="selectedRoom.value" :disabled="!(selectedRoomContract.mode&&selectedRoomContract.mode=='new')"></contract-form>
-                                    <div v-show="selectedRoomContract.mode&&selectedRoomContract.mode=='new'">
-                                        <sui-button content="创建新合同" v-on:click="createRentContract()" />
+                                    <sui-button basic color="blue" @click="changeMode">编辑</sui-button>
+                                    <contract-form style="margin-top:15px;" :singleEntry="selectedRoomContract" :mianji="selectedRoom.value" :disabled="modeDisable"></contract-form>
+                                    <div v-show="selectedRoomContract.mode&&selectedRoomContract.mode!='view'">
+                                        <sui-button content="创建新合同" v-on:click="emptyRentContract()" />
+                                        <sui-button content="保存" v-on:click="createRentContract()" />
                                     </div>
                                 </div>
                             </sui-tab-pane>
@@ -241,6 +245,16 @@ export default {
     },
 
     methods: {
+        emptyRentContract() {
+            this.selectedRoomContract = {
+                mode: 'new',
+                priceinfo: [{
+                    pricename: "",
+                    price: "",
+                    space: "",
+                }]
+            }
+        },
         changeUnit() {
             let count = 0;
             this.selectedRoom.assignList.map((one) => {
@@ -264,14 +278,23 @@ export default {
 
         },
         changeMode() {
-            this.selectedRoomContract = {
-                mode: "new",
-                priceinfo: [{
-                    pricename: "",
-                    price: "",
-                    space: "",
-                }]
+            this.loading = true;
+            if (this.listContract.length > 0) {
+                this.loading = false;
+
+                this.selectedRoomContract.mode = "edit";
+                this.selectedRoomContract.modeDisable = true;
+            } else {
+                this.selectedRoomContract.mode = "new";
             }
+            // this.selectedRoomContract = {
+            //     mode: "new",
+            //     priceinfo: [{
+            //         pricename: "",
+            //         price: "",
+            //         space: "",
+            //     }]
+            // }
         },
         setFirstPoint(pois) {
             this.point = pois[0].point;
@@ -376,45 +399,49 @@ export default {
         createRentContract: function () {
             this.selectedRoomContract.room_id = this.selectedRoom.id;
             var context = this;
-            console.log(this.selectedRoomContract);
-            createRentContractApi(this.selectedRoomContract).then((result) => {
-                this.closeModal();
-                if (result.data.code == 0) {
-                    getRentRoomContractListApi({
-                        room_id: this.selectedRoom.id
-                    }).then((result) => {
-                        var latestOne = result.data.data.length;
-                        this.selectedRoomContract.contract_id = result.data.data[latestOne - 1].id;
-                        editRentContractDetailApi({
-                            contract_id: this.selectedRoomContract.contract_id,
-                            valuelist: JSON.stringify(this.selectedRoomContract.priceinfo)
+            if (this.selectedRoomContract.mode == "edit") {
+                console.log("edit")
+            } else if (this.selectedRoomContract.mode == "new") {
+                createRentContractApi(this.selectedRoomContract).then((result) => {
+                    this.closeModal();
+                    if (result.data.code == 0) {
+                        getRentRoomContractListApi({
+                            room_id: this.selectedRoom.id
                         }).then((result) => {
-                            if (result.data.code == 0) {
-                                notifySomething("'创建合同成功'", '创建合同成功', 'success');
-                            } else {
-                                notifySomething("'创建合同失败'", '创建合同失败', 'error');
-                            }
+                            var latestOne = result.data.data.length;
+                            this.selectedRoomContract.contract_id = result.data.data[latestOne - 1].id;
+                            editRentContractDetailApi({
+                                contract_id: this.selectedRoomContract.contract_id,
+                                valuelist: JSON.stringify(this.selectedRoomContract.priceinfo)
+                            }).then((result) => {
+                                if (result.data.code == 0) {
+                                    notifySomething("'创建合同成功'", '创建合同成功', 'success');
+                                } else {
+                                    notifySomething("'创建合同失败'", '创建合同失败', 'error');
+                                }
+                            })
+                            this.loading = false;
                         })
-                        this.loading = false;
-                    })
 
-                } else {
+                    } else {
+                        context.$notify({
+                            group: 'foo',
+                            title: '创建合同失败',
+                            text: '创建合同失败',
+                            type: "error"
+                        });
+
+                    }
+                }).catch(function () {
                     context.$notify({
                         group: 'foo',
                         title: '创建合同失败',
                         text: '创建合同失败',
                         type: "error"
                     });
-
-                }
-            }).catch(function () {
-                context.$notify({
-                    group: 'foo',
-                    title: '创建合同失败',
-                    text: '创建合同失败',
-                    type: "error"
                 });
-            });
+
+            }
 
         },
         viewSomeThing(data) {
