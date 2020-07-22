@@ -1,12 +1,6 @@
 <template lang="html">
 <div>
     <sui-form>
-        <div is="sui-divider" horizontal>
-            <h4 is="sui-header">
-                <i class="bar chart icon"></i>
-                总面积
-            </h4>
-        </div>
         <!-- <sui-form-fields>
             <sui-form-field>
                 <label>总建筑面积</label>
