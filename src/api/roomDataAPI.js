@@ -432,8 +432,11 @@ function editRentContractDetailApi(data)
 {
     return generalRequet(data,constants.editRentContractDetailApi)
 }
-
-export {
+function editRentContractApi(data)
+{
+    return generalRequet(data,constants.editRentContractApi)
+}
+export {editRentContractApi,
     getRoomDataApi,
     createRoomApi,
     updateRoomApi,// Room接口

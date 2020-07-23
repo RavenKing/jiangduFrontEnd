@@ -53,7 +53,7 @@
         <dialog-bar v-model="sendVal" type="danger" title="是否要删除" :content="deleteTarget.text" v-on:cancel="clickCancel()" @danger="clickConfirmDelete()" @confirm="clickConfirmDelete()" dangerText="确认删除"></dialog-bar>
         <div>
             <sui-modal class="modal2" v-model="open">
-                <sui-modal-content scrolling>
+                <sui-modal-content scrolling class="modalStep">
                     <div>
                         <sui-tab :menu="{ attached: false }" :active-index.sync="defaultTab">
                             <sui-tab-pane title="基本信息" :attached="false">
@@ -61,15 +61,17 @@
                                     <rentroom-form :singleRoom="selectedRoom"></rentroom-form>
                                 </div>
                             </sui-tab-pane>
-                            <sui-tab-pane title="合同信息" :attached="false" :disabled="!editMode">
+                            <sui-tab-pane title="合同信息" :attached="false">
                                 <sui-dimmer :active="loading" inverted>
                                     <sui-loader content="Loading..." />
                                 </sui-dimmer>
                                 <div>
                                     <!-- <sui-dropdown placeholder="选择合同(默认最新)" selection :options="listContract" v-model="selectedRoomContract.id" @input="changeContract" /> -->
-                                    <sui-button basic color="blue" @click="changeMode">编辑</sui-button>
-                                    <contract-form style="margin-top:15px;" :singleEntry="selectedRoomContract" :mianji="selectedRoom.value" :disabled="modeDisable"></contract-form>
-                                    <div v-show="selectedRoomContract.mode&&selectedRoomContract.mode!='view'">
+                                    <!-- <sui-button basic color="blue" @click="changeMode">编辑</sui-button> -->
+                                    <div v-show="selectedRoomContract.mode!='initial'">
+                                        <contract-form style="margin-top:15px;" :singleEntry="selectedRoomContract" :mianji="selectedRoom.value" :disabled="false"></contract-form>
+                                    </div>
+                                    <div>
                                         <sui-button content="创建新合同" v-on:click="emptyRentContract()" />
                                         <sui-button content="保存" v-on:click="createRentContract()" />
                                     </div>
@@ -178,7 +180,8 @@ import {
     getUnitApi,
     listRentRoomAssignmentApi,
     deleteRentRoomAssignmentApi,
-    editRentContractDetailApi
+    editRentContractDetailApi,
+    editRentContractApi
 } from "@/api/roomDataAPI";
 import {
     notifySomething,
@@ -219,7 +222,9 @@ export default {
             defaultTab: 0,
             point: {},
             selectedRoom: {},
-            selectedRoomContract: {},
+            selectedRoomContract: {
+                mode: "initial"
+            },
             deleteTarget: "",
             loading: true,
             localData: [],
@@ -278,15 +283,15 @@ export default {
 
         },
         changeMode() {
-            this.loading = true;
-            if (this.listContract.length > 0) {
-                this.loading = false;
+            // this.loading = true;
+            // if (this.listContract.length > 0) {
+            //     this.loading = false;
 
-                this.selectedRoomContract.mode = "edit";
-                this.selectedRoomContract.modeDisable = true;
-            } else {
-                this.selectedRoomContract.mode = "new";
-            }
+            //     this.selectedRoomContract.mode = "edit";
+            //     this.selectedRoomContract.modeDisable = true;
+            // } else {
+            //     this.selectedRoomContract.mode = "new";
+            // }
             // this.selectedRoomContract = {
             //     mode: "new",
             //     priceinfo: [{
@@ -399,8 +404,38 @@ export default {
         createRentContract: function () {
             this.selectedRoomContract.room_id = this.selectedRoom.id;
             var context = this;
-            if (this.selectedRoomContract.mode == "edit") {
-                console.log("edit")
+            if (this.selectedRoomContract.mode != "new") {
+                editRentContractApi(this.selectedRoomContract).then((result) => {
+                    this.closeModal();
+                    if (result.data.code == 0) {
+                        editRentContractDetailApi({
+                            contract_id: this.selectedRoomContract.id,
+                            valuelist: JSON.stringify(this.selectedRoomContract.priceinfo)
+                        }).then((result) => {
+                            if (result.data.code == 0) {
+                                notifySomething("编辑合同成功", '编辑合同成功', 'success');
+                            } else {
+                                notifySomething("编辑合同失败", '编辑合同失败', 'error');
+                            }
+                        })
+
+                    } else {
+                        context.$notify({
+                            group: 'foo',
+                            title: '编辑合同失败',
+                            text: '编辑合同失败',
+                            type: "error"
+                        });
+
+                    }
+                }).catch(function () {
+                    context.$notify({
+                        group: 'foo',
+                        title: '编辑合同失败',
+                        text: '编辑合同失败',
+                        type: "error"
+                    });
+                });
             } else if (this.selectedRoomContract.mode == "new") {
                 createRentContractApi(this.selectedRoomContract).then((result) => {
                     this.closeModal();
@@ -477,10 +512,11 @@ export default {
                 getRentRoomContractListApi({
                     room_id: this.selectedRoom.id
                 }).then((result) => {
-
                     var latestOne = result.data.data.length;
                     if (latestOne == 0) {
-                        this.selectedRoomContract = {}
+                        this.selectedRoomContract = {
+                            mode: "initial"
+                        }
                     } else {
                         this.listContract = [];
                         this.selectedRoomContract = result.data.data[latestOne - 1];
@@ -491,6 +527,7 @@ export default {
                                 one
                             })
                         })
+                        console.log(this.listContract.length);
                     }
                     this.loading = false;
                 })
@@ -699,6 +736,10 @@ export default {
 
 .vue2Table {
     /* margin: 20px; */
+}
+
+.modalStep {
+    height: 500px;
 }
 
 .anchorBL {

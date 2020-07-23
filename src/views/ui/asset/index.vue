@@ -39,7 +39,19 @@
 
         <div class="vue2Table">
             <vuetable ref="vuetable" :api-mode="false" :data="localData" :fields="fields" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
+                <template slot="tableHeader">
+                    <template>
+                        <tr>
+                            <th colspan="5"></th>
+                            <th colspan="2">有产证</th>
+                            <th colspan="2">无产证</th>
+                            <th colspan="7">其中</th>
+                        </tr>
+                    </template>
+                    <vuetable-row-header></vuetable-row-header>
+                </template>
                 <div slot="action" slot-scope="props">
+
                     <!-- <sui-button basic color="red"  content="查看" v-on:click="viewSomeThing(props.rowData,'check')" /> -->
                     <sui-button basic color="blue" content="编辑" v-on:click="openAssignSection(props.rowData)" />
                     <sui-button basic color="red" content="删除" v-on:click="deleteRoom(props.rowData)" />
@@ -131,7 +143,7 @@
         </div>
         <div>
             <sui-modal v-model="assignList.open" :key="ComponentKey" class="modal2">
-                <sui-modal-content scrolling>
+                <sui-modal-content scrolling class="modalStep">
                     <div>
                         <sui-tab :menu="{ attached: false }">
                             <sui-tab-pane title="基本信息" :attached="false">
@@ -261,6 +273,7 @@
 </template>
 
 <script>
+import VuetableRowHeader from 'vuetable-2/src/components/VuetableRowHeader.vue'
 import dialogBar from '@/components/MDialog'
 import Vuetable from "vuetable-2/src/components/Vuetable";
 import VuetablePagination from "vuetable-2/src/components/VuetablePagination";
@@ -307,6 +320,7 @@ import {
 export default {
     name: "MyVuetable",
     components: {
+        VuetableRowHeader,
         VueTreeList,
         'dialog-bar': dialogBar,
         Vuetable,
@@ -799,7 +813,7 @@ export default {
                     }
                     this.loading = false;
                 }).catch(function () {
-                    this.loading = false;
+                    context.loading = false;
                     notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                 });
             }
@@ -970,6 +984,10 @@ export default {
 
 .pagination {
     margin-top: 1rem;
+}
+
+.modalStep {
+    height: 500px;
 }
 
 .tabNew {

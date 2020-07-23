@@ -59,7 +59,8 @@ const constantsJinhui = {
     delProjectApi:"/delproj",
     delStepApi:"/delprojectdetail",
     markStepApi:"/markprojectdetail",
-    editStepApi:"/editprojectdetail"
+    editStepApi:"/editprojectdetail",
+    editRentContractApi:"/editrentcontract"
     
 }
 export default constantsJinhui;
