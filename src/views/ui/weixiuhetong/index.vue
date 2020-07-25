@@ -53,7 +53,7 @@
                     <h4 is="sui-header">步骤控制
                     </h4>
                 </sui-modal-header>
-                <sui-modal-content scrolling>
+                <sui-modal-content scrolling class="modalStep">
                     <div v-show="selectedStep.mode=='edit'">
                         <sui-form>
                             <sui-form-fields inline>
@@ -78,7 +78,7 @@
                             </sui-form-fields>
                             <sui-form-fields inline>
                                 <sui-form-field>
-                                    <sui-checkbox label="完成步骤" toggle v-model="selectedStep.data.statusT" /> 
+                                    <sui-checkbox label="完成步骤" toggle v-model="selectedStep.data.statusT" />
                                 </sui-form-field>
                             </sui-form-fields>
                         </sui-form>
@@ -166,7 +166,10 @@
                         </sui-form>
                     </sui-segment>
                     <sui-segment v-show="currentStep==3">
-                        <sui-button icon="upload" />上传附件
+                        <el-upload ref="upload" class="upload-demo" :on-change="uploadFile" :file-list="fileList">
+                            <el-button size="small" type="primary">点击上传</el-button>
+                            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+                        </el-upload>
                     </sui-segment>
                 </sui-modal-content>
                 <sui-modal-actions>
@@ -197,6 +200,9 @@ import Datepicker from 'vuejs-datepicker';
 import * as lang from "vuejs-datepicker/src/locale";
 import Fields2 from "./fields2.js";
 import constants from "@/util/constants";
+import {
+    uploadFileApi,
+} from "@/api/utilApi";
 import {
     notifySomething,
     goToLogin
@@ -257,11 +263,28 @@ export default {
             steps: [],
             weixiuhetong: {},
             maxStartDate: "2020-01-01",
-            minEndDate: "2021-07-31"
+            minEndDate: "2020-07-31"
         };
     },
 
     methods: {
+        uploadFile: function (e, filelist) {
+            console.log(filelist);
+            let formData = new FormData();
+            this.loading = true;
+            var context = this;
+            //  this.buildingImage.open = false;
+            if (e.raw != undefined) {
+                formData.append('ossfile', e.raw);
+                uploadFileApi(formData).then(() => {
+
+                }).catch(function () {
+                    context.loading = false;
+                    notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
+                });
+            }
+
+        },
         expandChange() {},
         changeStepModal() {
             this.selectedStep.mode = "mark"
@@ -479,10 +502,11 @@ export default {
         },
         refreshHetongList() {
             this.loading = true;
+            var context = this;
             this.hetongdataNewData = [];
             getMCApi().then((data) => {
                 //this.localData = data.data.data;
-                this.loading = false;
+                //this.loading = false;
                 this.hetongdata = {
                     data: data.data.data
                 }
@@ -519,7 +543,7 @@ export default {
                     if (new Date(ganttData.endDate) > new Date(this.minEndDate)) {
                         this.minEndDate = ganttData.endDate;
                     }
-
+                    var lastStep = [];
                     one.step_info.map((child) => {
                         switch (child.status) {
                             case 1:
@@ -537,11 +561,14 @@ export default {
                             name: child.name,
                             type: "step",
                             step_id: child.id,
-                            startDate: fromShitFormat(child.plantime),
+                            startDate: fromShitFormat(child.starttime),
                             endDate: fromShitFormat(child.endtime),
                             realStartDate: fromShitFormat(child.plantime),
                             realEndDate: fromShitFormat(child.planendtime),
                             status: child.status,
+                        }
+                        if (childOne.status == "完成") {
+                            lastStep.push(childOne);
                         }
                         ganttData.children.push(childOne);
                     })
@@ -550,7 +577,12 @@ export default {
                         this.maxStartDate = one.starttime;
                         this.minEndDate = one.endtime;
                     }
-
+                    console.log(lastStep);
+                    var lastStepname = "未开始";
+                    if (lastStep.length > 0) {
+                        lastStepname = lastStep[lastStep.length - 1].name;
+                    }
+                    ganttData.name = ganttData.name + "(" + lastStepname + ")";
                     testData.push(ganttData);
 
                     switch (one.status) {
@@ -570,8 +602,9 @@ export default {
                 });
                 this.hetongdataNewData = testData;
                 this.componentKey++;
-            }).catch(function () {
                 this.loading = false;
+            }).catch(function () {
+                context.loading = false;
                 notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
             });
         },
@@ -751,7 +784,7 @@ export default {
 }
 
 .modalStep {
-    height: 500px;
+    height: 500px !important;
 }
 
 .map {
