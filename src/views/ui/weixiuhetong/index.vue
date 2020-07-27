@@ -582,7 +582,7 @@ export default {
                     if (lastStep.length > 0) {
                         lastStepname = lastStep[lastStep.length - 1].name;
                     }
-                    ganttData.name = ganttData.name + "(" + lastStepname + ")";
+                    ganttData.status = lastStepname;
                     testData.push(ganttData);
 
                     switch (one.status) {

@@ -73,7 +73,7 @@
                                     </div>
                                     <div>
                                         <sui-button content="创建新合同" v-on:click="emptyRentContract()" />
-                                        <sui-button content="保存" v-on:click="createRentContract()" />
+                                        <!-- <sui-button content="保存" v-on:click="createRentContract()" /> -->
                                     </div>
                                 </div>
                             </sui-tab-pane>
@@ -406,8 +406,9 @@ export default {
             var context = this;
             if (this.selectedRoomContract.mode != "new") {
                 editRentContractApi(this.selectedRoomContract).then((result) => {
-                    this.closeModal();
+                    //this.closeModal();
                     if (result.data.code == 0) {
+                        this.loading = false;
                         editRentContractDetailApi({
                             contract_id: this.selectedRoomContract.id,
                             valuelist: JSON.stringify(this.selectedRoomContract.priceinfo)
@@ -596,9 +597,14 @@ export default {
             };
         },
         toggle() {
-            this.open = !this.open;
             this.loading = true;
-            console.log(this.editMode);
+            if (this.defaultTab == 1) {
+                this.createRentContract();
+                return;
+            }
+
+            this.open = !this.open;
+
             if (!this.editMode) {
                 createRentRoomApi(this.selectedRoom).then((result) => {
                     console.log(result);

@@ -2,14 +2,14 @@ export default [
   {
     name: "roomname",
     title: '房屋名称',
-    width: "15%",
+    width: "25%",
     titleClass: 'left aligned',
     dataClass: 'left aligned',
   },
   {
     name: "address",
     title: '地址',
-    width: "15%",
+    width: "25%",
     titleClass: 'left aligned',
     dataClass: 'left aligned',
   },

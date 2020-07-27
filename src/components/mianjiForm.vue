@@ -36,15 +36,14 @@
             <sui-form-field>
                 <sui-input placeholder="服务用房面积" v-model="singleRoom.space2" :disabled="disabled" />
             </sui-form-field>
-            <label>土地面积</label>
+            <!-- <label>土地面积</label>
             <sui-form-field>
                 <sui-input placeholder="土地面积" v-model="singleRoom.tudispace" :disabled="disabled" />
             </sui-form-field>
             <label>建筑面积</label>
             <sui-form-field>
-
                 <sui-input placeholder="建筑面积" v-model="singleRoom.jianzhuspace" :disabled="disabled" />
-            </sui-form-field>
+            </sui-form-field> -->
         </sui-form-fields>
         <sui-form-fields inline>
             <label>设备用房面积</label>

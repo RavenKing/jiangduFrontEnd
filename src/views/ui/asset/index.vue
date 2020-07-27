@@ -42,10 +42,10 @@
                 <template slot="tableHeader">
                     <template>
                         <tr>
-                            <th colspan="5"></th>
-                            <th colspan="2">有产证</th>
-                            <th colspan="2">无产证</th>
-                            <th colspan="7">其中</th>
+                            <th colspan="5" class="thTextcenter">基本信息</th>
+                            <th colspan="2" class="thTextcenter">有产证</th>
+                            <th colspan="2" class="thTextcenter">无产证</th>
+                            <th colspan="7" class="thTextcenter">其中</th>
                         </tr>
                     </template>
                     <vuetable-row-header></vuetable-row-header>
@@ -319,6 +319,7 @@ import {
 } from "@/api/roomDataAPI";
 export default {
     name: "MyVuetable",
+    props: ["kind"],
     components: {
         VuetableRowHeader,
         VueTreeList,
@@ -559,6 +560,7 @@ export default {
         getBuildingSection() {
             let data = {};
             data.room_id = this.selectedRoom.id;
+            var context = this;
             // get room
             getBuildingListApi(data).then((result) => {
                 this.loading = false;
@@ -585,23 +587,23 @@ export default {
                     building.children = [];
                     root.push(building);
                     this.getBuildingFloorSection(building);
-                }).catch(function () {
-                    this.loading = false;
-                    notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
-                });
+                })
                 if (this.assignList.buildings.length > 0) {
                     this.selectedBuildingID = this.assignList.buildings[0].id;
                 }
                 this.treeData = root;
                 this.assignList.open = true;
                 // this.ComponentKey++;
-
+            }).catch(function () {
+                context.loading = false;
+                notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
             });
         },
         getBuildingFloorSection(building) {
             var data = {
                 building_id: building.id
             }
+            var context = this;
             //console.log(data);
             getBuildingFloorApi(data).then((result) => {
                 building.floors = result.data.data;
@@ -611,12 +613,12 @@ export default {
                     floor.floor_id = floor.id;
                     floor.disabled = true;
                     building.children.push(floor)
-                }).catch(function () {
-                    this.loading = false;
-                    notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
-                });
+                })
                 this.tree = new Tree(this.treeData);
-            })
+            }).catch(function () {
+                context.loading = false;
+                notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
+            });
         },
         clickConfirmDelete() {
             this.loading = true;
@@ -776,10 +778,10 @@ export default {
             }
             var context = this;
             //kind=1 means 自由房屋创建和编辑
-            this.$refs.formComponent.singleRoom.kind = 1;
+            this.selectedRoom.kind = 1;
             if (this.modalMode == "create") {
                 this.open = !this.open;
-                createRoomApi(this.$refs.formComponent.singleRoom).then((result) => {
+                createRoomApi(this.selectedRoom).then((result) => {
                     context.loading = false;
                     console.log("success")
                     if (result.data.code == 0) {
@@ -900,6 +902,7 @@ export default {
     },
 
     created() {
+        console.log(this.kind);
         this.refreshRooms({
             page: 1
         })
@@ -1008,6 +1011,10 @@ export default {
     box-shadow: none;
     font-weight: 1000;
     color: black;
+}
+
+.thTextcenter {
+    text-align: center !important;
 }
 
 .ui.text.menu .active.item {
