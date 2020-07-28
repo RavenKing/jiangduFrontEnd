@@ -404,6 +404,11 @@ export default {
         createRentContract: function () {
             this.selectedRoomContract.room_id = this.selectedRoom.id;
             var context = this;
+            this.selectedRoomContract.rule = JSON.stringify({
+                type: 1,
+                rate: this.selectedRoomContract.rate,
+                year: this.selectedRoomContract.year
+            })
             if (this.selectedRoomContract.mode != "new") {
                 editRentContractApi(this.selectedRoomContract).then((result) => {
                     //this.closeModal();
@@ -521,6 +526,11 @@ export default {
                     } else {
                         this.listContract = [];
                         this.selectedRoomContract = result.data.data[latestOne - 1];
+                        var rule = JSON.parse(this.selectedRoomContract.rule);
+                        if (rule != null) {
+                            this.selectedRoomContract.rate = rule.rate;
+                            this.selectedRoomContract.year = rule.year;
+                        }
                         result.data.data.map((one) => {
                             this.listContract.push({
                                 value: one.id,
@@ -528,7 +538,6 @@ export default {
                                 one
                             })
                         })
-                        console.log(this.listContract.length);
                     }
                     this.loading = false;
                 })
