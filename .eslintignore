@@ -5,3 +5,4 @@
 ./src/views/ui/unit/index.vue
 ./src/components/rentHeTongForm.vue
 ./src/components/unit_leader_form.vue
+./src/components/unit_basic_info.vue

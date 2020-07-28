@@ -387,6 +387,18 @@ function deleteBuildingFloorAssignmentApi(data)
     });
 }
 
+
+function deleteRentRoomAssignmentApi(data)
+{
+    let local_auth = localGet(global.project_key, true);
+    data.token=local_auth;
+    return request({
+        url: constants.deleteRentRoomAssignmentApi,
+        method: 'post',
+        data: data
+    });
+}
+
 function delleaderroomApi(data)
 {
     let local_auth = localGet(global.project_key, true);
@@ -405,10 +417,6 @@ function assignRentAssignmentApi(data)
 function listRentRoomAssignmentApi(data)
 {
     return generalRequet(data,constants.listRentRoomAssignmentApi)
-}
-function deleteRentRoomAssignmentApi(data)
-{
-    return generalRequet(data,constants.deleteRentRoomAssignmentApi)
 }
 
 

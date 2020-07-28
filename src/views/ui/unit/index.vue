@@ -16,6 +16,7 @@
             <sui-grid-row>
                 <sui-grid-column :width="3" v-show="role==1">
                     <div class="filterBiaoDan">
+                        <sui-input placeholder="Search..." v-model="search" icon="search" v-on:change="search_unit_list()"/>
                         <vue-tree-list class="addListIcon" :key="componentKey" @click="onClick" :model="tree" default-tree-node-name="new node" default-leaf-node-name="new leaf" v-bind:default-expanded="false">
                             <span class="icon" slot="addTreeNodeIcon"></span>
                             <span class="icon" slot="addLeafNodeIcon"></span>
@@ -250,7 +251,8 @@ import {
     deleteBuildingFloorAssignmentApi,
     delleaderroomApi,
     createLeaderAssignApi,
-    assignRentRoomApi
+    assignRentRoomApi,
+    deleteRentRoomAssignmentApi
 } from "@/api/roomDataAPI";
 import {
     createMRApi
@@ -347,15 +349,45 @@ export default {
             },
             leaderfenpei: {},
             listField: FieldsDefList,
+            search: ''
         };
     },
 
     methods: {
+        search_unit_list() {
+            console.log(this.search)
+            var keyword = this.search
+            var filtered_tree_list = []
+            console.log(this.tree)
+            for (var i = this.tree.children.length - 1; i >= 0; i--) {
+                var name = this.tree.children[i]['name']
+                if(name.indexOf(keyword)!= -1){
+                    filtered_tree_list.push(this.tree.children[i])
+                    continue
+                }
+                // var children_list = this.tree.children[i]['children']
+                // for (var i = children_list.length - 1; i >= 0; i--) {
+                //     var children_name = children_list[i]['name']
+                //     if(children_name.indexOf(keyword)!= -1){
+                //         filtered_tree_list.push(this.tree[i])
+                //         break
+                //     }
+                // }
+            }
+            // this.tree = filtered_tree_list
+        },
         closeLeaderModal() {
             this.leader.open = false;
         },
         createLeaderAssign() {
+            console.log('领导分配')
             console.log(this.$refs);
+            console.log(this.leaderfenpei)
+            var room_type = 1
+            if(this.leaderfenpei.type1 == '租赁房屋'){
+                room_type = 2
+            }
+
             var payload = {
                 room_id: this.leaderfenpei.room_id,
                 building_id: this.leaderfenpei.building_id,
@@ -363,7 +395,8 @@ export default {
                 unit_id: this.selectedRoom.id,
                 leader: this.selectedfenpei.leader,
                 room: this.$refs.LeaderForm.singleRoom.room,
-                space: this.$refs.LeaderForm.singleRoom.space
+                space: this.$refs.LeaderForm.singleRoom.space,
+                room_type: room_type
             }
             console.log(payload)
             this.loading = true;
@@ -466,6 +499,7 @@ export default {
             getlistleaderroomApi(data).then((data) => {
                 this.loading = false;
                 var res_data = data.data.data
+                console.log('leader room')
                 console.log(res_data)
                 this.lingdaoData = {
                     total: 16,
@@ -530,8 +564,10 @@ export default {
                 input['building_id'] = this.deleteTarget.building_id
                 input['floor_id'] = this.deleteTarget.floor_id
                 input['unit_id'] = this.selectedRoom.id
-
-                deleteBuildingFloorAssignmentApi(input).then(() => {
+                console.log(this.deleteTarget)
+                if(this.deleteTarget.type1 == '租赁房屋'){
+                    console.log('租赁房屋')
+                    deleteRentRoomAssignmentApi(input).then(() => {
                     getUnitApiByid(this.selectedRoom.id).then((data) => {
                         var res_data = data.data.data['building_info']
                         for (var i = res_data.length - 1; i >= 0; i--) {
@@ -554,6 +590,36 @@ export default {
                     })
                     this.loading = false
                 });
+
+                }
+                else{
+                    deleteBuildingFloorAssignmentApi(input).then(() => {
+                    getUnitApiByid(this.selectedRoom.id).then((data) => {
+                        var res_data = data.data.data['building_info']
+                        for (var i = res_data.length - 1; i >= 0; i--) {
+                            if (res_data[i]['type1'] == 'self')
+                                res_data[i]['type1'] = '自有房屋'
+                            else
+                                res_data[i]['type1'] = '租赁房屋'
+                        }
+                        this.fenpeilocalData = {
+                            total: 16,
+                            per_page: 5,
+                            current_page: 1,
+                            last_page: 4,
+                            next_page_url: "data.data.data?page=2",
+                            prev_page_url: null,
+                            from: 1,
+                            to: 5,
+                            data: res_data
+                        }
+                    })
+                    this.loading = false
+                });
+
+                }
+
+                
             }
             if (this.deletetype == 'leader') {
                 delleaderroomApi(this.deleteTarget).then((result) => {
@@ -610,8 +676,8 @@ export default {
         deletefenpei(data) {
             this.sendVal = true;
             this.deleteTarget = data
+            console.log(this.deleteTarget)
             this.deleteTarget.text = "是否要删除";
-            this.deleteTarget
             this.deletetype = 'fenpei'
 
         },
@@ -764,7 +830,7 @@ export default {
                     'floor_id': 0,
                 }]
                 input['valuelist'] = JSON.stringify(rent_list)
-                // console.log(input)
+                console.log(input)
                 assignRentRoomApi(input).then((data) => {
                     if (data.data.code == 0) {
                         notifySomething("分配成功", "创建领导分配成功", "success");

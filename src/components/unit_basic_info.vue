@@ -12,15 +12,15 @@
             <sui-form-field inline>
                 <label>单位类别</label>
                 <!-- <label> {{}} </label> -->
-                <sui-input :placeholder="singleRoom.kind" />
+                <sui-dropdown :placeholder="singleRoom.leader" selection :options="leaderLevel" v-model="singleRoom.leader" />
             </sui-form-field>
             <sui-form-field inline>
                 <label>单位级别</label>
-                <sui-input :placeholder="singleRoom.level" :disabled="disabled" />
+                <sui-input :placeholder="singleRoom.level" v-model="singleRoom.level" :disabled="disabled" />
             </sui-form-field>
             <sui-form-field inline>
                 <label>组织机构代码</label>
-                <sui-input :placeholder="singleRoom.code" :disabled="disabled" />
+                <sui-input :placeholder="singleRoom.code" v-model="singleRoom.code" :disabled="disabled" />
             </sui-form-field>
 
         </sui-form-fields>
@@ -28,21 +28,21 @@
         <sui-form-fields>
             <sui-form-field inline>
                 <label>联系人</label>
-                <sui-input :placeholder="singleRoom.contact" :disabled="disabled" />
+                <sui-input :placeholder="singleRoom.contact" v-model="singleRoom.contact" :disabled="disabled" />
             </sui-form-field>
             <sui-form-field inline>
                 <label>联系人电话</label>
-                <sui-input :placeholder="singleRoom.contact_tel" :disabled="disabled" />
+                <sui-input :placeholder="singleRoom.contact_tel" v-model="singleRoom.contact_tel" :disabled="disabled" />
             </sui-form-field>
             <sui-form-field inline>
                 <label>单位地址</label>
-                <sui-input :placeholder="singleRoom.address" :disabled="disabled" />
+                <sui-input :placeholder="singleRoom.address" v-model="singleRoom.address" :disabled="disabled" />
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields>
             <sui-form-field inline>
                 <label>编制人数</label>
-                <sui-input :placeholder="singleRoom.bianzhi_num" :disabled="disabled" />
+                <sui-input :placeholder="singleRoom.bianzhi_num" v-model="singleRoom.bianzhi_num" :disabled="disabled" />
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields>
@@ -142,8 +142,20 @@ export default {
     data() {
         return {
             disabled: false,
-            zoomlevel: 14
+            zoomlevel: 14,
+            leaderLevel: [{
+                text: "机关单位",
+                value: "1"
+            }, {
+                text: "事业单位",
+                value: "2"
+            }, {
+                text: "参公单位",
+                value: "3"
+            }],
+            disabled: false
         };
+
     },
     methods: {},
     created() {
