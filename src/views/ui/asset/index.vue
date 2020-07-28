@@ -814,7 +814,7 @@ export default {
             }
             var context = this;
             //kind=1 means 自由房屋创建和编辑
-            this.selectedRoom.kind = 1;
+            //this.selectedRoom.kind = 1;
             if (this.modalMode == "create") {
                 this.open = !this.open;
                 createRoomApi(this.selectedRoom).then((result) => {
@@ -942,7 +942,6 @@ export default {
     },
 
     created() {
-        console.log(this.kind);
         this.refreshRooms({
             page: 1
         })
