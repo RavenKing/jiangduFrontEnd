@@ -58,10 +58,10 @@
                 <sui-form-field>
                     <sui-dropdown placeholder="性质" selection :options="xingzhiOptions" v-model="singleEntry.priceinfo[index].pricename" />
                 </sui-form-field>
-                <span style="position:absolute;right:0;" v-show="!disabled">
-                    <sui-button style="padding:6px;" circular icon="add" @click.prevent="addOneMore" v-show="index == singleEntry.priceinfo.length - 1" />
+                <span>
+                    <sui-button style="padding:6px;" circular icon="add" @click.prevent="addOneMore" />
                     <sui-button style="padding:6px;" circular icon="minus" @click.prevent="deleteOne(index)" v-show="singleEntry.priceinfo.length > 1" />
-                </span>
+                    </span>
             </sui-form-fields>
         </div>
 

@@ -419,6 +419,27 @@ function listRentRoomAssignmentApi(data)
     return generalRequet(data,constants.listRentRoomAssignmentApi)
 }
 
+function deleteRentRoomAssignmentApi(data)
+{
+    return generalRequet(data,constants.deleteRentRoomAssignmentApi)
+}
+function listLoanAssignmentApi(data)
+{
+    return generalRequet(data,constants.listLoanAssignmentApi)
+}
+function deleteLoanAssignmentApi(data)
+{
+    return generalRequet(data,constants.deleteLoanAssignmentApi)
+}
+function createLoanAssignmentApi(data)
+{
+    return generalRequet(data,constants.createLoanAssignmentApi)
+
+}function editLoanAssignmentApi(data)
+{
+    return generalRequet(data,constants.editLoanAssignmentApi)
+
+}
 
 function generalRequet(data,apiName)
 {
@@ -484,5 +505,9 @@ export {editRentContractApi,
     deleteRentRoomAssignmentApi,
     assignRentRoomApi,
     createLeaderAssignApi,
-    editRentContractDetailApi
+    editRentContractDetailApi,
+    listLoanAssignmentApi,
+    deleteLoanAssignmentApi,
+    createLoanAssignmentApi,
+    editLoanAssignmentApi
 }

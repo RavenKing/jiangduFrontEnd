@@ -25,14 +25,14 @@
                 <sui-input placeholder="房屋地址" v-model="singleRoom.address" :disabled="disabled" />
             </sui-form-field>
         </sui-form-fields>
-        <sui-form-fields>
+        <sui-form-fields inline>
+            <label>土地面积</label>
             <sui-form-field>
-                <label>土地面积</label>
-                <sui-input placeholder="土地面积" v-model="singleRoom.rawspace" :disabled="disabled" />
+                <sui-input placeholder="土地面积" v-model="singleRoom.tudispace" :disabled="disabled" />
             </sui-form-field>
+            <label>建筑面积</label>
             <sui-form-field>
-                <label>建筑面积</label>
-                <sui-input placeholder="建筑面积" v-model="singleRoom.space" :disabled="disabled" />
+                <sui-input placeholder="建筑面积" v-model="singleRoom.jianzhuspace" :disabled="disabled" />
             </sui-form-field>
         </sui-form-fields>
     </sui-form>

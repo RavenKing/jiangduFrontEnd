@@ -48,8 +48,24 @@ function getFileOSSApi(data)
       });
     return http.get(constants.getOSSURLApi+"?key="+data,{ responseType: 'arraybuffer' });
 }
+
+
+function uploadZiliaoFileApi(formData)
+{const http = Axios.create({
+    baseURL: '/load', // api的base_url
+    //withCredentials: true, // 开启跨域身份凭证
+    method: "post",
+    headers: {
+        headers:{'Content-Type':'multipart/form-data'}
+    },
+    timeout: 500000 // request timeout
+  });
+return http.post(constants.uploadZiliaoFileApi,formData);
+
+}
 export {
     getMapLonAndLat,
     uploadFileApi,
-    getFileOSSApi
+    getFileOSSApi,
+    uploadZiliaoFileApi
 }
