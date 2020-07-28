@@ -50,6 +50,12 @@
                     </template>
                     <vuetable-row-header></vuetable-row-header>
                 </template>
+                <div slot="wuchanTudiMianji" slot-scope="props">
+                    {{props.rowData.rawspace-props.rowData.tudispace}}
+                </div>
+                <div slot="wuchanJianZhuMianji" slot-scope="props">
+                    {{props.rowData.space-props.rowData.jianzhuspace}}
+                </div>
                 <div slot="action" slot-scope="props">
 
                     <!-- <sui-button basic color="red"  content="查看" v-on:click="viewSomeThing(props.rowData,'check')" /> -->
