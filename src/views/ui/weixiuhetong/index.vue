@@ -503,6 +503,7 @@ export default {
         refreshHetongList() {
             this.loading = true;
             var context = this;
+            var maxTmp="2020-01-01", minTmp="2020-07-31";
             this.hetongdataNewData = [];
             getMCApi().then((data) => {
                 //this.localData = data.data.data;
@@ -513,6 +514,10 @@ export default {
                 var testData = [];
                 this.hetongdata.data.map((one, index) => {
                     var ganttData = {};
+                    one.starttime = fromShitFormat(one.starttime);
+                    one.endtime = fromShitFormat(one.endtime);
+                    one.plantime = fromShitFormat(one.plantime)
+                    one.planendtime = fromShitFormat(one.planendtime)
                     index = index + 1;
                     switch (one.status) {
                         case 1:
@@ -530,19 +535,21 @@ export default {
                         project_id: one.id,
                         type: "project",
                         name: one.name,
-                        startDate: fromShitFormat(one.starttime),
-                        endDate: fromShitFormat(one.endtime),
-                        realStartDate: fromShitFormat(one.plantime),
-                        realEndDate: fromShitFormat(one.planendtime),
+                        startDate: one.starttime,
+                        endDate: one.endtime,
+                        realStartDate: one.plantime,
+                        realEndDate: one.planendtime,
                         status: one.status,
                         children: []
                     }
-                    if (new Date(ganttData.startDate) < new Date(this.maxStartDate)) {
-                        this.maxStartDate = ganttData.startDate;
+                    if (ganttData.startDate != undefined) {
+                        if (new Date(ganttData.startDate) < new Date(this.maxStartDate)) {
+                            maxTmp = ganttData.startDate;
+                        }
                     }
-                    if (new Date(ganttData.endDate) > new Date(this.minEndDate)) {
-                        this.minEndDate = ganttData.endDate;
-                    }
+                    // if (new Date(ganttData.endDate) > new Date(this.minEndDate)) {
+                    //     minTmp = ganttData.endDate;
+                    // }
                     var lastStep = [];
                     one.step_info.map((child) => {
                         switch (child.status) {
@@ -567,6 +574,16 @@ export default {
                             realEndDate: fromShitFormat(child.planendtime),
                             status: child.status,
                         }
+                        if (childOne.startDate != undefined) {
+                            if (new Date(childOne.startDate) < new Date(this.maxStartDate)) {
+                                maxTmp = childOne.startDate;
+                            }
+                        }
+                        if (childOne.endDate != undefined) {
+                            if (new Date(childOne.endDate) > new Date(this.minEndDate)) {
+                                minTmp = childOne.endDate;
+                            }
+                        }
                         if (childOne.status == "完成") {
                             lastStep.push(childOne);
                         }
@@ -577,7 +594,6 @@ export default {
                         this.maxStartDate = one.starttime;
                         this.minEndDate = one.endtime;
                     }
-                    console.log(lastStep);
                     var lastStepname = "未开始";
                     if (lastStep.length > 0) {
                         lastStepname = lastStep[lastStep.length - 1].name;
@@ -600,6 +616,14 @@ export default {
                     }
 
                 });
+                // this.minEndDate = minTmp;
+                // this.maxTmp = maxTmp;
+                console.log(minTmp);
+                console.log(maxTmp);
+                console.log(this.minEndDate);
+                console.log(this.maxStartDate);
+                this.maxStartDate=maxTmp;
+                this.minEndDate=minTmp;
                 this.hetongdataNewData = testData;
                 this.componentKey++;
                 this.loading = false;

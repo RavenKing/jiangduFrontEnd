@@ -13,7 +13,7 @@
         <div class="vue2Table">
             <vuetable :key="componentKey" ref="vuetable" :api-mode="false" :data="localData" :fields="fields" :sort-order="sortOrder" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
                 <div slot="time" slot-scope="props">
-                    {{props.rowData.starttime}}--{{props.rowData.endtime}}
+                    {{props.rowData.starttime}} 到 {{props.rowData.endtime}}
                 </div>
                 <div slot="statusText" slot-scope="props">
                     <el-tag :type="props.rowData.status==2?'success':'danger'">
@@ -36,7 +36,7 @@
         <div>
             <sui-modal class="modal2" v-model="weixiuForm.open">
                 <sui-modal-header style="border-bottom:0;">
-                    <div style="float:left;">{{modelTitle}}维修</div>
+                    <div style="float:left;">{{modelTitle}}</div>
                 </sui-modal-header>
 
                 <sui-modal-content scrolling>

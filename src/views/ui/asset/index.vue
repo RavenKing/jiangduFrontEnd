@@ -755,7 +755,6 @@ export default {
             getRoomDataApi(payload).then((data) => {
                 //this.localData = data.data.data;
                 if (data.data.code == 0) {
-
                     this.loading = false;
                     this.localData = data.data.data
                 } else if (data.data.code == 2) {
