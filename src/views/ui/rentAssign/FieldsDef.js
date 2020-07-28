@@ -1,39 +1,48 @@
-import moment from 'moment'
 
 export default [
   {
-    name: "roomname",
-    title: '房屋名称',
-    width: "15%"
-  },
-  {
-    name: "address",
-    title: '房屋地址',
-    width: "20%",
-  },
-  {
-    name: "appdate",
-    title: '申报时间',
-    width: "15%",
-    formatter (value) {
-      return moment(value).format("YYYY-MM-DD");
-    }
-  },  {
     name: "unit_name",
     title: '单位',
     width: "15%"
-  },  {
-    name: "contract",
-    title: '单位联系人',
-    width: "15%"
-  },  {
-    name: "tel",
-    title: '电话',
-    width: "15%"
   },
   {
-    name: "statusText",
-    title: '状态',
+    name: "loan_name",
+    title: '原出租单位',
+    width: "20%",
+  },
+  {
+    name: "rent_name",
+    title: '承租方名称',
+    width: "20%",
+  },
+  {
+    name: "address",
+    title: '现实际地址',
+    width: "20%",
+  },
+  {
+    name: "tel",
+    title: '联系电话',
+    width: "20%",
+  },
+  {
+    name: "space",
+    title: '合同面积',
+    width: "20%",
+  },
+  {
+    name: "time",
+    title: '合同起止时间',
+    width: "20%",
+  },
+  {
+    name: "amt",
+    title: '租金',
+    width: "15%",
+  },
+  {
+    name: "memo",
+    title: '备注',
     width: "15%"
   },
   {

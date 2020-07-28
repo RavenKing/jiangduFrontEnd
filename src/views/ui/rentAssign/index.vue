@@ -12,6 +12,9 @@
 
         <div class="vue2Table">
             <vuetable :key="componentKey" ref="vuetable" :api-mode="false" :data="localData" :fields="fields" :sort-order="sortOrder" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
+                <div slot="time" slot-scope="props">
+                    {{props.rowData.starttime}}--{{props.rowData.endtime}}
+                </div>
                 <div slot="statusText" slot-scope="props">
                     <el-tag :type="props.rowData.status==2?'success':'danger'">
                         {{props.rowData.statusText}}
@@ -19,7 +22,7 @@
                 </div>
                 <div slot="action" slot-scope="props">
                     <sui-button text="编辑" basic color="blue" v-on:click="editWeixiuShenqing(props.rowData)">编辑</sui-button>
-                    <!-- <sui-button text="删除" basic color="red" @change="handleChange(props)">删除</sui-button> -->
+                    <sui-button text="删除" basic color="red" v-on:click="handleDelete(props.rowData)">删除</sui-button>
                 </div>
             </vuetable>
             <div class="pagination ui basic segment grid">
@@ -28,17 +31,12 @@
             </div>
         </div>
 
-        <dialog-bar :mode="deleteTarget.mode" ref="dialog" :singleTime="deleteTarget" :commentData="deleteTarget.reason" v-model="sendVal" type="danger" title="确认" :content="deleteTarget.text" v-on:cancel="clickCancel()" @danger="clickConfirmDelete()" @confirm="clickConfirmDelete()" :dangerText="deleteTarget.dangerText">
+        <dialog-bar ref="dialog" :singleTime="deleteTarget" v-model="sendVal" type="danger" title="确认" :content="deleteTarget.text" v-on:cancel="clickCancel()" @danger="clickConfirmDelete()" @confirm="clickConfirmDelete()" :dangerText="deleteTarget.dangerText">
         </dialog-bar>
         <div>
             <sui-modal class="modal2" v-model="weixiuForm.open">
                 <sui-modal-header style="border-bottom:0;">
                     <div style="float:left;">{{modelTitle}}维修</div>
-                    <div style="float:right;">
-                        <h4 style="line-height:25px;" is="sui-header" :color="selectedWeixiu.status==2?'green':'red'">
-                            {{selectedWeixiu.statusText}}
-                        </h4>
-                    </div>
                 </sui-modal-header>
 
                 <sui-modal-content scrolling>
@@ -54,8 +52,8 @@
                     <sui-button basic color="blue" @click.native="createShenbao">
                         保存
                     </sui-button>
-                    <sui-button v-show="role==1&&modalMode=='edit'" color="green" v-on:click="approveContract(selectedWeixiu)">同意</sui-button>
-                    <sui-button v-show="role==1&&modalMode=='edit'" basic color="red" v-on:click="rejectContract(selectedWeixiu)">拒绝</sui-button>
+                    <!-- <sui-button v-show="role==1&&modalMode=='edit'" color="green" v-on:click="approveContract(selectedWeixiu)">同意</sui-button>
+                    <sui-button v-show="role==1&&modalMode=='edit'" basic color="red" v-on:click="rejectContract(selectedWeixiu)">拒绝</sui-button> -->
                 </sui-modal-actions>
             </sui-modal>
         </div>
@@ -64,6 +62,10 @@
 </template>
 
 <script>
+import {
+    fromShitFormat,
+    toShitFormat
+} from "@/util/time"
 import dialogBar from '@/components/MDialogNewV'
 import Vuetable from "vuetable-2/src/components/Vuetable";
 import VuetablePagination from "vuetable-2/src/components/VuetablePagination";
@@ -72,30 +74,24 @@ import FieldsDef from "./FieldsDef.js";
 import constants from "@/util/constants";
 import Fields2 from "./fields2.js";
 import FieldHetong from "./fieldsHetong.js";
-import WeiXiuForm from "@/components/weixiuForm";
+import WeiXiuForm from "@/components/rentAssignForm";
 import * as lang from "vuejs-datepicker/src/locale";
 import {
     localGet
 } from "@/util/storage";
+import store from "@/store";
 import {
     notifySomething,
-    goToLogin
 } from "@/util/utils"
 import {
     listLoanAssignmentApi,
+    createLoanAssignmentApi,
+    editLoanAssignmentApi,
+    deleteLoanAssignmentApi
 } from "@/api/roomDataAPI"
 import {
-    createMRApi,
-    editMRApi,
     getroombyid,
-    createMCApi,
-    approveMRApi,
-    rejectMRApi,
 } from "@/api/weixiuAPI";
-import {
-    getBuildingListApi,
-    getBuildingFloorApi
-} from "@/api/roomDataAPI";
 export default {
     name: "MyVuetable",
     components: {
@@ -142,55 +138,40 @@ export default {
                 rentunit: "",
                 starttime: "",
                 endtime: ""
-            }
+            },
         };
     },
 
     methods: {
+        handleDelete(props) {
+            console.log(props);
+            this.deleteTarget.text = "是否要删除" + props.roomname + "?";
+            this.deleteTarget.id = props.id;
+            this.sendVal = true;
+        },
         clickConfirmDelete() {
             this.loading = true;
             var context = this;
             this.deleteTarget.reason = this.$refs.dialog.commentData;
-            if (this.deleteTarget.mode == "approve") {
-                approveMRApi(this.deleteTarget).then((result) => {
-                    context.loading = false;
-                    if (result.data.code == 0) {
-                        context.closeComfirmDialog();
-                        context.closeWeiXiuForm();
-                        context.$notify({
-                            group: 'foo',
-                            title: '已经同意',
-                            text: '已经同意',
-                            type: "success"
-                        });
-                    } else {
-                        notifySomething(constants.CREATEFAILED, constants.CREATEFAILED, constants.typeError);
-                    }
-                }).catch(function () {
-                    context.loading = false;
-                    notifySomething(constants.CREATEFAILED, constants.CREATEFAILED, constants.typeError);
-                });
-
-            } else if (this.deleteTarget.mode == "reject") {
-                this.loading = false;
-                rejectMRApi(this.deleteTarget).then((result) => {
-                    if (result.data.code == 0) {
-                        context.closeComfirmDialog();
-                        context.$notify({
-                            group: 'foo',
-                            title: '已经拒绝',
-                            text: '已经拒绝',
-                            type: "success"
-                        });
-                    } else {
-                        notifySomething(constants.CREATEFAILED, constants.CREATEFAILED, constants.typeError);
-                    }
-                }).catch(function () {
-                    context.loading = false;
-                    notifySomething(constants.CREATEFAILED, constants.CREATEFAILED, constants.typeError);
-
-                });
-            }
+            deleteLoanAssignmentApi(this.deleteTarget).then((result) => {
+                context.loading = false;
+                if (result.data.code == 0) {
+                    this.refresh();
+                    context.closeComfirmDialog();
+                    context.closeWeiXiuForm();
+                    context.$notify({
+                        group: 'foo',
+                        title: '出租已经删除',
+                        text: '出租已经删除',
+                        type: "success"
+                    });
+                } else {
+                    notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
+                }
+            }).catch(function () {
+                context.loading = false;
+                notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
+            });
 
         },
         openComfirmDialog() {
@@ -201,115 +182,34 @@ export default {
             this.refresh();
             //  this.refresh();
         },
-        approveContract(props) {
-            this.sendVal = true;
-            this.deleteTarget.text = "是否要同意该申请" + props.roomname + "(申请id:" + props.id + ")?";
-            this.deleteTarget.mode = "approve";
-            this.deleteTarget.dangerText = "确认";
-            this.deleteTarget.reason = "无";
-            this.deleteTarget.id = props.id;
-            this.deleteTarget.starttime = "";
-            this.deleteTarget.endtime = "";
-            this.openComfirmDialog();
-        },
-        rejectContract(props) {
-            this.sendVal = true;
-            this.deleteTarget.text = "是否要拒绝该申请" + props.roomname + "(申请id:" + props.id + ")?";
-            this.deleteTarget.mode = "reject";
-            this.deleteTarget.id = props.id;
-            this.deleteTarget.reason = "无";
-            this.deleteTarget.dangerText = "确认";
-            this.openComfirmDialog();
-        },
         editWeixiuShenqing(props) {
-            console.log("editdebug")
             this.selectedWeixiu = props;
             this.modelTitle = "编辑";
             this.loading = true;
-            const context = this;
-            if (this.selectedWeixiu.room_id && this.selectedWeixiu.building_id) {
-                var flooroptions = [];
-                var buildingoptions = [];
-                getBuildingListApi(context.selectedWeixiu).then((data) => {
-                    if (data.data.code != 0) {
-                        notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
-                        this.loading = false;
-                        return;
-                    }
+            this.openWeiXiuForm("edit");
+            this.loading = false;
 
-                    data.data.data.map((one) => {
-                        buildingoptions.push({
-                            text: one.name,
-                            value: one.id,
-                        })
-                    });
-                    context.$refs.weixiuForm.louOptions = buildingoptions;
-                    getBuildingFloorApi(context.selectedWeixiu).then((result) => {
-                        var floors = result.data.data;
-                        floors.map((floor) => {
-                            flooroptions.push({
-                                text: floor.name,
-                                value: floor.id,
-                            })
-                        });
-                        context.$refs.weixiuForm.floorOptions = flooroptions;
-                        this.loading = false;
-                        context.openWeiXiuForm("edit");
-                    }).catch(function () {
-                        this.loading = false;
-                        notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
-                    });
-                }).catch(function () {
-                    this.loading = false;
-                    notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
-                });
-            } else {
-                this.loading = false;
-                context.openWeiXiuForm("edit");
-                notifySomething(constants.GENERALERROR, constants.GENERALERROR + ":数据错误", constants.typeError);
-
-            }
-
-        },
-        createWeiXiuHeTong() {
-            console.log(this.weixiuhetong);
-            this.weixiuhetong.mrlist = [];
-            this.weixiuList.map((one) => {
-                this.weixiuhetong.mrlist.push(one.id);
-            });
-            this.weixiuhetong.memo = "test";
-            this.loading = true;
-            this.closeHetongModal();
-            createMCApi(this.weixiuhetong).then((result) => {
-                this.loading = false;
-                if (result.data.code == 0) {
-                    notifySomething(constants.CREATESUCCESS, constants.CREATESUCCESS, constants.typeSuccess);
-                } else {
-                    notifySomething(constants.CREATEFAILED, constants.CREATEFAILED, constants.typeError);
-                }
-            }).catch(function () {
-                this.loading = false;
-                notifySomething(constants.CREATEFAILED, constants.CREATEFAILED, constants.typeError);
-
-            });
         },
         closeHetongModal() {
             this.open = false;
         },
         createShenbao() {
             this.loading = true;
+            var context = this;
+            this.selectedWeixiu.starttime = toShitFormat(this.selectedWeixiu.starttime)
+            this.selectedWeixiu.endtime = toShitFormat(this.selectedWeixiu.endtime)
             if (this.modalMode == "create") {
-                createMRApi(this.selectedWeixiu).then(() => {
+                createLoanAssignmentApi(this.selectedWeixiu).then(() => {
                     this.loading = false;
                     this.closeWeiXiuForm();
                     this.refresh();
                     notifySomething(constants.CREATESUCCESS, constants.CREATESUCCESS, constants.typeSuccess);
                 }).catch(function () {
-                    this.loading = false;
+                    context.loading = false;
                     notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                 });
             } else if (this.modalMode == "edit") {
-                editMRApi(this.selectedWeixiu).then((result) => {
+                editLoanAssignmentApi(this.selectedWeixiu).then((result) => {
                     if (result.data.code == 0) {
                         this.loading = false;
                         this.closeWeiXiuForm();
@@ -319,7 +219,7 @@ export default {
                         notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                     }
                 }).catch(function () {
-                    this.loading = false;
+                    context.loading = false;
                     notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                 });
             }
@@ -349,13 +249,21 @@ export default {
                     data: data.data.data
                 }
                 this.localData.data.map((one) => {
+                    var unitBasics = store.getters.unit.unitBasic
+                    if (unitBasics.length > 0) {
+                        unitBasics.map((unit) => {
+                            if (unit.value == one.unit_id) {
+                                one.unit_name = unit.text;
+                            }
+                        })
+                    }
+                    one.starttime = fromShitFormat(one.starttime)
+                    one.endtime = fromShitFormat(one.endtime)
                     getroombyid(one).then((result) => {
                         console.log(result);
                         if (result.data.code == 0) {
                             one.roomname = result.data.data.roomname;
                             one.address = result.data.data.address;
-                            console.log(one.address);
-                            console.log(this.localData.data);
                             this.componentKey++;
                         }
                     }).catch(function () {
@@ -405,72 +313,10 @@ export default {
         },
         onChangePage(page) {
             this.$refs.vuetable.changePage(page);
-        }
+        },
     },
     created() {
-        //this.localData = data.data.data;
-        this.role = localGet("role");
-        this.loading = true;
-        var context = this;
-        let params = {};
-        if (this.role == 1) {
-            params = {
-                status: constants.STATUSNEW
-            }
-        }
-        listLoanAssignmentApi(params).then((data) => {
-
-            if (data.data.code == 2) {
-                notifySomething("重复登陆 请重新登陆", constants.GENERALERROR, constants.typeError);
-                goToLogin();
-                this.$router.push("/login");
-            }
-            //this.localData = data.data.data;
-            this.loading = false;
-            this.localData = {
-                total: 16,
-                per_page: 5,
-                current_page: 1,
-                last_page: 4,
-                next_page_url: "data.data.data?page=2",
-                prev_page_url: null,
-                from: 1,
-                to: 5,
-                data: data.data.data
-            }
-            this.localData.data.map((one) => {
-                getroombyid(one).then((result) => {
-                    console.log(result);
-                    if (result.data.code == 0) {
-                        one.roomname = result.data.data.roomname;
-                        one.address = result.data.data.address;
-                        this.componentKey++;
-                    } else {
-                        notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
-                    }
-                }).catch(function () {
-                    this.loading = false;
-                    notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
-                });
-                switch (one.status) {
-                    case 1:
-                        one.statusText = constants.NEW;
-                        break;
-                    case 2:
-                        one.statusText = constants.PASS;
-                        break;
-                    case 3:
-                        one.statusText = constants.FAIL;
-                        break;
-                    default:
-                        break;
-                }
-            });
-        }).catch(function () {
-            context.loading = false;
-            notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
-        });
-
+        this.refresh();
     }
 };
 </script>

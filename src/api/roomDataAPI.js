@@ -418,7 +418,15 @@ function deleteLoanAssignmentApi(data)
 {
     return generalRequet(data,constants.deleteLoanAssignmentApi)
 }
+function createLoanAssignmentApi(data)
+{
+    return generalRequet(data,constants.createLoanAssignmentApi)
 
+}function editLoanAssignmentApi(data)
+{
+    return generalRequet(data,constants.editLoanAssignmentApi)
+
+}
 
 function generalRequet(data,apiName)
 {
@@ -486,5 +494,7 @@ export {editRentContractApi,
     createLeaderAssignApi,
     editRentContractDetailApi,
     listLoanAssignmentApi,
-    deleteLoanAssignmentApi
+    deleteLoanAssignmentApi,
+    createLoanAssignmentApi,
+    editLoanAssignmentApi
 }

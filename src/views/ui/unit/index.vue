@@ -819,9 +819,6 @@ export default {
         })
 
         var tree_list = [];
-
-        console.log(store.getters.unit.unit.length);
-
         if (store.getters.unit.unit.length > 0) {
             this.loading = false;
             this.tree = new Tree(store.getters.unit.unit);
@@ -857,10 +854,7 @@ export default {
                 var parent_data = []
                 var son_data = []
                 var filtered_data = []
-                console.log('unit list')
-                console.log(res_data)
                 this.selectedfenpei['unitoptions'] = []
-
                 for (var i = res_data.length - 1; i >= 0; i--) {
                     res_data[i]['bianzhi_num'] = 0
                     res_data[i]['shiji_num'] = 0
