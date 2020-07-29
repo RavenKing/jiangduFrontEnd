@@ -94,7 +94,7 @@
                                             </model-select>
                                         </sui-form-field>
                                         <sui-form-field required :error="validationCheck.space">
-                                            <sui-input type="text" placeholder="输入面积" v-model="selectedRoom.space_assign" type="number" />
+                                            <sui-input placeholder="输入面积" v-model="selectedRoom.space_assign" type="number" />
                                         </sui-form-field>
                                         <sui-button basic color="blue" icon="add" content="添加单位" @click.prevent="assignRentRoom()" />
                                     </sui-form-fields>
