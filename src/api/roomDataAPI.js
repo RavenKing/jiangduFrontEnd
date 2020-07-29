@@ -419,10 +419,10 @@ function listRentRoomAssignmentApi(data)
     return generalRequet(data,constants.listRentRoomAssignmentApi)
 }
 
-function deleteRentRoomAssignmentApi(data)
-{
-    return generalRequet(data,constants.deleteRentRoomAssignmentApi)
-}
+// function deleteRentRoomAssignmentApi(data)
+// {
+//     return generalRequet(data,constants.deleteRentRoomAssignmentApi)
+// }
 function listLoanAssignmentApi(data)
 {
     return generalRequet(data,constants.listLoanAssignmentApi)
