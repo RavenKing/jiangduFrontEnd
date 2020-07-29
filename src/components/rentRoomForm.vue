@@ -24,7 +24,7 @@
             </sui-form-field>
             <sui-form-field>
                 <label>建筑面积</label>
-                <sui-input placeholder="建筑面积" v-model="singleRoom.space" />
+                <sui-input placeholder="建筑面积" v-model="singleRoom.space" type="number" />
             </sui-form-field>
         </sui-form-fields>
     </sui-form>

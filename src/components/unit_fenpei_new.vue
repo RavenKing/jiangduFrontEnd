@@ -41,12 +41,12 @@
     <sui-form-fields v-if="checked_node == true && singleRoom.roomtype == '1'" style="margin-top:15px;">
             <sui-form-field v-for="fenpei in fenpei_data" inline>
                 <label>   {{fenpei.name}}    </label>
-                <sui-input  placeholder="面积" v-model="fenpei.space" width="800px"/>
+                <sui-input  placeholder="面积" v-model="fenpei.space" width="800px" type="number" />
             </sui-form-field inline>
             
         </sui-form-fields>
         <sui-form-fields v-if="singleRoom.roomtype == '2'">
-            <sui-input  placeholder="面积" v-model="rentspace" width="800px"/>
+            <sui-input  placeholder="面积" v-model="rentspace" width="800px" type="number" />
         </sui-form-fields>    
 </div>
 </template>

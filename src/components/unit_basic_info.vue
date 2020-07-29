@@ -28,7 +28,7 @@
         <sui-form-fields>
             <sui-form-field inline>
                 <label>编制人数</label>
-                <sui-input  :placeholder="singleRoom.bianzhi_num" :disabled="disabled" />
+                <sui-input  :placeholder="singleRoom.bianzhi_num" :disabled="disabled" type="number" />
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields>
@@ -39,43 +39,43 @@
             </sui-form-field> -->
             <sui-form-field inline>
                 <label>正局</label>
-                <sui-input placeholder="正局" v-model="singleRoom.zhengju" :disabled="disabled" />
+                <sui-input placeholder="正局" v-model="singleRoom.zhengju" :disabled="disabled" type="number" />
             </sui-form-field>
             <sui-form-field inline>
                 <label>副局</label>
-                <sui-input placeholder="副局" v-model="singleRoom.fuju" :disabled="disabled" />
+                <sui-input placeholder="副局" v-model="singleRoom.fuju" :disabled="disabled" type="number" />
             </sui-form-field>
         
             <sui-form-field inline>
                 <label>正处</label>
-                <sui-input placeholder="正处" v-model="singleRoom.zhengchu" :disabled="disabled" />
+                <sui-input placeholder="正处" v-model="singleRoom.zhengchu" :disabled="disabled" type="number" />
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields>
             <sui-form-field inline>
                 <label>副处</label>
-                <sui-input placeholder="副处" v-model="singleRoom.fuchu" :disabled="disabled" />
+                <sui-input placeholder="副处" v-model="singleRoom.fuchu" :disabled="disabled" type="number" />
             </sui-form-field>
             <sui-form-field inline>
                 <label>正科</label>
-                <sui-input placeholder="正科" v-model="singleRoom.zhengke" :disabled="disabled" />
+                <sui-input placeholder="正科" v-model="singleRoom.zhengke" :disabled="disabled" type="number" />
             </sui-form-field>
             <sui-form-field inline>
                 <label>副科</label>
-                <sui-input placeholder="副科" v-model="singleRoom.fuke" :disabled="disabled" />
+                <sui-input placeholder="副科" v-model="singleRoom.fuke" :disabled="disabled" type="number" />
             </sui-form-field>
             
         </sui-form-fields>
         <sui-form-fields style="border-bottom: 1px solid rgba(34,36,38,.15); padding-bottom: 15px;">
             <sui-form-field inline>
                 <label>其他</label>
-                <sui-input placeholder="其他" v-model="singleRoom.other" :disabled="disabled" />
+                <sui-input placeholder="其他" v-model="singleRoom.other" :disabled="disabled" type="number" />
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields>
             <sui-form-field inline>
                 <label>实际人数</label>
-                <sui-input  :placeholder="singleRoom.shiji_num" :disabled="disabled" />
+                <sui-input  :placeholder="singleRoom.shiji_num" :disabled="disabled" type="number" />
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields>
@@ -85,36 +85,36 @@
             </sui-form-field> -->
             <sui-form-field inline>
                 <label>正局</label>
-                <sui-input placeholder="正局" v-model="singleRoom.zhengju_r" :disabled="disabled" />
+                <sui-input placeholder="正局" v-model="singleRoom.zhengju_r" :disabled="disabled" type="number" />
             </sui-form-field>
             <sui-form-field inline>
                 <label>副局</label>
-                <sui-input placeholder="副局" v-model="singleRoom.fuju_r" :disabled="disabled" />
+                <sui-input placeholder="副局" v-model="singleRoom.fuju_r" :disabled="disabled" type="number" />
             </sui-form-field>
         
             <sui-form-field inline>
                 <label>正处</label>
-                <sui-input placeholder="正处" v-model="singleRoom.zhengchu_r" :disabled="disabled" />
+                <sui-input placeholder="正处" v-model="singleRoom.zhengchu_r" :disabled="disabled" type="number" />
             </sui-form-field>
             </sui-form-fields>
         <sui-form-fields>    
             <sui-form-field inline>
                 <label>副处</label>
-                <sui-input placeholder="副处" v-model="singleRoom.fuchu_r" :disabled="disabled" />
+                <sui-input placeholder="副处" v-model="singleRoom.fuchu_r" :disabled="disabled" type="number" />
             </sui-form-field>
             <sui-form-field inline>
                 <label>正科</label>
-                <sui-input placeholder="正科" v-model="singleRoom.zhengke_r" :disabled="disabled" />
+                <sui-input placeholder="正科" v-model="singleRoom.zhengke_r" :disabled="disabled" type="number" />
             </sui-form-field>
             <sui-form-field inline>
                 <label>副科</label>
-                <sui-input placeholder="副科" v-model="singleRoom.fuke_r" :disabled="disabled" />
+                <sui-input placeholder="副科" v-model="singleRoom.fuke_r" :disabled="disabled" type="number" />
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields>
             <sui-form-field inline>
                 <label>其他</label>
-                <sui-input placeholder="其他" v-model="singleRoom.other_r" :disabled="disabled" />
+                <sui-input placeholder="其他" v-model="singleRoom.other_r" :disabled="disabled" type="number" />
             </sui-form-field>
         </sui-form-fields>
     </sui-form>
@@ -155,11 +155,12 @@ export default {
     height: 400px;
 }
 .ui.form .field label {
-    display: block !important;
+    /* display: block !important; */
     margin: 0 0 .28571429rem 0 !important;
     color: rgba(0,0,0,.87);
     font-size: .92857143em;
     font-weight: 700;
     text-transform: none;
+    margin-right: 10px !important;
 }
 </style>

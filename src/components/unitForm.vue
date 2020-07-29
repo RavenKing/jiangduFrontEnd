@@ -8,7 +8,7 @@
             </sui-form-field>
             <sui-form-field>
                 <label>单位人数</label>
-                <sui-input placeholder="单位人数" v-model="singleUnit.enumber" :disabled="disabled"/>
+                <sui-input placeholder="单位人数" v-model="singleUnit.enumber" :disabled="disabled" type="number"/>
             </sui-form-field>
             <sui-form-field>
                 <label>正厅</label>
@@ -34,7 +34,7 @@
             </sui-form-field>
             <sui-form-field>
                 <label>各个级别人数</label>
-                <sui-input placeholder="各个级别人数" v-model="singleUnit.level_num" :disabled="disabled"/>
+                <sui-input placeholder="各个级别人数" v-model="singleUnit.level_num" :disabled="disabled" type="number"/>
             </sui-form-field>
             <sui-form-field>
                 <label>正科</label>
@@ -51,7 +51,7 @@
             <sui-form-field>
 
                 <label>各个级别人数</label>
-                <sui-input placeholder="各个级别人数" v-model="singleUnit.level_num" :disabled="disabled"/>
+                <sui-input placeholder="各个级别人数" v-model="singleUnit.level_num" :disabled="disabled" type="number"/>
             </sui-form-field>
         </sui-form-fields>
     </sui-form>

@@ -19,10 +19,10 @@
                         <vue-tree-list class="addListIcon" :key="componentKey" @click="onClick" :model="tree" default-tree-node-name="new node" default-leaf-node-name="new leaf" v-bind:default-expanded="false">
                             <span class="icon" slot="addTreeNodeIcon"></span>
                             <span class="icon" slot="addLeafNodeIcon"></span>
-                            <span class="icon" slot="leafNodeIcon">
+                            <span class="icon" style="display:none" slot="leafNodeIcon">
                                 <sui-icon name="home" />
                                 </span>
-                            <span class="icon" slot="treeNodeIcon">
+                            <span class="icon" style="display:none" slot="treeNodeIcon">
                                 <sui-icon name="building outline" /></span>
                         </vue-tree-list>
                     </div>
@@ -1017,6 +1017,11 @@ export default {
 .vuetable-head-wrapper table.vuetable th.sortable {
     cursor: pointer
 }
+.addListIcon{
+    overflow-y: auto;
+    max-height: 690px;
+    background: #f9f9f9;
+}
 .addListIcon .vtl{
     position: relative;
     /* padding-left: 26px; */
@@ -1027,20 +1032,24 @@ export default {
     top: 5px;
     left: 10px; */
     float: left;
+    margin-left: 10px !important;
 }
 .addListIcon .vtl-node-main{
     display: block;
 }
 .addListIcon .vtl-node-content{
-    padding-left: 34px;
+    padding-left: 20px;
 }
 .addListIcon .vtl-tree-margin .vtl-node-content{
-    padding-left: 20px;
+    padding-left: 35px;
 }
 .ui.modal .scrolling.content{
     max-height:none !important;
 }
 .addListIcon .vtl-node-main .vtl-caret{
+    margin: 0;
+}
+.addListIcon .vtl-tree-margin{
     margin: 0;
 }
 </style>

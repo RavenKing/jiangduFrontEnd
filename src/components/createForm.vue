@@ -2,57 +2,57 @@
 <div>
         <sui-form>
             <sui-form-fields>
-                <sui-form-field>
+                <sui-form-field style="width:25%;">
                     <label>房屋名称</label>
                     <sui-input placeholder="房屋名称" v-model="singleRoom.roomname" :disabled="disabled" />
                 </sui-form-field>
-                <sui-form-field>
+                <sui-form-field style="width:25%;">
                     <label>所属区域</label>
                     <sui-input placeholder="所属区域" v-model="singleRoom.area" disabled />
                 </sui-form-field>
-                <sui-form-field>
+                <sui-form-field style="width:25%;">
                     <label>建造年代</label>
                     <sui-input placeholder="建造年代" v-model="singleRoom.age" :disabled="disabled" type="number"/>
                 </sui-form-field>
-                <sui-form-field>
+                <sui-form-field style="width:25%;">
                     <label>房屋用途</label>
                     <sui-dropdown placeholder="房屋用途" selection :options="yongtuOptions" v-model="singleRoom.usage1" />
                 </sui-form-field>
             </sui-form-fields>
             <sui-form-fields>
-                <sui-form-field>
+                <sui-form-field style="width:25%;">
                     <label>竣工日期</label>
                     <datepicker :value="singleRoom.built_date" v-model="singleRoom.built_date" :language="lang['zh']"></datepicker>
                 </sui-form-field>
-                <sui-form-field>
+                <sui-form-field style="width:25%;">
                     <label>房屋地址</label>
                     <sui-input placeholder="房屋地址" v-model="singleRoom.address" :disabled="disabled" />
                 </sui-form-field>
-                <sui-form-field>
+                <sui-form-field style="width:25%;">
                     <label>结构类型</label>
                     <sui-dropdown placeholder="结构类型" selection :options="jiegouoptions" v-model="singleRoom.jiegou" />
                 </sui-form-field>
             </sui-form-fields>
             <sui-form-fields>
-                <sui-form-field>
+                <sui-form-field style="width:25%;">
                     <label>建筑面积</label>
-                    <sui-input placeholder="建筑面积" v-model="singleRoom.space" :disabled="disabled" />
+                    <sui-input placeholder="建筑面积" v-model="singleRoom.space" :disabled="disabled" type="number" />
                 </sui-form-field>
-                <sui-form-field>
+                <sui-form-field style="width:25%;">
                     <label>土地面积</label>
-                    <sui-input placeholder="土地面积" v-model="singleRoom.rawspace" :disabled="disabled" />
+                    <sui-input placeholder="土地面积" v-model="singleRoom.rawspace" :disabled="disabled" type="number" />
                 </sui-form-field>
             </sui-form-fields>
             <sui-form-fields>
-                <sui-form-field>
+                <sui-form-field style="width:25%;">
                     <sui-checkbox label="是否机关局统一管理" toggle v-model="singleRoom.isunimanage" />
                 </sui-form-field>
-                <sui-form-field>
+                <sui-form-field style="width:25%;">
                     <sui-checkbox label="是否有产证" toggle v-model="singleRoom.hasproperty" />
                 </sui-form-field>
             </sui-form-fields>
             <sui-form-fields>
-                <sui-form-field>
+                <sui-form-field style="width:25%;">
                     <sui-checkbox label="是否入账" toggle v-model="singleRoom.inaccount" />
                 </sui-form-field>
             </sui-form-fields>

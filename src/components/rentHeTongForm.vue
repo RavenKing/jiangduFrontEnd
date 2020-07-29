@@ -91,9 +91,9 @@
                 <sui-input placeholder="总价" v-model="totalPrice"  :readonly="disabled" />
             </sui-form-field>
             <sui-form-field style="padding-top:24px;">
-                <sui-button animated="vertical" @click.prevent="calculateTotal">
-                    <sui-button-content hidden>刷新</sui-button-content>
-                    <sui-button-content visible>
+                <sui-button style="height:36px;line-height:36px;" animated="vertical" @click.prevent="calculateTotal">
+                    <sui-button-content style="height:36px;line-height:36px;" hidden>刷新</sui-button-content>
+                    <sui-button-content style="height:36px;line-height:36px;" visible>
                         <sui-icon name="refresh" />
                     </sui-button-content>
                 </sui-button>

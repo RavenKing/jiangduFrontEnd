@@ -151,7 +151,7 @@
                                     <zichan-form ref='zichanForm' :singleRoom="selectedRoom"></zichan-form>
                                 </div>
                             </sui-tab-pane>
-                            <sui-tab-pane title="房屋面积" :attached="false">
+                            <sui-tab-pane title="房屋面积" :attached="false" style="max-height:600px;overflow-y: auto;">
                                 <mianji-form ref='mianjiForm' :singleRoom="selectedRoom"></mianji-form>
                             </sui-tab-pane>
                             <sui-tab-pane title="楼层管理" :attached="false">
