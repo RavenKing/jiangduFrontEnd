@@ -39,6 +39,7 @@ const constantsJinhui = {
     getOSSURLApi:hostname+"/getpdf",
     updateFloorApi:hostname+"/editbuildingfloor",
     deleteBuildingFloorAssignmentApi:hostname+"/delassignroom",
+    deleteRentRoomAssignmentApi: hostname+"/delassignrentroom",
     assignRentRoomApi: hostname+"/assignrentroom",
     //MR request
     getMRAPI:"/listmr",
@@ -53,13 +54,19 @@ const constantsJinhui = {
     approveMRApi:"/approvemr",
     rejectMRApi:"/rejectmr",
     delleaderroomApi:"/delleaderroom",
-    deleteRentRoomAssignmentApi:"/delassignroom",
+    // deleteRentRoomAssignmentApi:"/delassignroom",
     createLeaderAssignApi:"/assignleaderroom",
     editRentContractDetailApi:"/editrentcontractdetail",
     delProjectApi:"/delproj",
     delStepApi:"/delprojectdetail",
     markStepApi:"/markprojectdetail",
-    editStepApi:"/editprojectdetail"
+    editStepApi:"/editprojectdetail",
+    editRentContractApi:"/editrentcontract",
+    listLoanAssignmentApi:"/listloanassignment",
+    deleteLoanAssignmentApi:"/delloanassignment",
+    uploadZiliaoFileApi:"/upload",
+    createLoanAssignmentApi:"/createloanassignment",
+    editLoanAssignmentApi:"/editloanassignment"
     
 }
 export default constantsJinhui;

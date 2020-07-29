@@ -32,6 +32,7 @@ function addUserRouter(data) {
         icon:item.icon,
         path: item.url, // 路由路径名
         name: item.id, // 命名路由 用于配合菜单简洁跳转
+        props:item.params,
         meta: {
           purview: item.permissions,
           code: item.code,

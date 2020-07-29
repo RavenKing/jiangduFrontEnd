@@ -28,7 +28,7 @@ function registerRouteGuard() {
       }
       // 没过期自动登录
       store.dispatch('app/setToken', local_auth)
-      // 判断当前用户是否已拉取权限菜单
+      // 判断当前用户是否已拉取权限菜单 
       if (store.getters.menu.length === 0) {
         getMenuDataApi()
           .then(({ data }) => {
@@ -75,19 +75,26 @@ function registerRouteGuard() {
             addUserRouter(_menu);
             // 整理菜单数据
             store.dispatch('menu/setUserMenu', _menu)
-
+              //get some basic info 
             getUnitApi().then((test)=>{
-              if(test.data.code==2)
+              if(test.data.code==0)
               {
-                store.dispatch('app/setToken', '')
-                localDel(project_key);
-                next({
-                  path: "/login"
-                });
-                return;
+                var options=[];
+                getUnitApi().then((data) => {
+                  var res_data = data.data.data
+                  for (var i = res_data.length - 1; i >= 0; i--) {
+                    options.push({
+                          'text': res_data[i]['name'],
+                          'value': res_data[i]['id']
+                      })
+                  }
+              });
+                store.dispatch('unit/setUnitBASIC', options)
               }
-              
             });
+
+
+
             next({ ...to, replace: true });
           })
           .catch();

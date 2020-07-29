@@ -21,6 +21,7 @@
 </template>
 
 <script>
+import store from "@/store";
 import {
     mapActions
 } from "vuex";
@@ -87,6 +88,9 @@ export default {
             this.setKeepPage([], true);
             this.setCurrentPage("");
             localDel(this.GLOBAL.project_key);
+            store.dispatch('menu/setUserMenuList', []);
+            store.dispatch('menu/setUserMenu', []);
+
             this.$router.push("/login");
         },
         ...mapActions("app", ["setToken"]),

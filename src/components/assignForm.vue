@@ -8,7 +8,7 @@
             </sui-form-field>
             <sui-form-field>
                 <label>面积</label>
-                <sui-input placeholder="面积" v-model="singleAssignment.space" />
+                <sui-input placeholder="面积" v-model="singleAssignment.space" type="number" />
             </sui-form-field>
 
         </sui-form-fields>

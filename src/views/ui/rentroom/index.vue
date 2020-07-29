@@ -53,7 +53,7 @@
         <dialog-bar v-model="sendVal" type="danger" title="是否要删除" :content="deleteTarget.text" v-on:cancel="clickCancel()" @danger="clickConfirmDelete()" @confirm="clickConfirmDelete()" dangerText="确认删除"></dialog-bar>
         <div>
             <sui-modal class="modal2" v-model="open">
-                <sui-modal-content scrolling>
+                <sui-modal-content scrolling class="modalStep">
                     <div>
                         <sui-tab :menu="{ attached: false }" :active-index.sync="defaultTab">
                             <sui-tab-pane title="基本信息" :attached="false">
@@ -61,13 +61,19 @@
                                     <rentroom-form :singleRoom="selectedRoom"></rentroom-form>
                                 </div>
                             </sui-tab-pane>
-                            <sui-tab-pane title="合同信息" :attached="false" :disabled="!editMode" :key="componentFenpeikey">
+                            <sui-tab-pane title="合同信息" :attached="false">
+                                <sui-dimmer :active="loading" inverted>
+                                    <sui-loader content="Loading..." />
+                                </sui-dimmer>
                                 <div>
                                     <!-- <sui-dropdown placeholder="选择合同(默认最新)" selection :options="listContract" v-model="selectedRoomContract.id" @input="changeContract" /> -->
-                                    <sui-button basic color="blue" @click="changeMode">新建</sui-button>
-                                    <contract-form style="margin-top:15px;" :singleEntry="selectedRoomContract" :mianji="selectedRoom.value" :disabled="!(selectedRoomContract.mode&&selectedRoomContract.mode=='new')"></contract-form>
-                                    <div v-show="selectedRoomContract.mode&&selectedRoomContract.mode=='new'">
-                                        <sui-button content="创建新合同" v-on:click="createRentContract()" />
+                                    <!-- <sui-button basic color="blue" @click="changeMode">编辑</sui-button> -->
+                                    <div v-show="selectedRoomContract.mode!='initial'">
+                                        <contract-form style="margin-top:15px;" :singleEntry="selectedRoomContract" :mianji="selectedRoom.value" :disabled="false"></contract-form>
+                                    </div>
+                                    <div>
+                                        <sui-button content="创建新合同" v-on:click="emptyRentContract()" />
+                                        <!-- <sui-button content="保存" v-on:click="createRentContract()" /> -->
                                     </div>
                                 </div>
                             </sui-tab-pane>
@@ -153,6 +159,7 @@ import Vuetable from "vuetable-2/src/components/Vuetable";
 import VuetablePagination from "vuetable-2/src/components/VuetablePagination";
 import FieldsDef from "./FieldsDef.js";
 import FieldsAssign from "./FieldsForAssign.js";
+
 import rentHeTongForm from "@/components/rentHeTongForm";
 import {
     ModelSelect
@@ -161,6 +168,7 @@ import {
     export_json_to_excel
 } from "@/util/Export2Excel";
 import constants from "@/util/constants";
+
 import {
     getRentRoomDataApi,
     createRentRoomApi,
@@ -172,10 +180,12 @@ import {
     getUnitApi,
     listRentRoomAssignmentApi,
     deleteRentRoomAssignmentApi,
-    editRentContractDetailApi
+    editRentContractDetailApi,
+    editRentContractApi
 } from "@/api/roomDataAPI";
 import {
-    notifySomething
+    notifySomething,
+    goToLogin
 } from "@/util/utils"
 export default {
     name: "MyVuetable",
@@ -212,7 +222,9 @@ export default {
             defaultTab: 0,
             point: {},
             selectedRoom: {},
-            selectedRoomContract: {},
+            selectedRoomContract: {
+                mode: "initial"
+            },
             deleteTarget: "",
             loading: true,
             localData: [],
@@ -238,6 +250,16 @@ export default {
     },
 
     methods: {
+        emptyRentContract() {
+            this.selectedRoomContract = {
+                mode: 'new',
+                priceinfo: [{
+                    pricename: "",
+                    price: "",
+                    space: "",
+                }]
+            }
+        },
         changeUnit() {
             let count = 0;
             this.selectedRoom.assignList.map((one) => {
@@ -261,14 +283,23 @@ export default {
 
         },
         changeMode() {
-            this.selectedRoomContract = {
-                mode: "new",
-                priceinfo: [{
-                    pricename: "",
-                    price: "",
-                    space: "",
-                }]
-            }
+            // this.loading = true;
+            // if (this.listContract.length > 0) {
+            //     this.loading = false;
+
+            //     this.selectedRoomContract.mode = "edit";
+            //     this.selectedRoomContract.modeDisable = true;
+            // } else {
+            //     this.selectedRoomContract.mode = "new";
+            // }
+            // this.selectedRoomContract = {
+            //     mode: "new",
+            //     priceinfo: [{
+            //         pricename: "",
+            //         price: "",
+            //         space: "",
+            //     }]
+            // }
         },
         setFirstPoint(pois) {
             this.point = pois[0].point;
@@ -290,7 +321,8 @@ export default {
             var nPayload = {
                 room_id: this.selectedRoom.id,
                 space: this.selectedRoom.space_assign,
-                unit_id: this.selectedRoom.unit_id
+                unit_id: this.selectedRoom.unit_id,
+                type: 2
             }
             assignRentAssignmentApi(nPayload).then((result) => {
                 this.loading = false;
@@ -299,11 +331,11 @@ export default {
                     this.loading = true;
                     this.refreshAssignment();
                 } else {
-                    notifySomething(constants.FEIPEICREATEFAILED, constants.FEIPEICREATEFAILED + result.data.code, constants.typeError);
+                    notifySomething(constants.FEIPEICREATEFAILED, constants.FEIPEICREATEFAILED + result.data.data, constants.typeError);
                 }
             }).catch(function () {
                 this.loading = false;
-                notifySomething(constants.FEIPEICREATEFAILED, constants.FEIPEICREATEFAILED  + "房屋已分配或者面积不足", constants.typeError);
+                notifySomething(constants.FEIPEICREATEFAILED, constants.FEIPEICREATEFAILED + "房屋已分配或者面积不足", constants.typeError);
             });
 
         },
@@ -372,45 +404,85 @@ export default {
         createRentContract: function () {
             this.selectedRoomContract.room_id = this.selectedRoom.id;
             var context = this;
-            console.log(this.selectedRoomContract);
-            createRentContractApi(this.selectedRoomContract).then((result) => {
-                this.closeModal();
-                if (result.data.code == 0) {
-                    getRentRoomContractListApi({
-                        room_id: this.selectedRoom.id
-                    }).then((result) => {
-                        var latestOne = result.data.data.length;
-                        this.selectedRoomContract.contract_id = result.data.data[latestOne - 1].id;
+            this.selectedRoomContract.rule = JSON.stringify({
+                type: 1,
+                rate: this.selectedRoomContract.rate,
+                year: this.selectedRoomContract.year
+            })
+            if (this.selectedRoomContract.mode != "new") {
+                editRentContractApi(this.selectedRoomContract).then((result) => {
+                    //this.closeModal();
+                    if (result.data.code == 0) {
+                        this.loading = false;
                         editRentContractDetailApi({
-                            contract_id: this.selectedRoomContract.contract_id,
+                            contract_id: this.selectedRoomContract.id,
                             valuelist: JSON.stringify(this.selectedRoomContract.priceinfo)
                         }).then((result) => {
                             if (result.data.code == 0) {
-                                notifySomething("'创建合同成功'", '创建合同成功', 'success');
+                                notifySomething("编辑合同成功", '编辑合同成功', 'success');
                             } else {
-                                notifySomething("'创建合同失败'", '创建合同失败', 'error');
+                                notifySomething("编辑合同失败", '编辑合同失败', 'error');
                             }
                         })
-                        this.loading = false;
-                    })
 
-                } else {
+                    } else {
+                        context.$notify({
+                            group: 'foo',
+                            title: '编辑合同失败',
+                            text: '编辑合同失败',
+                            type: "error"
+                        });
+
+                    }
+                }).catch(function () {
+                    context.$notify({
+                        group: 'foo',
+                        title: '编辑合同失败',
+                        text: '编辑合同失败',
+                        type: "error"
+                    });
+                });
+            } else if (this.selectedRoomContract.mode == "new") {
+                createRentContractApi(this.selectedRoomContract).then((result) => {
+                    this.closeModal();
+                    if (result.data.code == 0) {
+                        getRentRoomContractListApi({
+                            room_id: this.selectedRoom.id
+                        }).then((result) => {
+                            var latestOne = result.data.data.length;
+                            this.selectedRoomContract.contract_id = result.data.data[latestOne - 1].id;
+                            editRentContractDetailApi({
+                                contract_id: this.selectedRoomContract.contract_id,
+                                valuelist: JSON.stringify(this.selectedRoomContract.priceinfo)
+                            }).then((result) => {
+                                if (result.data.code == 0) {
+                                    notifySomething("'创建合同成功'", '创建合同成功', 'success');
+                                } else {
+                                    notifySomething("'创建合同失败'", '创建合同失败', 'error');
+                                }
+                            })
+                            this.loading = false;
+                        })
+
+                    } else {
+                        context.$notify({
+                            group: 'foo',
+                            title: '创建合同失败',
+                            text: '创建合同失败',
+                            type: "error"
+                        });
+
+                    }
+                }).catch(function () {
                     context.$notify({
                         group: 'foo',
                         title: '创建合同失败',
                         text: '创建合同失败',
                         type: "error"
                     });
-
-                }
-            }).catch(function () {
-                context.$notify({
-                    group: 'foo',
-                    title: '创建合同失败',
-                    text: '创建合同失败',
-                    type: "error"
                 });
-            });
+
+            }
 
         },
         viewSomeThing(data) {
@@ -446,13 +518,19 @@ export default {
                 getRentRoomContractListApi({
                     room_id: this.selectedRoom.id
                 }).then((result) => {
-
                     var latestOne = result.data.data.length;
                     if (latestOne == 0) {
-                        this.selectedRoomContract = {}
+                        this.selectedRoomContract = {
+                            mode: "initial"
+                        }
                     } else {
                         this.listContract = [];
                         this.selectedRoomContract = result.data.data[latestOne - 1];
+                        var rule = JSON.parse(this.selectedRoomContract.rule);
+                        if (rule != null) {
+                            this.selectedRoomContract.rate = rule.rate;
+                            this.selectedRoomContract.year = rule.year;
+                        }
                         result.data.data.map((one) => {
                             this.listContract.push({
                                 value: one.id,
@@ -504,8 +582,15 @@ export default {
         refreshRooms(payload) {
             this.loading = true;
             getRentRoomDataApi(payload).then((data) => {
-                this.loading = false;
-                this.localData = data.data.data
+
+                if (data.data.code == 0) {
+                    this.loading = false;
+                    this.localData = data.data.data
+                } else if (data.data.code == 2) {
+                    notifySomething("重复登陆 请重新登陆", constants.GENERALERROR, constants.typeError);
+                    goToLogin();
+                    this.$router.push("/login");
+                }
             }).catch(function () {
                 this.loading = false;
                 notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
@@ -521,9 +606,14 @@ export default {
             };
         },
         toggle() {
-            this.open = !this.open;
             this.loading = true;
-            console.log(this.editMode);
+            if (this.defaultTab == 1) {
+                this.createRentContract();
+                return;
+            }
+
+            this.open = !this.open;
+
             if (!this.editMode) {
                 createRentRoomApi(this.selectedRoom).then((result) => {
                     console.log(result);
@@ -531,16 +621,27 @@ export default {
                         page: 1
                     });
                     this.loading = false;
-                    notifySomething(constants.CREATESUCCESS, constants.CREATESUCCESS, constants.typeSuccess);
+                    if (result.data.code == 0) {
+                        notifySomething(constants.CREATESUCCESS, constants.CREATESUCCESS, constants.typeSuccess);
+                        this.loading = false;
+                    } else {
+                        notifySomething(constants.CREATEFAILED, constants.CREATEFAILED + ":" + result.data.msg, constants.typeError);
+                    }
                 });
             } else if (this.editMode) {
                 updateRentRoomApi(this.selectedRoom).then((result) => {
-                    console.log(result);
                     this.refreshRooms({
                         page: 1
                     });
-                    notifySomething(constants.EDITSUCCESS, constants.EDITSUCCESS, constants.typeSuccess);
                     this.loading = false;
+                    if (result.data.code == 0) {
+                        notifySomething(constants.EDITSUCCESS, constants.EDITSUCCESS, constants.typeSuccess);
+                    } else {
+
+                        notifySomething(constants.EDITFAILED, constants.EDITFAILED + ":" + result.data.msg, constants.typeError);
+
+                    }
+
                 });
             }
 
@@ -652,6 +753,10 @@ export default {
     /* margin: 20px; */
 }
 
+.modalStep {
+    /* height: 500px; */
+}
+
 .anchorBL {
     display: none;
 }
@@ -660,7 +765,8 @@ export default {
     width: 100%;
     height: 400px;
 }
-.ui.modal .scrolling.content{
-    max-height:none !important;
+
+.ui.modal .scrolling.content {
+    max-height: none !important;
 }
 </style>

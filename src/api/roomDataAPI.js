@@ -21,6 +21,7 @@ function updateRoomApi(data)
 function createRoomApi(data){
     let local_auth = localGet(global.project_key, true);
   //console.log(local_auth);
+
     // //console.log(local_auth);
     // // const newFormData = {
     // //     "token": local_auth
@@ -161,10 +162,8 @@ function createUnitApi(data)
 }
 function updateUnitApi(data)
 {
-    
     let local_auth = localGet(global.project_key, true);
     console.log('data is  ', data)
-    console.log(local_auth)
     data.token=local_auth;
     
     return request({
@@ -388,6 +387,18 @@ function deleteBuildingFloorAssignmentApi(data)
     });
 }
 
+
+function deleteRentRoomAssignmentApi(data)
+{
+    let local_auth = localGet(global.project_key, true);
+    data.token=local_auth;
+    return request({
+        url: constants.deleteRentRoomAssignmentApi,
+        method: 'post',
+        data: data
+    });
+}
+
 function delleaderroomApi(data)
 {
     let local_auth = localGet(global.project_key, true);
@@ -407,11 +418,28 @@ function listRentRoomAssignmentApi(data)
 {
     return generalRequet(data,constants.listRentRoomAssignmentApi)
 }
-function deleteRentRoomAssignmentApi(data)
-{
-    return generalRequet(data,constants.deleteRentRoomAssignmentApi)
-}
 
+// function deleteRentRoomAssignmentApi(data)
+// {
+//     return generalRequet(data,constants.deleteRentRoomAssignmentApi)
+// }
+function listLoanAssignmentApi(data)
+{
+    return generalRequet(data,constants.listLoanAssignmentApi)
+}
+function deleteLoanAssignmentApi(data)
+{
+    return generalRequet(data,constants.deleteLoanAssignmentApi)
+}
+function createLoanAssignmentApi(data)
+{
+    return generalRequet(data,constants.createLoanAssignmentApi)
+
+}function editLoanAssignmentApi(data)
+{
+    return generalRequet(data,constants.editLoanAssignmentApi)
+
+}
 
 function generalRequet(data,apiName)
 {
@@ -433,8 +461,11 @@ function editRentContractDetailApi(data)
 {
     return generalRequet(data,constants.editRentContractDetailApi)
 }
-
-export {
+function editRentContractApi(data)
+{
+    return generalRequet(data,constants.editRentContractApi)
+}
+export {editRentContractApi,
     getRoomDataApi,
     createRoomApi,
     updateRoomApi,// Room接口
@@ -474,5 +505,9 @@ export {
     deleteRentRoomAssignmentApi,
     assignRentRoomApi,
     createLeaderAssignApi,
-    editRentContractDetailApi
+    editRentContractDetailApi,
+    listLoanAssignmentApi,
+    deleteLoanAssignmentApi,
+    createLoanAssignmentApi,
+    editLoanAssignmentApi
 }

@@ -1,14 +1,8 @@
 <template lang="html">
 <div>
     <sui-form>
-        <div is="sui-divider" horizontal>
-            <h4 is="sui-header">
-                <i class="bar chart icon"></i>
-                总面积
-            </h4>
-        </div>
-        <sui-form-fields>
-            <sui-form-field style="width:25%;">
+        <!-- <sui-form-fields>
+            <sui-form-field>
                 <label>总建筑面积</label>
                 <sui-input placeholder="总建筑面积" v-model="singleRoom.space" :disabled="disabled" type="number" />
             </sui-form-field>
@@ -24,41 +18,63 @@
                 <label>无证面积</label>
                 <sui-input placeholder="无证面积" v-model="singleRoom.space3" :disabled="disabled" type="number" />
             </sui-form-field>
-        </sui-form-fields>
-        <sui-form-fields>
-            <sui-form-field style="width:25%;">
-                <label>总使用面积</label>
-                <sui-input placeholder="总使用面积" v-model="singleRoom.space4" :disabled="disabled" type="number" />
+        </sui-form-fields> -->
+        <sui-form-fields inline>
+            
+            <sui-form-field style="width:33.33333%">
+                <label style="margin-bottom:10px;display: block;">办公室面积</label>
+                <sui-input style="width:100%;" placeholder="办公室面积" v-model="singleRoom.space7" :disabled="disabled" />
             </sui-form-field>
-            <sui-form-field style="width:25%;">
-                <label>房屋占地面积</label>
-                <sui-input placeholder="房屋占地面积" v-model="singleRoom.space5" :disabled="disabled" type="number" />
-            </sui-form-field>
-            <sui-form-field style="width:25%;">
-                <label>办公室面积</label>
-                <sui-input placeholder="办公室面积" v-model="singleRoom.space7" :disabled="disabled" type="number" />
-            </sui-form-field>
-            <sui-form-field style="width:25%;">
-                <label>办公室数量</label>
-                <sui-input placeholder="办公室数量" v-model="singleRoom.space8" :disabled="disabled" type="number" />
+            
+            <sui-form-field style="width:33.33333%">
+                <label style="margin-bottom:10px;display: block;">办公室数量</label>
+                <sui-input style="width:100%;" placeholder="办公室数量" v-model="singleRoom.space8" :disabled="disabled" />
             </sui-form-field>
         </sui-form-fields>
-        <sui-form-fields>
-            <sui-form-field style="width:25%;">
-                <label>设备用房面积</label>
-                <sui-input placeholder="设备用房面积" v-model="singleRoom.space28" :disabled="disabled" type="number" />
+        <sui-form-fields inline>
+            
+            <sui-form-field style="width:33.33333%">
+                <label style="margin-bottom:10px;display: block;">服务用房面积</label>
+                <sui-input style="width:100%;" placeholder="服务用房面积" v-model="singleRoom.space2" :disabled="disabled" />
             </sui-form-field>
-            <sui-form-field style="width:25%;">
+            <!-- <label>土地面积</label>
+            <sui-form-field>
+                <sui-input placeholder="土地面积" v-model="singleRoom.tudispace" :disabled="disabled" />
+            </sui-form-field>
+            <label>建筑面积</label>
+            <sui-form-field>
+                <sui-input placeholder="建筑面积" v-model="singleRoom.jianzhuspace" :disabled="disabled" />
+            </sui-form-field> -->
+            
+            <sui-form-field style="width:33.33333%">
+                <label style="margin-bottom:10px;display: block;">设备用房面积</label>
+                <sui-input style="width:100%;" placeholder="设备用房面积" v-model="singleRoom.space28" :disabled="disabled" />
+            </sui-form-field>
+            <!-- <sui-form-field>
                 <label>设备用房使用面积</label>
-                <sui-input placeholder="设备用房使用面积" v-model="singleRoom.space29" :disabled="disabled" type="number" />
-            </sui-form-field>
-            <sui-form-field style="width:25%;">
-                <label>附属用房面积</label>
-                <sui-input placeholder="附属用房面积" v-model="singleRoom.space40" :disabled="disabled" type="number" />
+                <sui-input placeholder="设备用房使用面积" v-model="singleRoom.space29" :disabled="disabled" />
+            </sui-form-field> -->
+            
+            <sui-form-field style="width:33.33333%">
+                <label style="margin-bottom:10px;display: block;">附属用房面积</label>
+                <sui-input style="width:100%;" placeholder="附属用房面积" v-model="singleRoom.space40" :disabled="disabled" />
             </sui-form-field>
         </sui-form-fields>
 
-        <div v-show="singleRoom.space8&&singleRoom.space7&&singleRoom.space8>0&&singleRoom.space7>0">
+        <sui-form-fields inline>
+            
+            <sui-form-field style="width:33.33333%">
+                <label style="margin-bottom:10px;display: block;">业务用房面积</label>
+                <sui-input style="width:100%;" placeholder="业务用房面积" v-model="singleRoom.space25" :disabled="disabled" />
+            </sui-form-field>
+            
+            <sui-form-field style="width:33.33333%">
+                <label style="margin-bottom:10px;display: block;">业务用房类型</label>
+                <sui-input style="width:100%;" placeholder="业务用房类型" v-model="singleRoom.space24" :disabled="disabled" />
+            </sui-form-field>
+        </sui-form-fields>
+
+        <!-- <div v-show="singleRoom.space8&&singleRoom.space7&&singleRoom.space8>0&&singleRoom.space7>0">
             <div is="sui-divider" horizontal>
                 <h4 is="sui-header">
                     <i class="bar chart icon"></i>
@@ -136,8 +152,8 @@
                 </sui-form-field>
 
             </sui-form-fields>
-        </div>
-        <div>
+        </div> -->
+        <!-- <div>
             <div is="sui-divider" horizontal>
                 <h4 is="sui-header">
                     <i class="bar chart icon"></i>
@@ -162,8 +178,8 @@
                     <sui-input placeholder="业务用房使用用途" v-model="singleRoom.space24" :disabled="disabled" />
                 </sui-form-field>
             </sui-form-fields>
-        </div>
-        <div v-show="singleRoom.space28&&singleRoom.space29&&singleRoom.space28>0&&singleRoom.space29>0">
+        </div> -->
+        <!-- <div v-show="singleRoom.space28&&singleRoom.space29&&singleRoom.space28>0&&singleRoom.space29>0">
             <div is="sui-divider" horizontal>
                 <h4 is="sui-header">
                     <i class="bar chart icon"></i>
@@ -284,7 +300,7 @@
                     <sui-input placeholder="附属用房其他面积" v-model="singleRoom.space52" :disabled="disabled" type="number" />
                 </sui-form-field>
             </sui-form-fields>
-        </div>
+        </div> -->
     </sui-form>
 </div>
 </template>

@@ -1,7 +1,7 @@
 <template>
 <div class="the-menu-box">
     <transition name="fade-width" mode="out-in">
-        <div class="the-menu-logo" @click="gotoIndex()" :key="is_collapse"> logo
+        <div class="the-menu-logo" @click="gotoIndex()" :key="is_collapse">
         </div>
     </transition>
     <div class="the-menu-scroll" ref="the-menu-scroll">
@@ -133,7 +133,9 @@ export default {
         font-weight: 600;
         color: white;
         cursor: pointer;
-        background: #2e2f30;
+        background: #ffffff url("../../public/logo.jpg") center;
+        background-repeat: no-repeat;
+        background-size: contain;
         line-height: 60px;
     }
 
@@ -155,10 +157,12 @@ export default {
         margin-left: 6px;
         font-weight: 600;
     }
-    .el-menu-item{
+
+    .el-menu-item {
         padding: 0 30px 0 24px !important;
         min-width: auto;
-        i{
+
+        i {
             width: 20px;
             height: 20px;
             display: block;
@@ -170,8 +174,9 @@ export default {
             color: #fff;
         }
     }
+
     .is-active.el-menu-item {
-        i{
+        i {
             color: rgb(255, 208, 75);
         }
     }

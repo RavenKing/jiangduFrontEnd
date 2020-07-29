@@ -11,7 +11,7 @@
         </div>
 
         <div class="wl-gantt-demo">
-            <wlGantt @expand-change="expandChange" :key="componentKey" default-expand-all @taskRemove="removeTasks" @row-dblclick="handleRowDbClick" :data="hetongdataNewData" use-real-time date-type="yearAndMonth" :start-date="maxStartDate" :end-date="minEndDate" @timeChange="timeChange"></wlGantt>
+            <wlGantt @expand-change="expandChange" :key="componentKey" @taskRemove="removeTasks" @row-dblclick="handleRowDbClick" :data="hetongdataNewData" use-real-time date-type="yearAndMonth" :start-date="maxStartDate" :end-date="minEndDate" @timeChange="timeChange"></wlGantt>
         </div>
         <!-- 
         <div class="vue2Table">
@@ -53,27 +53,32 @@
                     <h4 is="sui-header">步骤控制
                     </h4>
                 </sui-modal-header>
-                <sui-modal-content scrolling>
+                <sui-modal-content scrolling class="modalStep">
                     <div v-show="selectedStep.mode=='edit'">
                         <sui-form>
                             <sui-form-fields inline>
+                                <label>开始时间:</label>
                                 <sui-form-field>
-                                    <label>开始时间:</label>
                                     <datepicker :value="selectedStep.data.startDate" v-model="selectedStep.data.startDate" :language="lang['zh']"></datepicker>
                                 </sui-form-field>
+                                <label>结束时间:</label>
                                 <sui-form-field>
-                                    <label>结束时间:</label>
                                     <datepicker :value="selectedStep.data.endDate" v-model="selectedStep.data.endDate" :language="lang['zh']"></datepicker>
                                 </sui-form-field>
                             </sui-form-fields>
                             <sui-form-fields inline>
+                                <label>计划开始:</label>
                                 <sui-form-field>
-                                    <label>计划开始:</label>
                                     <datepicker :value="selectedStep.data.realStartDate" v-model="selectedStep.data.realStartDate" :language="lang['zh']"></datepicker>
                                 </sui-form-field>
+                                <label>计划结束时间:</label>
                                 <sui-form-field>
-                                    <label>计划结束时间:</label>
                                     <datepicker :value="selectedStep.data.realEndDate" v-model="selectedStep.data.realEndDate" :language="lang['zh']"></datepicker>
+                                </sui-form-field>
+                            </sui-form-fields>
+                            <sui-form-fields inline>
+                                <sui-form-field>
+                                    <sui-checkbox label="完成步骤" toggle v-model="selectedStep.data.statusT" />
                                 </sui-form-field>
                             </sui-form-fields>
                         </sui-form>
@@ -96,15 +101,12 @@
                     <sui-button basic color="blue" @click.native="saveModel">
                         保存
                     </sui-button>
-                    <sui-button basic color="blue" @click.native="changeStepModal">
-                        完成步骤
-                    </sui-button>
                 </sui-modal-actions>
             </sui-modal>
         </div>
         <div>
-            <sui-modal class="modal2" v-model="open">
-                <sui-modal-content scrolling>
+            <sui-modal v-model="open">
+                <sui-modal-content scrolling class="modalStep">
                     <div style="font-size:0">
                         <sui-step-group size="mini" style="width:100%;">
                             <sui-step :active="currentStep==1">
@@ -136,10 +138,6 @@
                                     <sui-checkbox @change="handleChange(props)" v-model="props.rowData.select" />
                                 </div>
                             </vuetable>
-                            <div class="pagination ui basic segment grid">
-                                <vuetable-pagination-info ref="paginationInfo"></vuetable-pagination-info>
-                                <vuetable-pagination ref="pagination" @vuetable-pagination:change-page="onChangePage"></vuetable-pagination>
-                            </div>
                         </div>
                     </sui-segment>
 
@@ -168,7 +166,10 @@
                         </sui-form>
                     </sui-segment>
                     <sui-segment v-show="currentStep==3">
-                        <sui-button icon="upload" />上传附件
+                        <el-upload ref="upload" class="upload-demo" :on-change="uploadFile" :file-list="fileList">
+                            <el-button size="small" type="primary">点击上传</el-button>
+                            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+                        </el-upload>
                     </sui-segment>
                 </sui-modal-content>
                 <sui-modal-actions>
@@ -194,15 +195,17 @@
 <script>
 import dialogBar from '@/components/MDialog'
 import Vuetable from "vuetable-2/src/components/Vuetable";
-import VuetablePagination from "vuetable-2/src/components/VuetablePagination";
-import VuetablePaginationInfo from "vuetable-2/src/components/VuetablePaginationInfo";
 import FieldHetong from "./fieldsHetong.js";
 import Datepicker from 'vuejs-datepicker';
 import * as lang from "vuejs-datepicker/src/locale";
 import Fields2 from "./fields2.js";
 import constants from "@/util/constants";
 import {
-    notifySomething
+    uploadFileApi,
+} from "@/api/utilApi";
+import {
+    notifySomething,
+    goToLogin
 } from "@/util/utils"
 import {
     fromShitFormat,
@@ -225,8 +228,6 @@ export default {
         Datepicker,
         'dialog-bar': dialogBar,
         Vuetable,
-        VuetablePagination,
-        VuetablePaginationInfo,
     },
     data() {
         return {
@@ -262,11 +263,28 @@ export default {
             steps: [],
             weixiuhetong: {},
             maxStartDate: "2020-01-01",
-            minEndDate: "2021-07-31"
+            minEndDate: "2020-07-31"
         };
     },
 
     methods: {
+        uploadFile: function (e, filelist) {
+            console.log(filelist);
+            let formData = new FormData();
+            this.loading = true;
+            var context = this;
+            //  this.buildingImage.open = false;
+            if (e.raw != undefined) {
+                formData.append('ossfile', e.raw);
+                uploadFileApi(formData).then(() => {
+
+                }).catch(function () {
+                    context.loading = false;
+                    notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
+                });
+            }
+
+        },
         expandChange() {},
         changeStepModal() {
             this.selectedStep.mode = "mark"
@@ -484,16 +502,22 @@ export default {
         },
         refreshHetongList() {
             this.loading = true;
+            var context = this;
+            var maxTmp="2020-01-01", minTmp="2020-07-31";
             this.hetongdataNewData = [];
             getMCApi().then((data) => {
                 //this.localData = data.data.data;
-                this.loading = false;
+                //this.loading = false;
                 this.hetongdata = {
                     data: data.data.data
                 }
                 var testData = [];
                 this.hetongdata.data.map((one, index) => {
                     var ganttData = {};
+                    one.starttime = fromShitFormat(one.starttime);
+                    one.endtime = fromShitFormat(one.endtime);
+                    one.plantime = fromShitFormat(one.plantime)
+                    one.planendtime = fromShitFormat(one.planendtime)
                     index = index + 1;
                     switch (one.status) {
                         case 1:
@@ -511,22 +535,22 @@ export default {
                         project_id: one.id,
                         type: "project",
                         name: one.name,
-                        startDate: fromShitFormat(one.starttime),
-                        endDate: fromShitFormat(one.endtime),
-                        realStartDate: fromShitFormat(one.plantime),
-                        realEndDate: fromShitFormat(one.planendtime),
+                        startDate: one.starttime,
+                        endDate: one.endtime,
+                        realStartDate: one.plantime,
+                        realEndDate: one.planendtime,
                         status: one.status,
                         children: []
                     }
-                    if(new Date(ganttData.startDate)<new Date(this.maxStartDate))
-                    {
-                        this.maxStartDate=ganttData.startDate;
+                    if (ganttData.startDate != undefined) {
+                        if (new Date(ganttData.startDate) < new Date(this.maxStartDate)) {
+                            maxTmp = ganttData.startDate;
+                        }
                     }
-                    if(new Date(ganttData.endDate)>new Date(this.minEndDate))
-                    {
-                        this.minEndDate=ganttData.endDate;
-                    }
-                    
+                    // if (new Date(ganttData.endDate) > new Date(this.minEndDate)) {
+                    //     minTmp = ganttData.endDate;
+                    // }
+                    var lastStep = [];
                     one.step_info.map((child) => {
                         switch (child.status) {
                             case 1:
@@ -544,11 +568,24 @@ export default {
                             name: child.name,
                             type: "step",
                             step_id: child.id,
-                            startDate: fromShitFormat(child.plantime),
+                            startDate: fromShitFormat(child.starttime),
                             endDate: fromShitFormat(child.endtime),
                             realStartDate: fromShitFormat(child.plantime),
                             realEndDate: fromShitFormat(child.planendtime),
                             status: child.status,
+                        }
+                        if (childOne.startDate != undefined) {
+                            if (new Date(childOne.startDate) < new Date(this.maxStartDate)) {
+                                maxTmp = childOne.startDate;
+                            }
+                        }
+                        if (childOne.endDate != undefined) {
+                            if (new Date(childOne.endDate) > new Date(this.minEndDate)) {
+                                minTmp = childOne.endDate;
+                            }
+                        }
+                        if (childOne.status == "完成") {
+                            lastStep.push(childOne);
                         }
                         ganttData.children.push(childOne);
                     })
@@ -557,7 +594,11 @@ export default {
                         this.maxStartDate = one.starttime;
                         this.minEndDate = one.endtime;
                     }
-
+                    var lastStepname = "未开始";
+                    if (lastStep.length > 0) {
+                        lastStepname = lastStep[lastStep.length - 1].name;
+                    }
+                    ganttData.status = lastStepname;
                     testData.push(ganttData);
 
                     switch (one.status) {
@@ -575,10 +616,19 @@ export default {
                     }
 
                 });
+                // this.minEndDate = minTmp;
+                // this.maxTmp = maxTmp;
+                console.log(minTmp);
+                console.log(maxTmp);
+                console.log(this.minEndDate);
+                console.log(this.maxStartDate);
+                this.maxStartDate=maxTmp;
+                this.minEndDate=minTmp;
                 this.hetongdataNewData = testData;
                 this.componentKey++;
-            }).catch(function () {
                 this.loading = false;
+            }).catch(function () {
+                context.loading = false;
                 notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
             });
         },
@@ -690,6 +740,12 @@ export default {
             status: 2
         }).then((data) => {
             //this.localData = data.data.data;
+
+            if (data.data.code == 2) {
+                notifySomething("重复登陆 请重新登陆", constants.GENERALERROR, constants.typeError);
+                goToLogin();
+                this.$router.push("/login");
+            }
             this.loading = false;
             this.localData = {
                 total: 16,
@@ -739,10 +795,6 @@ export default {
 </script>
 
 <style>
-.ui.positive.button {
-    background-color: #75ADBF !important;
-}
-
 .ui.modal {
     top: auto;
     left: auto;
@@ -753,6 +805,10 @@ export default {
     padding: 15px 15px 15px 15px;
     box-sizing: border-box;
     max-height: none !important;
+}
+
+.modalStep {
+    /* height: 500px !important; */
 }
 
 .map {
@@ -809,11 +865,14 @@ export default {
     margin: 0;
     margin-top: 15px;
 }
-.ui.step, .ui.steps .step{
+
+.ui.step,
+.ui.steps .step {
     text-align: left;
     justify-content: left;
 }
-.wl-gantt-demo .el-table{
+
+.wl-gantt-demo .el-table {
     border-radius: .28571429rem;
 }
 </style>

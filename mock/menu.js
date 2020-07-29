@@ -12,13 +12,21 @@ const menus = [{
         title: "办公用房信息",
         name: "办公用房信息",
         url: "/ui/asset",
-        icon:"keyboard icon"
+        icon:"keyboard icon",
+        params:{kind:1}
       },
       {
         id: "3-8",
         title: "租赁房屋",
         name: "租赁房屋",
         url: "/ui/rentroom",
+        icon:"building icon"
+      },
+      {
+        id: "3-8",
+        title: "出租管理",
+        name: "出租管理",
+        url: "/ui/rentAssign",
         icon:"building icon"
       },
       // {

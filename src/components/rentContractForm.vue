@@ -71,7 +71,7 @@ export default {
         updateData() {
             if (this.type == 'Room') {
                 console.log(this.type);
-                getRoomDataApi().then((data) => {
+                getRoomDataApi({}).then((data) => {
                     //this.localData = data.data.data;
                     data.data.data.map((one) => {
                         this.options.push({
@@ -81,7 +81,7 @@ export default {
                     });
                 });
             } else {
-                getRentRoomDataApi().then((data) => {
+                getRentRoomDataApi({}).then((data) => {
                     //this.localData = data.data.data;
                     this.options = [];
                     data.data.data.map((one) => {
@@ -98,7 +98,7 @@ export default {
     mounted() {
         if (this.type == 'Room') {
             console.log(this.type);
-            getRoomDataApi().then((data) => {
+            getRoomDataApi({}).then((data) => {
                 //this.localData = data.data.data;
                 console.log(data.data.data);
                 data.data.data.map((one) => {
@@ -109,7 +109,7 @@ export default {
                 });
             });
         } else {
-            getRentRoomDataApi().then((data) => {
+            getRentRoomDataApi({}).then((data) => {
                 //this.localData = data.data.data;
                 console.log(data.data.data);
                 data.data.data.map((one) => {

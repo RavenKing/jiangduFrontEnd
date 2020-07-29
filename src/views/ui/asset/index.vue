@@ -39,7 +39,25 @@
 
         <div class="vue2Table">
             <vuetable ref="vuetable" :api-mode="false" :data="localData" :fields="fields" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
+                <template slot="tableHeader">
+                    <template>
+                        <tr>
+                            <th colspan="5" class="thTextcenter">基本信息</th>
+                            <th colspan="2" class="thTextcenter">有产证</th>
+                            <th colspan="2" class="thTextcenter">无产证</th>
+                            <th colspan="7" class="thTextcenter">其中</th>
+                        </tr>
+                    </template>
+                    <vuetable-row-header></vuetable-row-header>
+                </template>
+                <div slot="wuchanTudiMianji" slot-scope="props">
+                    {{props.rowData.rawspace-props.rowData.tudispace}}
+                </div>
+                <div slot="wuchanJianZhuMianji" slot-scope="props">
+                    {{props.rowData.space-props.rowData.jianzhuspace}}
+                </div>
                 <div slot="action" slot-scope="props">
+
                     <!-- <sui-button basic color="red"  content="查看" v-on:click="viewSomeThing(props.rowData,'check')" /> -->
                     <sui-button basic color="blue" content="编辑" v-on:click="openAssignSection(props.rowData)" />
                     <sui-button basic color="red" content="删除" v-on:click="deleteRoom(props.rowData)" />
@@ -59,7 +77,7 @@
                 <sui-modal-content>
                     <sui-segment>
                         <form-create ref='formComponent' :singleRoom="selectedRoom"></form-create>
-                        <zichan-form ref='zichanForm' :singleRoom="selectedRoom" v-show="selectedRoom.hasproperty"></zichan-form>
+                        <chanzheng-form ref='chanZhengForm' :singleRoom="selectedRoom" v-show="selectedRoom.hasproperty"></chanzheng-form>
 
                     </sui-segment>
                 </sui-modal-content>
@@ -131,7 +149,7 @@
         </div>
         <div>
             <sui-modal v-model="assignList.open" :key="ComponentKey" class="modal2">
-                <sui-modal-content scrolling>
+                <sui-modal-content scrolling class="modalStep">
                     <div>
                         <sui-tab :menu="{ attached: false }">
                             <sui-tab-pane title="基本信息" :attached="false">
@@ -238,7 +256,10 @@
                                 </baidu-map>
                             </sui-tab-pane>
                             <sui-tab-pane title="资料管理" :attached="false">
-                                建设中。。。。
+                                <el-upload ref="upload" class="upload-demo" :on-change="uploadZiliaoFile" :file-list="fileList">
+                                    <el-button size="small" type="primary">点击上传</el-button>
+                                    <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+                                </el-upload>
                             </sui-tab-pane>
                         </sui-tab>
                     </div>
@@ -261,6 +282,7 @@
 </template>
 
 <script>
+import VuetableRowHeader from 'vuetable-2/src/components/VuetableRowHeader.vue'
 import dialogBar from '@/components/MDialog'
 import Vuetable from "vuetable-2/src/components/Vuetable";
 import VuetablePagination from "vuetable-2/src/components/VuetablePagination";
@@ -283,11 +305,13 @@ import {
 } from "@/util/Export2Excel";
 import {
     uploadFileApi,
+    uploadZiliaoFileApi,
     getFileOSSApi
     //getRentRoomContractListApi
 } from "@/api/utilApi";
 import {
-    notifySomething
+    notifySomething,
+    goToLogin
 } from "@/util/utils"
 import {
     getRoomDataApi,
@@ -305,7 +329,9 @@ import {
 } from "@/api/roomDataAPI";
 export default {
     name: "MyVuetable",
+    props: ["kind"],
     components: {
+        VuetableRowHeader,
         VueTreeList,
         'dialog-bar': dialogBar,
         Vuetable,
@@ -319,6 +345,7 @@ export default {
     },
     data() {
         return {
+            fileList: [],
             sendVal: false,
             modelTitle: "",
             modalMode: "create",
@@ -365,12 +392,38 @@ export default {
             },
             treeData: [],
             tree: new Tree([]),
-            keyword: ""
+            keyword: "",
+            uploadCount: 0
 
         };
     },
 
     methods: {
+        uploadZiliaoFile(e, fileList) {
+            if (this.uploadCount == 1) {
+                this.uploadCount = 0;
+                return;
+            }
+            this.uploadCount++;
+            fileList.push(e.raw);
+            let formData = new FormData();
+            this.loading = true;
+            var context = this;
+
+            //  this.buildingImage.open = false;
+            if (e.raw != undefined) {
+                formData.append('ossfile', e.raw);
+                uploadZiliaoFileApi(formData).then((result) => {
+                    console.log(result);
+                    if (result.data.code == 0) {
+                        this.fileList.push(result.data.data)
+                    }
+                }).catch(function () {
+                    context.loading = false;
+                    notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
+                });
+            }
+        },
         setFirstPoint(pois) {
             this.point = pois[0].point;
             this.selectedRoom.lon = this.point.lng;
@@ -544,6 +597,7 @@ export default {
         getBuildingSection() {
             let data = {};
             data.room_id = this.selectedRoom.id;
+            var context = this;
             // get room
             getBuildingListApi(data).then((result) => {
                 this.loading = false;
@@ -570,23 +624,23 @@ export default {
                     building.children = [];
                     root.push(building);
                     this.getBuildingFloorSection(building);
-                }).catch(function () {
-                    this.loading = false;
-                    notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
-                });
+                })
                 if (this.assignList.buildings.length > 0) {
                     this.selectedBuildingID = this.assignList.buildings[0].id;
                 }
                 this.treeData = root;
                 this.assignList.open = true;
                 // this.ComponentKey++;
-
+            }).catch(function () {
+                context.loading = false;
+                notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
             });
         },
         getBuildingFloorSection(building) {
             var data = {
                 building_id: building.id
             }
+            var context = this;
             //console.log(data);
             getBuildingFloorApi(data).then((result) => {
                 building.floors = result.data.data;
@@ -596,12 +650,12 @@ export default {
                     floor.floor_id = floor.id;
                     floor.disabled = true;
                     building.children.push(floor)
-                }).catch(function () {
-                    this.loading = false;
-                    notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
-                });
+                })
                 this.tree = new Tree(this.treeData);
-            })
+            }).catch(function () {
+                context.loading = false;
+                notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
+            });
         },
         clickConfirmDelete() {
             this.loading = true;
@@ -706,8 +760,14 @@ export default {
             this.loading = true;
             getRoomDataApi(payload).then((data) => {
                 //this.localData = data.data.data;
-                this.loading = false;
-                this.localData = data.data.data
+                if (data.data.code == 0) {
+                    this.loading = false;
+                    this.localData = data.data.data
+                } else if (data.data.code == 2) {
+                    notifySomething("重复登陆 请重新登陆", constants.GENERALERROR, constants.typeError);
+                    goToLogin();
+                    this.$router.push("/login");
+                }
             }).catch(function () {
                 this.loading = false;
                 notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
@@ -753,9 +813,11 @@ export default {
                 formdata.usage = null
             }
             var context = this;
+            //kind=1 means 自由房屋创建和编辑
+            //this.selectedRoom.kind = 1;
             if (this.modalMode == "create") {
                 this.open = !this.open;
-                createRoomApi(this.$refs.formComponent.singleRoom).then((result) => {
+                createRoomApi(this.selectedRoom).then((result) => {
                     context.loading = false;
                     console.log("success")
                     if (result.data.code == 0) {
@@ -772,6 +834,10 @@ export default {
                 });
             } else if (this.modalMode == "edit") {
                 this.assignList.open = false;
+                if (this.fileList.length > 0) {
+                    this.selectedRoom.qitaziliao = JSON.stringify(this.fileList);
+                    this.fileList = [];
+                }
                 updateRoomApi(this.selectedRoom).then((result) => {
                     if (result.data.code == 0) {
                         this.refreshRooms({
@@ -791,7 +857,7 @@ export default {
                     }
                     this.loading = false;
                 }).catch(function () {
-                    this.loading = false;
+                    context.loading = false;
                     notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                 });
             }
@@ -964,6 +1030,10 @@ export default {
     margin-top: 1rem;
 }
 
+.modalStep {
+    /* height: 500px; */
+}
+
 .tabNew {
     margin-left: 20px;
     margin-right: 20px;
@@ -980,6 +1050,10 @@ export default {
     box-shadow: none;
     font-weight: 1000;
     color: black;
+}
+
+.thTextcenter {
+    text-align: center !important;
 }
 
 .ui.text.menu .active.item {

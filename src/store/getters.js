@@ -7,6 +7,7 @@ const getters = {
   keep_alive: state => state.page.keep_alive,
   current: state => state.page.current,
   active: state => state.search.active,
+  unit: state => state.unit,
 }
 
 export default getters
