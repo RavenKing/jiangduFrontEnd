@@ -52,7 +52,7 @@
                 </sui-form-field>
                 <label>单价</label>
                 <sui-form-field>
-                    <sui-input placeholder="单价" v-model="singleEntry.priceinfo[index].price" type="number" />
+                    <sui-input placeholder="单价" v-model="singleEntry.priceinfo[index].price" type="number" @change="caluculateTotal" />
                 </sui-form-field>
                 <label>性质</label>
                 <sui-form-field>
@@ -61,7 +61,7 @@
                 <span>
                     <sui-button style="padding:6px;" circular icon="add" @click.prevent="addOneMore" />
                     <sui-button style="padding:6px;" circular icon="minus" @click.prevent="deleteOne(index)" v-show="singleEntry.priceinfo.length > 1" />
-                    </span>
+                </span>
             </sui-form-fields>
         </div>
 
@@ -142,6 +142,15 @@ export default {
         };
     },
     methods: {
+        caluculateTotal() {
+            var base = this.singleEntry.priceinfo;
+            this.singleEntry.rent_amt = 0;
+            if (base.length > 0) {
+                base.map((one) => {
+                    this.singleEntry.rent_amt += one.price * one.space;
+                });
+            }
+        },
         deleteOne(index) {
             this.singleEntry.priceinfo.splice(index, 1);
             this.componentKey++;

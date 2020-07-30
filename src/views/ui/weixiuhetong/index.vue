@@ -707,7 +707,7 @@ export default {
             var count = 0;
             this.weixiuList.map((item, index) => {
                 if (item.id !== data.rowData.id) {
-                    console.log("do nothing")
+                    console.log("do nothi   ng")
                 } else {
 
                     count++;

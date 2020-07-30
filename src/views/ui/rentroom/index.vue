@@ -72,7 +72,7 @@
                                         <contract-form style="margin-top:15px;" :singleEntry="selectedRoomContract" :mianji="selectedRoom.value" :disabled="false"></contract-form>
                                     </div>
                                     <div>
-                                        <sui-button content="创建新合同" v-on:click="emptyRentContract()" />
+                                        <!-- <sui-button content="创建新合同" v-on:click="emptyRentContract()" /> -->
                                         <!-- <sui-button content="保存" v-on:click="createRentContract()" /> -->
                                     </div>
                                 </div>
@@ -411,7 +411,7 @@ export default {
             })
             if (this.selectedRoomContract.mode != "new") {
                 editRentContractApi(this.selectedRoomContract).then((result) => {
-                    //this.closeModal();
+                    this.closeModal();
                     if (result.data.code == 0) {
                         this.loading = false;
                         editRentContractDetailApi({
@@ -520,9 +520,7 @@ export default {
                 }).then((result) => {
                     var latestOne = result.data.data.length;
                     if (latestOne == 0) {
-                        this.selectedRoomContract = {
-                            mode: "initial"
-                        }
+                        this.emptyRentContract();
                     } else {
                         this.listContract = [];
                         this.selectedRoomContract = result.data.data[latestOne - 1];
