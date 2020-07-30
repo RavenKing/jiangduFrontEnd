@@ -763,6 +763,20 @@ export default {
                 if (data.data.code == 0) {
                     this.loading = false;
                     this.localData = data.data.data
+                    this.localData.data.map((one) => {
+                        switch (one.kind) {
+                            case 1:
+                                one.kindText = "经营性"
+                                break;
+                            case 2:
+                                one.kindText = "办公性"
+                                break;
+
+                            default:
+                                break;
+                        }
+
+                    })
                 } else if (data.data.code == 2) {
                     notifySomething("重复登陆 请重新登陆", constants.GENERALERROR, constants.typeError);
                     goToLogin();
