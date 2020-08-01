@@ -201,8 +201,8 @@
                                                 {{assignList.selectedFloor.name}}
                                             </sui-statistic-value>
                                         </sui-statistic>
-                                        <sui-image src="https://iknow-pic.cdn.bcebos.com/38dbb6fd5266d01634283751932bd40735fa3591?x-bce-process=image/resize,m_lfit,w_600,h_800,limit_1" size="medium" />
 
+                                        <canvas ref="canvas" id="myCanvas" width="500" height="350" class="louBackground" />
                                         <sui-list v-show="assignList.selectedFloor.name!==undefined">
                                             <sui-list-item v-for="unit in assignList.selectedFloor.unitlist" :key="unit[0]">
                                                 {{unit[1]}} {{unit[2]}}平米
@@ -589,10 +589,12 @@ export default {
             this.assignList.selectedFloor = {
                 url: ""
             };
+
             this.loading = false;
             this.assignList.open = true;
 
             this.getBuildingSection();
+
         },
         getBuildingSection() {
             let data = {};
@@ -652,10 +654,23 @@ export default {
                     building.children.push(floor)
                 })
                 this.tree = new Tree(this.treeData);
+                this.drawRect()
             }).catch(function () {
                 context.loading = false;
                 notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
             });
+        },
+        drawRect() {
+            this.context = this.$refs.canvas.getContext("2d");
+            this.context.strokeStyle = "#FF0000";
+            this.context.strokeText("201", 10, 20);
+            this.context.strokeRect(0, 0, 60, 100);
+            this.$refs.canvas.addEventListener('click', function (event) {
+                var x = event.pageX
+                var y = event.pageY;
+                console.log(x + "," + y)
+            }, false);
+
         },
         clickConfirmDelete() {
             this.loading = true;
@@ -1008,6 +1023,11 @@ export default {
 
 .ui.table {
     font-size: 13px;
+}
+
+.louBackground {
+    background-size: cover;
+    background-image: url("../../../../public/lou.png");
 }
 
 .ui.table thead th {
