@@ -66,7 +66,18 @@ const constantsJinhui = {
     deleteLoanAssignmentApi:"/delloanassignment",
     uploadZiliaoFileApi:"/upload",
     createLoanAssignmentApi:"/createloanassignment",
-    editLoanAssignmentApi:"/editloanassignment"
+    editLoanAssignmentApi:"/editloanassignment",
+
+    //20200801
+    getroomnumApi:"/dashboard/getroomnum",	//资产数量
+    getroomspaceApi:"/dashboard/getroomspace",	//资产面积
+    getunitnumApi:"/dashboard/getunitnum",	//单位数量
+    getmrnumApi:"/dashboard/getmrnum",		//维修请求
+    roomusagerate1Api:"/dashboard/roomusagerate1", // 办公使用率 资产空置率
+    roomusagerate2Api:"/dashboard/roomusagerate2", // 经营使用率 出租房空置率
+    loanamtApi:"/dashboard/loanamt", // 出租/租金 总额  收入/支出
+    roomspagcerate1Api:"/dashboard/roomspagcerate1", //土地面积（有证/无证） 有证/全部 数量 
+    roomspagcerate2Api:"/dashboard/roomspagcerate2", //建筑面积（有证/无证） 有证/全部 数量
     
 }
 export default constantsJinhui;

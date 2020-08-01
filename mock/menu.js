@@ -23,11 +23,18 @@ const menus = [{
         icon:"building icon"
       },
       {
-        id: "3-8",
+        id: "3-9",
         title: "出租管理",
         name: "出租管理",
         url: "/ui/rentAssign",
         icon:"building icon"
+      },
+      {
+        id: "3-10",
+        title: "可视化试图",
+        name: "可视化试图",
+        url: "/ui/visualization",
+        icon:"chart bar icon"
       },
       // {
       //   id: "3-3",
