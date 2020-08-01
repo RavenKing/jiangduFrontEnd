@@ -274,6 +274,7 @@ export default {
             role: 0,
             source: [],
             tree: new Tree([]),
+            origin_tree_list: [],
             sendVal: false,
             modelTitle: "",
             modalMode: "create",
@@ -358,23 +359,26 @@ export default {
             console.log(this.search)
             var keyword = this.search
             var filtered_tree_list = []
-            console.log(this.tree)
+            console.log(this.origin_tree_list)
+            this.tree = new Tree(this.origin_tree_list)
             for (var i = this.tree.children.length - 1; i >= 0; i--) {
                 var name = this.tree.children[i]['name']
+                console.log(name)
                 if(name.indexOf(keyword)!= -1){
                     filtered_tree_list.push(this.tree.children[i])
                     continue
                 }
-                // var children_list = this.tree.children[i]['children']
-                // for (var i = children_list.length - 1; i >= 0; i--) {
-                //     var children_name = children_list[i]['name']
-                //     if(children_name.indexOf(keyword)!= -1){
-                //         filtered_tree_list.push(this.tree[i])
-                //         break
-                //     }
-                // }
+                var children_list = this.tree.children[i]['children']
+                for (var j = children_list.length - 1; j >= 0; j--) {
+                    var children_name = children_list[j]['name']
+                    if(children_name.indexOf(keyword)!= -1){
+                        filtered_tree_list.push(this.tree.children[i])
+                        break
+                    }
+                }
             }
-            // this.tree = filtered_tree_list
+            filtered_tree_list = filtered_tree_list.reverse()
+            this.tree = new Tree(filtered_tree_list)
         },
         closeLeaderModal() {
             this.leader.open = false;
@@ -1043,6 +1047,7 @@ export default {
                 tree_list = tree_list.sort(function(a,b){return parseInt(a['seq_code'])-parseInt(b['seq_code'])});
 
                 store.dispatch("unit/setUnit", tree_list);
+                this.origin_tree_list = tree_list
                 this.tree = new Tree(tree_list)
                 this.loading = false;
                 this.localData = {

@@ -1,3 +1,4 @@
+
 export default [
   {
     name: "roomname",
@@ -15,7 +16,7 @@ export default [
   },
  
   {
-    name: "usage1",
+    name: "kindText",
     title: '房屋性质',
     width: "15%",
     titleClass: 'left aligned',

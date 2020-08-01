@@ -1,22 +1,47 @@
+import moment from 'moment'
+
 export default [
-  {
-    name: "roomname",
-    title: '房屋名称',
-    width: "15%"
-  },
+
   {
     name: "address",
-    title: '房屋地址',
+    title: '租借地址',
     width: "15%"
   },
   {
     name: "space",
-    title: '房屋面积',
+    title: '借用房屋面积(m2)',
     width: "15%"
   },
   {
-    name: "created_on",
-    title: '创建时间',
+    name: "contract_info.rent_amt",
+    title: '借用年租金(万元)',
+    width: "15%"
+  },
+  {
+    name: "contract_info.rent_amt",
+    title: '日租金(元/m2)',
+    width: "15%"
+  },
+  {
+    name: "contract_info.starttime",
+    title: '租赁起始年限',
+    width: "15%",
+    formatter (value) {
+      if(value==null||value==undefined)
+      {
+        return ""
+      }
+      return moment(value).format("YYYY-MM-DD");
+    }
+  },
+  {
+    name: "contract_info.rentowner",
+    title: '业主名称',
+    width: "15%"
+  },
+  {
+    name: "contract_info.rentunit",
+    title: '租借单位',
     width: "15%"
   },
   {

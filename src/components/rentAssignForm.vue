@@ -2,62 +2,62 @@
 <div>
     <sui-form class="marginBottom30">
         <sui-form-fields inline>
-            
+
             <sui-form-field style="width:33.33333%;">
                 <label>单位名称</label>
                 <model-select style="width:100%" :options="unitoptions" v-model="singleEntry.unit_id" placeholder="选择单位" @input="changeUnit">
                 </model-select>
             </sui-form-field>
-            
+
             <sui-form-field style="width:33.33333%;">
                 <label>原出租单位</label>
                 <sui-input style="width:100%" placeholder="原出租单位" v-model="singleEntry.loan_name" />
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields inline>
-            
+
             <sui-form-field style="width:33.33333%;">
                 <label>房屋名称</label>
-                <model-select style="width:100%" :options="options" v-model="singleEntry.room_id" placeholder="选择单位" @input="changeUnit">
+                <model-select style="width:100%" :options="options" v-model="singleEntry.room_id" placeholder="选择房屋" @input="changeUnit">
                 </model-select>
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields inline>
-            
+
             <sui-form-field style="width:33.33333%;">
                 <label>承租方名称</label>
                 <sui-input style="width:100%" placeholder="承租方名称" v-model="singleEntry.rent_name" />
             </sui-form-field>
-            
+
             <sui-form-field style="width:33.33333%;">
                 <label>联系电话</label>
                 <sui-input style="width:100%" placeholder="联系电话" v-model="singleEntry.tel" />
             </sui-form-field>
-            
+
             <sui-form-field style="width:33.33333%;">
                 <label>联系人地址</label>
                 <sui-input style="width:100%" placeholder="联系人地址" v-model="singleEntry.address" />
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields inline>
-            
+
             <sui-form-field style="width:33.33333%;">
                 <label>起始时间</label>
                 <datepicker style="width:100%" :value="singleEntry.appdate" v-model="singleEntry.starttime" :language="lang['zh']"></datepicker>
             </sui-form-field>
-            
+
             <sui-form-field style="width:33.33333%;">
                 <label>结束时间</label>
                 <datepicker style="width:100%" :value="singleEntry.appdate" v-model="singleEntry.endtime" :language="lang['zh']"></datepicker>
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields inline>
-            
+
             <sui-form-field style="width:33.33333%;">
                 <label>合同面积</label>
                 <sui-input style="width:100%" placeholder="合同面积" v-model="singleEntry.space" />
             </sui-form-field>
-            
+
             <sui-form-field style="width:33.33333%;">
                 <label>租金</label>
                 <sui-input style="width:100%" placeholder="租金" v-model="singleEntry.amt" />
@@ -201,8 +201,9 @@ export default {
     },
     created() {
         this.getUnit();
-        console.log("somethig")
-        getRoomDataApi({}).then((data) => {
+        getRoomDataApi({
+            kind: 2
+        }).then((data) => {
             //this.localData = data.data.data;
             data.data.data.map((one) => {
                 this.options.push({

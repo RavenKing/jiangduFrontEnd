@@ -18,7 +18,7 @@ export default [
   {
     name: "address",
     title: '现实际地址',
-    width: "20%",
+    width: "30%",
   },
   {
     name: "tel",
@@ -32,7 +32,7 @@ export default [
   },
   {
     name: "time",
-    title: '合同起止时间',
+    title: '合同时间',
     width: "20%",
   },
   {

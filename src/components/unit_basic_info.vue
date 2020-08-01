@@ -152,8 +152,7 @@ export default {
             }, {
                 text: "参公单位",
                 value: "3"
-            }],
-            disabled: false
+            }]
         };
 
     },

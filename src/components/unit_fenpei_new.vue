@@ -42,7 +42,7 @@
             <sui-form-field v-for="fenpei in fenpei_data" inline>
                 <label>   {{fenpei.name}}    </label>
                 <sui-input  placeholder="面积" v-model="fenpei.space" width="800px" type="number" />
-            </sui-form-field inline>
+            </sui-form-field>
             
         </sui-form-fields>
         <sui-form-fields v-if="singleRoom.roomtype == '2'">
@@ -57,7 +57,6 @@ import {
     ModelSelect
 } from 'vue-search-select'
 import {
-    getRoomDataApi,
     getBuildingListApi,
     getBuildingFloorApi
 } from "@/api/roomDataAPI";
@@ -135,7 +134,7 @@ export default {
             if (this.singleRoom.room_id != null) {
                 getBuildingListApi(this.singleRoom).then((data) => {
                     this.fromData = [];
-                    data.data.data.map((one, index) => {
+                    data.data.data.map((one) => {
                         var newFather = {
                             id: one.id,
                             pid: one.id,
@@ -232,18 +231,19 @@ export default {
             console.log(checkAll);
         },
         // 右侧目标数据选中事件
-        rightCheckChange(nodeObj, treeObj, checkAll) {
+        rightCheckChange(nodeObj, treeObj) {
             console.log(nodeObj);
             console.log(treeObj);
             console.log('clicked')
             treeObj.checkedNodes
             var fenpei_data = []
+            var building_id,children_list,floor_id;
             for (var i = treeObj.checkedNodes.length - 1; i >= 0; i--) {
                 if(treeObj.checkedNodes[i].children){
-                    var building_id = treeObj.checkedNodes[i].id
-                    var children_list = treeObj.checkedNodes[i].children
-                    for (var i = children_list.length - 1; i >= 0; i--) {
-                        var floor_id = children_list[i].id
+                     building_id = treeObj.checkedNodes[i].id
+                     children_list = treeObj.checkedNodes[i].children
+                    for ( i = children_list.length - 1; i >= 0; i--) {
+                         floor_id = children_list[i].id
                         fenpei_data.push({
                             'building_id': building_id,
                             'floor_id': floor_id,
@@ -253,13 +253,13 @@ export default {
                     }
                 }
             }
-            for (var i = treeObj.halfCheckedNodes.length - 1; i >= 0; i--) {
+            for ( i = treeObj.halfCheckedNodes.length - 1; i >= 0; i--) {
                 if(treeObj.halfCheckedNodes[i].children){
-                    var building_id = treeObj.halfCheckedNodes[i].id
-                    var children_list = treeObj.halfCheckedNodes[i].children
+                     building_id = treeObj.halfCheckedNodes[i].id
+                     children_list = treeObj.halfCheckedNodes[i].children
 
                     for (var j = children_list.length - 1; j >= 0; j--) {
-                        var floor_id = children_list[j].id
+                         floor_id = children_list[j].id
                         for (var k = treeObj.checkedNodes.length - 1; k >= 0; k--) {
                             if(children_list[j].id == treeObj.checkedNodes[k].id){
                                 fenpei_data.push({

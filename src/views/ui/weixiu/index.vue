@@ -358,7 +358,7 @@ export default {
                         }
                     }).catch(function () {
                         this.loading = false;
-                        notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
+                        // notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                     });
                     switch (one.status) {
                         case 1:
@@ -371,6 +371,8 @@ export default {
                             one.statusText = constants.FAIL;
                             break;
                         default:
+                            one.statusText = constants.NEW;
+
                             break;
                     }
 
@@ -443,7 +445,7 @@ export default {
                         one.address = result.data.data.address;
                         this.componentKey++;
                     } else {
-                        notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
+                        // notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                     }
                 }).catch(function () {
                     this.loading = false;
