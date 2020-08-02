@@ -29,8 +29,8 @@
                         <div style="float:right;">
                             <sui-button basic color="blue" content="新建" @click.native="createRoomModel" icon="add blue" />
                             <!-- <sui-button content="修改" icon="edit yellow" />
-        <sui-button content="删除" icon="delete red" /> -->
-                            <sui-button basic color="blue" content="导出" v-on:click="exportToExcel" icon="file blue" />
+                 <sui-button content="删除" icon="delete red" /> -->
+                            <sui-button basic color="green" content="导出" v-on:click="exportToExcel" icon="file green" />
                         </div>
                     </sui-grid-column>
                 </sui-grid-row>

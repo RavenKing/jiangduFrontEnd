@@ -6,10 +6,21 @@
                 <sui-loader content="Loading..." />
             </sui-dimmer>
         </div>
-        <div class="filterBiaoDan" v-show="role!=1">
-            <sui-button basic color="blue" content="申请维修" @click.native="openWeiXiuForm" icon="add blue" />
+        <div class="filterBiaoDan" style="padding-left:15px;margin:0;">
+            <sui-grid>
+                <sui-grid-row>
+                    <sui-grid-column :width="12">
+                    </sui-grid-column>
+                    <sui-grid-column :width="4" style="padding-right:0">
+                        <div style="float:right;">
+                            <sui-button basic color="blue" content="申请维修" @click.native="openWeiXiuForm" icon="add blue" />
+                            <!-- <sui-button content="修改" icon="edit yellow" />
+                 <sui-button content="删除" icon="delete red" /> -->
+                        </div>
+                    </sui-grid-column>
+                </sui-grid-row>
+            </sui-grid>
         </div>
-
         <div class="vue2Table">
             <vuetable :key="componentKey" ref="vuetable" :api-mode="false" :data="localData" :fields="fields" :sort-order="sortOrder" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
                 <div slot="statusText" slot-scope="props">

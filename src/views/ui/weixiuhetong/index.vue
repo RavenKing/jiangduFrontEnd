@@ -6,10 +6,21 @@
                 <sui-loader content="Loading..." />
             </sui-dimmer>
         </div>
-        <div class="filterBiaoDan">
-            <sui-button basic color="blue" content="新建" @click.native="openWeiXiuJihua" icon="add blue" />
+        <div class="filterBiaoDan" style="padding-left:15px;margin:0;">
+            <sui-grid>
+                <sui-grid-row>
+                    <sui-grid-column :width="12">
+                    </sui-grid-column>
+                    <sui-grid-column :width="4" style="padding-right:0">
+                        <div style="float:right;">
+                            <sui-button basic color="blue" content="新建" @click.native="openWeiXiuJihua" icon="add blue" />
+                            <!-- <sui-button content="修改" icon="edit yellow" />
+                 <sui-button content="删除" icon="delete red" /> -->
+                        </div>
+                    </sui-grid-column>
+                </sui-grid-row>
+            </sui-grid>
         </div>
-
         <div class="wl-gantt-demo">
             <wlGantt @expand-change="expandChange" :key="componentKey" @taskRemove="removeTasks" @row-dblclick="handleRowDbClick" :data="hetongdataNewData" use-real-time date-type="yearAndMonth" :start-date="maxStartDate" :end-date="minEndDate" @timeChange="timeChange"></wlGantt>
         </div>
@@ -79,7 +90,7 @@
                             <sui-form-fields inline>
                                 <sui-form-field>
                                     <sui-checkbox label="完成步骤" radio value="2" v-model="selectedStep.data.status" />
-                                    <sui-checkbox label="未完成" radio value="1" v-model="selectedStep.data.status" />  
+                                    <sui-checkbox label="未完成" radio value="1" v-model="selectedStep.data.status" />
                                 </sui-form-field>
                             </sui-form-fields>
                         </sui-form>
