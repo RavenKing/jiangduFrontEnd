@@ -111,7 +111,8 @@ export default {
           ]
           var listInfo={
             title:listTitle,
-            list:listData
+            list:listData,
+            color:['#1eafc0','#bd65f4']
           }
           this.initChart("roomusagerate1",listInfo,"资产空置率")
         }
@@ -130,7 +131,7 @@ export default {
           var listInfo={
             title:listTitle,
             list:listData,
-            color:['#6e7074', '#546570', '#c4ccd3']
+            color:['#909721', '#7ec050']
           }
           this.initChart("roomusagerate2",listInfo,"出租房空置率")
         }
@@ -149,7 +150,7 @@ export default {
           var listInfo={
             title:listTitle,
             list:listData,
-            color:['#ca8622', '#bda29a','#6e7074', '#546570', '#c4ccd3']
+            color:['#ca8622', '#bda29a']
           }
           this.initChart("loanamt",listInfo,"收入支出占比")
         }
@@ -168,7 +169,7 @@ export default {
           var listInfo={
             title:listTitle,
             list:listData,
-            color:['#d48265', '#91c7ae','#749f83',  '#ca8622', '#bda29a','#6e7074', '#546570', '#c4ccd3']
+            color:['#d48265', '#91c7ae']
           }
           this.initChart("roomspagcerate1",listInfo,"土地面积（有证/无证）")
         }
@@ -187,7 +188,7 @@ export default {
           var listInfo={
             title:listTitle,
             list:listData,
-            color:['#c23531','#2f4554', '#61a0a8', '#d48265', '#91c7ae','#749f83',  '#ca8622', '#bda29a','#6e7074', '#546570', '#c4ccd3']
+            color:['#c23531','#0e82dc']
           }
           this.initChart("roomspagcerate2",listInfo,"建筑面积（有证/无证）")
         }
@@ -247,7 +248,7 @@ export default {
           {
             name: title,
             type: "pie",
-            radius: ["50%", "70%"],
+            radius: ["45%", "65%"],
             avoidLabelOverlap: false,
             label: {
               normal: {
@@ -267,7 +268,7 @@ export default {
                   fontWeight: 'bold'
                 },
                 formatter: function(params) {
-                  return `{tTitle|${params.name}}\n{tSubTitle|${params.value}}`
+                  return `{tTitle|${params.name}}\n{tSubTitle|${params.percent}%}`
                 },
                 rich: {
                   tTitle: {

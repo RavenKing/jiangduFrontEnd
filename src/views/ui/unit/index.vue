@@ -756,10 +756,12 @@ export default {
         },
 
         updateUnit() {
-            console.log('xxxx')
             let formdata = this.$refs.FormCreate.singleRoom;
+            console.log(this.$refs.FormCreate.singleRoom)
             delete formdata.parent
             delete formdata.building_info
+            delete formdata.pid
+            formdata['name'] = formdata['realname']
             updateUnitApi(formdata).then((result) => {
                 console.log(result)
                 if (result.data.code == 0) {
@@ -928,6 +930,9 @@ export default {
                 for (var i = res_data.length - 1; i >= 0; i--) {
                     res_data[i]['bianzhi_num'] = 0
                     res_data[i]['shiji_num'] = 0
+                    if(res_data[i]['seq_code'] == '18'){
+                        console.log(res_data[i])
+                    }
                     if (parseInt(res_data[i]['zhengju'])) {
                         res_data[i]['bianzhi_num'] = res_data[i]['bianzhi_num'] + parseInt(res_data[i]['zhengju'])
                     }
@@ -1004,7 +1009,8 @@ export default {
                 }
 
                 for (i = 0; i < filtered_data.length; i++) {
-                    filtered_data[i]['name'] = filtered_data[i]['seq_code'] +"."+ filtered_data[i]['name']
+                    filtered_data[i]['realname'] = filtered_data[i]['name']
+                    filtered_data[i]['name'] = filtered_data[i]['seq_code'] + '.'+ filtered_data[i]['name']
                     if(filtered_data[i]['kind'] == '1'){
                         filtered_data[i]['kind'] = '机关单位'
                     }
