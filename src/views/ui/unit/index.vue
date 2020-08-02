@@ -1004,7 +1004,8 @@ export default {
                 }
 
                 for (i = 0; i < filtered_data.length; i++) {
-                    filtered_data[i]['name'] = filtered_data[i]['seq_code'] +  filtered_data[i]['name']
+                    filtered_data[i]['realname'] = filtered_data[i]['name']
+                    filtered_data[i]['name'] = filtered_data[i]['seq_code'] + '.'+ filtered_data[i]['name']
                     if(filtered_data[i]['kind'] == '1'){
                         filtered_data[i]['kind'] = '机关单位'
                     }
