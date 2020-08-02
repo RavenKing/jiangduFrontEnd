@@ -60,11 +60,11 @@ import {
     getroomspaceApi,
     getunitnumApi,
     getmrnumApi,
-    roomusagerate1Api,
-    roomusagerate2Api,
-    loanamtApi,
-    roomspagcerate1Api,
-    roomspagcerate2Api
+    // roomusagerate1Api,
+    // roomusagerate2Api,
+    // loanamtApi,
+    // roomspagcerate1Api,
+    // roomspagcerate2Api
 } from "@/api/roomDataAPI";
 
 export default {

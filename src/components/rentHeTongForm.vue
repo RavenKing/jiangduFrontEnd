@@ -79,11 +79,23 @@
         <sui-form-fields inline>
             <label>是否包含物业费</label>
             <sui-form-field>
-                <sui-checkbox label="是" radio value="1" v-model="value2" :transparent="disabled" />
+                <sui-checkbox label="是" radio value="1" v-model="singleEntry.space" :transparent="disabled" />
             </sui-form-field>
             <sui-form-field>
-                <sui-checkbox label="否" radio value="2" v-model="value2" :transparent="disabled" />
+                <sui-checkbox label="否" radio value="0" v-model="singleEntry.space" :transparent="disabled" />
             </sui-form-field>
+            <div v-show="singleEntry.space=='1'">
+                <sui-form-fields inline style="position: relative;">
+                    <label>面积</label>
+                    <sui-form-field>
+                        <sui-input placeholder="面积" v-model="singleEntry.space1" type="number" required />
+                    </sui-form-field>
+                    <label>单价</label>
+                    <sui-form-field>
+                        <sui-input placeholder="单价" v-model="singleEntry.price1" type="number" @change="caluculateTotal" />
+                    </sui-form-field>
+                </sui-form-fields>
+            </div>
         </sui-form-fields>
         <!-- <sui-form-fields inline>
             <sui-form-field>
@@ -145,6 +157,10 @@ export default {
         caluculateTotal() {
             var base = this.singleEntry.priceinfo;
             this.singleEntry.rent_amt = 0;
+            if(this.singleEntry.space1!=""&&this.singleEntry.space1>0)
+            {
+                this.singleEntry.rent_amt=this.singleEntry.space1*this.singleEntry.price1;
+            }
             if (base.length > 0) {
                 base.map((one) => {
                     this.singleEntry.rent_amt += one.price * one.space;
