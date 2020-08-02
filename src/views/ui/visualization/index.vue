@@ -36,15 +36,25 @@
         </div>
       </sui-segment>
     </sui-segments>
-    <div style="width:100%; height:600px;" id="main"></div>
+    
+
+    <sui-segments style="padding:20px;" horizontal>
+      <div class="w20bf" id="roomusagerate1"></div>
+      <div class="w20bf" id="roomusagerate2"></div>
+      <div class="w20bf" id="loanamt"></div>
+      <div class="w20bf" id="roomspagcerate1"></div>
+      <div class="w20bf" id="roomspagcerate2"></div>
+    </sui-segments>
+    <div style="padding-bottom:10px;">
+      <sui-segments><todo-list /></sui-segments>
+    </div>
   </wl-container>
 </template>
 
 <script>
 import echarts from 'echarts';
 require('echarts/theme/macarons');
-
-
+import TodoList from './TodoList';
 import {
     getroomnumApi,
     getroomspaceApi,
@@ -59,29 +69,131 @@ import {
 
 export default {
   name: "visualization",
-  components: {},
+  components: {
+    TodoList
+  },
   data() {
     return {
       getroomnu:undefined,
       getroomspace:undefined,
       getunitnum:undefined,
       getmrnum:undefined,
+      roomusagerate1:undefined,
+      roomusagerate2:undefined,
+      loanamt:undefined,
+      roomspagcerate1:undefined,
+      roomspagcerate2:undefined
     };
   },
   mounted() {
-    this.$nextTick(() => {
-      this.initChart()
-    })
+    
     this.getroomnumApiFn();
     this.getroomspaceApi();
     this.getunitnumApi();
     this.getmrnumApi();
+    this.roomusagerate1Api();
+    this.roomusagerate2Api();
+    this.loanamtApi();
+    this.roomspagcerate1Api();
+    this.roomspagcerate2Api();
   },
   methods: {
 
-    
-
-    getmrnumApi(){
+    roomusagerate1Api(){  //办公使用率 资产空置率
+      var payload={};
+      roomusagerate1Api(payload).then((result) => {
+        if (result.data.code == 0) {
+          this.roomusagerate1=result.data.data
+          var listTitle=['使用面积','空置面积'];
+          var listData=[
+            {value: this.roomusagerate1['assigned'], name: '使用面积'},
+            {value: this.roomusagerate1['all']-this.roomusagerate1['assigned'], name: '空置面积'}
+          ]
+          var listInfo={
+            title:listTitle,
+            list:listData
+          }
+          this.initChart("roomusagerate1",listInfo,"资产空置率")
+        }
+      }).catch(() => {});
+    },
+    roomusagerate2Api(){ //经营使用率 出租房空置率
+      var payload={};
+      roomusagerate2Api(payload).then((result) => {
+        if (result.data.code == 0) {
+          this.roomusagerate2=result.data.data
+          var listTitle=['使用面积','空置面积'];
+          var listData=[
+            {value: this.roomusagerate2['assigned'], name: '使用面积'},
+            {value: this.roomusagerate2['all']-this.roomusagerate2['assigned'], name: '空置面积'}
+          ]
+          var listInfo={
+            title:listTitle,
+            list:listData,
+            color:['#6e7074', '#546570', '#c4ccd3']
+          }
+          this.initChart("roomusagerate2",listInfo,"出租房空置率")
+        }
+      }).catch(() => {});
+    },
+    loanamtApi(){ //出租/租金 总额  收入/支出
+      var payload={};
+      loanamtApi(payload).then((result) => {
+        if (result.data.code == 0) {
+          this.loanamt=result.data.data
+          var listTitle=['租赁金额','出租金额'];
+          var listData=[
+            {value: this.loanamt['loan_amt'], name: '租赁金额'},
+            {value: this.loanamt['rent_amt'], name: '出租金额'}
+          ]
+          var listInfo={
+            title:listTitle,
+            list:listData,
+            color:['#ca8622', '#bda29a','#6e7074', '#546570', '#c4ccd3']
+          }
+          this.initChart("loanamt",listInfo,"收入支出占比")
+        }
+      }).catch(() => {});
+    },
+    roomspagcerate1Api(){ //土地面积（有证/无证） 有证/全部 数量 
+      var payload={};
+      roomspagcerate1Api(payload).then((result) => {
+        if (result.data.code == 0) {
+          this.roomspagcerate1=result.data.data
+          var listTitle=['有证土地','无证土地'];
+          var listData=[
+            {value: this.roomspagcerate1['youzheng'], name: '有证土地'},
+            {value: this.roomspagcerate1['all'] - this.roomspagcerate1['youzheng'], name: '无证土地'}
+          ]
+          var listInfo={
+            title:listTitle,
+            list:listData,
+            color:['#d48265', '#91c7ae','#749f83',  '#ca8622', '#bda29a','#6e7074', '#546570', '#c4ccd3']
+          }
+          this.initChart("roomspagcerate1",listInfo,"土地面积（有证/无证）")
+        }
+      }).catch(() => {});
+    },
+    roomspagcerate2Api(){ //建筑面积（有证/无证） 有证/全部 数量
+      var payload={};
+      roomspagcerate2Api(payload).then((result) => {
+        if (result.data.code == 0) {
+          this.roomspagcerate2=result.data.data;
+          var listTitle=['有证建筑','无证建筑'];
+          var listData=[
+            {value: this.roomspagcerate2['youzheng'], name: '有证建筑'},
+            {value: this.roomspagcerate2['all']-this.roomspagcerate2['youzheng'], name: '无证建筑'}
+          ]
+          var listInfo={
+            title:listTitle,
+            list:listData,
+            color:['#c23531','#2f4554', '#61a0a8', '#d48265', '#91c7ae','#749f83',  '#ca8622', '#bda29a','#6e7074', '#546570', '#c4ccd3']
+          }
+          this.initChart("roomspagcerate2",listInfo,"建筑面积（有证/无证）")
+        }
+      }).catch(() => {});
+    },
+    getmrnumApi(){ //资产数量
       var payload={};
       getmrnumApi(payload).then((result) => {
         if (result.data.code == 0) {
@@ -89,7 +201,7 @@ export default {
         }
       }).catch(() => {});
     },
-    getunitnumApi(){
+    getunitnumApi(){ //资产面积
       var payload={};
       getunitnumApi(payload).then((result) => {
         if (result.data.code == 0) {
@@ -97,7 +209,7 @@ export default {
         }
       }).catch(() => {});
     },
-    getroomspaceApi(){
+    getroomspaceApi(){ //单位数量
       var payload={};
       getroomspaceApi(payload).then((result) => {
         if (result.data.code == 0) {
@@ -105,7 +217,7 @@ export default {
         }
       }).catch(() => {});
     },
-    getroomnumApiFn(){
+    getroomnumApiFn(){ //维修请求
       var payload={};
       getroomnumApi(payload).then((result) => {
         if (result.data.code == 0) {
@@ -113,46 +225,65 @@ export default {
         }
       }).catch(() => {});
     },
-    initChart() {
+    initChart(row,data,title) {
       // var myChart = echarts.init(document.getElementById("main"));
-      this.chart = echarts.init(document.getElementById("main"), 'macarons')
+      this.chart = echarts.init(document.getElementById(row), 'macarons')
       this.chart.setOption({
+        title: {
+          text: title,
+          left: 'left'
+        },
+        color: data.color,
         tooltip: {
           trigger: "item",
           formatter: "{a} <br/>{b}: {c} ({d}%)"
         },
         legend: {
-          orient: "vertical",
-          left: 10,
-          data: ["直接访问", "邮件营销", "联盟广告", "视频广告", "搜索引擎"]
+          bottom: 10,
+          left: 'center',
+          data: data.title
         },
         series: [
           {
-            name: "访问来源",
+            name: title,
             type: "pie",
             radius: ["50%", "70%"],
             avoidLabelOverlap: false,
             label: {
-              show: false,
-              position: "center"
-            },
-            emphasis: {
-              label: {
+              normal: {
                 show: true,
-                fontSize: "30",
-                fontWeight: "bold"
+                position: 'center',
+                formatter: '{b}\n{c}',
+                align: 'center',
+                verticalAlign: 'middle',
+                textStyle: {
+                  fontSize: '0'
+                }
+              },
+              emphasis: {
+                show: true,
+                textStyle: {
+                  fontSize: '20',
+                  fontWeight: 'bold'
+                },
+                formatter: function(params) {
+                  return `{tTitle|${params.name}}\n{tSubTitle|${params.value}}`
+                },
+                rich: {
+                  tTitle: {
+                    fontSize: '14',
+                    fontWeight: 'bold',
+                    lineHeight: '25'
+                  },
+                  tSubTitle: {
+                    fontSize: '20',
+                    fontWeight: 'bold',
+                    lineHeight: '25'
+                  }
+                }
               }
             },
-            labelLine: {
-              show: false
-            },
-            data: [
-              { value: 335, name: "直接访问" },
-              { value: 310, name: "邮件营销" },
-              { value: 234, name: "联盟广告" },
-              { value: 135, name: "视频广告" },
-              { value: 1548, name: "搜索引擎" }
-            ]
+            data: data.list
           }
         ]
       });
@@ -180,5 +311,10 @@ i.iconFl{
 }
 .padleft{
   padding-left: 70px;
+}
+.w20bf{
+  height: 360px;
+  width: 20%;
+  float: left;
 }
 </style>
