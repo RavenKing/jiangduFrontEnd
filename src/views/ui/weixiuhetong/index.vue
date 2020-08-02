@@ -78,7 +78,8 @@
                             </sui-form-fields>
                             <sui-form-fields inline>
                                 <sui-form-field>
-                                    <sui-checkbox label="完成步骤" toggle v-model="selectedStep.data.statusT" />
+                                    <sui-checkbox label="完成步骤" radio value="2" v-model="selectedStep.data.status" />
+                                    <sui-checkbox label="未完成" radio value="1" v-model="selectedStep.data.status" />  
                                 </sui-form-field>
                             </sui-form-fields>
                         </sui-form>
@@ -300,6 +301,7 @@ export default {
                     endtime: toShitFormat(this.selectedStep.data.endDate),
                     plantime: toShitFormat(this.selectedStep.data.realStartDate),
                     planendtime: toShitFormat(this.selectedStep.data.realEndDate),
+                    status: this.selectedStep.data.status
                 }
                 editStepApi(payload).then((one) => {
                     this.loading = false;
@@ -503,7 +505,8 @@ export default {
         refreshHetongList() {
             this.loading = true;
             var context = this;
-            var maxTmp="2020-01-01", minTmp="2020-07-31";
+            var maxTmp = "2020-01-01",
+                minTmp = "2020-07-31";
             this.hetongdataNewData = [];
             getMCApi().then((data) => {
                 //this.localData = data.data.data;
@@ -622,8 +625,8 @@ export default {
                 console.log(maxTmp);
                 console.log(this.minEndDate);
                 console.log(this.maxStartDate);
-                this.maxStartDate=maxTmp;
-                this.minEndDate=minTmp;
+                this.maxStartDate = maxTmp;
+                this.minEndDate = minTmp;
                 this.hetongdataNewData = testData;
                 this.componentKey++;
                 this.loading = false;

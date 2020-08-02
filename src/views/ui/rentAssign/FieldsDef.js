@@ -3,7 +3,7 @@ export default [
   {
     name: "unit_name",
     title: '单位',
-    width: "15%"
+    width: "25%"
   },
   {
     name: "loan_name",
@@ -18,7 +18,7 @@ export default [
   {
     name: "address",
     title: '现实际地址',
-    width: "30%",
+    width: "35%",
   },
   {
     name: "tel",
