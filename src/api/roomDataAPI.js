@@ -568,7 +568,10 @@ function roomspagcerate2Api(data)
     });
 }
 
-
+function getFloorById(data)
+{
+    return generalRequet(data,constants.getFloorByIdApi)
+}
 
 export {
     
@@ -617,7 +620,7 @@ export {
     deleteLoanAssignmentApi,
     createLoanAssignmentApi,
     editLoanAssignmentApi,
-
+    getFloorById,
 
 
     getroomnumApi,

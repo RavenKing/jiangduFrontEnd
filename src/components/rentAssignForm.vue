@@ -208,7 +208,7 @@ export default {
             //this.localData = data.data.data;
             data.data.data.map((one) => {
                 this.options.push({
-                    text: one.roomname,
+                    text: one.name,
                     value: one.id,
                 })
             });

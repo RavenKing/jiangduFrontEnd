@@ -20,7 +20,14 @@ export default [
   {
     name: "contract_info.rent_amt",
     title: '日租金(元/m2)',
-    width: "15%"
+    width: "15%",
+    formatter (value) {
+      if(value==null||value==undefined)
+      {
+        return ""
+      }
+      return parseInt(value/365).toString();
+    }
   },
   {
     name: "contract_info.starttime",

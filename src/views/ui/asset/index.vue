@@ -73,12 +73,10 @@
         <div>
             <sui-modal class="modal2" v-model="open">
                 <sui-modal-header style="border-bottom:0; margin-bottom:-15px;">{{modelTitle}}</sui-modal-header>
-
                 <sui-modal-content>
                     <sui-segment>
                         <form-create ref='formComponent' :singleRoom="selectedRoom"></form-create>
                         <chanzheng-form ref='chanZhengForm' :singleRoom="selectedRoom" v-show="selectedRoom.hasproperty"></chanzheng-form>
-
                     </sui-segment>
                 </sui-modal-content>
                 <sui-modal-actions>
@@ -151,11 +149,13 @@
             <sui-modal v-model="assignList.open" :key="ComponentKey" class="modal2">
                 <sui-modal-content scrolling class="modalStep">
                     <div>
-                        <sui-tab :menu="{ attached: false }">
+                        <sui-tab :menu="{ attached: false }" @change="tabChange" :active-index.sync="activeIndex">
                             <sui-tab-pane title="基本信息" :attached="false">
                                 <div>
                                     <form-create ref='formComponent' :singleRoom="selectedRoom"></form-create>
                                 </div>
+                                <sui-button basic color="blue" @click.native="clickDingWei" icon="location arrow">定位
+                                </sui-button>
                             </sui-tab-pane>
                             <sui-tab-pane title="产证信息" :attached="false" v-show="selectedRoom.hasproperty" :disabled="!selectedRoom.hasproperty">
                                 <div>
@@ -325,7 +325,8 @@ import {
     deleteBuildingApi,
     deleteBuildingFloorAssignmentApi,
     getBuildingFloorApi,
-    updateFloorApi
+    updateFloorApi,
+    getFloorById
 } from "@/api/roomDataAPI";
 export default {
     name: "MyVuetable",
@@ -354,6 +355,7 @@ export default {
                 jiadi: "",
                 diji: ""
             },
+            activeIndex: 0,
             showMap: false,
             point: {},
             buildingFloorForm: {
@@ -399,6 +401,21 @@ export default {
     },
 
     methods: {
+        clickDingWei() {
+            this.activeIndex = 5;
+            this.keyword=this.selectedRoom.address;
+        },
+        tabChange() {
+            this.context = this.$refs.canvas;
+            if (this.activeIndex == 4) {
+                if (this.context == undefined) {
+                    setTimeout(this.tabChange, 1000)
+                } else {
+                    this.context = this.context.getContext("2d");
+                    this.drawRect(null);
+                }
+            }
+        },
         uploadZiliaoFile(e, fileList) {
             if (this.uploadCount == 1) {
                 this.uploadCount = 0;
@@ -451,6 +468,14 @@ export default {
                 };
             } else {
                 this.assignList.selectedFloor = params;
+                console.log(params);
+                getFloorById({
+                    floor_id: params.id
+                }).then((result) => {
+                    if (result.data.code == 0) {
+                        this.drawRect(JSON.parse(result.data.data.room_detail));
+                    }
+                })
                 this.treeData.map((building) => {
                     if (building.id == params.pid) {
                         this.assignList.selectedBuilding = building;
@@ -654,17 +679,39 @@ export default {
                     building.children.push(floor)
                 })
                 this.tree = new Tree(this.treeData);
-                this.drawRect()
+                // this.drawRect()
             }).catch(function () {
                 context.loading = false;
                 notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
             });
         },
-        drawRect() {
-            this.context = this.$refs.canvas.getContext("2d");
+        drawRect(info) {
+            if (this.context == null || this.context == undefined) {
+                this.context = this.$refs.convas.getContext("2d");
+            }
+            console.log(info);
             this.context.strokeStyle = "#FF0000";
-            this.context.strokeText("201", 10, 20);
-            this.context.strokeRect(0, 0, 60, 100);
+            if (info != null) {
+
+                info.map((room, index) => {
+                    console.log(room)
+                    this.context.beginPath();
+                    this.context.moveTo(
+                        room["room" + index][0], room["room" + index][1]);
+                    this.context.lineTo(room["room" + index][2], room["room" + index][3]);
+                    console.log(room["room" + index][2] + "," + room["room" + index][3]);
+                    this.context.strokeStyle = "red";
+                    this.context.stroke();
+                });
+
+            } else {
+                this.context.clearRect(0, 0, 500, 350);
+
+            }
+
+            // this.context.strokeStyle = "#FF0000";
+            // this.context.strokeText("201", 10, 20);
+            // this.context.strokeRect(0, 0, 60, 100);
             this.$refs.canvas.addEventListener('click', function (event) {
                 var x = event.pageX
                 var y = event.pageY;
@@ -845,14 +892,10 @@ export default {
             //kind=1 means 自由房屋创建和编辑
             //this.selectedRoom.kind = 1;
             if (this.modalMode == "create") {
-                this.open = !this.open;
+                this.closeModal();
                 createRoomApi(this.selectedRoom).then((result) => {
                     context.loading = false;
-                    console.log("success")
                     if (result.data.code == 0) {
-                        context.refreshRooms({
-                            page: 1
-                        });
                         notifySomething("创建自有房屋成功", "创建自有房屋成功", constants.typeSuccess);
                     } else {
                         notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
@@ -862,16 +905,13 @@ export default {
                     notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                 });
             } else if (this.modalMode == "edit") {
-                this.assignList.open = false;
+                this.closeModal();
                 if (this.fileList.length > 0) {
                     this.selectedRoom.qitaziliao = JSON.stringify(this.fileList);
                     this.fileList = [];
                 }
                 updateRoomApi(this.selectedRoom).then((result) => {
                     if (result.data.code == 0) {
-                        this.refreshRooms({
-                            page: 1
-                        });
                         this.$notify({
                             group: 'foo',
                             title: '更新自有房屋成功',

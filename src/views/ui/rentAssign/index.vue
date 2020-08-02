@@ -22,8 +22,6 @@
                 </sui-grid-row>
             </sui-grid>
         </div>
-        <div class="filterBiaoDan">
-        </div>
 
         <div class="vue2Table">
             <vuetable :key="componentKey" ref="vuetable" :api-mode="false" :data="localData" :fields="fields" :sort-order="sortOrder" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
