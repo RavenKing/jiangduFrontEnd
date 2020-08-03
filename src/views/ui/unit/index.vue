@@ -220,7 +220,7 @@ import constants from "@/util/constants";
 import FormCreate from "@/components/unit_basic_info";
 import FormFenpei from "@/components/unit_fenpei_new";
 import LeaderForm from "@/components/unit_leader_form";
-import FormWeixiu from "@/components/weixiuForm";
+import FormWeixiu from "@/components/unitweixiuForm";
 import dialogBar from '@/components/MDialog'
 import UnitForm from "@/components/unitForm";
 import Vuetable from "vuetable-2/src/components/Vuetable";
