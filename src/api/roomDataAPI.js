@@ -569,6 +569,30 @@ function roomspagcerate2Api(data)
 }
 
 
+function showgeolistApi(data)
+{
+    let local_auth = localGet(global.project_key, true);
+    data.token=local_auth;
+    return request({
+        url: constants.showgeolistApi,
+        method: 'post',
+        data: data
+    });
+}
+
+
+function showunitbyroomidApi(data)
+{
+    let local_auth = localGet(global.project_key, true);
+    data.token=local_auth;
+    return request({
+        url: constants.showunitbyroomidApi,
+        method: 'post',
+        data: data
+    });
+}
+
+
 
 export {
     
@@ -628,5 +652,8 @@ export {
     roomusagerate2Api,
     loanamtApi,
     roomspagcerate1Api,
-    roomspagcerate2Api
+    roomspagcerate2Api,
+
+    showgeolistApi,
+    showunitbyroomidApi
 }
