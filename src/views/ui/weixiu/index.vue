@@ -12,7 +12,7 @@
                     <sui-grid-column :width="12">
                     </sui-grid-column>
                     <sui-grid-column :width="4" style="padding-right:0">
-                        <div style="float:right;">
+                        <div v-show="role==2" style="float:right;">
                             <sui-button basic color="blue" content="申请维修" @click.native="openWeiXiuForm" icon="add blue" />
                             <!-- <sui-button content="修改" icon="edit yellow" />
                  <sui-button content="删除" icon="delete red" /> -->
@@ -20,7 +20,7 @@
                     </sui-grid-column>
                 </sui-grid-row>
             </sui-grid>
-            
+
         </div>
         <div class="vue2Table">
             <vuetable :key="componentKey" ref="vuetable" :api-mode="false" :data="localData" :fields="fields" :sort-order="sortOrder" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
