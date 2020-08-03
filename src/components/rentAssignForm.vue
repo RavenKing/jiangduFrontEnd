@@ -202,12 +202,13 @@ export default {
     created() {
         this.getUnit();
         getRoomDataApi({
-            kind: 2
+            kind: 1,
+            extract: 1
         }).then((data) => {
             //this.localData = data.data.data;
             data.data.data.map((one) => {
                 this.options.push({
-                    text: one.roomname,
+                    text: one.name,
                     value: one.id,
                 })
             });

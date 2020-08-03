@@ -11,19 +11,19 @@
             <sui-form-field>
                 <sui-input placeholder="出租方地址" v-model="singleEntry.rentaddress" />
             </sui-form-field>
-            <label>出租方联系人</label>
+            <label>联系人</label>
             <sui-form-field>
-                <sui-input placeholder="出租方联系人" v-model="singleEntry.rentcontact" />
+                <sui-input placeholder="联系人" v-model="singleEntry.rentcontact" />
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields style="border-bottom: 1px solid rgba(34,36,38,.15); padding-bottom: 15px;" inline>
-            <label>出租方联系人电话</label>
+            <label>联系人电话</label>
             <sui-form-field>
-                <sui-input placeholder="出租方联系人电话" v-model="singleEntry.rentmobile" />
+                <sui-input placeholder="联系人电话" v-model="singleEntry.rentmobile" />
             </sui-form-field>
-            <label>出租方联系人职务</label>
+            <label>法定代表人</label>
             <sui-form-field>
-                <sui-input placeholder="出租方联系人职务" v-model="singleEntry.title" />
+                <sui-input placeholder="法定代表人" v-model="singleEntry.title" />
             </sui-form-field>
             <!-- <sui-form-field>
                 <label>出租方</label>
@@ -31,10 +31,11 @@
             </sui-form-field> -->
         </sui-form-fields>
         <sui-form-fields inline>
-            <label>签约金额</label>
+            <label>年租金(元)</label>
             <sui-form-field>
-                <sui-input placeholder="签约金额" v-model="singleEntry.rent_amt" type="number" />
+                <sui-input placeholder="年租金(元)" v-model="singleEntry.rent_amt" type="number" />
             </sui-form-field>
+            <label>增长率</label>
             <sui-form-field>
                 第
                 <sui-input v-model="singleEntry.year" transparent class="width30" />年
@@ -46,17 +47,27 @@
         </sui-form-fields>
         <div :key="componentKey" v-for="(item, index) in singleEntry.priceinfo">
             <sui-form-fields inline style="position: relative;">
-                <label>面积</label>
-                <sui-form-field>
-                    <sui-input placeholder="面积" v-model="singleEntry.priceinfo[index].space" type="number" required />
-                </sui-form-field>
-                <label>单价</label>
-                <sui-form-field>
-                    <sui-input placeholder="单价" v-model="singleEntry.priceinfo[index].price" type="number" @change="caluculateTotal" />
-                </sui-form-field>
-                <label>性质</label>
+                <label>性质{{index+1}}</label>
                 <sui-form-field>
                     <sui-dropdown placeholder="性质" selection :options="xingzhiOptions" v-model="singleEntry.priceinfo[index].pricename" />
+                </sui-form-field>
+
+                <label v-show="singleEntry.priceinfo[index].pricename!='停车位'">面积</label>
+                <sui-form-field v-show="singleEntry.priceinfo[index].pricename!='停车位'">
+                    <sui-input placeholder="面积" v-model="singleEntry.priceinfo[index].space" type="number" required />
+                </sui-form-field>
+                <label v-show="singleEntry.priceinfo[index].pricename!='停车位'"> 单价</label>
+                <sui-form-field v-show="singleEntry.priceinfo[index].pricename!='停车位'">
+                    <sui-input placeholder="单价" v-model="singleEntry.priceinfo[index].price" type="number" @change="caluculateTotal" />元/天/m2
+                </sui-form-field>
+
+                <label v-show="singleEntry.priceinfo[index].pricename=='停车位'">停车位</label>
+                <sui-form-field v-show="singleEntry.priceinfo[index].pricename=='停车位'">
+                    <sui-input placeholder="个" v-model="singleEntry.priceinfo[index].space" type="number" required />
+                </sui-form-field>
+                <label v-show="singleEntry.priceinfo[index].pricename=='停车位'">单价</label>
+                <sui-form-field v-show="singleEntry.priceinfo[index].pricename=='停车位'">
+                    <sui-input placeholder="单价" v-model="singleEntry.priceinfo[index].price" type="number" @change="caluculateTotal" />元/月/个
                 </sui-form-field>
                 <span>
                     <sui-button style="padding:6px;" circular icon="add" @click.prevent="addOneMore" />
@@ -79,11 +90,23 @@
         <sui-form-fields inline>
             <label>是否包含物业费</label>
             <sui-form-field>
-                <sui-checkbox label="是" radio value="1" v-model="value2" :transparent="disabled" />
+                <sui-checkbox label="是" radio value="1" v-model="singleEntry.space" :transparent="disabled" />
             </sui-form-field>
             <sui-form-field>
-                <sui-checkbox label="否" radio value="2" v-model="value2" :transparent="disabled" />
+                <sui-checkbox label="否" radio value="0" v-model="singleEntry.space" :transparent="disabled" />
             </sui-form-field>
+            <div v-show="singleEntry.space=='1'">
+                <sui-form-fields inline style="position: relative;">
+                    <label>面积</label>
+                    <sui-form-field>
+                        <sui-input placeholder="面积" v-model="singleEntry.space1" type="number" required />
+                    </sui-form-field>
+                    <label>单价</label>
+                    <sui-form-field>
+                        <sui-input placeholder="单价" v-model="singleEntry.price1" type="number" @change="caluculateTotal" />
+                    </sui-form-field>
+                </sui-form-fields>
+            </div>
         </sui-form-fields>
         <!-- <sui-form-fields inline>
             <sui-form-field>
@@ -145,9 +168,16 @@ export default {
         caluculateTotal() {
             var base = this.singleEntry.priceinfo;
             this.singleEntry.rent_amt = 0;
+            if (this.singleEntry.space1 != "" && this.singleEntry.space1 > 0) {
+                this.singleEntry.rent_amt = this.singleEntry.space1 * this.singleEntry.price1;
+            }
             if (base.length > 0) {
                 base.map((one) => {
-                    this.singleEntry.rent_amt += one.price * one.space;
+                    if (one.pricename == "停车位") {
+                        this.singleEntry.rent_amt += one.price * one.space * 12;
+                    } else {
+                        this.singleEntry.rent_amt += one.price * one.space * 365;
+                    }
                 });
             }
         },

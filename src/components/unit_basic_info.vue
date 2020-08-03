@@ -4,7 +4,7 @@
         <sui-form-fields>
             <sui-form-field inline>
                 <label>单位名称</label>
-                <sui-input class="ui disabled input width800" :placeholder="singleRoom.name" :disabled="disabled" />
+                <sui-input class="ui disabled input width800" v-model="singleRoom.name" :disabled="disabled" />
             </sui-form-field>
 
         </sui-form-fields>
@@ -168,7 +168,7 @@ export default {
 <style>
 .width800 {
     width: 800px !important;
-    color: rgba(0, 0, 0, .87)!important;
+    color: rgba(0, 0, 0, .87) !important;
 
 }
 

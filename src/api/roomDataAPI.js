@@ -465,7 +465,117 @@ function editRentContractApi(data)
 {
     return generalRequet(data,constants.editRentContractApi)
 }
-export {editRentContractApi,
+
+
+
+/*20200801*/
+function getroomnumApi(data)
+{
+    let local_auth = localGet(global.project_key, true);
+    data.token=local_auth;
+    return request({
+        url: constants.getroomnumApi,
+        method: 'post',
+        data: data
+    });
+}
+
+function getroomspaceApi(data)
+{
+    let local_auth = localGet(global.project_key, true);
+    data.token=local_auth;
+    return request({
+        url: constants.getroomspaceApi,
+        method: 'post',
+        data: data
+    });
+}
+
+function getunitnumApi(data)
+{
+    let local_auth = localGet(global.project_key, true);
+    data.token=local_auth;
+    return request({
+        url: constants.getunitnumApi,
+        method: 'post',
+        data: data
+    });
+}
+
+function getmrnumApi(data)
+{
+    let local_auth = localGet(global.project_key, true);
+    data.token=local_auth;
+    return request({
+        url: constants.getmrnumApi,
+        method: 'post',
+        data: data
+    });
+}
+
+function roomusagerate1Api(data)
+{
+    let local_auth = localGet(global.project_key, true);
+    data.token=local_auth;
+    return request({
+        url: constants.roomusagerate1Api,
+        method: 'post',
+        data: data
+    });
+}
+
+function roomusagerate2Api(data)
+{
+    let local_auth = localGet(global.project_key, true);
+    data.token=local_auth;
+    return request({
+        url: constants.roomusagerate2Api,
+        method: 'post',
+        data: data
+    });
+}
+
+function loanamtApi(data)
+{
+    let local_auth = localGet(global.project_key, true);
+    data.token=local_auth;
+    return request({
+        url: constants.loanamtApi,
+        method: 'post',
+        data: data
+    });
+}
+
+function roomspagcerate1Api(data)
+{
+    let local_auth = localGet(global.project_key, true);
+    data.token=local_auth;
+    return request({
+        url: constants.roomspagcerate1Api,
+        method: 'post',
+        data: data
+    });
+}
+
+function roomspagcerate2Api(data)
+{
+    let local_auth = localGet(global.project_key, true);
+    data.token=local_auth;
+    return request({
+        url: constants.roomspagcerate2Api,
+        method: 'post',
+        data: data
+    });
+}
+
+function getFloorById(data)
+{
+    return generalRequet(data,constants.getFloorByIdApi)
+}
+
+export {
+    
+    editRentContractApi,
     getRoomDataApi,
     createRoomApi,
     updateRoomApi,// Room接口
@@ -509,5 +619,17 @@ export {editRentContractApi,
     listLoanAssignmentApi,
     deleteLoanAssignmentApi,
     createLoanAssignmentApi,
-    editLoanAssignmentApi
+    editLoanAssignmentApi,
+    getFloorById,
+
+
+    getroomnumApi,
+    getroomspaceApi,
+    getunitnumApi,
+    getmrnumApi,
+    roomusagerate1Api,
+    roomusagerate2Api,
+    loanamtApi,
+    roomspagcerate1Api,
+    roomspagcerate2Api
 }

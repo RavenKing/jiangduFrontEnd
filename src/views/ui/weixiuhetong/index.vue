@@ -6,10 +6,21 @@
                 <sui-loader content="Loading..." />
             </sui-dimmer>
         </div>
-        <div class="filterBiaoDan">
-            <sui-button basic color="blue" content="新建" @click.native="openWeiXiuJihua" icon="add blue" />
+        <div class="filterBiaoDan" style="padding-left:15px;margin:0;">
+            <sui-grid>
+                <sui-grid-row>
+                    <sui-grid-column :width="12">
+                    </sui-grid-column>
+                    <sui-grid-column :width="4" style="padding-right:0">
+                        <div style="float:right;">
+                            <sui-button basic color="blue" content="新建" @click.native="openWeiXiuJihua" icon="add blue" />
+                            <!-- <sui-button content="修改" icon="edit yellow" />
+                 <sui-button content="删除" icon="delete red" /> -->
+                        </div>
+                    </sui-grid-column>
+                </sui-grid-row>
+            </sui-grid>
         </div>
-
         <div class="wl-gantt-demo">
             <wlGantt @expand-change="expandChange" :key="componentKey" @taskRemove="removeTasks" @row-dblclick="handleRowDbClick" :data="hetongdataNewData" use-real-time date-type="yearAndMonth" :start-date="maxStartDate" :end-date="minEndDate" @timeChange="timeChange"></wlGantt>
         </div>
@@ -59,26 +70,27 @@
                             <sui-form-fields inline>
                                 <label>开始时间:</label>
                                 <sui-form-field>
-                                    <datepicker :value="selectedStep.data.startDate" v-model="selectedStep.data.startDate" :language="lang['zh']"></datepicker>
+                                    <datepicker :value="selectedStep.data.startDate" v-model="selectedStep.data.startDate" :language="lang['zh']" minimum-view='month'></datepicker>
                                 </sui-form-field>
                                 <label>结束时间:</label>
                                 <sui-form-field>
-                                    <datepicker :value="selectedStep.data.endDate" v-model="selectedStep.data.endDate" :language="lang['zh']"></datepicker>
+                                    <datepicker :value="selectedStep.data.endDate" v-model="selectedStep.data.endDate" :language="lang['zh']" minimum-view='month'></datepicker>
                                 </sui-form-field>
                             </sui-form-fields>
                             <sui-form-fields inline>
                                 <label>计划开始:</label>
                                 <sui-form-field>
-                                    <datepicker :value="selectedStep.data.realStartDate" v-model="selectedStep.data.realStartDate" :language="lang['zh']"></datepicker>
+                                    <datepicker :value="selectedStep.data.realStartDate" v-model="selectedStep.data.realStartDate" :language="lang['zh']" minimum-view='month'></datepicker>
                                 </sui-form-field>
                                 <label>计划结束时间:</label>
                                 <sui-form-field>
-                                    <datepicker :value="selectedStep.data.realEndDate" v-model="selectedStep.data.realEndDate" :language="lang['zh']"></datepicker>
+                                    <datepicker :value="selectedStep.data.realEndDate" v-model="selectedStep.data.realEndDate" :language="lang['zh']" minimum-view='month'></datepicker>
                                 </sui-form-field>
                             </sui-form-fields>
                             <sui-form-fields inline>
                                 <sui-form-field>
-                                    <sui-checkbox label="完成步骤" toggle v-model="selectedStep.data.statusT" />
+                                    <sui-checkbox label="完成步骤" radio value="2" v-model="selectedStep.data.status" />
+                                    <sui-checkbox label="未完成" radio value="1" v-model="selectedStep.data.status" />
                                 </sui-form-field>
                             </sui-form-fields>
                         </sui-form>
@@ -88,7 +100,7 @@
                             <sui-form-fields>
                                 <sui-form-field>
                                     <label>结束时间:</label>
-                                    <datepicker :value="selectedStep.data.endtime" v-model="selectedStep.data.endtime" :language="lang['zh']"></datepicker>
+                                    <datepicker :value="selectedStep.data.endtime" v-model="selectedStep.data.endtime" :language="lang['zh']" minimum-view='month'></datepicker>
                                 </sui-form-field>
                             </sui-form-fields>
                         </sui-form>
@@ -156,11 +168,11 @@
                             <sui-form-fields inline>
                                 <label style="width:80px;">项目开始时间</label>
                                 <sui-form-field>
-                                    <datepicker :value="weixiuhetong.starttime" v-model="weixiuhetong.starttime" :language="lang['zh']"></datepicker>
+                                    <datepicker :value="weixiuhetong.starttime" v-model="weixiuhetong.starttime" :language="lang['zh']" minimum-view='month'></datepicker>
                                 </sui-form-field>
                                 <label style="width:80px;"> 项目结束时间</label>
                                 <sui-form-field>
-                                    <datepicker :value="weixiuhetong.endtime" v-model="weixiuhetong.endtime" :language="lang['zh']"></datepicker>
+                                    <datepicker :value="weixiuhetong.endtime" v-model="weixiuhetong.endtime" :language="lang['zh']" minimum-view='month'></datepicker>
                                 </sui-form-field>
                             </sui-form-fields>
                         </sui-form>
@@ -300,6 +312,7 @@ export default {
                     endtime: toShitFormat(this.selectedStep.data.endDate),
                     plantime: toShitFormat(this.selectedStep.data.realStartDate),
                     planendtime: toShitFormat(this.selectedStep.data.realEndDate),
+                    status: this.selectedStep.data.status
                 }
                 editStepApi(payload).then((one) => {
                     this.loading = false;
@@ -503,7 +516,8 @@ export default {
         refreshHetongList() {
             this.loading = true;
             var context = this;
-            var maxTmp="2020-01-01", minTmp="2020-07-31";
+            var maxTmp = "2020-01-01",
+                minTmp = "2020-07-31";
             this.hetongdataNewData = [];
             getMCApi().then((data) => {
                 //this.localData = data.data.data;
@@ -622,8 +636,8 @@ export default {
                 console.log(maxTmp);
                 console.log(this.minEndDate);
                 console.log(this.maxStartDate);
-                this.maxStartDate=maxTmp;
-                this.minEndDate=minTmp;
+                this.maxStartDate = maxTmp;
+                this.minEndDate = minTmp;
                 this.hetongdataNewData = testData;
                 this.componentKey++;
                 this.loading = false;
