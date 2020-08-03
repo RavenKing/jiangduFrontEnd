@@ -78,6 +78,11 @@ const constantsJinhui = {
     loanamtApi:"/dashboard/loanamt", // 出租/租金 总额  收入/支出
     roomspagcerate1Api:"/dashboard/roomspagcerate1", //土地面积（有证/无证） 有证/全部 数量 
     roomspagcerate2Api:"/dashboard/roomspagcerate2", //建筑面积（有证/无证） 有证/全部 数量
+
+    //20200803
+    showgeolistApi:"/geo/showgeolist",
+    showunitbyroomidApi:"/geo/showunitbyroomid",
+    
     getFloorByIdApi:"/getfloorbyid"
 }
 export default constantsJinhui;

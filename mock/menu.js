@@ -36,6 +36,13 @@ const menus = [{
         url: "/ui/visualization",
         icon:"chart bar icon"
       },
+      {
+        id: "3-11",
+        title: "地图",
+        name: "地图",
+        url: "/ui/mapPage",
+        icon:"globe icon"
+      },
       // {
       //   id: "3-3",
       //   title: "BIM三维模型",
