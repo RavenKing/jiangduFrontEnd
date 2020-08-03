@@ -41,7 +41,7 @@ const menus = [{
         title: "地图",
         name: "地图",
         url: "/ui/mapPage",
-        icon:"chart bar icon"
+        icon:"globe icon"
       },
       // {
       //   id: "3-3",
