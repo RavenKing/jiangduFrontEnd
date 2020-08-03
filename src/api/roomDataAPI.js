@@ -593,6 +593,10 @@ function showunitbyroomidApi(data)
 }
 
 
+function getFloorById(data)
+{
+    return generalRequet(data,constants.getFloorByIdApi)
+}
 
 export {
     
@@ -641,7 +645,7 @@ export {
     deleteLoanAssignmentApi,
     createLoanAssignmentApi,
     editLoanAssignmentApi,
-
+    getFloorById,
 
 
     getroomnumApi,

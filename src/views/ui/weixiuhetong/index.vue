@@ -70,21 +70,21 @@
                             <sui-form-fields inline>
                                 <label>开始时间:</label>
                                 <sui-form-field>
-                                    <datepicker :value="selectedStep.data.startDate" v-model="selectedStep.data.startDate" :language="lang['zh']"></datepicker>
+                                    <datepicker :value="selectedStep.data.startDate" v-model="selectedStep.data.startDate" :language="lang['zh']" minimum-view='month'></datepicker>
                                 </sui-form-field>
                                 <label>结束时间:</label>
                                 <sui-form-field>
-                                    <datepicker :value="selectedStep.data.endDate" v-model="selectedStep.data.endDate" :language="lang['zh']"></datepicker>
+                                    <datepicker :value="selectedStep.data.endDate" v-model="selectedStep.data.endDate" :language="lang['zh']" minimum-view='month'></datepicker>
                                 </sui-form-field>
                             </sui-form-fields>
                             <sui-form-fields inline>
                                 <label>计划开始:</label>
                                 <sui-form-field>
-                                    <datepicker :value="selectedStep.data.realStartDate" v-model="selectedStep.data.realStartDate" :language="lang['zh']"></datepicker>
+                                    <datepicker :value="selectedStep.data.realStartDate" v-model="selectedStep.data.realStartDate" :language="lang['zh']" minimum-view='month'></datepicker>
                                 </sui-form-field>
                                 <label>计划结束时间:</label>
                                 <sui-form-field>
-                                    <datepicker :value="selectedStep.data.realEndDate" v-model="selectedStep.data.realEndDate" :language="lang['zh']"></datepicker>
+                                    <datepicker :value="selectedStep.data.realEndDate" v-model="selectedStep.data.realEndDate" :language="lang['zh']" minimum-view='month'></datepicker>
                                 </sui-form-field>
                             </sui-form-fields>
                             <sui-form-fields inline>
@@ -100,7 +100,7 @@
                             <sui-form-fields>
                                 <sui-form-field>
                                     <label>结束时间:</label>
-                                    <datepicker :value="selectedStep.data.endtime" v-model="selectedStep.data.endtime" :language="lang['zh']"></datepicker>
+                                    <datepicker :value="selectedStep.data.endtime" v-model="selectedStep.data.endtime" :language="lang['zh']" minimum-view='month'></datepicker>
                                 </sui-form-field>
                             </sui-form-fields>
                         </sui-form>
@@ -168,11 +168,11 @@
                             <sui-form-fields inline>
                                 <label style="width:80px;">项目开始时间</label>
                                 <sui-form-field>
-                                    <datepicker :value="weixiuhetong.starttime" v-model="weixiuhetong.starttime" :language="lang['zh']"></datepicker>
+                                    <datepicker :value="weixiuhetong.starttime" v-model="weixiuhetong.starttime" :language="lang['zh']" minimum-view='month'></datepicker>
                                 </sui-form-field>
                                 <label style="width:80px;"> 项目结束时间</label>
                                 <sui-form-field>
-                                    <datepicker :value="weixiuhetong.endtime" v-model="weixiuhetong.endtime" :language="lang['zh']"></datepicker>
+                                    <datepicker :value="weixiuhetong.endtime" v-model="weixiuhetong.endtime" :language="lang['zh']" minimum-view='month'></datepicker>
                                 </sui-form-field>
                             </sui-form-fields>
                         </sui-form>

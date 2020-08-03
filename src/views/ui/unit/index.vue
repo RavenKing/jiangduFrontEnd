@@ -751,15 +751,18 @@ export default {
             this.fenpeiopen = true;
         },
 
-        applyRepair() {
+        applyRepair(data) {
+            this.selectedWeixiu = data
             this.weixiuopen = true
         },
 
         updateUnit() {
-            console.log('xxxx')
             let formdata = this.$refs.FormCreate.singleRoom;
+            console.log(this.$refs.FormCreate.singleRoom)
             delete formdata.parent
             delete formdata.building_info
+            delete formdata.pid
+            formdata['name'] = formdata['realname']
             updateUnitApi(formdata).then((result) => {
                 console.log(result)
                 if (result.data.code == 0) {
@@ -921,6 +924,7 @@ export default {
         if (this.role == 1) {
             getUnitApi().then((data) => {
                 var res_data = data.data.data
+                console.log(res_data)
                 var parent_data = []
                 var son_data = []
                 var filtered_data = []
@@ -928,6 +932,9 @@ export default {
                 for (var i = res_data.length - 1; i >= 0; i--) {
                     res_data[i]['bianzhi_num'] = 0
                     res_data[i]['shiji_num'] = 0
+                    if(res_data[i]['seq_code'] == '18'){
+                        console.log(res_data[i])
+                    }
                     if (parseInt(res_data[i]['zhengju'])) {
                         res_data[i]['bianzhi_num'] = res_data[i]['bianzhi_num'] + parseInt(res_data[i]['zhengju'])
                     }
@@ -972,6 +979,7 @@ export default {
                     }
 
                     if (res_data[i]["parent_id"] == 0) {
+                        console.log(res_data[i]['seq_code'])
                         parent_data.push(res_data[i])
                     } else {
                         son_data.push(res_data[i])
@@ -986,7 +994,7 @@ export default {
                     abstract_parent["status"] = 99
                     for (var j = son_data.length - 1; j >= 0; j--) {
                         if (son_data[j]["parent_id"] == abstract_parent["id"])
-                            abstract_parent["enumber"] = parseInt(abstract_parent["enumber"]) + parseInt(son_data[j]["enumber"])
+                        abstract_parent["enumber"] = parseInt(abstract_parent["enumber"]) + parseInt(son_data[j]["enumber"])
                         abstract_parent["zhengting"] = parseInt(abstract_parent["zhengting"]) + parseInt(son_data[j]["zhengting"])
                         abstract_parent["futing"] = parseInt(abstract_parent["futing"]) + parseInt(son_data[j]["futing"])
                         abstract_parent["zhengchu"] = parseInt(abstract_parent["zhengchu"]) + parseInt(son_data[j]["zhengchu"])
@@ -1002,9 +1010,10 @@ export default {
                             filtered_data.push(son_data[j])
                     }
                 }
-
+    
                 for (i = 0; i < filtered_data.length; i++) {
-                    filtered_data[i]['name'] = filtered_data[i]['seq_code'] +  filtered_data[i]['name']
+                    filtered_data[i]['realname'] = filtered_data[i]['name']
+                    filtered_data[i]['name'] = filtered_data[i]['seq_code'] + '.'+ filtered_data[i]['name']
                     if(filtered_data[i]['kind'] == '1'){
                         filtered_data[i]['kind'] = '机关单位'
                     }
@@ -1045,7 +1054,7 @@ export default {
                 }
 
                 tree_list = tree_list.sort(function(a,b){return parseInt(a['seq_code'])-parseInt(b['seq_code'])});
-
+                console.log(tree_list)
                 store.dispatch("unit/setUnit", tree_list);
                 this.origin_tree_list = tree_list
                 this.tree = new Tree(tree_list)
@@ -1064,6 +1073,7 @@ export default {
 .ui.disabled.input,
 .ui.input:not(.disabled) input[disabled] {
     opacity: 1 !important;
+    color:black!important;
 }
 
 .ui.positive.button {

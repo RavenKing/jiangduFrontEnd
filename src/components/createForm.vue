@@ -24,11 +24,15 @@
                 <label>结构类型</label>
                 <sui-dropdown placeholder="结构类型" selection :options="jiegouoptions" v-model="singleRoom.jiegou" />
             </sui-form-field>
+            <sui-form-field style="width:25%;">
+                <label>取得方式:</label>
+                <sui-dropdown placeholder="取得方式" selection :options="qudeOptions" v-model="singleRoom.type" />
+            </sui-form-field>
         </sui-form-fields>
         <sui-form-fields>
             <sui-form-field style="width:25%;">
-                <label>房屋用户</label>
-                <sui-dropdown placeholder="房屋用户" selection :options="kindOptions" v-model="singleRoom.kind" />
+                <label>房屋用途</label>
+                <sui-dropdown placeholder="房屋用途" selection :options="kindOptions" v-model="singleRoom.kind" />
             </sui-form-field>
             <sui-form-field style="width:25%;">
                 <label>土地面积</label>
@@ -51,14 +55,6 @@
         <sui-form-fields>
             <sui-form-field style="width:25%;">
                 <sui-checkbox label="是否入账" toggle v-model="singleRoom.inaccount" />
-            </sui-form-field>
-        </sui-form-fields>
-        <sui-form-fields inline>
-            <label>取得方式:</label>
-            <sui-form-field style="width:25%;">
-
-                <sui-dropdown placeholder="取得方式" selection :options="qudeOptions" v-model="singleRoom.type" />
-
             </sui-form-field>
         </sui-form-fields>
     </sui-form>
