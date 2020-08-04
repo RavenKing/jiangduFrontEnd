@@ -18,6 +18,7 @@ const constantsJinhui = {
     STATUSNEW:1,
     typeRoomAssignment:2,
     typeRentRoom:2,
-    typeRoom:1
+    typeRoom:1,
+    fileURL:"http://118.190.204.202:9003/getoss?key="
 }
 export default constantsJinhui;

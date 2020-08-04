@@ -111,7 +111,7 @@
 
                     <sui-item-group divided>
                         <sui-item class="imageModal">
-                            <sui-image :src="this.assignList.selectedFloor.url" style="display: inline-block; width:700px" />
+                            <sui-image :src="assignList.selectedFloor.url" style="display: inline-block; width:700px" />
                             <!-- <pdf :src="this.assignList.selectedFloor.url"  /> -->
                         </sui-item>
                         <sui-item>
@@ -148,6 +148,11 @@
         <div>
             <sui-modal v-model="assignList.open" :key="ComponentKey" class="modal2">
                 <sui-modal-content scrolling class="modalStep">
+                    <div>
+                        <sui-dimmer :active="loading" inverted>
+                            <sui-loader content="Loading..." />
+                        </sui-dimmer>
+                    </div>
                     <div>
                         <sui-tab :menu="{ attached: false }" @change="tabChange" :active-index.sync="activeIndex">
                             <sui-tab-pane title="基本信息" :attached="false">
@@ -201,7 +206,7 @@
                                                 {{assignList.selectedFloor.name}}
                                             </sui-statistic-value>
                                         </sui-statistic>
-                                        <img src="http://118.190.204.202:9003/getoss?key=db2e4981-1500-4da4-8ec1-909041e1ae70" ref="backImage" v-show="false" />
+                                        <img :src="assignList.selectedFloor.url" ref="backImage" v-show="false" />
                                         <canvas ref="canvas" id="myCanvas" width="500" height="350" />
                                         <sui-list v-show="roomAssignment.length>0">
                                             <sui-list-item v-for="unit in roomAssignment" :key="unit[0]">
@@ -211,14 +216,11 @@
                                                 </sui-button>
                                             </sui-list-item>
                                         </sui-list>
-                                        <!-- <div v-show="assignList.selectedBuilding">
-                                            <sui-button v-show="assignList.selectedBuilding.name!==''" @click.native="openAssignModal(assignList.selectedBuilding,assignList.selectedFloor)">
-                                                分配
-                                            </sui-button>
+                                        <div v-show="assignList.selectedBuilding">
                                             <sui-button v-show="assignList.selectedFloor.name!==undefined" @click.native="openImageModal()">
                                                 楼层图
                                             </sui-button>
-                                        </div> -->
+                                        </div>
                                     </sui-grid-column>
                                 </sui-grid>
 
@@ -301,9 +303,9 @@ import {
     export_json_to_excel
 } from "@/util/Export2Excel";
 import {
-    uploadFileApi,
     uploadZiliaoFileApi,
-    getFileOSSApi
+    updateFloorInfoApi
+    // getFileOSSApi
     //getRentRoomContractListApi
 } from "@/api/utilApi";
 import {
@@ -322,7 +324,6 @@ import {
     deleteBuildingApi,
     deleteBuildingFloorAssignmentApi,
     getBuildingFloorApi,
-    updateFloorApi,
     getFloorById
 } from "@/api/roomDataAPI";
 export default {
@@ -467,6 +468,7 @@ export default {
                 this.assignList.selectedFloor = {
                     url: ""
                 };
+                this.roomAssignment = [];
             } else {
                 this.assignList.selectedFloor = params;
                 console.log(params);
@@ -474,6 +476,7 @@ export default {
                     floor_id: params.id
                 }).then((result) => {
                     if (result.data.code == 0) {
+                        this.assignList.selectedFloor.url = constants.fileURL + this.assignList.selectedFloor.cadfile;
                         this.drawRect(result.data.data);
                     }
                 })
@@ -499,14 +502,17 @@ export default {
             this.loading = true;
             this.assignList.open = false;
             if (this.assignList.selectedFloor.cadfile != null) {
-                getFileOSSApi(this.assignList.selectedFloor.cadfile).then((file) => {
-                    console.log(file);
-                    this.buildingImage.open = true;
-                    this.loading = false;
-                }).catch(function () {
-                    this.loading = false;
-                    notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
-                });
+                this.assignList.selectedFloor.url = constants.fileURL + this.assignList.selectedFloor.cadfile;
+                this.buildingImage.open = true
+                this.loading = false;
+                // getFileOSSApi(this.assignList.selectedFloor.cadfile).then((file) => {
+                //     console.log(file);
+                //     this.buildingImage.open = true;
+                //     this.loading = false;
+                // }).catch(function () {
+                //     this.loading = false;
+                //     notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
+                // });
             } else {
                 this.buildingImage.open = true;
                 this.loading = false;
@@ -525,10 +531,10 @@ export default {
                 this.roomAssignment = [];
             }
             this.roomAssignment.map((one) => {
-                if (one.id == data.id) {//已经有了的话 直接更新
+                if (one.id == data.id) { //已经有了的话 直接更新
                     one = data;
                 } else {
-                    this.roomAssignment.push(data);//没有塞进去
+                    this.roomAssignment.push(data); //没有塞进去
                 }
             })
             createAssignmentApi({
@@ -714,6 +720,7 @@ export default {
             if (this.context == null || this.context == undefined) {
                 this.context = this.$refs.convas.getContext("2d");
             }
+            this.roomAssignment = [];
             if (info.room_detail != null) {
                 var zuobiao = JSON.parse(info.room_detail);
                 this.roomInFloor = zuobiao;
@@ -722,36 +729,38 @@ export default {
                     if (Object.keys(this.roomAssignment).length === 0 && this.roomAssignment.constructor === Object) {
                         this.roomAssignment = [];
                     }
-                } else {
-                    this.roomAssignment = [];
                 }
             }
 
             this.context.strokeStyle = "#FF0000";
             if (zuobiao != null) {
                 var img = this.$refs.backImage;
-                this.context.drawImage(img, 0, 0, 500, 350)
-                zuobiao.map((room, index) => {
-                    // console.log(room)
-                    // this.context.beginPath();
-                    // this.context.moveTo(
-                    //     room["room" + index][0], room["room" + index][1]);
-                    // this.context.lineTo(room["room" + index][2], room["room" + index][3]);
-                    var textDraw = true;
-                    if (this.roomAssignment.length != null) {
-                        this.roomAssignment.map((one) => {
-                            if (one.id == "room" + index) {
-                                this.context.strokeText(one.roomnumber, room["room" + index][0] + (room["room" + index][2] / 3), room["room" + index][1] + (room["room" + index][3] / 2));
-                                textDraw = false;
-                            }
-                        })
-                    }
-                    if (textDraw) {
-                        this.context.strokeText("房间" + index, room["room" + index][0] + (room["room" + index][2] / 2), room["room" + index][1] + (room["room" + index][3] / 2));
-                    }
-                    this.context.strokeRect(room["room" + index][0], room["room" + index][1], room["room" + index][2], room["room" + index][3])
-
-                });
+                img = new Image();
+                img.src = this.assignList.selectedFloor.url;
+                // var that =this;
+                img.onload = () => {
+                    this.context.drawImage(img, 0, 0, 500, 350)
+                    zuobiao.map((room, index) => {
+                        // console.log(room)
+                        // this.context.beginPath();
+                        // this.context.moveTo(
+                        //     room["room" + index][0], room["room" + index][1]);
+                        // this.context.lineTo(room["room" + index][2], room["room" + index][3]);
+                        var textDraw = true;
+                        if (this.roomAssignment.length != null) {
+                            this.roomAssignment.map((one) => {
+                                if (one.id == "room" + index) {
+                                    this.context.strokeText(one.roomnumber, room["room" + index][0] + (room["room" + index][2] / 3), room["room" + index][1] + (room["room" + index][3] / 2));
+                                    textDraw = false;
+                                }
+                            })
+                        }
+                        if (textDraw) {
+                            this.context.strokeText("房间" + index, room["room" + index][0] + (room["room" + index][2] / 2), room["room" + index][1] + (room["room" + index][3] / 2));
+                        }
+                        this.context.strokeRect(room["room" + index][0], room["room" + index][1], room["room" + index][2], room["room" + index][3])
+                    });
+                }
 
             } else {
                 this.context.clearRect(0, 0, 500, 350);
@@ -1063,27 +1072,33 @@ export default {
         uploadFile: function (e) {
             let formData = new FormData();
             this.loading = true;
+            var context = this;
             this.buildingImage.open = false;
             if (e.target.files[0] != undefined) {
                 formData.append('ossfile', e.target.files[0]);
-                uploadFileApi(formData).then((result) => {
-                    this.updateFloorInfo(result);
+                uploadZiliaoFileApi(formData).then((result) => {
+                    this.updateFloorInfo(result, e.target.files[0]);
                     this.closeImageModal();
                     //uppdate file ppath
                 }).catch(function () {
-                    this.loading = false;
+                    context.loading = false;
                     notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                 });
             }
 
         },
-        saveImage() {},
-        updateFloorInfo(result) {
+        updateFloorInfo(result, file) {
             this.assignList.selectedFloor.cadfile = result.data.data;
             this.loading = false;
-            updateFloorApi(this.assignList.selectedFloor).then((result) => {
+            var context = this;
+            var formData = new FormData();
+            formData.append("png", file)
+            formData.append("cadfile", result.data.data)
+            formData.append("id", this.assignList.selectedFloor.id)
+            formData.append("name", this.assignList.selectedFloor.name)
+            updateFloorInfoApi(formData).then((data) => {
                 this.loading = false;
-                if (result.data.code == 0) {
+                if (data.data.code == 0) {
                     this.$notify({
                         group: 'foo',
                         title: '成功上传',
@@ -1091,8 +1106,9 @@ export default {
                         type: "success"
                     });
                 }
-            }).catch(function () {
-                this.loading = false;
+            }).catch(function (error) {
+                console.log(error);
+                context.loading = false;
                 notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
             });
         },
