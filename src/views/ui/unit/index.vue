@@ -220,7 +220,7 @@ import constants from "@/util/constants";
 import FormCreate from "@/components/unit_basic_info";
 import FormFenpei from "@/components/unit_fenpei_new";
 import LeaderForm from "@/components/unit_leader_form";
-import FormWeixiu from "@/components/weixiuForm";
+import FormWeixiu from "@/components/unitweixiuForm";
 import dialogBar from '@/components/MDialog'
 import UnitForm from "@/components/unitForm";
 import Vuetable from "vuetable-2/src/components/Vuetable";
@@ -751,7 +751,8 @@ export default {
             this.fenpeiopen = true;
         },
 
-        applyRepair() {
+        applyRepair(data) {
+            this.selectedWeixiu = data
             this.weixiuopen = true
         },
 
@@ -923,6 +924,7 @@ export default {
         if (this.role == 1) {
             getUnitApi().then((data) => {
                 var res_data = data.data.data
+                console.log(res_data)
                 var parent_data = []
                 var son_data = []
                 var filtered_data = []
@@ -977,6 +979,7 @@ export default {
                     }
 
                     if (res_data[i]["parent_id"] == 0) {
+                        console.log(res_data[i]['seq_code'])
                         parent_data.push(res_data[i])
                     } else {
                         son_data.push(res_data[i])
@@ -991,7 +994,7 @@ export default {
                     abstract_parent["status"] = 99
                     for (var j = son_data.length - 1; j >= 0; j--) {
                         if (son_data[j]["parent_id"] == abstract_parent["id"])
-                            abstract_parent["enumber"] = parseInt(abstract_parent["enumber"]) + parseInt(son_data[j]["enumber"])
+                        abstract_parent["enumber"] = parseInt(abstract_parent["enumber"]) + parseInt(son_data[j]["enumber"])
                         abstract_parent["zhengting"] = parseInt(abstract_parent["zhengting"]) + parseInt(son_data[j]["zhengting"])
                         abstract_parent["futing"] = parseInt(abstract_parent["futing"]) + parseInt(son_data[j]["futing"])
                         abstract_parent["zhengchu"] = parseInt(abstract_parent["zhengchu"]) + parseInt(son_data[j]["zhengchu"])
@@ -1007,7 +1010,7 @@ export default {
                             filtered_data.push(son_data[j])
                     }
                 }
-
+    
                 for (i = 0; i < filtered_data.length; i++) {
                     filtered_data[i]['realname'] = filtered_data[i]['name']
                     filtered_data[i]['name'] = filtered_data[i]['seq_code'] + '.'+ filtered_data[i]['name']
@@ -1051,7 +1054,7 @@ export default {
                 }
 
                 tree_list = tree_list.sort(function(a,b){return parseInt(a['seq_code'])-parseInt(b['seq_code'])});
-
+                console.log(tree_list)
                 store.dispatch("unit/setUnit", tree_list);
                 this.origin_tree_list = tree_list
                 this.tree = new Tree(tree_list)
