@@ -157,7 +157,7 @@
                         <sui-tab :menu="{ attached: false }" @change="tabChange" :active-index.sync="activeIndex">
                             <sui-tab-pane title="基本信息" :attached="false">
                                 <div>
-                                    <form-create ref='formComponent' :singleRoom="selectedRoom"></form-create>
+                                    <form-create ref='formComponent' :singleRoom="selectedRoom" :clickDingWei="clickDingWei"></form-create>
                                 </div>
                                 <sui-button basic color="blue" @click.native="clickDingWei" icon="location arrow">定位
                                 </sui-button>
