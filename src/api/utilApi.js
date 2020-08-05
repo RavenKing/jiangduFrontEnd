@@ -61,11 +61,26 @@ function uploadZiliaoFileApi(formData)
     timeout: 500000 // request timeout
   });
 return http.post(constants.uploadZiliaoFileApi,formData);
-
+}
+function updateFloorInfoApi(formData)
+{
+    let local_auth = localGet(global.project_key, true);
+    formData.append("token",local_auth)
+    const http = Axios.create({
+    baseURL: '/api', // api的base_url
+    //withCredentials: true, // 开启跨域身份凭证
+    method: "post",
+    headers: {
+        headers:{'Content-Type':'multipart/form-data'}
+    },
+    timeout: 500000 // request timeout
+  });
+return http.post(constants.updateFloorApi,formData);
 }
 export {
     getMapLonAndLat,
     uploadFileApi,
     getFileOSSApi,
-    uploadZiliaoFileApi
-}
+    uploadZiliaoFileApi,
+    updateFloorInfoApi
+    }

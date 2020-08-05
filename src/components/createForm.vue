@@ -15,11 +15,20 @@
                 <sui-input placeholder="建造年代" v-model="singleRoom.age" :disabled="disabled" type="number" />
             </sui-form-field>
         </sui-form-fields>
+        <sui-form-field>
+            <label>房屋地址</label>
+
+            <sui-form-fields fields="two">
+                <sui-form-field style="width:25%;">
+                    <sui-input placeholder="房屋地址" v-model="singleRoom.address" :disabled="disabled" />
+                </sui-form-field>
+                <sui-form-field style="width:25%;">
+                    <sui-button basic color="blue" @click.prevent="clickDingWei" icon="location arrow">
+                    </sui-button>
+                </sui-form-field>
+            </sui-form-fields>
+        </sui-form-field>
         <sui-form-fields>
-            <sui-form-field style="width:25%;">
-                <label>房屋地址</label>
-                <sui-input placeholder="房屋地址" v-model="singleRoom.address" :disabled="disabled" />
-            </sui-form-field>
             <sui-form-field style="width:25%;">
                 <label>结构类型</label>
                 <sui-dropdown placeholder="结构类型" selection :options="jiegouoptions" v-model="singleRoom.jiegou" />
@@ -28,6 +37,7 @@
                 <label>取得方式:</label>
                 <sui-dropdown placeholder="取得方式" selection :options="qudeOptions" v-model="singleRoom.type" />
             </sui-form-field>
+
         </sui-form-fields>
         <sui-form-fields>
             <sui-form-field style="width:25%;">
@@ -65,7 +75,7 @@
 <script>
 import * as lang from "vuejs-datepicker/src/locale";
 export default {
-    props: ['singleRoom'],
+    props: ['singleRoom', 'clickDingWei'],
     name: 'form-create',
     components: {
 
@@ -87,10 +97,10 @@ export default {
             ],
             kindOptions: [{
                 text: "经营性",
-                value: 1
+                value: 2
             }, {
                 text: "办公性",
-                value: 2
+                value: 1
             }],
             lang: lang,
             disabled: false,
