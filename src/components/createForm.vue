@@ -19,7 +19,7 @@
             <label>房屋地址</label>
 
             <sui-form-fields fields="two">
-                <sui-form-field style="width:25%;">
+                <sui-form-field style="width:50%;">
                     <sui-input placeholder="房屋地址" v-model="singleRoom.address" :disabled="disabled" />
                 </sui-form-field>
                 <sui-form-field style="width:25%;">

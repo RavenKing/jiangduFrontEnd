@@ -598,6 +598,16 @@ export default {
                                 minTmp = childOne.endDate;
                             }
                         }
+                        if (childOne.realStartDate != undefined) {
+                            if (new Date(childOne.realStartDate) < new Date(this.maxStartDate)) {
+                                maxTmp = childOne.realStartDate;
+                            }
+                        }
+                        if (childOne.realEndDate != undefined) {
+                            if (new Date(childOne.realEndDate) > new Date(this.minEndDate)) {
+                                minTmp = childOne.realEndDate;
+                            }
+                        }
                         if (childOne.status == "完成") {
                             lastStep.push(childOne);
                         }

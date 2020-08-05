@@ -159,8 +159,7 @@
                                 <div>
                                     <form-create ref='formComponent' :singleRoom="selectedRoom" :clickDingWei="clickDingWei"></form-create>
                                 </div>
-                                <sui-button basic color="blue" @click.native="clickDingWei" icon="location arrow">定位
-                                </sui-button>
+
                             </sui-tab-pane>
                             <sui-tab-pane title="产证信息" :attached="false" v-show="selectedRoom.hasproperty" :disabled="!selectedRoom.hasproperty">
                                 <div>
@@ -194,8 +193,8 @@
                                             </vue-tree-list>
                                         </div>
                                     </sui-grid-column>
-                                    <sui-grid-column :width="11">
 
+                                    <sui-grid-column :width="11">
                                         <sui-statistic horizontal size="big">
                                             <sui-statistic-value>
                                                 {{assignList.selectedBuilding.name}}

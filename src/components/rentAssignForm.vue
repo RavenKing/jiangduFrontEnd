@@ -202,7 +202,7 @@ export default {
     created() {
         this.getUnit();
         getRoomDataApi({
-            kind: 1,
+            kind: 2,
             extract: 1
         }).then((data) => {
             //this.localData = data.data.data;
