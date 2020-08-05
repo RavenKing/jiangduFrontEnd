@@ -7,23 +7,25 @@
             <sui-form-field>
                 <sui-input placeholder="出租方" v-model="singleEntry.rentowner" />
             </sui-form-field>
+            <label>法定代表人</label>
+            <sui-form-field>
+                <sui-input placeholder="法定代表人" v-model="singleEntry.title" />
+            </sui-form-field>
+        </sui-form-fields>
+        <sui-form-fields style="border-bottom: 1px solid rgba(34,36,38,.15); padding-bottom: 15px;" inline>
             <label>出租方地址</label>
             <sui-form-field>
                 <sui-input placeholder="出租方地址" v-model="singleEntry.rentaddress" />
             </sui-form-field>
+        </sui-form-fields>
+        <sui-form-fields style="border-bottom: 1px solid rgba(34,36,38,.15); padding-bottom: 15px;" inline>
             <label>联系人</label>
             <sui-form-field>
                 <sui-input placeholder="联系人" v-model="singleEntry.rentcontact" />
             </sui-form-field>
-        </sui-form-fields>
-        <sui-form-fields style="border-bottom: 1px solid rgba(34,36,38,.15); padding-bottom: 15px;" inline>
             <label>联系人电话</label>
             <sui-form-field>
                 <sui-input placeholder="联系人电话" v-model="singleEntry.rentmobile" />
-            </sui-form-field>
-            <label>法定代表人</label>
-            <sui-form-field>
-                <sui-input placeholder="法定代表人" v-model="singleEntry.title" />
             </sui-form-field>
             <!-- <sui-form-field>
                 <label>出租方</label>
@@ -33,7 +35,7 @@
         <sui-form-fields inline>
             <label>年租金(元)</label>
             <sui-form-field>
-                <sui-input placeholder="年租金(元)" v-model="singleEntry.rent_amt" type="number" />
+                <sui-input placeholder="年租金(元)" v-model="singleEntry.rent_amt" type="number" disabled />
             </sui-form-field>
             <label>增长率</label>
             <sui-form-field>
