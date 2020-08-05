@@ -97,10 +97,10 @@ export default {
             ],
             kindOptions: [{
                 text: "经营性",
-                value: 1
+                value: 2
             }, {
                 text: "办公性",
-                value: 2
+                value: 1
             }],
             lang: lang,
             disabled: false,

@@ -933,10 +933,10 @@ export default {
                     this.localData = data.data.data
                     this.localData.data.map((one) => {
                         switch (one.kind) {
-                            case 1:
+                            case 2:
                                 one.kindText = "经营性"
                                 break;
-                            case 2:
+                            case 1:
                                 one.kindText = "办公性"
                                 break;
 
