@@ -50,7 +50,7 @@ const constantsJinhui = {
     getRoomByIDApi:"/getroombyid",
     createMCApi:"/createproj",
     getMCAPI:"/listproj",
-    updateMCApi:"/editmc",
+    updateMCApi:"/editproj",
     approveMRApi:"/approvemr",
     rejectMRApi:"/rejectmr",
     delleaderroomApi:"/delleaderroom",

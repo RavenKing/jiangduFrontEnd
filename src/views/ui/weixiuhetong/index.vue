@@ -664,14 +664,7 @@ export default {
                 //this.localData = data.data.data;
                 this.loading = false;
                 this.localData = {
-                    total: 16,
-                    per_page: 5,
-                    current_page: 1,
-                    last_page: 4,
-                    next_page_url: "data.data.data?page=2",
-                    prev_page_url: null,
-                    from: 1,
-                    to: 5,
+
                     data: data.data.data
                 }
                 this.localData.data.map((one) => {
@@ -772,14 +765,6 @@ export default {
             }
             this.loading = false;
             this.localData = {
-                total: 16,
-                per_page: 5,
-                current_page: 1,
-                last_page: 4,
-                next_page_url: "data.data.data?page=2",
-                prev_page_url: null,
-                from: 1,
-                to: 5,
                 data: data.data.data
             }
             this.localData.data.map((one) => {
@@ -829,6 +814,7 @@ export default {
     padding: 15px 15px 15px 15px;
     box-sizing: border-box;
     max-height: none !important;
+    min-height: 500px !important;
 }
 
 .modalStep {

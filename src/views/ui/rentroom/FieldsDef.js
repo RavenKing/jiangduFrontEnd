@@ -1,4 +1,3 @@
-import moment from 'moment'
 
 export default [
 
@@ -30,16 +29,9 @@ export default [
     }
   },
   {
-    name: "contract_info.starttime",
+    name: "qishinianxian",
     title: '租赁起始年限',
     width: "15%",
-    formatter (value) {
-      if(value==null||value==undefined)
-      {
-        return ""
-      }
-      return moment(value).format("YYYY-MM-DD");
-    }
   },
   {
     name: "contract_info.rentowner",
