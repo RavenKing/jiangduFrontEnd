@@ -112,7 +112,7 @@ export default {
           var listInfo={
             title:listTitle,
             list:listData,
-            color:['#1eafc0','#bd65f4']
+            color:['#008acd','#bbbbbb']
           }
           this.initChart("roomusagerate1",listInfo,"资产空置率")
         }
@@ -131,7 +131,7 @@ export default {
           var listInfo={
             title:listTitle,
             list:listData,
-            color:['#909721', '#7ec050']
+            color:['#008acd','#bbbbbb']
           }
           this.initChart("roomusagerate2",listInfo,"出租房空置率")
         }
@@ -150,7 +150,7 @@ export default {
           var listInfo={
             title:listTitle,
             list:listData,
-            color:['#ca8622', '#bda29a']
+            color:['#008acd','#bbbbbb']
           }
           this.initChart("loanamt",listInfo,"收入支出占比")
         }
@@ -169,7 +169,7 @@ export default {
           var listInfo={
             title:listTitle,
             list:listData,
-            color:['#d48265', '#91c7ae']
+            color:['#008acd','#bbbbbb']
           }
           this.initChart("roomspagcerate1",listInfo,"土地面积（有证/无证）")
         }
@@ -188,7 +188,7 @@ export default {
           var listInfo={
             title:listTitle,
             list:listData,
-            color:['#c23531','#0e82dc']
+            color:['#008acd','#bbbbbb']
           }
           this.initChart("roomspagcerate2",listInfo,"建筑面积（有证/无证）")
         }
