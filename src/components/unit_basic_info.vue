@@ -6,7 +6,6 @@
                 <label>单位名称</label>
                 <sui-input class="ui disabled input width800" v-model="singleRoom.realname" :disabled="disabled" />
             </sui-form-field>
-
         </sui-form-fields>
                 <sui-form-fields>
             <sui-form-field style="width:33.33333%;" inline>

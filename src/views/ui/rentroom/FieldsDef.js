@@ -30,7 +30,7 @@ export default [
   },
   {
     name: "qishinianxian",
-    title: '租赁起始年限',
+    title: '租赁时间',
     width: "15%",
   },
   {

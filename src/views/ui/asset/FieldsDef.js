@@ -13,6 +13,9 @@ export default [
     width: "25%",
     titleClass: 'left aligned',
     dataClass: 'left aligned',
+    formatter (value) {
+      return value
+    }
   },
  
   {
@@ -28,6 +31,9 @@ export default [
     width: "15%",
     titleClass: 'v aligned',
     dataClass: 'left aligned',
+    formatter (value) {
+      return parseFloat(value).toFixed(2)
+    }
   },
   {
     name: "space",
@@ -35,6 +41,9 @@ export default [
     width: "15%",
     titleClass: 'v aligned',
     dataClass: 'left aligned',
+    formatter (value) {
+      return parseFloat(value).toFixed(2)
+    }
   },
   {
     name: "tudispace",
@@ -42,6 +51,9 @@ export default [
     width: "15%",
     titleClass: 'v aligned',
     dataClass: 'left aligned',
+    formatter (value) {
+      return parseFloat(value).toFixed(2)
+    }
   },
   {
     name: "jianzhuspace",
@@ -49,6 +61,9 @@ export default [
     width: "15%",
     titleClass: 'v aligned',
     dataClass: 'left aligned',
+    formatter (value) {
+      return parseFloat(value).toFixed(2)
+    }
   },
   {
     name: "wuchanTudiMianji",
@@ -56,6 +71,9 @@ export default [
     width: "15%",
     titleClass: 'v aligned',
     dataClass: 'left aligned',
+    formatter (value) {
+      return parseFloat(value).toFixed(2)
+    }
   },
   {
     name: "wuchanJianZhuMianji",
@@ -63,6 +81,10 @@ export default [
     width: "15%",
     titleClass: 'v aligned',
     dataClass: 'left aligned',
+    formatter (value) {
+      console.log(value);
+      return parseFloat(value).toFixed(2)
+    }
   },
   {
     name: "space6",
@@ -70,6 +92,9 @@ export default [
     width: "15%",
     titleClass: 'v aligned',
     dataClass: 'left aligned',
+    formatter (value) {
+      return parseFloat(value).toFixed(2)
+    }
   },
   {
     name: "space2",
@@ -77,6 +102,9 @@ export default [
     width: "15%",
     titleClass: 'v aligned',
     dataClass: 'left aligned',
+    formatter (value) {
+      return parseFloat(value).toFixed(2)
+    }
   },
   {
     name: "space28",
@@ -84,6 +112,9 @@ export default [
     width: "15%",
     titleClass: 'v aligned',
     dataClass: 'left aligned',
+    formatter (value) {
+      return parseFloat(value).toFixed(2)
+    }
   },
   {
     name: "space39",
@@ -91,6 +122,9 @@ export default [
     width: "15%",
     titleClass: 'v aligned',
     dataClass: 'left aligned',
+    formatter (value) {
+      return parseFloat(value).toFixed(2)
+    }
   },
   {
     name: "space25",
@@ -98,6 +132,9 @@ export default [
     width: "15%",
     titleClass: 'v aligned',
     dataClass: 'left aligned',
+    formatter (value) {
+      return parseFloat(value).toFixed(2)
+    }
   },
   {
     name: "space24",

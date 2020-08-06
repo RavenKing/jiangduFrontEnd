@@ -92,12 +92,12 @@
         <sui-form-fields inline>
             <label>是否包含物业费</label>
             <sui-form-field>
-                <sui-checkbox label="是" radio value="1" v-model="singleEntry.space" :transparent="disabled" />
+                <sui-checkbox label="是" radio value="1" v-model="singleEntry.space2" :transparent="disabled" />
             </sui-form-field>
             <sui-form-field>
-                <sui-checkbox label="否" radio value="0" v-model="singleEntry.space" :transparent="disabled" />
+                <sui-checkbox label="否" radio value="0" v-model="singleEntry.space2" :transparent="disabled" />
             </sui-form-field>
-            <div v-show="singleEntry.space=='1'">
+            <div v-show="singleEntry.space2=='1'">
                 <sui-form-fields inline style="position: relative;">
                     <label>面积</label>
                     <sui-form-field>
