@@ -9,7 +9,7 @@
 
         </div>
         <div class="filterBiaoDan">
-            <sui-button content="导出" v-on:click="exportToExcel" icon="file green" />
+            <sui-button content="导出" v-on:click="exportToExcel" icon="file green" v-show="role==1"/>
         </div>
 
         <sui-grid class="margin20">
@@ -44,7 +44,7 @@
                         </sui-tab-pane>
                         <sui-tab-pane title="办公用房信息" :disabled="selectedRoom.name==''">
                             <div>
-                                <sui-button content="新增" @click.native="createRoomModel" icon="add green" />
+                                <sui-button content="新增" @click.native="createRoomModel" icon="add green" v-show="role==1"/>
                             </div>
                             <div style="margin-top:15px;">
                                 <form-weixiu ref='WeixiuForm' :singleRoom="selectedRoom"></form-weixiu>
