@@ -162,7 +162,7 @@
                                 </sui-form-field>
                                 <label style="width:80px;">项目金额</label>
                                 <sui-form-field>
-                                    <input type="text" placeholder="请选择" v-model="weixiuhetong.budget" />
+                                    <input type="text" placeholder="请选择" v-model="weixiuhetong.extra" />
                                 </sui-form-field>
                             </sui-form-fields>
                             <sui-form-fields inline>

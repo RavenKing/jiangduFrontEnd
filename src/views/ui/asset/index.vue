@@ -51,10 +51,10 @@
                     <vuetable-row-header></vuetable-row-header>
                 </template>
                 <div slot="wuchanTudiMianji" slot-scope="props">
-                    {{props.rowData.rawspace-props.rowData.tudispace}}
+                    {{parseFloat(props.rowData.rawspace-props.rowData.tudispace).toFixed(2)}}
                 </div>
                 <div slot="wuchanJianZhuMianji" slot-scope="props">
-                    {{props.rowData.space-props.rowData.jianzhuspace}}
+                    {{parseFloat(props.rowData.space-props.rowData.jianzhuspace).toFixed(2)}}
                 </div>
                 <div slot="action" slot-scope="props">
 
