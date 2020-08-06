@@ -321,7 +321,6 @@ import {
     createBuildingFloorApi,
     createAssignmentApi,
     deleteBuildingApi,
-    deleteBuildingFloorAssignmentApi,
     getBuildingFloorApi,
     getFloorById
 } from "@/api/roomDataAPI";
@@ -536,19 +535,26 @@ export default {
                     this.roomAssignment.push(data); //没有塞进去
                 }
             })
+            if (this.roomAssignment.length == 0) {
+                this.roomAssignment.push(data); //没有塞进去
+
+            }
+            var contextF = this;
             createAssignmentApi({
                 assignment: JSON.stringify(this.roomAssignment),
                 id: this.assignList.selectedFloor.id
             }).then((result) => {
                 this.loading = false;
                 if (result.data.code == 0) {
+                    // this.context.clearRect(0, 0, 500, 350);
+                    this.roomAssignment = [];
                     this.getBuildingSection();
                     this.closeAssignModal();
                 } else {
                     notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                 }
             }).catch(function () {
-                this.loading = false;
+                contextF.loading = false;
                 notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
             });
 
@@ -562,6 +568,7 @@ export default {
             this.assignList.open = false;
         },
         openAssignModalNew(building, floor, context) {
+
             context.assignForm.room_id = building.room_id;
             context.assignForm.building_id = building.id;
             context.assignForm.floor_id = floor.id;
@@ -777,6 +784,7 @@ export default {
                 var y = event.clientY - rect.top * (350 / rect.height);
                 console.log("x:" + x + ",y:" + y);
                 contextThis.whereIsTheRoom(x, y, contextThis)
+                contextThis.context.clearRect(0, 0, 500, 350);
                 contextThis.openAssignModalNew(contextThis.assignList.selectedBuilding, contextThis.assignList.selectedFloor, contextThis)
             }, false);
 
@@ -851,21 +859,48 @@ export default {
                     this.loading = false;
                     notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                 });
-            } else if (this.deleteTarget.type == "buildingFloorAssignment") {
-                deleteBuildingFloorAssignmentApi(this.deleteTarget).then((result) => {
-                    // this.ComponentKey++;
+            } else if (this.deleteTarget.type == "BuildingFloorAssignment") {
+                this.loading = true;
+                let data = this.deleteTarget;
+                console.log(JSON.stringify(data));
+                if (this.roomAssignment == null || this.roomAssignment == {}) {
+                    this.roomAssignment = [];
+                }
+                var deleteIndex = -1;
+                this.roomAssignment.map((one, index) => {
+                    if (one.id == data.id) { //已经有了的话 直接更新
+                        if (one.roomname == data.roomname) {
+                            deleteIndex = index;
+                        }
+                    }
+                })
+                if (deleteIndex != -1) {
+                    this.roomAssignment.splice(deleteIndex, 1)
+                }
+                var contextF = this;
+                if (this.context) {
+                    this.context.clearRect(0, 0, 500, 350);
+                }
+                createAssignmentApi({
+                    assignment: JSON.stringify(this.roomAssignment),
+                    id: this.assignList.selectedFloor.id
+                }).then((result) => {
+                    this.loading = false;
                     if (result.data.code == 0) {
+                        // this.context.clearRect(0, 0, 500, 350);
+                        this.roomAssignment = [];
                         this.getBuildingSection();
-                        this.$notify({
-                            group: 'foo',
-                            title: '删除房成功',
-                            text: '删除房成功'
-                        });
+                        // this.closeAssignModal();
+                        notifySomething(constants.DELETESUCCESS, constants.DELETESUCCESS, constants.typeSuccess);
+
+                    } else {
+                        notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                     }
                 }).catch(function () {
-                    this.loading = false;
+                    contextF.loading = false;
                     notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                 });
+
             }
 
         },
@@ -914,8 +949,10 @@ export default {
             this.sendVal = true;
             console.log(building)
             this.deleteTarget = {
-                text: "是否要删除" + building[1] + "(" + building[0] + ")?",
-                id: building[0],
+                text: "是否要删除" + building.roomname + "(" + building.roomnumber + ")?",
+                id: building.id,
+                roomname: building.roomname,
+                roomnumber: building.roomnumber,
                 room_id: this.selectedRoom.id,
                 building_id: this.assignList.selectedBuilding.id,
                 floor_id: this.assignList.selectedFloor.id,

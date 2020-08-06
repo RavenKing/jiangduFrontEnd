@@ -37,16 +37,16 @@ import {
 } from "@/api/roomDataAPI";
 export default {
     name: 'assign-contract',
-    props: ["index","singleEntry"],
+    props: ["index", "singleEntry"],
     data() {
         return {
             options: [],
             yongtuoptions: [{
                 text: "经营性",
-                value: 1
+                value: 2
             }, {
                 text: "办公性",
-                value: 2
+                value: 1
             }]
         };
     },
