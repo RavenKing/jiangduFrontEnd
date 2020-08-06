@@ -1,5 +1,5 @@
 <template>
-<wl-container class="wlui-login" :use-scroll="false">、
+<wl-container class="wlui-login" :use-scroll="false">
     <div>
         <sui-dimmer :active="loading" inverted>
             <sui-loader content="Loading..." />

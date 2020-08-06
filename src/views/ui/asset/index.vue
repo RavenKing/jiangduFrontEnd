@@ -176,8 +176,8 @@
                             <sui-tab-pane title="房屋面积" :attached="false" style="max-height:600px;overflow-y: auto;">
                                 <mianji-form ref='mianjiForm' :singleRoom="selectedRoom"></mianji-form>
                             </sui-tab-pane>
-                            <sui-tab-pane title="楼层管理" :attached="false">
-                                <sui-button basic color="blue" @click.native="openBuildingModal">
+                            <sui-tab-pane title="楼层管理" :attached="false" :disabled="selectedRoom.kind==2">
+                                <sui-button basic color="blue" @click.native="openBuildingModal" v-show="selectedRoom.kind==1">
                                     新增
                                 </sui-button>
                                 <sui-grid :columns="2" relaxed="very">
@@ -628,9 +628,8 @@ export default {
             });
         },
         openAssignSection(rowData) {
-            console.log(this.selectedRoom);
             this.selectedRoom = rowData;
-
+            console.log(this.selectedRoom.kind);
             this.modalMode = "edit";
             // point 
             if (rowData.lat === null || rowData.lat == "") {
