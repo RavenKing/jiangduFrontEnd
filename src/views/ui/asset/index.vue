@@ -528,13 +528,17 @@ export default {
             if (this.roomAssignment == null || this.roomAssignment == {}) {
                 this.roomAssignment = [];
             }
+            var found = 0;
             this.roomAssignment.map((one) => {
                 if (one.id == data.id) { //已经有了的话 直接更新
                     one = data;
-                } else {
-                    this.roomAssignment.push(data); //没有塞进去
+                    found = 1;
                 }
             })
+            if (found == 0) {
+                this.roomAssignment.push(data); //没有塞进去
+
+            }
             if (this.roomAssignment.length == 0) {
                 this.roomAssignment.push(data); //没有塞进去
 

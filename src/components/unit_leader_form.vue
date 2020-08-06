@@ -16,7 +16,7 @@
                 </sui-form-field>
                 <sui-form-field inline>
                     <label>房屋号</label>
-                    <sui-input v-model="singleRoom.room" :disabled="disabled" width="800px" />
+                    <sui-input v-model="selectedRoomInFloor.roomnumber" :disabled="disabled" width="800px" />
                 </sui-form-field>
             </sui-form-fields>
         </sui-form>
@@ -26,7 +26,7 @@
 
 <script>
 export default {
-    props: ['singleRoom'],
+    props: ['singleRoom', 'selectedRoomInFloor'],
     name: 'leader-form',
     components: {},
     data() {
