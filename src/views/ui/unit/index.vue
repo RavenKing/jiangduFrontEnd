@@ -434,6 +434,8 @@ export default {
                     //this.roomAssignment = [];
                     //this.getBuildingSection();
                     //this.closeAssignModal();
+                    notifySomething("分配成功", "分配成功", constants.typeSuccess);
+
                 } else {
                     notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                 }
