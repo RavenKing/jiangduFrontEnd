@@ -12,10 +12,10 @@
                 <label>房间名字</label>
                 <sui-input placeholder="房间名字" v-model="singleEntry.roomname" />
             </sui-form-field>
-            <sui-form-field>
+            <!-- <sui-form-field>
                 <label>选择单位</label>
                 <sui-dropdown placeholder="选择单位" selection :options="options" v-model="singleEntry.unit_id" />
-            </sui-form-field>
+            </sui-form-field> -->
         </sui-form-fields>
         <sui-form-fields>
             <sui-form-field>
