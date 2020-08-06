@@ -13,7 +13,7 @@ export default [
   },
   {
     name: "contract_info.rent_amt",
-    title: '借用年租金(万元)',
+    title: '借用年租金(元)',
     width: "15%"
   },
   {
