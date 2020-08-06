@@ -194,7 +194,7 @@
                             <canvas ref="canvas" id="myCanvas" width="500" height="350" />
                             <sui-list v-show="roomAssignment.length>0">
                                 <sui-list-item v-for="unit in roomAssignment" :key="unit[0]">
-                                    房间号:{{unit.roomnumber}} 房间名:{{unit.roomname}} 面积:{{unit.space}}平米
+                                    房间名:{{unit.roomname}} 面积:{{unit.space}}平米
                                 </sui-list-item>
                             </sui-list>
                         </sui-grid-column>
@@ -593,14 +593,17 @@ export default {
                         if (this.roomAssignment.length != null) {
                             this.roomAssignment.map((one) => {
                                 if (one.id == "room" + index) {
+                                    this.context.globalAlpha = 1;
                                     this.context.strokeText(one.roomnumber, room["room" + index][0] + (room["room" + index][2] / 3), room["room" + index][1] + (room["room" + index][3] / 2));
                                     textDraw = false;
                                 }
                             })
                         }
                         if (textDraw) {
+                            this.context.globalAlpha = 1;
                             this.context.strokeText("房间" + index, room["room" + index][0] + (room["room" + index][2] / 2), room["room" + index][1] + (room["room" + index][3] / 2));
                         }
+                        this.context.globalAlpha = 0;
                         this.context.strokeRect(room["room" + index][0], room["room" + index][1], room["room" + index][2], room["room" + index][3])
                     });
                 }
