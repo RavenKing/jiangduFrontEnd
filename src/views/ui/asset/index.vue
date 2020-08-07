@@ -524,6 +524,7 @@ export default {
             data.building_id = this.assignForm.building_id;
             data.floor_id = this.assignForm.floor_id;
             data.id = "room" + this.selectedRoomInFloorIndex;
+            data.isleader = this.assignForm.isleader;
             console.log(JSON.stringify(data));
             if (this.roomAssignment == null || this.roomAssignment == {}) {
                 this.roomAssignment = [];
@@ -748,6 +749,7 @@ export default {
                 img.src = this.assignList.selectedFloor.url;
                 // var that =this;
                 img.onload = () => {
+                    this.context.globalAlpha = 1;
                     this.context.drawImage(img, 0, 0, 500, 350)
                     zuobiao.map((room, index) => {
                         // console.log(room)

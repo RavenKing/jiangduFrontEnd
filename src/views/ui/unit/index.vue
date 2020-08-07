@@ -9,7 +9,7 @@
 
         </div>
         <div class="filterBiaoDan">
-            <sui-button content="导出" v-on:click="exportToExcel" icon="file green" v-show="role==1"/>
+            <sui-button content="导出" v-on:click="exportToExcel" icon="file green" v-show="role==1" />
         </div>
 
         <sui-grid class="margin20">
@@ -42,9 +42,9 @@
                                 </div>
                             </sui-modal-actions>
                         </sui-tab-pane>
-                        <sui-tab-pane title="办公用房信息" >
+                        <sui-tab-pane title="办公用房信息">
                             <div>
-                                <sui-button content="新增" @click.native="createRoomModel" icon="add green" v-show="role==1"/>
+                                <sui-button content="新增" @click.native="createRoomModel" icon="add green" v-show="role==1" />
                             </div>
                             <div style="margin-top:15px;">
                                 <form-weixiu ref='WeixiuForm' :singleRoom="selectedRoom"></form-weixiu>
@@ -626,9 +626,18 @@ export default {
                 contextThis.whereIsTheRoom(x, y, contextThis)
                 // contextThis.context.clearRect(0, 0, 500, 350);
 
-                //contextThis.openAssignModalNew(contextThis.assignList.selectedBuilding, contextThis.assignList.selectedFloor, contextThis)
+                contextThis.openAssignModalNew(contextThis.assignList.selectedBuilding, contextThis.assignList.selectedFloor, contextThis)
             }, false);
 
+        },
+        openAssignModalNew(building, floor, context) {
+
+            context.assignForm.room_id = building.room_id;
+            context.assignForm.building_id = building.id;
+            context.assignForm.floor_id = floor.id;
+            //TODO floor_id
+            context.assignForm.open = true;
+            context.assignList.open = false;
         },
         whereIsTheRoom(x, y, context) {
             const checkZuoBiao = {
@@ -654,6 +663,7 @@ export default {
                 }
                 if (context.withinZuobiao(checkZuoBiao, leftCornor, rightCornor, leftDown, rightDown)) {
                     context.selectedRoomInFloor = {};
+                    context.selectedRoomInFloorIndex = index;
                     context.roomAssignment.map((one) => {
                         if (one.id == "room" + index) {
                             context.selectedRoomInFloorIndex = index;
