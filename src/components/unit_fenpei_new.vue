@@ -151,14 +151,11 @@ export default {
                                     pid: newFather.id,
                                     name: floor.name
                                 });
-
                             });
                             this.fromData.push(newFather);
                             this.floorLoading = false;
                             this.louLoading = false;
-
                         })
-
                         this.louOptions.push({
                             text: one.name,
                             value: one.id,
@@ -166,10 +163,8 @@ export default {
                     });
                     console.log(this.fromData)
                     this.louLoading = false;
-
                 })
             }
-
         },
         // 清除选中
         clearChecked() {
@@ -257,7 +252,6 @@ export default {
                 if(treeObj.halfCheckedNodes[i].children){
                      building_id = treeObj.halfCheckedNodes[i].id
                      children_list = treeObj.halfCheckedNodes[i].children
-
                     for (var j = children_list.length - 1; j >= 0; j--) {
                          floor_id = children_list[j].id
                         for (var k = treeObj.checkedNodes.length - 1; k >= 0; k--) {

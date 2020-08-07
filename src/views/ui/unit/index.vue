@@ -89,7 +89,7 @@
 
                             <div>
                                 <sui-modal class="modal2" v-model="fenpeiopen">
-                                    <sui-modal-header style="border-bottom:0; margin-bottom:-15px;">{{modelTitle}}</sui-modal-header>
+                                    <sui-modal-header >{{modelTitle}}</sui-modal-header>
                                     <sui-modal-content scrolling>
                                         <div>
                                             <form-fenpei ref='FormFenpei' :singleRoom="selectedfenpei"></form-fenpei>
@@ -278,7 +278,8 @@ import {
     deleteRentRoomAssignmentApi,
     getBuildingFloorApi,
     getBuildingListApi,
-    getFloorById
+    getFloorById,
+    assignroomApi
 } from "@/api/roomDataAPI";
 import AssignForm from "@/components/assignForm";
 
@@ -378,7 +379,9 @@ export default {
                 unit: '',
                 room: '',
                 roomtype: '',
-                roomname: ''
+                roomname: '',
+                ziyousource:[],
+                rentroomoptions:[]
             },
             leaderfenpei: {},
             assignList: {
@@ -1122,7 +1125,7 @@ export default {
         },
         newfenpei() {
             var fenpei_data = this.$refs.FormFenpei.fenpei_data
-
+            console.log('newfenpei')
             var value_list = []
             for (var i = fenpei_data.length - 1; i >= 0; i--) {
                 value_list.push({
@@ -1137,10 +1140,9 @@ export default {
                 input['room_id'] = this.selectedfenpei.room_id
                 input['unit_id'] = this.selectedRoom.id
                 input['valuelist'] = JSON.stringify(value_list)
-                // console.log(input)
-                createAssignmentApi(input).then((data) => {
-                    console.log(input)
-                    console.log(data)
+
+                console.log(input)
+                assignroomApi(input).then((data) => {
                     if (data.data.code == 0) {
                         notifySomething("分配成功", "创建领导分配成功", "success");
                         this.refreshFenpei(this.selectedRoom.id);
@@ -1158,14 +1160,16 @@ export default {
                 // console.log(this.selectedfenpei)
                 input['room_id'] = this.selectedfenpei.room_id
                 input['unit_id'] = this.selectedRoom.id
-                var rent_list = [{
-                    'space': parseInt(this.$refs.FormFenpei.rentspace),
-                    'building_id': 0,
-                    'floor_id': 0,
-                }]
-                input['valuelist'] = JSON.stringify(rent_list)
+                input['type'] = 2
+                input['space'] = parseInt(this.$refs.FormFenpei.rentspace)
+                // var rent_list = [{
+                //     'space': parseInt(this.$refs.FormFenpei.rentspace),
+                //     'building_id': 0,
+                //     'floor_id': 0,
+                // }]
+                // input['valuelist'] = JSON.stringify(rent_list)
                 console.log(input)
-                assignRentRoomApi(input).then((data) => {
+                assignroomApi(input).then((data) => {
                     if (data.data.code == 0) {
                         notifySomething("分配成功", "创建领导分配成功", "success");
                         this.refreshFenpei(this.selectedRoom.id);
@@ -1185,7 +1189,7 @@ export default {
     created() {
         this.role = localGet("role");
         this.unitid = localGet('unit_id')
-        console.log("ggg");
+        
         var fenpei_options = []
 
         getRentRoomDataApi({}).then((data) => {
@@ -1196,10 +1200,10 @@ export default {
                     value: res_data[i]['id']
                 })
             }
-            this.selectedfenpei = {
-                'rentroomoptions': fenpei_options
-            };
-        })
+            this.selectedfenpei['rentroomoptions'] =  fenpei_options
+            console.log('selectedfenpei')
+            console.log(fenpei_options)
+        })   
 
         var ziyou_source = []
         getRoomDataApi({}).then((data) => {
@@ -1215,6 +1219,8 @@ export default {
                 })
             }
             this.selectedfenpei['ziyousource'] = ziyou_source
+            console.log('ziyou_source')
+            console.log(ziyou_source)
             // this.selectedfenpei['ziyouroomoptions'] = rent_options
         })
 
@@ -1306,7 +1312,6 @@ export default {
                     }
 
                     if (res_data[i]["parent_id"] == 0) {
-                        console.log(res_data[i]['seq_code'])
                         parent_data.push(res_data[i])
                     } else {
                         son_data.push(res_data[i])
