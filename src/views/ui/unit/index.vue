@@ -42,7 +42,7 @@
                                 </div>
                             </sui-modal-actions>
                         </sui-tab-pane>
-                        <sui-tab-pane title="办公用房信息" :disabled="selectedRoom.name==''">
+                        <sui-tab-pane title="办公用房信息" >
                             <div>
                                 <sui-button content="新增" @click.native="createRoomModel" icon="add green" v-show="role==1"/>
                             </div>
@@ -106,7 +106,7 @@
                                 </sui-modal>
                             </div>
                         </sui-tab-pane>
-                        <sui-tab-pane title="领导办公室情况" :attached="false" :disabled="selectedRoom.name==''">
+                        <sui-tab-pane title="领导办公室情况" :attached="false">
                             <div>
                                 <!-- <sui-button basic color="blue" @click.native="assignLeader">
                                     新增
