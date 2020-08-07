@@ -74,24 +74,29 @@
                                 </sui-form-field>
                                 <label>结束时间:</label>
                                 <sui-form-field>
-                                    <datepicker :value="selectedStep.data.endDate" v-model="selectedStep.data.endDate" :language="lang['zh']" ></datepicker>
+                                    <datepicker :value="selectedStep.data.endDate" v-model="selectedStep.data.endDate" :language="lang['zh']"></datepicker>
                                 </sui-form-field>
                             </sui-form-fields>
                             <sui-form-fields inline>
                                 <label>计划开始:</label>
                                 <sui-form-field>
-                                    <datepicker :value="selectedStep.data.realStartDate" v-model="selectedStep.data.realStartDate" :language="lang['zh']" ></datepicker>
+                                    <datepicker :value="selectedStep.data.realStartDate" v-model="selectedStep.data.realStartDate" :language="lang['zh']"></datepicker>
                                 </sui-form-field>
                                 <label>计划结束时间:</label>
                                 <sui-form-field>
-                                    <datepicker :value="selectedStep.data.realEndDate" v-model="selectedStep.data.realEndDate" :language="lang['zh']" ></datepicker>
+                                    <datepicker :value="selectedStep.data.realEndDate" v-model="selectedStep.data.realEndDate" :language="lang['zh']"></datepicker>
                                 </sui-form-field>
                             </sui-form-fields>
                             <sui-form-fields inline>
-                                <sui-form-field>
-                                    <sui-checkbox label="完成步骤" radio value="2" v-model="selectedStep.data.status" />
-                                    <sui-checkbox label="未完成" radio value="1" v-model="selectedStep.data.status" />
-                                </sui-form-field>
+                                <div v-show="selectedStep.data.status!='完成'">
+                                    <sui-form-field>
+                                        <sui-checkbox label="完成步骤" radio value="2" v-model="selectedStep.data.status" />
+                                        <sui-checkbox label="未完成" radio value="1" v-model="selectedStep.data.status" />
+                                    </sui-form-field>
+                                </div>
+                                <div v-show="selectedStep.data.status=='完成'">
+                                    步骤已完成
+                                </div>
                             </sui-form-fields>
                         </sui-form>
                     </div>
@@ -589,22 +594,22 @@ export default {
                             status: child.status,
                         }
                         if (childOne.startDate != undefined) {
-                            if (new Date(childOne.startDate) < new Date(this.maxStartDate)) {
+                            if (new Date(childOne.startDate) < new Date(maxTmp)) {
                                 maxTmp = childOne.startDate;
                             }
                         }
                         if (childOne.endDate != undefined) {
-                            if (new Date(childOne.endDate) > new Date(this.minEndDate)) {
+                            if (new Date(childOne.endDate) > new Date(minTmp)) {
                                 minTmp = childOne.endDate;
                             }
                         }
                         if (childOne.realStartDate != undefined) {
-                            if (new Date(childOne.realStartDate) < new Date(this.maxStartDate)) {
+                            if (new Date(childOne.realStartDate) < new Date(maxTmp)) {
                                 maxTmp = childOne.realStartDate;
                             }
                         }
                         if (childOne.realEndDate != undefined) {
-                            if (new Date(childOne.realEndDate) > new Date(this.minEndDate)) {
+                            if (new Date(childOne.realEndDate) > new Date(minTmp)) {
                                 minTmp = childOne.realEndDate;
                             }
                         }

@@ -44,7 +44,7 @@
                         </sui-tab-pane>
                         <sui-tab-pane title="办公用房信息">
                             <div>
-                                <sui-button content="新增" @click.native="createRoomModel" icon="add green" v-show="role==1" />
+                                <sui-button basic color="blue" content="新增" @click.native="createRoomModel" icon="add blue" v-show="role==1" />
                             </div>
                             <div style="margin-top:15px;">
                                 <form-weixiu ref='WeixiuForm' :singleRoom="selectedRoom"></form-weixiu>
@@ -89,7 +89,7 @@
 
                             <div>
                                 <sui-modal class="modal2" v-model="fenpeiopen">
-                                    <sui-modal-header >{{modelTitle}}</sui-modal-header>
+                                    <sui-modal-header>{{modelTitle}}</sui-modal-header>
                                     <sui-modal-content scrolling>
                                         <div>
                                             <form-fenpei ref='FormFenpei' :singleRoom="selectedfenpei"></form-fenpei>
@@ -274,7 +274,6 @@ import {
     deleteBuildingFloorAssignmentApi,
     delleaderroomApi,
     createLeaderAssignApi,
-    assignRentRoomApi,
     deleteRentRoomAssignmentApi,
     getBuildingFloorApi,
     getBuildingListApi,
@@ -380,8 +379,8 @@ export default {
                 room: '',
                 roomtype: '',
                 roomname: '',
-                ziyousource:[],
-                rentroomoptions:[]
+                ziyousource: [],
+                rentroomoptions: []
             },
             leaderfenpei: {},
             assignList: {
@@ -1189,7 +1188,7 @@ export default {
     created() {
         this.role = localGet("role");
         this.unitid = localGet('unit_id')
-        
+
         var fenpei_options = []
 
         getRentRoomDataApi({}).then((data) => {
@@ -1200,10 +1199,10 @@ export default {
                     value: res_data[i]['id']
                 })
             }
-            this.selectedfenpei['rentroomoptions'] =  fenpei_options
+            this.selectedfenpei['rentroomoptions'] = fenpei_options
             console.log('selectedfenpei')
             console.log(fenpei_options)
-        })   
+        })
 
         var ziyou_source = []
         getRoomDataApi({}).then((data) => {
