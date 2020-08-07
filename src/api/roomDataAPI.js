@@ -285,6 +285,17 @@ function createAssignmentApi(data)
     });
 }
 
+function assignroomApi(data)
+{
+    let local_auth = localGet(global.project_key, true);
+    data.token=local_auth;
+    return request({
+        url: constants.assignroomApi,
+        method: 'post',
+        data: data
+    });
+}
+
 function assignRentRoomApi(data)
 {
     let local_auth = localGet(global.project_key, true);
@@ -646,6 +657,7 @@ export {
     createLoanAssignmentApi,
     editLoanAssignmentApi,
     getFloorById,
+    assignroomApi,
 
 
     getroomnumApi,
