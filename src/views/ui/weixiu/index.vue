@@ -76,6 +76,10 @@
 </template>
 
 <script>
+import {
+    fromShitFormat,
+    toShitFormat
+} from "@/util/time"
 import dialogBar from '@/components/MDialogNewV'
 import Vuetable from "vuetable-2/src/components/Vuetable";
 import VuetablePagination from "vuetable-2/src/components/VuetablePagination";
@@ -91,7 +95,6 @@ import {
 } from "@/util/storage";
 import {
     notifySomething,
-    goToLogin
 } from "@/util/utils"
 import {
     getMRApi,
@@ -309,6 +312,7 @@ export default {
         createShenbao() {
             this.loading = true;
             if (this.modalMode == "create") {
+                this.selectedWeixiu.starttime = toShitFormat(this.selectedWeixiu.starttime)
                 createMRApi(this.selectedWeixiu).then(() => {
                     this.loading = false;
                     this.closeWeiXiuForm();
@@ -319,6 +323,7 @@ export default {
                     notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                 });
             } else if (this.modalMode == "edit") {
+                this.selectedWeixiu.starttime = toShitFormat(this.selectedWeixiu.starttime)
                 editMRApi(this.selectedWeixiu).then((result) => {
                     if (result.data.code == 0) {
                         this.loading = false;
@@ -358,7 +363,9 @@ export default {
                     to: 5,
                     data: data.data.data
                 }
+
                 this.localData.data.map((one) => {
+                    one.starttime = fromShitFormat(one.starttime);
                     getroombyid(one).then((result) => {
                         console.log(result);
                         if (result.data.code == 0) {
@@ -420,67 +427,8 @@ export default {
         }
     },
     mounted() {
-        //this.localData = data.data.data;
-        this.role = localGet("role");
-        this.loading = true;
-        let params = {};
-        if (this.role == 1) {
-            params = {
-                status: constants.STATUSNEW
-            }
-        }
-        getMRApi(params).then((data) => {
 
-            if (data.data.code == 2) {
-                notifySomething("重复登陆 请重新登陆", constants.GENERALERROR, constants.typeError);
-                goToLogin();
-                this.$router.push("/login");
-            }
-            //this.localData = data.data.data;
-            this.loading = false;
-            this.localData = {
-                total: 16,
-                per_page: 5,
-                current_page: 1,
-                last_page: 4,
-                next_page_url: "data.data.data?page=2",
-                prev_page_url: null,
-                from: 1,
-                to: 5,
-                data: data.data.data
-            }
-            this.localData.data.map((one) => {
-                getroombyid(one).then((result) => {
-                    console.log(result);
-                    if (result.data.code == 0) {
-                        one.roomname = result.data.data.roomname;
-                        one.address = result.data.data.address;
-                        this.componentKey++;
-                    } else {
-                        // notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
-                    }
-                }).catch(function () {
-                    this.loading = false;
-                    notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
-                });
-                switch (one.status) {
-                    case 1:
-                        one.statusText = constants.NEW;
-                        break;
-                    case 2:
-                        one.statusText = constants.PASS;
-                        break;
-                    case 3:
-                        one.statusText = constants.FAIL;
-                        break;
-                    default:
-                        break;
-                }
-            });
-        }).catch(function () {
-            this.loading = false;
-            notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
-        });
+        this.refreshWeixiuList();
 
     }
 };

@@ -153,6 +153,7 @@
 </template>
 
 <script>
+import moment from 'moment'
 import dialogBar from '@/components/MDialog'
 import RentRoomForm from "@/components/rentRoomForm";
 import Vuetable from "vuetable-2/src/components/Vuetable";
@@ -357,6 +358,12 @@ export default {
                     return v[j]
                 }
             }))
+        },
+        formatTime(value) {
+            if (value == null || value == undefined) {
+                return ""
+            }
+            return moment(value).format("YYYY-MM-DD");
         },
         clickConfirmDelete() {
             this.loading = true;
@@ -584,6 +591,14 @@ export default {
                 if (data.data.code == 0) {
                     this.loading = false;
                     this.localData = data.data.data
+                    this.localData.data.map((one) => {
+                        if (one.contract_info.starttime) {
+                            one.qishinianxian = this.formatTime(one.contract_info.starttime) + "到" + this.formatTime(one.contract_info.endtime);
+                        } else {
+                            one.qishinianxian = "无"
+                        }
+
+                    })
                 } else if (data.data.code == 2) {
                     notifySomething("重复登陆 请重新登陆", constants.GENERALERROR, constants.typeError);
                     goToLogin();

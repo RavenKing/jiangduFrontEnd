@@ -70,28 +70,33 @@
                             <sui-form-fields inline>
                                 <label>开始时间:</label>
                                 <sui-form-field>
-                                    <datepicker :value="selectedStep.data.startDate" v-model="selectedStep.data.startDate" :language="lang['zh']" minimum-view='month'></datepicker>
+                                    <datepicker :value="selectedStep.data.startDate" v-model="selectedStep.data.startDate" :language="lang['zh']"></datepicker>
                                 </sui-form-field>
                                 <label>结束时间:</label>
                                 <sui-form-field>
-                                    <datepicker :value="selectedStep.data.endDate" v-model="selectedStep.data.endDate" :language="lang['zh']" minimum-view='month'></datepicker>
+                                    <datepicker :value="selectedStep.data.endDate" v-model="selectedStep.data.endDate" :language="lang['zh']"></datepicker>
                                 </sui-form-field>
                             </sui-form-fields>
                             <sui-form-fields inline>
                                 <label>计划开始:</label>
                                 <sui-form-field>
-                                    <datepicker :value="selectedStep.data.realStartDate" v-model="selectedStep.data.realStartDate" :language="lang['zh']" minimum-view='month'></datepicker>
+                                    <datepicker :value="selectedStep.data.realStartDate" v-model="selectedStep.data.realStartDate" :language="lang['zh']"></datepicker>
                                 </sui-form-field>
                                 <label>计划结束时间:</label>
                                 <sui-form-field>
-                                    <datepicker :value="selectedStep.data.realEndDate" v-model="selectedStep.data.realEndDate" :language="lang['zh']" minimum-view='month'></datepicker>
+                                    <datepicker :value="selectedStep.data.realEndDate" v-model="selectedStep.data.realEndDate" :language="lang['zh']"></datepicker>
                                 </sui-form-field>
                             </sui-form-fields>
                             <sui-form-fields inline>
-                                <sui-form-field>
-                                    <sui-checkbox label="完成步骤" radio value="2" v-model="selectedStep.data.status" />
-                                    <sui-checkbox label="未完成" radio value="1" v-model="selectedStep.data.status" />
-                                </sui-form-field>
+                                <div v-show="selectedStep.data.status!='完成'">
+                                    <sui-form-field>
+                                        <sui-checkbox label="完成步骤" radio value="2" v-model="selectedStep.data.status" />
+                                        <sui-checkbox label="未完成" radio value="1" v-model="selectedStep.data.status" />
+                                    </sui-form-field>
+                                </div>
+                                <div v-show="selectedStep.data.status=='完成'">
+                                    步骤已完成
+                                </div>
                             </sui-form-fields>
                         </sui-form>
                     </div>
@@ -162,7 +167,7 @@
                                 </sui-form-field>
                                 <label style="width:80px;">项目金额</label>
                                 <sui-form-field>
-                                    <input type="text" placeholder="请选择" v-model="weixiuhetong.budget" />
+                                    <input type="text" placeholder="请选择" v-model="weixiuhetong.extra" />
                                 </sui-form-field>
                             </sui-form-fields>
                             <sui-form-fields inline>
@@ -589,13 +594,23 @@ export default {
                             status: child.status,
                         }
                         if (childOne.startDate != undefined) {
-                            if (new Date(childOne.startDate) < new Date(this.maxStartDate)) {
+                            if (new Date(childOne.startDate) < new Date(maxTmp)) {
                                 maxTmp = childOne.startDate;
                             }
                         }
                         if (childOne.endDate != undefined) {
-                            if (new Date(childOne.endDate) > new Date(this.minEndDate)) {
+                            if (new Date(childOne.endDate) > new Date(minTmp)) {
                                 minTmp = childOne.endDate;
+                            }
+                        }
+                        if (childOne.realStartDate != undefined) {
+                            if (new Date(childOne.realStartDate) < new Date(maxTmp)) {
+                                maxTmp = childOne.realStartDate;
+                            }
+                        }
+                        if (childOne.realEndDate != undefined) {
+                            if (new Date(childOne.realEndDate) > new Date(minTmp)) {
+                                minTmp = childOne.realEndDate;
                             }
                         }
                         if (childOne.status == "完成") {
@@ -654,14 +669,7 @@ export default {
                 //this.localData = data.data.data;
                 this.loading = false;
                 this.localData = {
-                    total: 16,
-                    per_page: 5,
-                    current_page: 1,
-                    last_page: 4,
-                    next_page_url: "data.data.data?page=2",
-                    prev_page_url: null,
-                    from: 1,
-                    to: 5,
+
                     data: data.data.data
                 }
                 this.localData.data.map((one) => {
@@ -762,14 +770,6 @@ export default {
             }
             this.loading = false;
             this.localData = {
-                total: 16,
-                per_page: 5,
-                current_page: 1,
-                last_page: 4,
-                next_page_url: "data.data.data?page=2",
-                prev_page_url: null,
-                from: 1,
-                to: 5,
                 data: data.data.data
             }
             this.localData.data.map((one) => {
@@ -819,6 +819,7 @@ export default {
     padding: 15px 15px 15px 15px;
     box-sizing: border-box;
     max-height: none !important;
+    min-height: 500px !important;
 }
 
 .modalStep {

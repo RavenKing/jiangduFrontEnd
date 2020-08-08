@@ -16,14 +16,14 @@
 
 
             <sui-form-fields v-if="singleRoom.roomtype == '1'">
-                <sui-form-field class="width300" style="margin-bottom:0px;">
+                <sui-form-field class="width300">
                     <label>选择房屋</label>
                     <model-select :options="singleRoom.ziyousource" v-model="item" placeholder="" width="300px" @input="handleOnInput">
                     </model-select>
                 </sui-form-field>
         </sui-form-fields>
         <sui-form-fields v-if="singleRoom.roomtype == '2'">
-            <sui-form-field class="width300" style="margin-bottom:0px;">
+            <sui-form-field class="width300">
                 <label>选择租赁房屋</label>
                 <model-select :options="singleRoom.rentroomoptions" v-model="item" placeholder="" width="300px" @input="handleOnInputRent">
                 </model-select>
@@ -31,14 +31,14 @@
         </sui-form-fields>
     </sui-form>
     </sui-segment>
-    <div class="transfet-box" style="margin-top:15px;" v-if="singleRoom.roomtype == '1'">
+    <div class="transfet-box"  v-if="singleRoom.roomtype == '1'">
         <wl-tree-transfer :key="transferKey" ref="wl-tree-transfer" filter high-light default-transfer :mode="mode" :title="title" :to_data="toData" :from_data="fromData" :filterNode="filterNode" :defaultProps="defaultProps" :defaultCheckedKeys="defaultCheckedKeys" :defaultExpandedKeys="[2,3]" @right-check-change="rightCheckChange" @left-check-change="leftCheckChange" @removeBtn="remove" @addBtn="add" height="400px" node_key="id">
             <span slot="title-right" class="my-title-right" @click="handleTitleRight">楼</span>
         </wl-tree-transfer>
         
         
     </div>
-    <sui-form-fields v-if="checked_node == true && singleRoom.roomtype == '1'" style="margin-top:15px;">
+    <sui-form-fields v-if="checked_node == true && singleRoom.roomtype == '1'" >
             <sui-form-field v-for="fenpei in fenpei_data" inline>
                 <label>   {{fenpei.name}}    </label>
                 <sui-input  placeholder="面积" v-model="fenpei.space" width="800px" type="number" />
@@ -151,14 +151,11 @@ export default {
                                     pid: newFather.id,
                                     name: floor.name
                                 });
-
                             });
                             this.fromData.push(newFather);
                             this.floorLoading = false;
                             this.louLoading = false;
-
                         })
-
                         this.louOptions.push({
                             text: one.name,
                             value: one.id,
@@ -166,10 +163,8 @@ export default {
                     });
                     console.log(this.fromData)
                     this.louLoading = false;
-
                 })
             }
-
         },
         // 清除选中
         clearChecked() {
@@ -257,7 +252,6 @@ export default {
                 if(treeObj.halfCheckedNodes[i].children){
                      building_id = treeObj.halfCheckedNodes[i].id
                      children_list = treeObj.halfCheckedNodes[i].children
-
                     for (var j = children_list.length - 1; j >= 0; j--) {
                          floor_id = children_list[j].id
                         for (var k = treeObj.checkedNodes.length - 1; k >= 0; k--) {

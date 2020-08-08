@@ -9,20 +9,20 @@
 
         </div>
         <div class="filterBiaoDan">
-            <sui-button content="导出" v-on:click="exportToExcel" icon="file green" />
+            <sui-button content="导出" v-on:click="exportToExcel" icon="file green" v-show="role==1" />
         </div>
 
         <sui-grid class="margin20">
             <sui-grid-row>
                 <sui-grid-column :width="3" v-show="role==1">
                     <div class="filterBiaoDan">
-                        <sui-input style="width:100%;padding-left:15px; margin-bottom:15px;" placeholder="Search..." v-model="search" icon="search" v-on:change="search_unit_list()"/>
+                        <sui-input style="width:100%;padding-left:15px; margin-bottom:15px;" placeholder="Search..." v-model="search" icon="search" v-on:change="search_unit_list()" />
                         <vue-tree-list class="addListIcon" :key="componentKey" @click="onClick" :model="tree" default-tree-node-name="new node" default-leaf-node-name="new leaf" v-bind:default-expanded="false">
                             <span class="icon" slot="addTreeNodeIcon"></span>
                             <span class="icon" slot="addLeafNodeIcon"></span>
                             <span class="icon" style="display:none" slot="leafNodeIcon">
                                 <sui-icon name="home" />
-                                </span>
+                            </span>
                             <span class="icon" style="display:none" slot="treeNodeIcon">
                                 <sui-icon name="building outline" /></span>
                         </vue-tree-list>
@@ -42,9 +42,9 @@
                                 </div>
                             </sui-modal-actions>
                         </sui-tab-pane>
-                        <sui-tab-pane title="办公用房信息" :disabled="selectedRoom.name==''">
+                        <sui-tab-pane title="办公用房信息">
                             <div>
-                                <sui-button content="新增" @click.native="createRoomModel" icon="add green" />
+                                <sui-button basic color="blue" content="新增" @click.native="createRoomModel" icon="add blue" v-show="role==1" />
                             </div>
                             <div style="margin-top:15px;">
                                 <form-weixiu ref='WeixiuForm' :singleRoom="selectedRoom"></form-weixiu>
@@ -89,7 +89,7 @@
 
                             <div>
                                 <sui-modal class="modal2" v-model="fenpeiopen">
-                                    <sui-modal-header style="border-bottom:0; margin-bottom:-15px;">{{modelTitle}}</sui-modal-header>
+                                    <sui-modal-header>{{modelTitle}}</sui-modal-header>
                                     <sui-modal-content scrolling>
                                         <div>
                                             <form-fenpei ref='FormFenpei' :singleRoom="selectedfenpei"></form-fenpei>
@@ -106,7 +106,7 @@
                                 </sui-modal>
                             </div>
                         </sui-tab-pane>
-                        <sui-tab-pane title="领导办公室情况" :attached="false" :disabled="selectedRoom.name==''">
+                        <sui-tab-pane title="领导办公室情况" :attached="false">
                             <div>
                                 <!-- <sui-button basic color="blue" @click.native="assignLeader">
                                     新增
@@ -176,13 +176,37 @@
         <div>
             <sui-modal class="modal2" v-model="leader.open">
                 <sui-modal-content scrolling>
-                    <leader-form ref='LeaderForm' :singleRoom="selectedfenpei"></leader-form>
+
+                    <sui-grid :columns="1" relaxed="very">
+
+                        <sui-grid-column :width="11">
+                            <sui-statistic horizontal size="big">
+                                <sui-statistic-value>
+                                    {{assignList.selectedBuilding.name}}
+                                </sui-statistic-value>
+                            </sui-statistic>
+                            <sui-statistic horizontal size="big">
+                                <sui-statistic-value>
+                                    {{assignList.selectedFloor.name}}
+                                </sui-statistic-value>
+                            </sui-statistic>
+                            <img :src="assignList.selectedFloor.url" ref="backImage" v-show="false" />
+                            <canvas ref="canvas" id="myCanvas" width="500" height="350" />
+                            <sui-list v-show="roomAssignment.length>0">
+                                <sui-list-item v-for="unit in roomAssignment" :key="unit[0]">
+                                    房间名:{{unit.roomname}} 面积:{{unit.space}}平米
+                                </sui-list-item>
+                            </sui-list>
+                        </sui-grid-column>
+                    </sui-grid>
+                    <assign-form ref='formComponentAssign' :index="selectedRoomInFloorIndex" :singleEntry="selectedRoomInFloor">
+                    </assign-form>
                 </sui-modal-content>
                 <sui-modal-actions>
                     <sui-button basic color="red" @click.native="closeLeaderModal">
                         取消
                     </sui-button>
-                    <sui-button basic color="blue" @click.native="createLeaderAssign">
+                    <sui-button basic color="blue" @click.native="createAssignment">
                         提交
                     </sui-button>
                 </sui-modal-actions>
@@ -219,7 +243,6 @@ import store from "@/store";
 import constants from "@/util/constants";
 import FormCreate from "@/components/unit_basic_info";
 import FormFenpei from "@/components/unit_fenpei_new";
-import LeaderForm from "@/components/unit_leader_form";
 import FormWeixiu from "@/components/unitweixiuForm";
 import dialogBar from '@/components/MDialog'
 import UnitForm from "@/components/unitForm";
@@ -251,9 +274,14 @@ import {
     deleteBuildingFloorAssignmentApi,
     delleaderroomApi,
     createLeaderAssignApi,
-    assignRentRoomApi,
-    deleteRentRoomAssignmentApi
+    deleteRentRoomAssignmentApi,
+    getBuildingFloorApi,
+    getBuildingListApi,
+    getFloorById,
+    assignroomApi
 } from "@/api/roomDataAPI";
+import AssignForm from "@/components/assignForm";
+
 import {
     createMRApi
 } from "@/api/weixiuAPI";
@@ -267,12 +295,14 @@ export default {
         FormFenpei,
         FormCreate,
         FormWeixiu,
-        "leader-form": LeaderForm
+        'assign-form': AssignForm,
+
     },
     data() {
         return {
             role: 0,
             source: [],
+            loutree: new Tree([]),
             tree: new Tree([]),
             origin_tree_list: [],
             sendVal: false,
@@ -283,6 +313,7 @@ export default {
             unitid: 0,
             weixiuopen: false,
             deleteTarget: "",
+            selectedRoomInFloorIndex: 0,
             loading: true,
             localData: [],
             rent_room_list: [],
@@ -294,6 +325,7 @@ export default {
             fields: FieldsDef,
             fenpeifields: FenpeiDef,
             lingdaofields: LingdaoDef,
+            roomAssignment: [],
             sortOrder: [{
                 field: "email",
                 direction: "asc"
@@ -346,15 +378,315 @@ export default {
                 unit: '',
                 room: '',
                 roomtype: '',
-                roomname: ''
+                roomname: '',
+                ziyousource: [],
+                rentroomoptions: []
             },
             leaderfenpei: {},
+            assignList: {
+                buildings: [],
+                selectedBuilding: {},
+                selectedFloor: {}
+            },
             listField: FieldsDefList,
-            search: ''
+            search: '',
+            treeData: [],
+            selectedRoomInFloor: {}
+
         };
     },
 
     methods: {
+        // kevin assgin rrom
+
+        createAssignment() {
+            this.loading = true;
+            let data = this.selectedRoomInFloor;
+            data.room_id = this.assignForm.room_id;
+            data.building_id = this.assignForm.building_id;
+            data.floor_id = this.assignForm.floor_id;
+            data.id = "room" + this.selectedRoomInFloorIndex;
+            console.log(JSON.stringify(data));
+            if (this.roomAssignment == null || this.roomAssignment == {}) {
+                this.roomAssignment = [];
+            }
+            var found = 0;
+            this.roomAssignment.map((one) => {
+                if (one.id == data.id) { //已经有了的话 直接更新
+                    one = data;
+                    found = 1;
+                }
+            })
+            if (found == 0) {
+                this.roomAssignment.push(data);
+            }
+            if (this.roomAssignment.length == 0) {
+                this.roomAssignment.push(data); //没有塞进去
+
+            }
+            var contextF = this;
+            createAssignmentApi({
+                assignment: JSON.stringify(this.roomAssignment),
+                id: this.assignList.selectedFloor.floor_id
+            }).then((result) => {
+                this.loading = false;
+                if (result.data.code == 0) {
+                    // this.context.clearRect(0, 0, 500, 350);
+                    this.leader.open = false;
+                    //this.roomAssignment = [];
+                    //this.getBuildingSection();
+                    //this.closeAssignModal();
+                    notifySomething("分配成功", "分配成功", constants.typeSuccess);
+
+                } else {
+                    notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
+                }
+            }).catch(function () {
+                contextF.loading = false;
+                notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
+            });
+
+        },
+        onClickLou(params) {
+            this.tabChange();
+            if (params.floor_id == undefined) {
+                this.assignList.selectedBuilding = params;
+                this.assignList.selectedFloor = {
+                    url: ""
+                };
+                this.roomAssignment = [];
+            } else {
+                this.assignList.selectedFloor = params;
+                getFloorById({
+                    floor_id: params.floor_id
+                }).then((result) => {
+                    if (result.data.code == 0) {
+                        this.assignList.selectedFloor.url = constants.fileURL + result.data.data.cadfile;
+                        this.drawRect(result.data.data);
+                    }
+                })
+                this.treeData.map((building) => {
+                    if (building.id == params.pid) {
+                        this.assignList.selectedBuilding = building;
+                    }
+                })
+            }
+        },
+        openAssignSection(rowData) {
+            this.assignList.selectedRoom = rowData;
+            this.modalMode = "edit";
+            // point 
+            this.loading = true;
+            this.tree = new Tree([]);
+            this.assignList.selectedBuilding = false;
+            this.assignList.selectedFloor = {
+                url: ""
+            };
+
+            this.loading = false;
+            this.onClickLou(rowData);
+
+            //this.getBuildingSection();
+
+        },
+        getBuildingSection() {
+            let data = {};
+            data.room_id = this.assignList.selectedRoom.room_id;
+            var context = this;
+            // get room
+            getBuildingListApi(data).then((result) => {
+                this.loading = false;
+                this.assignList.selectedFloor = {
+                    url: ""
+                };
+                this.assignList.selectedBuilding = {
+                    name: ""
+                };
+                //get floor
+                this.assignList.buildings = [];
+                this.assignList.buildings = result.data.data;
+                let root = [];
+                this.assignList.buildings.map((building) => {
+                    building.building_id = building.id;
+                    building.pid = 0;
+                    building.dragDisabled = true;
+                    building.addTreeNodeDisabled = true;
+                    building.addLeafNodeDisabled = true;
+                    building.editLeafNodeDisabled = true;
+                    building.delLeafNodeDisabled = true;
+                    building.editNodeDisabled = true;
+                    building.delNodeDisabled = false;
+                    building.children = [];
+                    root.push(building);
+                    this.getBuildingFloorSection(building);
+                })
+                if (this.assignList.buildings.length > 0) {
+                    this.selectedBuildingID = this.assignList.buildings[0].id;
+                }
+                this.treeData = root;
+                this.assignList.open = true;
+                // this.ComponentKey++;
+            }).catch(function () {
+                context.loading = false;
+                notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
+            });
+        },
+        getBuildingFloorSection(building) {
+            var data = {
+                building_id: building.id
+            }
+            var context = this;
+            //console.log(data);
+            getBuildingFloorApi(data).then((result) => {
+                building.floors = result.data.data;
+                building.floors.map((floor) => {
+                    floor.pid = building.id;
+                    floor.isLeaf = true;
+                    floor.floor_id = floor.id;
+                    floor.disabled = true;
+                    building.children.push(floor)
+                })
+                this.loutree = new Tree(this.treeData);
+                // this.drawRect()
+            }).catch(function () {
+                context.loading = false;
+                notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
+            });
+        },
+        tabChange() {
+            this.context = this.$refs.canvas.getContext("2d");
+            if (this.context == undefined) {
+                setTimeout(this.tabChange, 1000)
+            }
+
+        },
+        drawRect(info) {
+
+            if (this.context == null || this.context == undefined) {
+                this.context = this.$refs.convas.getContext("2d");
+            }
+            this.roomAssignment = [];
+            if (info.room_detail != null) {
+                var zuobiao = JSON.parse(info.room_detail);
+                this.roomInFloor = zuobiao;
+                if (info.room_assign != null) {
+                    this.roomAssignment = JSON.parse(info.room_assign);
+                    if (Object.keys(this.roomAssignment).length === 0 && this.roomAssignment.constructor === Object) {
+                        this.roomAssignment = [];
+                    }
+                }
+            }
+
+            this.context.strokeStyle = "#FF0000";
+            if (zuobiao != null) {
+                var img = this.$refs.backImage;
+                img = new Image();
+                img.src = this.assignList.selectedFloor.url;
+                // var that =this;
+                img.onload = () => {
+                    this.context.drawImage(img, 0, 0, 500, 350)
+                    zuobiao.map((room, index) => {
+                        // console.log(room)
+                        // this.context.beginPath();
+                        // this.context.moveTo(
+                        //     room["room" + index][0], room["room" + index][1]);
+                        // this.context.lineTo(room["room" + index][2], room["room" + index][3]);
+                        var textDraw = true;
+                        if (this.roomAssignment.length != null) {
+                            this.roomAssignment.map((one) => {
+                                if (one.id == "room" + index) {
+                                    this.context.globalAlpha = 1;
+                                    this.context.strokeText(one.roomnumber, room["room" + index][0] + (room["room" + index][2] / 3), room["room" + index][1] + (room["room" + index][3] / 2));
+                                    textDraw = false;
+                                }
+                            })
+                        }
+                        if (textDraw) {
+                            this.context.globalAlpha = 1;
+                            this.context.strokeText("房间" + index, room["room" + index][0] + (room["room" + index][2] / 2), room["room" + index][1] + (room["room" + index][3] / 2));
+                        }
+                        this.context.globalAlpha = 0;
+                        this.context.strokeRect(room["room" + index][0], room["room" + index][1], room["room" + index][2], room["room" + index][3])
+                    });
+                }
+
+            } else {
+                this.context.clearRect(0, 0, 500, 350);
+            }
+
+            this.context.strokeStyle = "#FF0000";
+            this.context.strokeText("201", 10, 20);
+            this.context.strokeRect(0, 0, 60, 100);
+            var canvas = this.$refs.canvas;
+            var contextThis = this;
+            this.$refs.canvas.addEventListener('click', function (event) {
+                var rect = canvas.getBoundingClientRect();
+                //2
+                var x = event.clientX - rect.left * (500 / rect.width);
+                var y = event.clientY - rect.top * (350 / rect.height);
+                console.log("x:" + x + ",y:" + y);
+                contextThis.whereIsTheRoom(x, y, contextThis)
+                // contextThis.context.clearRect(0, 0, 500, 350);
+
+                contextThis.openAssignModalNew(contextThis.assignList.selectedBuilding, contextThis.assignList.selectedFloor, contextThis)
+            }, false);
+
+        },
+        openAssignModalNew(building, floor, context) {
+
+            context.assignForm.room_id = building.room_id;
+            context.assignForm.building_id = building.id;
+            context.assignForm.floor_id = floor.id;
+            //TODO floor_id
+            context.assignForm.open = true;
+            context.assignList.open = false;
+        },
+        whereIsTheRoom(x, y, context) {
+            const checkZuoBiao = {
+                x: x,
+                y: y
+            };
+            context.roomInFloor.map((room, index) => {
+                var leftCornor = {
+                    x: room["room" + index][0],
+                    y: room["room" + index][1]
+                }; //左上坐标
+                var rightCornor = {
+                    x: room["room" + index][0] + room["room" + index][2],
+                    y: room["room" + index][1]
+                };
+                var leftDown = {
+                    x: room["room" + index][0],
+                    y: room["room" + index][1] + room["room" + index][3]
+                }
+                var rightDown = {
+                    x: room["room" + index][0] + room["room" + index][2],
+                    y: room["room" + index][1] + room["room" + index][3]
+                }
+                if (context.withinZuobiao(checkZuoBiao, leftCornor, rightCornor, leftDown, rightDown)) {
+                    context.selectedRoomInFloor = {};
+                    context.selectedRoomInFloorIndex = index;
+                    context.roomAssignment.map((one) => {
+                        if (one.id == "room" + index) {
+                            context.selectedRoomInFloorIndex = index;
+                            context.selectedRoomInFloor = one;
+                        }
+                    })
+                }
+            });
+        },
+        withinZuobiao(checkZuoBiao, leftCornor, rightCornor, leftDown, rightDown) {
+
+            if (checkZuoBiao.x >= leftCornor.x && checkZuoBiao.y <= rightDown.y) {
+                if (checkZuoBiao.x <= rightCornor.x && checkZuoBiao.y >= rightCornor.y) {
+                    return true;
+                }
+                return false;
+            }
+            return false;
+        },
+        //end of assign room
+
         search_unit_list() {
             console.log(this.search)
             var keyword = this.search
@@ -364,14 +696,14 @@ export default {
             for (var i = this.tree.children.length - 1; i >= 0; i--) {
                 var name = this.tree.children[i]['name']
                 console.log(name)
-                if(name.indexOf(keyword)!= -1){
+                if (name.indexOf(keyword) != -1) {
                     filtered_tree_list.push(this.tree.children[i])
                     continue
                 }
                 var children_list = this.tree.children[i]['children']
                 for (var j = children_list.length - 1; j >= 0; j--) {
                     var children_name = children_list[j]['name']
-                    if(children_name.indexOf(keyword)!= -1){
+                    if (children_name.indexOf(keyword) != -1) {
                         filtered_tree_list.push(this.tree.children[i])
                         break
                     }
@@ -388,7 +720,7 @@ export default {
             console.log(this.$refs);
             console.log(this.leaderfenpei)
             var room_type = 1
-            if(this.leaderfenpei.type1 == '租赁房屋'){
+            if (this.leaderfenpei.type1 == '租赁房屋') {
                 room_type = 2
             }
 
@@ -432,6 +764,7 @@ export default {
         assignLeader(data) {
             this.leaderfenpei = data
             this.leader.open = true;
+            this.openAssignSection(data);
         },
         //tree
         onDel(node) {
@@ -569,61 +902,59 @@ export default {
                 input['floor_id'] = this.deleteTarget.floor_id
                 input['unit_id'] = this.selectedRoom.id
                 console.log(this.deleteTarget)
-                if(this.deleteTarget.type1 == '租赁房屋'){
+                if (this.deleteTarget.type1 == '租赁房屋') {
                     console.log('租赁房屋')
                     deleteRentRoomAssignmentApi(input).then(() => {
-                    getUnitApiByid(this.selectedRoom.id).then((data) => {
-                        var res_data = data.data.data['building_info']
-                        for (var i = res_data.length - 1; i >= 0; i--) {
-                            if (res_data[i]['type1'] == 'self')
-                                res_data[i]['type1'] = '自有房屋'
-                            else
-                                res_data[i]['type1'] = '租赁房屋'
-                        }
-                        this.fenpeilocalData = {
-                            total: 16,
-                            per_page: 5,
-                            current_page: 1,
-                            last_page: 4,
-                            next_page_url: "data.data.data?page=2",
-                            prev_page_url: null,
-                            from: 1,
-                            to: 5,
-                            data: res_data
-                        }
-                    })
-                    this.loading = false
-                });
+                        getUnitApiByid(this.selectedRoom.id).then((data) => {
+                            var res_data = data.data.data['building_info']
+                            for (var i = res_data.length - 1; i >= 0; i--) {
+                                if (res_data[i]['type1'] == 'self')
+                                    res_data[i]['type1'] = '自有房屋'
+                                else
+                                    res_data[i]['type1'] = '租赁房屋'
+                            }
+                            this.fenpeilocalData = {
+                                total: 16,
+                                per_page: 5,
+                                current_page: 1,
+                                last_page: 4,
+                                next_page_url: "data.data.data?page=2",
+                                prev_page_url: null,
+                                from: 1,
+                                to: 5,
+                                data: res_data
+                            }
+                        })
+                        this.loading = false
+                    });
 
-                }
-                else{
+                } else {
                     deleteBuildingFloorAssignmentApi(input).then(() => {
-                    getUnitApiByid(this.selectedRoom.id).then((data) => {
-                        var res_data = data.data.data['building_info']
-                        for (var i = res_data.length - 1; i >= 0; i--) {
-                            if (res_data[i]['type1'] == 'self')
-                                res_data[i]['type1'] = '自有房屋'
-                            else
-                                res_data[i]['type1'] = '租赁房屋'
-                        }
-                        this.fenpeilocalData = {
-                            total: 16,
-                            per_page: 5,
-                            current_page: 1,
-                            last_page: 4,
-                            next_page_url: "data.data.data?page=2",
-                            prev_page_url: null,
-                            from: 1,
-                            to: 5,
-                            data: res_data
-                        }
-                    })
-                    this.loading = false
-                });
+                        getUnitApiByid(this.selectedRoom.id).then((data) => {
+                            var res_data = data.data.data['building_info']
+                            for (var i = res_data.length - 1; i >= 0; i--) {
+                                if (res_data[i]['type1'] == 'self')
+                                    res_data[i]['type1'] = '自有房屋'
+                                else
+                                    res_data[i]['type1'] = '租赁房屋'
+                            }
+                            this.fenpeilocalData = {
+                                total: 16,
+                                per_page: 5,
+                                current_page: 1,
+                                last_page: 4,
+                                next_page_url: "data.data.data?page=2",
+                                prev_page_url: null,
+                                from: 1,
+                                to: 5,
+                                data: res_data
+                            }
+                        })
+                        this.loading = false
+                    });
 
                 }
 
-                
             }
             if (this.deletetype == 'leader') {
                 delleaderroomApi(this.deleteTarget).then((result) => {
@@ -726,18 +1057,16 @@ export default {
                     }
                 }
                 for (i = 0; i < filtered_data.length; i++) {
-                    if(filtered_data[i]['kind'] == '1'){
-                            filtered_data[i]['kind'] = '机关单位'
-                        }
-                        if(filtered_data[i]['kind'] == '2'){
-                            filtered_data[i]['kind'] = '事业单位'
-                        }
-                        if(filtered_data[i]['kind'] == '3'){
-                            filtered_data[i]['kind'] = '参公单位'
-                        }
+                    if (filtered_data[i]['kind'] == '1') {
+                        filtered_data[i]['kind'] = '机关单位'
+                    }
+                    if (filtered_data[i]['kind'] == '2') {
+                        filtered_data[i]['kind'] = '事业单位'
+                    }
+                    if (filtered_data[i]['kind'] == '3') {
+                        filtered_data[i]['kind'] = '参公单位'
+                    }
                 }
-
-
 
                 this.loading = false;
                 this.localData = {
@@ -795,7 +1124,7 @@ export default {
         },
         newfenpei() {
             var fenpei_data = this.$refs.FormFenpei.fenpei_data
-
+            console.log('newfenpei')
             var value_list = []
             for (var i = fenpei_data.length - 1; i >= 0; i--) {
                 value_list.push({
@@ -810,10 +1139,9 @@ export default {
                 input['room_id'] = this.selectedfenpei.room_id
                 input['unit_id'] = this.selectedRoom.id
                 input['valuelist'] = JSON.stringify(value_list)
-                // console.log(input)
-                createAssignmentApi(input).then((data) => {
-                    console.log(input)
-                    console.log(data)
+
+                console.log(input)
+                assignroomApi(input).then((data) => {
                     if (data.data.code == 0) {
                         notifySomething("分配成功", "创建领导分配成功", "success");
                         this.refreshFenpei(this.selectedRoom.id);
@@ -831,14 +1159,16 @@ export default {
                 // console.log(this.selectedfenpei)
                 input['room_id'] = this.selectedfenpei.room_id
                 input['unit_id'] = this.selectedRoom.id
-                var rent_list = [{
-                    'space': parseInt(this.$refs.FormFenpei.rentspace),
-                    'building_id': 0,
-                    'floor_id': 0,
-                }]
-                input['valuelist'] = JSON.stringify(rent_list)
+                input['type'] = 2
+                input['space'] = parseInt(this.$refs.FormFenpei.rentspace)
+                // var rent_list = [{
+                //     'space': parseInt(this.$refs.FormFenpei.rentspace),
+                //     'building_id': 0,
+                //     'floor_id': 0,
+                // }]
+                // input['valuelist'] = JSON.stringify(rent_list)
                 console.log(input)
-                assignRentRoomApi(input).then((data) => {
+                assignroomApi(input).then((data) => {
                     if (data.data.code == 0) {
                         notifySomething("分配成功", "创建领导分配成功", "success");
                         this.refreshFenpei(this.selectedRoom.id);
@@ -858,7 +1188,7 @@ export default {
     created() {
         this.role = localGet("role");
         this.unitid = localGet('unit_id')
-        console.log("ggg");
+
         var fenpei_options = []
 
         getRentRoomDataApi({}).then((data) => {
@@ -869,9 +1199,9 @@ export default {
                     value: res_data[i]['id']
                 })
             }
-            this.selectedfenpei = {
-                'rentroomoptions': fenpei_options
-            };
+            this.selectedfenpei['rentroomoptions'] = fenpei_options
+            console.log('selectedfenpei')
+            console.log(fenpei_options)
         })
 
         var ziyou_source = []
@@ -888,6 +1218,8 @@ export default {
                 })
             }
             this.selectedfenpei['ziyousource'] = ziyou_source
+            console.log('ziyou_source')
+            console.log(ziyou_source)
             // this.selectedfenpei['ziyouroomoptions'] = rent_options
         })
 
@@ -932,7 +1264,7 @@ export default {
                 for (var i = res_data.length - 1; i >= 0; i--) {
                     res_data[i]['bianzhi_num'] = 0
                     res_data[i]['shiji_num'] = 0
-                    if(res_data[i]['seq_code'] == '18'){
+                    if (res_data[i]['seq_code'] == '18') {
                         console.log(res_data[i])
                     }
                     if (parseInt(res_data[i]['zhengju'])) {
@@ -979,7 +1311,6 @@ export default {
                     }
 
                     if (res_data[i]["parent_id"] == 0) {
-                        console.log(res_data[i]['seq_code'])
                         parent_data.push(res_data[i])
                     } else {
                         son_data.push(res_data[i])
@@ -994,7 +1325,7 @@ export default {
                     abstract_parent["status"] = 99
                     for (var j = son_data.length - 1; j >= 0; j--) {
                         if (son_data[j]["parent_id"] == abstract_parent["id"])
-                        abstract_parent["enumber"] = parseInt(abstract_parent["enumber"]) + parseInt(son_data[j]["enumber"])
+                            abstract_parent["enumber"] = parseInt(abstract_parent["enumber"]) + parseInt(son_data[j]["enumber"])
                         abstract_parent["zhengting"] = parseInt(abstract_parent["zhengting"]) + parseInt(son_data[j]["zhengting"])
                         abstract_parent["futing"] = parseInt(abstract_parent["futing"]) + parseInt(son_data[j]["futing"])
                         abstract_parent["zhengchu"] = parseInt(abstract_parent["zhengchu"]) + parseInt(son_data[j]["zhengchu"])
@@ -1010,17 +1341,17 @@ export default {
                             filtered_data.push(son_data[j])
                     }
                 }
-    
+
                 for (i = 0; i < filtered_data.length; i++) {
                     filtered_data[i]['realname'] = filtered_data[i]['name']
-                    filtered_data[i]['name'] = filtered_data[i]['seq_code'] + '.'+ filtered_data[i]['name']
-                    if(filtered_data[i]['kind'] == '1'){
+                    filtered_data[i]['name'] = filtered_data[i]['seq_code'] + '.' + filtered_data[i]['name']
+                    if (filtered_data[i]['kind'] == '1') {
                         filtered_data[i]['kind'] = '机关单位'
                     }
-                    if(filtered_data[i]['kind'] == '2'){
+                    if (filtered_data[i]['kind'] == '2') {
                         filtered_data[i]['kind'] = '事业单位'
                     }
-                    if(filtered_data[i]['kind'] == '3'){
+                    if (filtered_data[i]['kind'] == '3') {
                         filtered_data[i]['kind'] = '参公单位'
                     }
 
@@ -1053,7 +1384,9 @@ export default {
                     }
                 }
 
-                tree_list = tree_list.sort(function(a,b){return parseInt(a['seq_code'])-parseInt(b['seq_code'])});
+                tree_list = tree_list.sort(function (a, b) {
+                    return parseInt(a['seq_code']) - parseInt(b['seq_code'])
+                });
                 console.log(tree_list)
                 store.dispatch("unit/setUnit", tree_list);
                 this.origin_tree_list = tree_list
@@ -1073,7 +1406,7 @@ export default {
 .ui.disabled.input,
 .ui.input:not(.disabled) input[disabled] {
     opacity: 1 !important;
-    color:black!important;
+    color: black !important;
 }
 
 .ui.positive.button {
@@ -1137,12 +1470,14 @@ export default {
 .vuetable-head-wrapper table.vuetable th.sortable {
     cursor: pointer
 }
-.addListIcon{
+
+.addListIcon {
     overflow-y: auto;
     max-height: 700px;
     background: #f9f9f9;
 }
-.addListIcon .vtl{
+
+.addListIcon .vtl {
     position: relative;
     /* padding-left: 26px; */
     cursor: pointer;
@@ -1159,10 +1494,12 @@ export default {
 .addListIcon .vtl-node-main {
     display: block;
 }
-.addListIcon .vtl-node-content{
+
+.addListIcon .vtl-node-content {
     padding-left: 20px;
 }
-.addListIcon .vtl-tree-margin .vtl-node-content{
+
+.addListIcon .vtl-tree-margin .vtl-node-content {
     padding-left: 35px;
 }
 
@@ -1173,7 +1510,8 @@ export default {
 .addListIcon .vtl-node-main .vtl-caret {
     margin: 0;
 }
-.addListIcon .vtl-tree-margin{
+
+.addListIcon .vtl-tree-margin {
     margin: 0;
 }
 </style>
