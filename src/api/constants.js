@@ -83,6 +83,7 @@ const constantsJinhui = {
     showgeolistApi:"/geo/showgeolist",
     showunitbyroomidApi:"/geo/showunitbyroomid",
     
-    getFloorByIdApi:"/getfloorbyid"
+    getFloorByIdApi:"/getfloorbyid",
+    showunitroominfo:"geo/showunitroominfo" //详细地址
 }
 export default constantsJinhui;

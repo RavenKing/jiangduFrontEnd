@@ -1,30 +1,40 @@
 <template>
   <wl-container>
-    <div class="map" ref="mapBox">
+    <div class="map">
       <sui-dimmer v-if="dimmerShow" active inverted>
         <sui-loader>Loading...</sui-loader>
       </sui-dimmer>
       <div class="mapInput">
-        <div class="mapItemSelect">
+        <div class="mapItemSelect-1">
+          <sui-dropdown class="w100" placeholder="选择单位" selection :options="unitoptions" v-model="unitId" :loading="selectLoading1" search selection fluid></sui-dropdown>
+        </div>
+        <div class="mapItemSelect-1">
+          <sui-dropdown class="w100" placeholder="选择地区" selection :options="addressList" v-model="addressId" :loading="selectLoading2"></sui-dropdown>
+        </div>
+        <!-- <div class="mapItemSelect">
           <sui-dropdown class="w100" placeholder="房屋类型" selection :options="housingList" v-model="housing" />
-        </div>
-        <div class="mapItemSelect">
+        </div> -->
+        <!-- <div class="mapItemSelect">
           <sui-dropdown class="w100" placeholder="房屋用途" selection :options="natureList" v-model="nature" />
-        </div>
-        <div class="mapItemInput">
+        </div> -->
+        <!-- <div class="mapItemInput">
           <sui-input class="w100" placeholder="请输入楼房名字" v-model="enterAddress" />
-        </div>
-        <button type="button" @click="showgeolistApi">搜索</button>
+        </div> -->
+        <!-- <button type="button" @click="showgeolistApi">搜索</button> -->
       </div>
-       <baidu-map class="bmView" :scroll-wheel-zoom="true" :center="center" :zoom="zoom" ak="4b9aafff64aae8f8b6aa93aa59e3d014">
+      <div ref="mapBox">
+       <baidu-map id="mapid" :mapClick="false" class="bmView" :scroll-wheel-zoom="true" :center="center" :zoom="zoom" ak="4b9aafff64aae8f8b6aa93aa59e3d014">
          <BaiduMapView></BaiduMapView>
          <BaiduMarkerClusterer :averageCenter="true">
+            <!-- animation="BMAP_ANIMATION_BOUNCE" -->
            <BaiduMarker :title="activeName" :class="{'bmActive': activeName == marker.name}" v-for="marker of markers" :key="marker.id" :position="{lng: marker.lon, lat: marker.lat}" @click="lookDetail(marker)"></BaiduMarker>
           </BaiduMarkerClusterer>
-         <BaiduInfoWindow :position="{lng: infoWindow.info.lon, lat: infoWindow.info.lat}" :title="infoWindow.info.name" :show="infoWindow.show" @close="infoWindowClose" @open="infoWindowOpen">
-           json：{{infoWindow.info}}
+         <BaiduInfoWindow :position="{lng: infoWindow.info.lon, lat: infoWindow.info.lat}" :title="infoWindow.info.roomname" :show="infoWindow.show" @close="infoWindowClose" @open="infoWindowOpen">
+           <!-- json：{{infoWindow.info}} -->
+           地址：{{infoWindow.info.address}}
          </BaiduInfoWindow>
        </baidu-map>
+      </div>
     </div>
   </wl-container>
 </template>
@@ -35,7 +45,8 @@ import BaiduMapView from "vue-baidu-map/components/map/MapView.vue";
 import BaiduMarkerClusterer from  'vue-baidu-map/components/extra/MarkerClusterer';
 import BaiduInfoWindow from 'vue-baidu-map/components/overlays/InfoWindow';
 import BaiduMarker from 'vue-baidu-map/components/overlays/Marker';
-import { showgeolistApi,showunitbyroomidApi } from "@/api/roomDataAPI";
+import { showgeolistApi,showunitbyroomidApi,getUnitApi,showunitroominfo } from "@/api/roomDataAPI";
+import { ModelSelect } from 'vue-search-select';
 
 export default {
   name: "mapPage",
@@ -44,10 +55,16 @@ export default {
     BaiduMapView,
     BaiduMarkerClusterer,
     BaiduInfoWindow,
-    BaiduMarker
+    BaiduMarker,
+    'model-select': ModelSelect,
   },
   data() {
     return {
+      iconInfo:"./images/i.jpg",
+      addressList:[],
+      selectLoading1:false,
+      selectLoading2:false,
+      unitId:undefined,
       dimmerShow:false,
       enterAddress:undefined, //输入搜索内容
       searchEnterAddress:undefined, //搜索地址
@@ -57,7 +74,7 @@ export default {
       lat:undefined,
       selectedLng:undefined,
       selectedLat:undefined,
-      housing:'',
+      addressId:undefined,
       nature:'',
       housingList:[{
         text: "全部",
@@ -88,12 +105,72 @@ export default {
           name:undefined
         }
       },
-      activeName:undefined
+      activeName:undefined,
+      unitoptions:[]
+    }
+  },
+  watch:{
+    'unitId':function(){
+      this.addressId=undefined;
+      this.infoWindow.show =false;
+      this.showunitroominfo();
+    },
+    'addressId':function(){
+      this.infoWindow.show =false;
+      this.addressIdFn();
     }
   },
   mounted() {
+    this.getUnitApi();
   },
   methods: {
+    addressIdFn(){
+      this.markers=[];
+      this.addressList.map(r=>{
+        if(this.addressId==r.id){
+          this.markers.push(r)
+        }
+      });
+      this.zoom=13;
+      if(this.markers && this.markers.length>0){
+        this.center={lng: this.markers[0].lon, lat: this.markers[0].lat}
+      }
+    },
+    getUnitApi(){
+      this.selectLoading1=true;
+      getUnitApi().then((data) => {
+        var res_data = data.data.data
+        for (var i = res_data.length - 1; i >= 0; i--) {
+          this.unitoptions.push({
+            'text': res_data[i]['name'],
+            'value': res_data[i]['id']
+          })
+        }
+        this.selectLoading1=false;
+      });
+    },
+    showunitroominfo(){
+      var payload={
+        unit_id:this.unitId
+      };
+      this.selectLoading2=true;
+      showunitroominfo(payload).then((result) => {
+        if (result.data.code == 0) {
+          this.selectLoading2=false;
+          this.addressList=[];
+          result.data.data.map(r=>{
+            this.addressList.push({...r,
+              value:r.id,
+              text:r.address
+            })
+          })
+          this.zoom=13;
+          this.addressId=this.addressList[0].id;
+          this.markers=[{lng: this.addressList[0].lon, lat: this.addressList[0].lat}];
+          this.center={lng: this.addressList[0].lon, lat: this.addressList[0].lat}
+        }
+      }).catch(() => {});
+    },
     infoWindowClose(e){
       this.infoWindow.show =false;
     },
@@ -104,7 +181,7 @@ export default {
       this.activeName=data.name;
       this.infoWindow.show =true;
       this.infoWindow.info=data;
-      this.$nextTick(()=>{ //滚动到指定元素位置
+      this.$nextTick(()=>{
         var obj=document.querySelector(".bmActive");
         var scrollTop=obj.offsetTop;
         this.$refs.mapBox.scrollTop=scrollTop-180;
@@ -129,7 +206,6 @@ export default {
           if(this.markers && this.markers.length>0){
             this.center={lng: this.markers[0].lon, lat: this.markers[0].lat}
           }
-          console.log(this.center);
         }
         this.dimmerShow=false;
       }).catch(() => {});
@@ -140,7 +216,7 @@ export default {
 
 <style>
 .bmView{
-  height: 100vh;
+  height: calc(100vh - 182px);
 }
 .bmHeight{
   height: 100%;
@@ -160,6 +236,12 @@ export default {
 .mapItemSelect{
   float: left;
   width: 20%;
+  padding-right: 15px;
+  box-sizing: border-box;
+}
+.mapItemSelect-1{
+  float: left;
+  width: 35%;
   padding-right: 15px;
   box-sizing: border-box;
 }
@@ -200,5 +282,11 @@ export default {
 }
 .BMap_pop,.BMap_shadow{
   margin-top: -25px;
+}
+.BMap_cpyCtrl {
+   display: none;
+ }
+.anchorBL {
+   display: none;
 }
 </style>

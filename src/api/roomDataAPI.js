@@ -592,6 +592,19 @@ function showunitbyroomidApi(data)
     });
 }
 
+function showunitroominfo(data)
+{
+    let local_auth = localGet(global.project_key, true);
+    data.token=local_auth;
+    return request({
+        url: constants.showunitroominfo,
+        method: 'post',
+        data: data
+    });
+}
+
+
+
 
 function getFloorById(data)
 {
@@ -659,5 +672,6 @@ export {
     roomspagcerate2Api,
 
     showgeolistApi,
-    showunitbyroomidApi
+    showunitbyroomidApi,
+    showunitroominfo
 }
