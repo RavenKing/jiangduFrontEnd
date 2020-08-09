@@ -165,8 +165,14 @@ export default {
             })
           })
           this.zoom=13;
-          this.addressId=this.addressList[0].id;
-          this.markers=[{lng: this.addressList[0].lon, lat: this.addressList[0].lat}];
+          // this.addressId=this.addressList[0].id;
+          this.markers=[];
+          for(var i=0;i<this.addressList.length;i++){
+            this.markers.push({
+              lng: this.addressList[i].lon,
+              lat: this.addressList[i].lat
+            })
+          }
           this.center={lng: this.addressList[0].lon, lat: this.addressList[0].lat}
         }
       }).catch(() => {});
