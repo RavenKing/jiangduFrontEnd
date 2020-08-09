@@ -25,7 +25,7 @@
             
             <sui-form-field style="width:33.33333%;" inline>
                 <label>单位类别</label>
-                <sui-dropdown :placeholder="singleRoom.leader" selection :options="leaderLevel" v-model="singleRoom.leader" />
+                <sui-dropdown :placeholder="singleRoom.kind" selection :options="leaderLevel" v-model="singleRoom.kind" />
             </sui-form-field>
             <sui-form-field style="width:33.33333%;" inline>
                 <label>单位级别</label>

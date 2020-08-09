@@ -1092,6 +1092,7 @@ export default {
             delete formdata.building_info
             delete formdata.pid
             formdata['name'] = formdata['realname']
+            
             updateUnitApi(formdata).then((result) => {
                 console.log(result)
                 if (result.data.code == 0) {
