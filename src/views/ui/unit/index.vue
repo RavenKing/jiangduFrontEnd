@@ -578,7 +578,7 @@ export default {
                 }
             }
 
-            this.context.strokeStyle = "#FF0000";
+            this.context.strokeStyle = "#FFFFFF";
             if (zuobiao != null) {
                 var img = this.$refs.backImage;
                 img = new Image();
