@@ -48,7 +48,7 @@ function registerRouteGuard() {
                 },
                 {
                 id: "3-28",
-                title: "维修申请审批",
+                title: "维修申请",
                 url: "/ui/weixiu",
                 icon:"address book icon"
               }

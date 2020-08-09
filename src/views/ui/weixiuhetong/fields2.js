@@ -15,15 +15,11 @@ export default [
     width: "20%",
   },
   {
-    name: "building",
-    title: '楼',
+    name: "unit_name",
+    title: '单位名称',
     width: "15%"
   },
-  {
-    name: "floor",
-    title: '楼层',
-    width: "15%"
-  },
+  
   {
     name: "apppdate",
     title: '申报时间',
