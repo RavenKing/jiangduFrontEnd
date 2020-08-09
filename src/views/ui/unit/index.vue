@@ -434,6 +434,8 @@ export default {
                 if (result.data.code == 0) {
                     // this.context.clearRect(0, 0, 500, 350);
                     //this.leader.open = false;
+                    this.drawRect(this.select);
+
                     //this.roomAssignment = [];
                     //this.getBuildingSection();
                     //this.closeAssignModal();
@@ -615,9 +617,6 @@ export default {
                 this.context.clearRect(0, 0, 500, 350);
             }
 
-            this.context.strokeStyle = "#FF0000";
-            this.context.strokeText("201", 10, 20);
-            this.context.strokeRect(0, 0, 60, 100);
             var canvas = this.$refs.canvas;
             var contextThis = this;
             this.$refs.canvas.addEventListener('click', function (event) {
