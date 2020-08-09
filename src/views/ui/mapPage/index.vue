@@ -111,7 +111,7 @@ export default {
       dimmerShow: false,
       enterAddress: undefined, //输入搜索内容
       searchEnterAddress: undefined, //搜索地址
-      center: { lng: 121.48054, lat: 31.235929 },
+      center: { lng: 121.5747, lat: 30.8475 },
       zoom: 16,
       lng: undefined,
       lat: undefined,
@@ -195,6 +195,9 @@ export default {
             value: res_data[i]["id"]
           });
         }
+        this.unitId=data.data.data[0].id;
+        this.zoom = 16;
+        // this.showunitroominfo();
         this.selectLoading1 = false;
       });
     },
