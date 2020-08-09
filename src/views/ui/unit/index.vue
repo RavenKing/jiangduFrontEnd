@@ -36,9 +36,13 @@
                             </div>
                             <sui-modal-actions>
                                 <div style="background: #F5F7FA; border-bottom-left-radius: .28571429rem; border-bottom-right-radius: .28571429rem; margin:0 -14px -14px -14px;   padding: 1rem 1rem;    border-top: 1px solid rgba(34,36,38,.15);    text-align: left;">
-                                    <sui-button basic color="blue" @click.native="updateUnit">
+                                    <sui-button basic color="blue" @click.native="updateUnit" v-show="selectedRoom.edit == true" >
                                         保存
                                     </sui-button>
+                                    <sui-button basic color="blue" @click.native="enableUpdateUnit" v-show="selectedRoom.edit == false">
+                                        修改
+                                    </sui-button>
+
                                 </div>
                             </sui-modal-actions>
                         </sui-tab-pane>
@@ -57,7 +61,7 @@
                                         </div>
                                     </div>
                                     <div slot="action" slot-scope="props">
-                                        <span v-show="role!==1">
+                                        <span v-show="role!==1 && props.rowData.type1!=='租赁房屋'">
                                             <sui-button basic color="blue" content="申请维修" v-on:click="applyRepair(props.rowData)" />
                                         </span>
                                         <sui-button basic color="red" content="删除" v-on:click="deletefenpei(props.rowData)" />
@@ -373,7 +377,8 @@ export default {
             },
             selectedBuildingID: null,
             selectedRoom: {
-                name: ""
+                name: "",
+                edit: false
             },
             selectedfenpei: {
                 unit: '',
@@ -1081,6 +1086,7 @@ export default {
         },
 
         applyRepair(data) {
+            console.log(data)
             this.selectedWeixiu = data
             this.weixiuopen = true
         },
@@ -1092,7 +1098,7 @@ export default {
             delete formdata.building_info
             delete formdata.pid
             formdata['name'] = formdata['realname']
-            
+
             updateUnitApi(formdata).then((result) => {
                 console.log(result)
                 if (result.data.code == 0) {
@@ -1102,8 +1108,12 @@ export default {
                     notifySomething("保存失败", "基本信息保存失败", "Error")
                 }
                 this.loading = false;
-
+                this.selectedRoom.edit = false    
             });
+        },
+
+        enableUpdateUnit(){
+            this.selectedRoom.edit = true
         },
 
         openRoom(value) {
@@ -1239,6 +1249,7 @@ export default {
             getUnitApiByid(this.unitid).then((data) => {
                 this.selectedRoom = data.data.data
                 this.selectedRoom['realname'] = this.selectedRoom['name']
+                this.selectedRoom['edit'] = false
                 console.log(this.selectedRoom)
                 var res_data = data.data.data['building_info']
                 for (var i = res_data.length - 1; i >= 0; i--) {
@@ -1266,6 +1277,7 @@ export default {
                 for (var i = res_data.length - 1; i >= 0; i--) {
                     res_data[i]['bianzhi_num'] = 0
                     res_data[i]['shiji_num'] = 0
+                    res_data[i]['edit'] = false
                     if (res_data[i]['seq_code'] == '18') {
                         console.log(res_data[i])
                     }
@@ -1346,7 +1358,8 @@ export default {
 
                 for (i = 0; i < filtered_data.length; i++) {
                     filtered_data[i]['realname'] = filtered_data[i]['name']
-                    filtered_data[i]['name'] = filtered_data[i]['seq_code'] + '.' + filtered_data[i]['name']
+                    filtered_data[i]['name'] = filtered_data[i]['seq_code'] + '.' + filtered_data[i]['shortname']
+                    filtered_data[i]['edit'] = false
                     if (filtered_data[i]['kind'] == '1') {
                         filtered_data[i]['kind'] = '机关单位'
                     }
