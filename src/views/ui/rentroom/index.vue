@@ -58,7 +58,7 @@
                         <sui-tab :menu="{ attached: false }" :active-index.sync="defaultTab">
                             <sui-tab-pane title="基本信息" :attached="false">
                                 <div>
-                                    <rentroom-form :singleRoom="selectedRoom"></rentroom-form>
+                                    <rentroom-form :clickDingWei="clickDingWei" :singleRoom="selectedRoom"></rentroom-form>
                                 </div>
                             </sui-tab-pane>
                             <sui-tab-pane title="合同信息" :attached="false">
@@ -251,6 +251,10 @@ export default {
     },
 
     methods: {
+        clickDingWei() {
+            this.defaultTab = 3;
+            this.keyword = this.selectedRoom.address;
+        },
         emptyRentContract() {
             this.selectedRoomContract = {
                 mode: 'new',

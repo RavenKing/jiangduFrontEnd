@@ -11,12 +11,15 @@
                 <sui-input placeholder="所属区域" v-model="singleRoom.area" disabled />
             </sui-form-field>
         </sui-form-fields>
-        <sui-form-fields>
-            <sui-form-field>
-                <label>房屋地址</label>
-                <sui-input placeholder="房屋地址" v-model="singleRoom.address" class="width600" />
+        <sui-form-fields fields="two">
+            <sui-form-field style="width:50%;">
+                <sui-input placeholder="房屋地址" v-model="singleRoom.address" />
             </sui-form-field>
-        </sui-form-fields>
+            <sui-form-field style="width:25%;">
+                <sui-button basic color="blue" @click.prevent="clickDingWei" icon="location arrow">
+                </sui-button>
+            </sui-form-field>
+        </sui-form-fields>>
         <sui-form-fields>
             <sui-form-field>
                 <label>房屋用途</label>
@@ -34,7 +37,7 @@
 <script>
 export default {
     name: 'rentroom-form',
-    props: ['singleRoom'],
+    props: ['singleRoom', 'clickDingWei'],
     data() {
         return {
             yongtuOptions: [{
@@ -97,9 +100,10 @@ export default {
 </script>
 
 <style>
-.ui.modal>.actions{
+.ui.modal>.actions {
     text-align: center;
 }
+
 .width600 {
     width: 600px !important;
 }

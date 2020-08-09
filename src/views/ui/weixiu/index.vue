@@ -389,6 +389,9 @@ export default {
                         case 3:
                             one.statusText = constants.FAIL;
                             break;
+                        case 4:
+                            one.statusText = constants.WEIXIU;
+                            break;
                         default:
                             one.statusText = constants.NEW;
 
