@@ -433,7 +433,7 @@ export default {
                 this.loading = false;
                 if (result.data.code == 0) {
                     // this.context.clearRect(0, 0, 500, 350);
-                    this.leader.open = false;
+                    //this.leader.open = false;
                     //this.roomAssignment = [];
                     //this.getBuildingSection();
                     //this.closeAssignModal();
