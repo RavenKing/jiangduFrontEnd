@@ -278,7 +278,8 @@ import {
     getBuildingFloorApi,
     getBuildingListApi,
     getFloorById,
-    assignroomApi
+    assignroomApi,
+    assignRentRoomApi
 } from "@/api/roomDataAPI";
 import AssignForm from "@/components/assignForm";
 
@@ -1168,7 +1169,7 @@ export default {
                 // }]
                 // input['valuelist'] = JSON.stringify(rent_list)
                 console.log(input)
-                assignroomApi(input).then((data) => {
+                assignRentRoomApi(input).then((data) => {
                     if (data.data.code == 0) {
                         notifySomething("分配成功", "创建领导分配成功", "success");
                         this.refreshFenpei(this.selectedRoom.id);
@@ -1237,6 +1238,7 @@ export default {
         if (this.role == 2) {
             getUnitApiByid(this.unitid).then((data) => {
                 this.selectedRoom = data.data.data
+                this.selectedRoom['realname'] = this.selectedRoom['name']
                 console.log(this.selectedRoom)
                 var res_data = data.data.data['building_info']
                 for (var i = res_data.length - 1; i >= 0; i--) {
