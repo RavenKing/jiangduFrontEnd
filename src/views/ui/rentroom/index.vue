@@ -334,6 +334,7 @@ export default {
                 if (result.data.code == 0) {
                     notifySomething(constants.FENPEISUCCESS, constants.FENPEISUCCESS, constants.typeSuccess);
                     this.loading = true;
+                    this.selectedRoom.space_assign = this.selectedRoom.space - this.selectedRoom.space_assign
                     this.refreshAssignment();
                 } else {
                     notifySomething(constants.FEIPEICREATEFAILED, constants.FEIPEICREATEFAILED + result.data.data, constants.typeError);
@@ -522,6 +523,7 @@ export default {
             }
             this.validationCheck.status = "";
             this.open = true;
+            this.selectedRoom.space_assign = data.space;
             listRentRoomAssignmentApi({
                 room_id: this.selectedRoom.id
             }).then((data) => {
