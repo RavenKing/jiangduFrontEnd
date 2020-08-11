@@ -29,17 +29,18 @@
         </div>
         <!-- <div class="mapItemSelect">
           <sui-dropdown class="w100" placeholder="房屋类型" selection :options="housingList" v-model="housing" />
-        </div>-->
-        <!-- <div class="mapItemSelect">
+        </div>
+        <div class="mapItemSelect">
           <sui-dropdown class="w100" placeholder="房屋用途" selection :options="natureList" v-model="nature" />
-        </div>-->
-        <!-- <div class="mapItemInput">
+        </div>
+        <div class="mapItemInput">
           <sui-input class="w100" placeholder="请输入楼房名字" v-model="enterAddress" />
-        </div>-->
-        <!-- <button type="button" @click="showgeolistApi">搜索</button> -->
+        </div>
+        <button type="button" @click="showgeolistApi">搜索</button> -->
       </div>
       <div ref="mapBox">
-        <baidu-map
+        <!-- mapType="BMAP_NORMAL_MAP" -->
+        <baidu-map 
           id="mapid"
           :mapClick="false"
           class="bmView"
@@ -49,10 +50,11 @@
           ak="4b9aafff64aae8f8b6aa93aa59e3d014"
         >
           <BaiduMapView></BaiduMapView>
-          <BaiduMarkerClusterer>
-             <!-- :averageCenter="true" -->
+          <BaiduMarkerClusterer :averageCenter="true" :maxZoom="10">
+             <!--  -->
             <!-- animation="BMAP_ANIMATION_BOUNCE" -->
-            <BaiduMarker
+            <!-- :minClusterSize="10" :maxZoom="17" -->
+            <BaiduMarker animation="BMAP_ANIMATION_DROP" 
               :title="activeName"
               :class="{'bmActive': activeName == marker.name}"
               v-for="marker of markers"
@@ -64,7 +66,7 @@
           </BaiduMarkerClusterer>
           <BaiduInfoWindow
             :position="{lng: infoWindow.info.lon, lat: infoWindow.info.lat}"
-            :title="infoWindow.info.roomname"
+            :title="infoWindow.info.roomname ? infoWindow.info.roomname : infoWindow.info.name"
             :show="infoWindow.show"
             @close="infoWindowClose"
             @open="infoWindowOpen"
@@ -112,7 +114,7 @@ export default {
       enterAddress: undefined, //输入搜索内容
       searchEnterAddress: undefined, //搜索地址
       center: { lng: 121.5747, lat: 30.8475 },
-      zoom: 16,
+      zoom: 15,
       lng: undefined,
       lat: undefined,
       selectedLng: undefined,
@@ -171,6 +173,7 @@ export default {
   },
   mounted() {
     this.getUnitApi();
+    this.showgeolistApi();
   },
   methods: {
     addressIdFn() {
@@ -180,7 +183,7 @@ export default {
           this.markers.push(r);
         }
       });
-      this.zoom = 16;
+      this.zoom = 15;
       if (this.markers && this.markers.length > 0) {
         this.center = { lng: this.markers[0].lon, lat: this.markers[0].lat };
       }
@@ -195,8 +198,8 @@ export default {
             value: res_data[i]["id"]
           });
         }
-        this.unitId=data.data.data[0].id;
-        this.zoom = 16;
+        // this.unitId=data.data.data[0].id;
+        this.zoom = 15;
         // this.showunitroominfo();
         this.selectLoading1 = false;
       });
@@ -220,7 +223,7 @@ export default {
                 lat: r.lat
               });
             });
-            this.zoom = 16;
+            this.zoom = 15;
             // this.addressId=this.addressList[0].id;
             var _this=this;
             setTimeout(function(){
@@ -252,9 +255,9 @@ export default {
     showgeolistApi() {
       this.dimmerShow = true;
       var payload = {
-        Type: this.housing,
-        Kind: this.nature,
-        Name: this.enterAddress
+        // Type: this.housing,
+        // Kind: this.nature,
+        // Name: this.enterAddress
       };
       showgeolistApi(payload)
         .then(result => {
@@ -265,7 +268,7 @@ export default {
                 this.markers.push(r);
               }
             });
-            this.zoom = 16;
+            this.zoom = 15;
             if (this.markers && this.markers.length > 0) {
               this.center = {
                 lng: this.markers[0].lon,
