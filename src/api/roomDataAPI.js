@@ -171,9 +171,20 @@ function updateUnitApi(data)
         method: 'post',
         data: data
     });
-
-
 }
+
+function getleaderroombyunitApi(data)
+{
+    let local_auth = localGet(global.project_key, true);
+    data.token=local_auth;
+    
+    return request({
+        url: constants.getleaderroombyunitApi,
+        method: 'post',
+        data: data
+    });
+}
+
 function deleteUnitApi(data)
 {    
     let local_auth = localGet(global.project_key, true);
@@ -671,6 +682,7 @@ export {
     editLoanAssignmentApi,
     getFloorById,
     assignroomApi,
+    getleaderroombyunitApi,
 
 
     getroomnumApi,

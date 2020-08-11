@@ -9,10 +9,10 @@ export default [
     dataClass: "aligned",
   },
   {
-    name: "room_name",
+    name: "roomname",
     title: '房屋名称',
     width: "20%",
-    sortField: "room_name",
+    sortField: "roomname",
     titleClass: "center aligned",
     dataClass: "center aligned",
   },
@@ -25,18 +25,27 @@ export default [
     dataClass: "center aligned",
   },
   {
-    name: "room",
-    sortField: "room",
+    name: "roomnumber",
+    sortField: "roomnumber",
     title: '房间号',
     width: "15%",
     titleClass: "center aligned",
     dataClass: "center aligned",
   },
-  {
-    name: "action",
-    title: '操作',
+    {
+    name: "room_type",
+    sortField: "room_type",
+    title: '房屋类型',
+    width: "15%",
     titleClass: "center aligned",
-    dataClass: "",
-    width: "15%"
+    dataClass: "center aligned",
   },
+  {
+    name: "space",
+    sortField: "space",
+    title: '面积',
+    width: "15%",
+    titleClass: "center aligned",
+    dataClass: "center aligned",
+  }
 ];

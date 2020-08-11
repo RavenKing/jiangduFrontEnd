@@ -121,9 +121,9 @@
                                             {{props.rowData.name}}
                                         </div>
                                     </div>
-                                    <div slot="action" slot-scope="props">
+                                    <!-- <div slot="action" slot-scope="props">
                                         <sui-button basic color="red" content="删除" v-on:click="deleteleader(props.rowData)" />
-                                    </div>
+                                    </div> -->
                                 </vuetable>
                             </div>
                         </sui-tab-pane>
@@ -283,7 +283,8 @@ import {
     getBuildingListApi,
     getFloorById,
     assignroomApi,
-    assignRentRoomApi
+    assignRentRoomApi,
+    getleaderroombyunitApi
 } from "@/api/roomDataAPI";
 import AssignForm from "@/components/assignForm";
 
@@ -838,23 +839,79 @@ export default {
         },
 
         refreshLeaderAssignment(data) {
-            getlistleaderroomApi(data).then((data) => {
+            var input = {}
+            input['unit_id'] = 66
+            getleaderroombyunitApi(input).then((data) => {
                 this.loading = false;
                 var res_data = data.data.data
-                console.log('leader room')
                 console.log(res_data)
-                this.lingdaoData = {
-                    total: 16,
-                    per_page: 5,
-                    current_page: 1,
-                    last_page: 4,
-                    next_page_url: "data.data.data?page=2",
-                    prev_page_url: null,
-                    from: 1,
-                    to: 5,
-                    data: res_data
+                var lingdao_list = []
+                for (var i = res_data.length - 1; i >= 0; i--) {
+                    var room_assign = res_data[i]['room_assign']
+                    var building_name = res_data[i]['buildingn_ame']
+                    var floor_name = res_data[i]['floor_name']
+                    var room_details = res_data[i]['room_detail']
+                    for (var j = room_assign.length - 1; j >= 0; j--) {
+                        room_assign[j]['building_name'] = building_name
+                        room_assign[j]['floor_name'] = floor_name
+
+                        var room_id = room_assign[j]['id']
+                        var room_type = ''
+                        for (var k = room_details.length - 1; k >= 0; k--) {
+                            if(room_details[k].hasOwnProperty(room_id)){
+                                room_type = room_details[k]['type']
+                            }
+                        }
+                        if(room_type == 'yewu'){
+                            room_type = '业务'
+                        }
+                        if(room_type == 'bangong'){
+                            room_type = '办公'
+                        }
+                        if(room_type == 'shebei'){
+                            room_type = '设备'
+                        }
+                        if(room_type == 'fushu'){
+                            room_type = '附属'
+                        }
+                        room_assign[j]['room_type'] = room_type
+                        lingdao_list.push(room_assign[j])
+
+                    }
+
                 }
+                console.log(lingdao_list)
+                this.lingdaoData = {
+                            total: 16,
+                            per_page: 5,
+                            current_page: 1,
+                            last_page: 4,
+                            next_page_url: "data.data.data?page=2",
+                            prev_page_url: null,
+                            from: 1,
+                            to: 5,
+                            data: lingdao_list
+                        }
             })
+
+
+            // getlistleaderroomApi(data).then((data) => {
+            //     this.loading = false;
+            //     var res_data = data.data.data
+            //     console.log('leader room')
+            //     console.log(res_data)
+            //     this.lingdaoData = {
+            //         total: 16,
+            //         per_page: 5,
+            //         current_page: 1,
+            //         last_page: 4,
+            //         next_page_url: "data.data.data?page=2",
+            //         prev_page_url: null,
+            //         from: 1,
+            //         to: 5,
+            //         data: res_data
+            //     }
+            // })
         },
         refreshFenpei(id) {
             console.log('refresh fenpei')
