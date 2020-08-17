@@ -582,7 +582,7 @@ export default {
                                 break;
                         }
                         var childOne = {
-                            id: index * 100 + child.id,
+                            id: index * 100 + child.id, 
                             pid: index,
                             name: child.name,
                             type: "step",

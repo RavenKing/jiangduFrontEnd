@@ -19,7 +19,7 @@
                 <sui-button basic color="blue" @click.prevent="clickDingWei" icon="location arrow">
                 </sui-button>
             </sui-form-field>
-        </sui-form-fields>>
+        </sui-form-fields>
         <sui-form-fields>
             <sui-form-field>
                 <label>房屋用途</label>

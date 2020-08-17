@@ -773,7 +773,7 @@ export default {
 }
 
 .modalStep {
-    /* height: 500px; */
+    height: 500px;
 }
 
 .anchorBL {

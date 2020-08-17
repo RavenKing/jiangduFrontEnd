@@ -76,6 +76,12 @@
                     <sui-button style="padding:6px;" circular icon="minus" @click.prevent="deleteOne(index)" v-show="singleEntry.priceinfo.length > 1" />
                 </span>
             </sui-form-fields>
+            <sui-form-fields inline style="position: relative;">
+                <label v-show="singleEntry.priceinfo[index].pricename=='其他'">备注</label>
+                <sui-form-field v-show="singleEntry.priceinfo[index].pricename=='其他'">
+                    <sui-input placeholder="备注" v-model="singleEntry.priceinfo[index].memo" />
+                </sui-form-field>
+            </sui-form-fields>
         </div>
 
         <sui-form-fields style="border-bottom: 1px solid rgba(34,36,38,.15); padding-bottom: 15px;" inline>
@@ -97,7 +103,9 @@
             <sui-form-field>
                 <sui-checkbox label="否" radio value="0" v-model="singleEntry.space2" :transparent="disabled" />
             </sui-form-field>
-            <div v-show="singleEntry.space2=='1'">
+        </sui-form-fields>
+        <sui-form-fields inline>
+            <div v-show="singleEntry.space2=='0'">
                 <sui-form-fields inline style="position: relative;">
                     <label>面积</label>
                     <sui-form-field>
