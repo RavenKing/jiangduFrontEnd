@@ -64,7 +64,7 @@
                     <h4 is="sui-header">步骤控制
                     </h4>
                 </sui-modal-header>
-                <sui-modal-content scrolling class="modalStep">
+                <sui-modal-content scrolling class="modalStep" :key="componentKey">
                     <div v-show="selectedStep.mode=='edit'">
                         <sui-form>
                             <sui-form-fields inline>
@@ -97,6 +97,12 @@
                                 <div v-show="selectedStep.data.status=='完成'">
                                     步骤已完成
                                 </div>
+                            </sui-form-fields>
+                            <sui-form-fields inline>
+                                <label>{{selectedStep.data.infoKey}}</label>
+                                <sui-form-field>
+                                    <sui-input v-model="selectedStep.data.infoValue" />
+                                </sui-form-field>
                             </sui-form-fields>
                         </sui-form>
                     </div>
@@ -418,6 +424,14 @@ export default {
                 // this.selectedStep = row;
                 this.selectedStep.open = true;
                 this.selectedStep.data = row;
+                var objNew = JSON.parse(this.selectedStep.data.info);
+
+                for (const key in objNew) {
+                    this.selectedStep.data.infoKey = key;
+                    console.log(this.selectedStep.data.infoKey);
+                    this.selectedStep.data.infoValue = objNew[key];
+                }
+                this.componentKey++;
 
             }
         },
@@ -582,11 +596,12 @@ export default {
                                 break;
                         }
                         var childOne = {
-                            id: index * 100 + child.id, 
+                            id: index * 100 + child.id,
                             pid: index,
                             name: child.name,
                             type: "step",
                             step_id: child.id,
+                            info: child.info,
                             startDate: fromShitFormat(child.starttime),
                             endDate: fromShitFormat(child.endtime),
                             realStartDate: fromShitFormat(child.plantime),

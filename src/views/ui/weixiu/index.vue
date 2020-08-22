@@ -6,10 +6,13 @@
                 <sui-loader content="Loading..." />
             </sui-dimmer>
         </div>
-        <div class="filterBiaoDan" style="padding-left:15px;margin:0;">
+        <div class="filterBiaoDan" style="padding-left:15px;">
             <sui-grid>
                 <sui-grid-row>
-                    <sui-grid-column :width="12">
+                    <sui-grid-column :width="3">
+                        <sui-dropdown placeholder="选择状态" selection :options="statusOptions" v-model="listStatus" search fluid @input="changeStatus"></sui-dropdown>
+                    </sui-grid-column>
+                    <sui-grid-column :width="8" style="padding-right:0">
                     </sui-grid-column>
                     <sui-grid-column :width="4" style="padding-right:0">
                         <div v-show="role==2" style="float:right;">
@@ -35,8 +38,6 @@
                 </div>
             </vuetable>
             <div class="pagination ui basic segment grid">
-                <vuetable-pagination-info ref="paginationInfo"></vuetable-pagination-info>
-                <vuetable-pagination ref="pagination" @vuetable-pagination:change-page="onChangePage"></vuetable-pagination>
             </div>
         </div>
 
@@ -82,8 +83,6 @@ import {
 } from "@/util/time"
 import dialogBar from '@/components/MDialogNewV'
 import Vuetable from "vuetable-2/src/components/Vuetable";
-import VuetablePagination from "vuetable-2/src/components/VuetablePagination";
-import VuetablePaginationInfo from "vuetable-2/src/components/VuetablePaginationInfo";
 import FieldsDef from "./FieldsDef.js";
 import constants from "@/util/constants";
 import Fields2 from "./fields2.js";
@@ -114,14 +113,29 @@ export default {
     components: {
         'dialog-bar': dialogBar,
         Vuetable,
-        VuetablePagination,
-        VuetablePaginationInfo,
         'weixiu-form': WeiXiuForm
     },
     data() {
         return {
             lang: lang,
             hetongdata: [],
+            statusOptions: [{
+                    text: constants.NEW,
+                    value: 1
+                },
+                {
+                    text: constants.PASS,
+                    value: 2
+                }, {
+                    text: constants.FAIL,
+                    value: 3
+                },
+                {
+                    text: constants.WEIXIU,
+                    value: 4
+                }
+            ],
+            listStatus: 0,
             hetongComponentKey: 1,
             componentKey: 1,
             currentStep: 1,
@@ -160,6 +174,13 @@ export default {
     },
 
     methods: {
+        changeStatus() {
+            console.log("status");
+            this.refreshWeixiuList({
+                status: this.listStatus
+            })
+
+        },
         clickConfirmDelete() {
             this.loading = true;
             var context = this;
@@ -211,7 +232,7 @@ export default {
         },
         closeComfirmDialog() {
             this.sendVal = false;
-            this.refreshWeixiuList();
+            this.refreshWeixiuList(null);
             //  this.refreshWeixiuList();
         },
         approveContract(props) {
@@ -316,7 +337,7 @@ export default {
                 createMRApi(this.selectedWeixiu).then(() => {
                     this.loading = false;
                     this.closeWeiXiuForm();
-                    this.refreshWeixiuList();
+                    this.refreshWeixiuList(null);
                     notifySomething(constants.CREATESUCCESS, constants.CREATESUCCESS, constants.typeSuccess);
                 }).catch(function () {
                     this.loading = false;
@@ -328,7 +349,7 @@ export default {
                     if (result.data.code == 0) {
                         this.loading = false;
                         this.closeWeiXiuForm();
-                        this.refreshWeixiuList();
+                        this.refreshWeixiuList(null);
                         notifySomething("编辑成功", "编辑成功", constants.typeSuccess);
                     } else {
                         notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
@@ -340,11 +361,10 @@ export default {
             }
 
         },
-        refreshWeixiuList() {
+        refreshWeixiuList(params) {
             this.role = localGet("role");
             this.loading = true;
-            let params = {};
-            if (this.role == 1) {
+            if (params == null && this.role == 1) {
                 params = {
                     status: constants.STATUSNEW
                 }
@@ -394,7 +414,6 @@ export default {
                             break;
                         default:
                             one.statusText = constants.NEW;
-
                             break;
                     }
 
@@ -431,7 +450,7 @@ export default {
     },
     mounted() {
 
-        this.refreshWeixiuList();
+        this.refreshWeixiuList(null);
 
     }
 };
@@ -482,7 +501,8 @@ export default {
 }
 
 .filterBiaoDan {
-    margin: 0 0 15px 0
+    margin: 0 0 15px 0;
+    margin-bottom:15px;
 }
 
 .vue2Table {
