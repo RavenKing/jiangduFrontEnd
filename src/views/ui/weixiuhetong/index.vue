@@ -316,6 +316,8 @@ export default {
             this.selectedStep.open = false;
             this.loading = true;
             var payload;
+            var test = {};
+            test[this.selectedStep.data.infoKey] = this.selectedStep.data.infoValue;
             if (this.selectedStep.mode == "edit") {
                 payload = {
                     id: this.selectedStep.data.step_id,
@@ -323,7 +325,8 @@ export default {
                     endtime: toShitFormat(this.selectedStep.data.endDate),
                     plantime: toShitFormat(this.selectedStep.data.realStartDate),
                     planendtime: toShitFormat(this.selectedStep.data.realEndDate),
-                    status: this.selectedStep.data.status
+                    status: this.selectedStep.data.status,
+                    //info: JSON.stringify(test)
                 }
                 editStepApi(payload).then((one) => {
                     this.loading = false;
