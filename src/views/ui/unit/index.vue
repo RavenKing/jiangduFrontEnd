@@ -62,9 +62,9 @@
                                     </div>
                                     <div slot="action" slot-scope="props">
                                         <span v-show="role!==1 && props.rowData.type1!=='租赁房屋'">
-                                            <sui-button basic color="blue" content="申请维修" v-on:click="applyRepair(props.rowData)" />
+                                            <sui-button basic color="blue" content="维修" v-on:click="applyRepair(props.rowData)" />
                                         </span>
-                                        <sui-button basic color="red" content="删除" v-on:click="deletefenpei(props.rowData)" />
+                                        <sui-button v-show="role==1" basic color="red" content="删除" v-on:click="deletefenpei(props.rowData)" />
                                         <sui-button basic color="blue" content="分配" v-on:click="assignLeader(props.rowData)" />
 
                                     </div>
@@ -110,7 +110,7 @@
                                 </sui-modal>
                             </div>
                         </sui-tab-pane>
-                        <sui-tab-pane title="领导办公室情况" :attached="false">
+                        <sui-tab-pane title="房间列表" :attached="false">
                             <div>
                                 <!-- <sui-button basic color="blue" @click.native="assignLeader">
                                     新增
@@ -1170,6 +1170,7 @@ export default {
         },
 
         enableUpdateUnit(){
+            console.log(this.selectedRoom)
             this.selectedRoom.edit = true
         },
 
@@ -1417,14 +1418,14 @@ export default {
                     filtered_data[i]['realname'] = filtered_data[i]['name']
                     filtered_data[i]['name'] = filtered_data[i]['seq_code'] + '.' + filtered_data[i]['shortname']
                     filtered_data[i]['edit'] = false
-                    if (filtered_data[i]['kind'] == '1') {
-                        filtered_data[i]['kind'] = '机关单位'
+                    if (filtered_data[i]['kind'] == '机关单位') {
+                        filtered_data[i]['kind'] = '1'
                     }
-                    if (filtered_data[i]['kind'] == '2') {
-                        filtered_data[i]['kind'] = '事业单位'
+                    if (filtered_data[i]['kind'] == '事业单位') {
+                        filtered_data[i]['kind'] = '2'
                     }
-                    if (filtered_data[i]['kind'] == '3') {
-                        filtered_data[i]['kind'] = '参公单位'
+                    if (filtered_data[i]['kind'] == '参公单位') {
+                        filtered_data[i]['kind'] = '3'
                     }
 
                     if (filtered_data[i]["status"] == 99) {
