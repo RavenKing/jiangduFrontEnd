@@ -245,6 +245,9 @@ import {
     markStepApi,
     editStepApi
 } from "@/api/weixiuAPI";
+// import {
+//     execFileSync
+// } from 'child_process';
 export default {
     name: "MyVuetable",
     components: {
@@ -319,14 +322,20 @@ export default {
             var test = {};
             test[this.selectedStep.data.infoKey] = this.selectedStep.data.infoValue;
             if (this.selectedStep.mode == "edit") {
+                var status = 1;
+                if (this.selectedStep.data.status == "未开始") {
+                    status = 1
+                } else {
+                    status = 2
+                }
                 payload = {
                     id: this.selectedStep.data.step_id,
                     starttime: toShitFormat(this.selectedStep.data.startDate),
                     endtime: toShitFormat(this.selectedStep.data.endDate),
                     plantime: toShitFormat(this.selectedStep.data.realStartDate),
                     planendtime: toShitFormat(this.selectedStep.data.realEndDate),
-                    status: this.selectedStep.data.status,
-                    //info: JSON.stringify(test)
+                    status: status,
+                    info: JSON.stringify(test)
                 }
                 editStepApi(payload).then((one) => {
                     this.loading = false;
@@ -669,6 +678,9 @@ export default {
                 console.log(maxTmp);
                 console.log(this.minEndDate);
                 console.log(this.maxStartDate);
+                if (new Date(maxTmp) < new Date("2010-12-01")) {
+                    maxTmp = "2010-12-01"
+                }
                 this.maxStartDate = maxTmp;
                 this.minEndDate = minTmp;
                 this.hetongdataNewData = testData;
