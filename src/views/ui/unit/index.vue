@@ -30,19 +30,23 @@
                 </sui-grid-column>
                 <sui-grid-column :width="13">
                     <sui-tab :menu="{ attached: false }">
-                        <sui-tab-pane title="基本信息" :attached="false">
+                        <sui-tab-pane title="基本信息" :attached="false" :key="componentKey"　>
                             <div>
                                 <form-create ref='FormCreate' :singleRoom="selectedRoom"></form-create>
                             </div>
                             <sui-modal-actions>
                                 <div style="background: #F5F7FA; border-bottom-left-radius: .28571429rem; border-bottom-right-radius: .28571429rem; margin:0 -14px -14px -14px;   padding: 1rem 1rem;    border-top: 1px solid rgba(34,36,38,.15);    text-align: left;">
-                                    <sui-button basic color="blue" @click.native="updateUnit" v-show="selectedRoom.edit == true" >
+                                    <div v-show="selectedRoom.edit==true">
+                                    <sui-button basic color="blue" @click="updateUnit" v-show="selectedRoom.edit == true" >
                                         保存
                                     </sui-button>
-                                    <sui-button basic color="blue" @click.native="enableUpdateUnit" v-show="selectedRoom.edit == false">
+                                </div>
+                                <div v-show="selectedRoom.edit == false">
+                                    <sui-button basic color="blue" @click="enableUpdateUnit" v-show="selectedRoom.edit == false">
+                                        {{selectedRoom.edit}}
                                         修改
                                     </sui-button>
-
+                                </div>
                                 </div>
                             </sui-modal-actions>
                         </sui-tab-pane>
@@ -327,7 +331,7 @@ export default {
             lingdaoData: [],
             selectedWeixiu: {},
             deletetype: '',
-            ComponentKey: 1,
+            componentKey: 1,
             fields: FieldsDef,
             fenpeifields: FenpeiDef,
             lingdaofields: LingdaoDef,
@@ -1170,8 +1174,10 @@ export default {
         },
 
         enableUpdateUnit(){
-            console.log(this.selectedRoom)
-            this.selectedRoom.edit = true
+            this.loading=true;
+            this.selectedRoom.edit = true;
+            this.loading=false;
+            
         },
 
         openRoom(value) {
@@ -1317,7 +1323,6 @@ export default {
                         res_data[i]['type1'] = '租赁房屋'
                 }
                 this.fenpeilocalData = {
-
                     data: res_data
                 }
             })
