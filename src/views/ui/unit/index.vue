@@ -77,7 +77,7 @@
 
                             <div>
                                 <sui-modal class="modal2" v-model="weixiuopen">
-                                    <sui-modal-header style="border-bottom:0;">申请维修</sui-modal-header>
+                                    <!-- <sui-modal-header style="border-bottom:0;">申请维修</sui-modal-header> -->
                                     <sui-modal-content scrolling>
                                         <div>
                                             <form-weixiu ref='FormWeixiu' :singleEntry="selectedWeixiu"></form-weixiu>
