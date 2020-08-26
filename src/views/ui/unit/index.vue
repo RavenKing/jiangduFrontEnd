@@ -43,7 +43,6 @@
                                 </div>
                                 <div v-show="selectedRoom.edit == false">
                                     <sui-button basic color="blue" @click="enableUpdateUnit" v-show="selectedRoom.edit == false">
-                                        {{selectedRoom.edit}}
                                         修改
                                     </sui-button>
                                 </div>
