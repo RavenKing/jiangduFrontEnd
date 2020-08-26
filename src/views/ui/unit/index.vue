@@ -1167,8 +1167,10 @@ export default {
                 } else {
                     notifySomething("保存失败", "基本信息保存失败", "Error")
                 }
-                this.loading = false;
+                
+                this.loading=true;
                 this.selectedRoom.edit = false    
+                this.loading = false;
             });
         },
 
