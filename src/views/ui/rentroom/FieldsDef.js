@@ -39,11 +39,6 @@ export default [
     width: "15%"
   },
   {
-    name: "contract_info.rentunit",
-    title: '租借单位',
-    width: "15%"
-  },
-  {
     name: "action",
     title: '操作',
     width: "15%"

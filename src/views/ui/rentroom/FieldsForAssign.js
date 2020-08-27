@@ -16,6 +16,11 @@ export default [
     width: "15%"
   },
   {
+    name: "space",
+    title: '可分配面积',
+    width: "15%"
+  },
+  {
     name: "action",
     title: '操作',
     width: "15%"

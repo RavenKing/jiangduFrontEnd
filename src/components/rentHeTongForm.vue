@@ -39,10 +39,14 @@
             </sui-form-field>
             <label>增长率</label>
             <sui-form-field>
+                <sui-checkbox toggle v-model="singleEntry.is_add" />
+            </sui-form-field>
+
+            <sui-form-field v-show="singleEntry.is_add">
                 第
                 <sui-input v-model="singleEntry.year" transparent class="width30" />年
             </sui-form-field>
-            <sui-form-field>
+            <sui-form-field v-show="singleEntry.is_add">
                 按
                 <sui-input v-model="singleEntry.rate" transparent class="width30" />%增长
             </sui-form-field>

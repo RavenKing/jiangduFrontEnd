@@ -319,6 +319,7 @@ export default {
             this.selectedStep.open = false;
             this.loading = true;
             var payload;
+            var context = this;
             var test = {};
             test[this.selectedStep.data.infoKey] = this.selectedStep.data.infoValue;
             if (this.selectedStep.mode == "edit") {
@@ -346,7 +347,7 @@ export default {
                         notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError)
                     }
                 }).catch(() => {
-                    this.loading = false;
+                    context.loading = false;
                     notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError)
 
                 })
@@ -366,7 +367,7 @@ export default {
                         notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError)
                     }
                 }).catch(() => {
-                    this.loading = false;
+                    context.loading = false;
                     notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError)
 
                 })
@@ -530,7 +531,7 @@ export default {
 
                     }
                 }).catch(function () {
-                    this.loading = false;
+                    context.loading = false;
                     context.$notify({
                         group: 'foo',
                         title: '更新失败',
@@ -693,6 +694,7 @@ export default {
         },
         refreshWeixiuList() {
             this.loading = true;
+            var context = this;
             getMRApi({
                 status: 2
             }).then((data) => {
@@ -730,7 +732,7 @@ export default {
                     }
                 });
             }).catch(function () {
-                this.loading = false;
+                context.loading = false;
                 notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
             });
         },
@@ -788,6 +790,7 @@ export default {
     created() {
         //this.localData = data.data.data;
         this.loading = true;
+        var context = this;
         getMRApi({
             status: 2
         }).then((data) => {
@@ -810,7 +813,7 @@ export default {
                         this.componentKey++;
                     }
                 }).catch(function () {
-                    this.loading = false;
+                    context.loading = false;
                     notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                 });
                 switch (one.status) {
@@ -828,7 +831,7 @@ export default {
                 }
             });
         }).catch(function () {
-            this.loading = false;
+            context.loading = false;
             notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
         });
 

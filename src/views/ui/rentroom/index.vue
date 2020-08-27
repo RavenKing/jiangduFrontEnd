@@ -323,6 +323,7 @@ export default {
             }
             this.validationCheck.unit_id = false;
             this.validationCheck.space = false;
+            var context = this;
             var nPayload = {
                 room_id: this.selectedRoom.id,
                 space: this.selectedRoom.space_assign,
@@ -340,7 +341,7 @@ export default {
                     notifySomething(constants.FEIPEICREATEFAILED, constants.FEIPEICREATEFAILED + result.data.data, constants.typeError);
                 }
             }).catch(function () {
-                this.loading = false;
+                context.loading = false;
                 notifySomething(constants.FEIPEICREATEFAILED, constants.FEIPEICREATEFAILED + "房屋已分配或者面积不足", constants.typeError);
             });
 
@@ -508,6 +509,7 @@ export default {
                     pricename: ""
                 }]
             }
+            
             this.modelTitle = "修改租赁房屋";
             this.editMode = true;
             if (data.lat === null || data.lat == "") {
@@ -527,7 +529,11 @@ export default {
             listRentRoomAssignmentApi({
                 room_id: this.selectedRoom.id
             }).then((data) => {
+                data.data.data.map((one) => {
+                    one.space = this.selectedRoom.space;
+                })
                 this.selectedRoom.assignList = data.data.data;
+
                 getRentRoomContractListApi({
                     room_id: this.selectedRoom.id
                 }).then((result) => {
