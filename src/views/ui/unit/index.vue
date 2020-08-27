@@ -30,19 +30,22 @@
                 </sui-grid-column>
                 <sui-grid-column :width="13">
                     <sui-tab :menu="{ attached: false }">
-                        <sui-tab-pane title="基本信息" :attached="false">
+                        <sui-tab-pane title="基本信息" :attached="false" :key="componentKey"　>
                             <div>
                                 <form-create ref='FormCreate' :singleRoom="selectedRoom"></form-create>
                             </div>
                             <sui-modal-actions>
                                 <div style="background: #F5F7FA; border-bottom-left-radius: .28571429rem; border-bottom-right-radius: .28571429rem; margin:0 -14px -14px -14px;   padding: 1rem 1rem;    border-top: 1px solid rgba(34,36,38,.15);    text-align: left;">
-                                    <sui-button basic color="blue" @click.native="updateUnit" v-show="selectedRoom.edit == true" >
+                                    <div v-show="selectedRoom.edit==true">
+                                    <sui-button basic color="blue" @click="updateUnit" v-show="selectedRoom.edit == true" >
                                         保存
                                     </sui-button>
-                                    <sui-button basic color="blue" @click.native="enableUpdateUnit" v-show="selectedRoom.edit == false">
+                                </div>
+                                <div v-show="selectedRoom.edit == false">
+                                    <sui-button basic color="blue" @click="enableUpdateUnit" v-show="selectedRoom.edit == false">
                                         修改
                                     </sui-button>
-
+                                </div>
                                 </div>
                             </sui-modal-actions>
                         </sui-tab-pane>
@@ -62,9 +65,9 @@
                                     </div>
                                     <div slot="action" slot-scope="props">
                                         <span v-show="role!==1 && props.rowData.type1!=='租赁房屋'">
-                                            <sui-button basic color="blue" content="申请维修" v-on:click="applyRepair(props.rowData)" />
+                                            <sui-button basic color="blue" content="维修" v-on:click="applyRepair(props.rowData)" />
                                         </span>
-                                        <sui-button basic color="red" content="删除" v-on:click="deletefenpei(props.rowData)" />
+                                        <sui-button v-show="role==1" basic color="red" content="删除" v-on:click="deletefenpei(props.rowData)" />
                                         <sui-button basic color="blue" content="分配" v-on:click="assignLeader(props.rowData)" />
 
                                     </div>
@@ -73,7 +76,7 @@
 
                             <div>
                                 <sui-modal class="modal2" v-model="weixiuopen">
-                                    <sui-modal-header style="border-bottom:0;">申请维修</sui-modal-header>
+                                    <!-- <sui-modal-header style="border-bottom:0;">申请维修</sui-modal-header> -->
                                     <sui-modal-content scrolling>
                                         <div>
                                             <form-weixiu ref='FormWeixiu' :singleEntry="selectedWeixiu"></form-weixiu>
@@ -110,7 +113,7 @@
                                 </sui-modal>
                             </div>
                         </sui-tab-pane>
-                        <sui-tab-pane title="领导办公室情况" :attached="false">
+                        <sui-tab-pane title="房间列表" :attached="false">
                             <div>
                                 <!-- <sui-button basic color="blue" @click.native="assignLeader">
                                     新增
@@ -327,7 +330,7 @@ export default {
             lingdaoData: [],
             selectedWeixiu: {},
             deletetype: '',
-            ComponentKey: 1,
+            componentKey: 1,
             fields: FieldsDef,
             fenpeifields: FenpeiDef,
             lingdaofields: LingdaoDef,
@@ -1164,13 +1167,18 @@ export default {
                 } else {
                     notifySomething("保存失败", "基本信息保存失败", "Error")
                 }
-                this.loading = false;
+                
+                this.loading=true;
                 this.selectedRoom.edit = false    
+                this.loading = false;
             });
         },
 
         enableUpdateUnit(){
-            this.selectedRoom.edit = true
+            this.loading=true;
+            this.selectedRoom.edit = true;
+            this.loading=false;
+            
         },
 
         openRoom(value) {
@@ -1316,7 +1324,6 @@ export default {
                         res_data[i]['type1'] = '租赁房屋'
                 }
                 this.fenpeilocalData = {
-
                     data: res_data
                 }
             })
@@ -1417,14 +1424,14 @@ export default {
                     filtered_data[i]['realname'] = filtered_data[i]['name']
                     filtered_data[i]['name'] = filtered_data[i]['seq_code'] + '.' + filtered_data[i]['shortname']
                     filtered_data[i]['edit'] = false
-                    if (filtered_data[i]['kind'] == '1') {
-                        filtered_data[i]['kind'] = '机关单位'
+                    if (filtered_data[i]['kind'] == '机关单位') {
+                        filtered_data[i]['kind'] = '1'
                     }
-                    if (filtered_data[i]['kind'] == '2') {
-                        filtered_data[i]['kind'] = '事业单位'
+                    if (filtered_data[i]['kind'] == '事业单位') {
+                        filtered_data[i]['kind'] = '2'
                     }
-                    if (filtered_data[i]['kind'] == '3') {
-                        filtered_data[i]['kind'] = '参公单位'
+                    if (filtered_data[i]['kind'] == '参公单位') {
+                        filtered_data[i]['kind'] = '3'
                     }
 
                     if (filtered_data[i]["status"] == 99) {
