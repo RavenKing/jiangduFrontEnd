@@ -108,6 +108,32 @@
                                     </vuetable>
                                 </div>
                             </sui-tab-pane>
+                            <sui-tab-pane title="巡查记录">
+                                <sui-dimmer :active="loading" inverted>
+                                    <sui-loader content="Loading..." />
+                                </sui-dimmer>
+                                <sui-form :warning="validationCheck.status=='warning'">
+                                    <sui-form-fields inline>
+                                        <label>巡查人</label>
+                                        <sui-form-field required>
+                                            <sui-input placeholder="巡查人" v-model="newXuncha.name" />
+                                        </sui-form-field>
+                                        <label>备注</label>
+                                        <sui-form-field required>
+                                            <sui-input placeholder="巡查人" v-model="newXuncha.memo" />
+                                        </sui-form-field>
+                                        <sui-button basic color="blue" icon="add" content="添加" @click.prevent="createPatrol()" />
+                                    </sui-form-fields>
+                                </sui-form>
+                                <div class="vue2Table">
+                                    <vuetable ref="vuetable" :api-mode="false" :data="selectedRoom.patrol" :fields="fieldsPatrol" data-path="data" :key="componentAssignListkey">
+                                        <div slot="action" slot-scope="props">
+                                            <!-- <sui-button basic color="blue"  content="查看" v-on:click="viewSomeThing(props.rowData,'check')" /> -->
+                                            <sui-button basic color="red" content="删除" v-on:click="deleteRoomAssign(props.rowData)" />
+                                        </div>
+                                    </vuetable>
+                                </div>
+                            </sui-tab-pane>
                             <sui-tab-pane title="地图定位" :attached="false" :disabled="!editMode">
                                 <div class="imageForm">
                                     <sui-form>
@@ -160,6 +186,7 @@ import Vuetable from "vuetable-2/src/components/Vuetable";
 import VuetablePagination from "vuetable-2/src/components/VuetablePagination";
 import FieldsDef from "./FieldsDef.js";
 import FieldsAssign from "./FieldsForAssign.js";
+import FieldsPatrol from "./FieldsPatrol.js";
 
 import rentHeTongForm from "@/components/rentHeTongForm";
 import {
@@ -171,6 +198,7 @@ import {
 import constants from "@/util/constants";
 
 import {
+    createPatrolApi,
     getRentRoomDataApi,
     createRentRoomApi,
     updateRentRoomApi,
@@ -182,7 +210,8 @@ import {
     listRentRoomAssignmentApi,
     deleteRentRoomAssignmentApi,
     editRentContractDetailApi,
-    editRentContractApi
+    editRentContractApi,
+    listPatrolApi
 } from "@/api/roomDataAPI";
 import {
     notifySomething,
@@ -197,7 +226,6 @@ export default {
         VuetablePagination,
         'rentroom-form': RentRoomForm,
         'contract-form': rentHeTongForm
-
     },
     data() {
         return {
@@ -208,6 +236,7 @@ export default {
                 header: "",
                 status: ""
             },
+            fieldsPatrol:FieldsPatrol,
             sendVal: false,
             modelTitle: "",
             editMode: false,
@@ -216,13 +245,16 @@ export default {
                 jiadi: "",
                 diji: ""
             },
+            newXuncha: {},
             unitoptions: [],
             listContract: [],
             componentAssignListkey: 1,
             componentFenpeikey: 1,
             defaultTab: 0,
             point: {},
-            selectedRoom: {},
+            selectedRoom: {
+                patrol: []
+            },
             selectedRoomContract: {
                 mode: "initial"
             },
@@ -251,6 +283,32 @@ export default {
     },
 
     methods: {
+        //patrol
+        refreshPatrol() {
+            listPatrolApi().then((result) => {
+                if (result.data.code == 0) {
+                    this.selectedRoom.patrol = result.data.data;
+                    console.log(this.selectedRoom.patrol);
+                } else {
+                    notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
+                }
+            });
+        },
+
+        createPatrol() {
+            this.newXuncha.room_id = this.selectedRoom.id
+            this.newXuncha.unit_id = this.selectedRoom.unit_id
+            if (!this.newXuncha.name) {
+                notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
+                return;
+            }
+            createPatrolApi(this.newXuncha).then((result) => {
+                if (result.data.code == 0) {
+                    notifySomething(constants.CREATESUCCESS, constants.CREATESUCCESS, constants.typeSuccess);
+                }
+            });
+
+        },
         clickDingWei() {
             this.defaultTab = 3;
             this.keyword = this.selectedRoom.address;
@@ -509,7 +567,7 @@ export default {
                     pricename: ""
                 }]
             }
-            
+
             this.modelTitle = "修改租赁房屋";
             this.editMode = true;
             if (data.lat === null || data.lat == "") {
@@ -533,7 +591,7 @@ export default {
                     one.space = this.selectedRoom.space;
                 })
                 this.selectedRoom.assignList = data.data.data;
-
+                this.refreshPatrol();
                 getRentRoomContractListApi({
                     room_id: this.selectedRoom.id
                 }).then((result) => {
@@ -598,8 +656,8 @@ export default {
         },
         refreshRooms(payload) {
             this.loading = true;
+            var context = this;
             getRentRoomDataApi(payload).then((data) => {
-
                 if (data.data.code == 0) {
                     this.loading = false;
                     this.localData = data.data.data
@@ -609,7 +667,6 @@ export default {
                         } else {
                             one.qishinianxian = "无"
                         }
-
                     })
                 } else if (data.data.code == 2) {
                     notifySomething("重复登陆 请重新登陆", constants.GENERALERROR, constants.typeError);
@@ -617,7 +674,7 @@ export default {
                     this.$router.push("/login");
                 }
             }).catch(function () {
-                this.loading = false;
+                context.loading = false;
                 notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
             });
         },

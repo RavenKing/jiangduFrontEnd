@@ -487,7 +487,26 @@ function editRentContractApi(data)
 {
     return generalRequet(data,constants.editRentContractApi)
 }
+function listPatrolApi()
+{   
+    var data={};
+    return generalRequet(data,constants.listPatrolApi)
+}
 
+function createPatrolApi(data)
+{
+    return generalRequet(data,constants.createPatrolApi)
+}
+
+function editPatrolApi(data)
+{
+    return generalRequet(data,constants.editPatrolApi)
+}
+
+function deletePatrolApi(data)
+{
+    return generalRequet(data,constants.deletePatrolApi)
+}
 
 
 /*20200801*/
@@ -697,5 +716,9 @@ export {
 
     showgeolistApi,
     showunitbyroomidApi,
-    showunitroominfo
+    showunitroominfo,
+    listPatrolApi,
+    createPatrolApi,
+    editPatrolApi,
+    deletePatrolApi,
 }

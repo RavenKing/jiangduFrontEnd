@@ -30,22 +30,22 @@
                 </sui-grid-column>
                 <sui-grid-column :width="13">
                     <sui-tab :menu="{ attached: false }">
-                        <sui-tab-pane title="基本信息" :attached="false" :key="componentKey"　>
+                        <sui-tab-pane title="基本信息" :attached="false" :key="componentKey">
                             <div>
                                 <form-create ref='FormCreate' :singleRoom="selectedRoom"></form-create>
                             </div>
                             <sui-modal-actions>
                                 <div style="background: #F5F7FA; border-bottom-left-radius: .28571429rem; border-bottom-right-radius: .28571429rem; margin:0 -14px -14px -14px;   padding: 1rem 1rem;    border-top: 1px solid rgba(34,36,38,.15);    text-align: left;">
                                     <div v-show="selectedRoom.edit==true">
-                                    <sui-button basic color="blue" @click="updateUnit" v-show="selectedRoom.edit == true" >
-                                        保存
-                                    </sui-button>
-                                </div>
-                                <div v-show="selectedRoom.edit == false">
-                                    <sui-button basic color="blue" @click="enableUpdateUnit" v-show="selectedRoom.edit == false">
-                                        修改
-                                    </sui-button>
-                                </div>
+                                        <sui-button basic color="blue" @click="updateUnit" v-show="selectedRoom.edit == true">
+                                            保存
+                                        </sui-button>
+                                    </div>
+                                    <div v-show="selectedRoom.edit == false">
+                                        <sui-button basic color="blue" @click="enableUpdateUnit" v-show="selectedRoom.edit == false">
+                                            修改
+                                        </sui-button>
+                                    </div>
                                 </div>
                             </sui-modal-actions>
                         </sui-tab-pane>
@@ -273,7 +273,6 @@ import {
     deleteRoomApi,
     getUnitApi,
     updateUnitApi,
-    getlistleaderroomApi,
     getUnitApiByid,
     getRentRoomDataApi,
     getRoomDataApi,
@@ -841,7 +840,7 @@ export default {
             this.refreshLeaderAssignment(params.id);
         },
 
-        refreshLeaderAssignment(data) {
+        refreshLeaderAssignment() {
             var input = {}
             input['unit_id'] = 66
             getleaderroombyunitApi(input).then((data) => {
@@ -861,20 +860,21 @@ export default {
                         var room_id = room_assign[j]['id']
                         var room_type = ''
                         for (var k = room_details.length - 1; k >= 0; k--) {
-                            if(room_details[k].hasOwnProperty(room_id)){
+                            // eslint-disable-next-line no-prototype-builtins
+                            if (room_details[k].hasOwnProperty(room_id)) {
                                 room_type = room_details[k]['type']
                             }
                         }
-                        if(room_type == 'yewu'){
+                        if (room_type == 'yewu') {
                             room_type = '业务'
                         }
-                        if(room_type == 'bangong'){
+                        if (room_type == 'bangong') {
                             room_type = '办公'
                         }
-                        if(room_type == 'shebei'){
+                        if (room_type == 'shebei') {
                             room_type = '设备'
                         }
-                        if(room_type == 'fushu'){
+                        if (room_type == 'fushu') {
                             room_type = '附属'
                         }
                         room_assign[j]['room_type'] = room_type
@@ -885,18 +885,17 @@ export default {
                 }
                 console.log(lingdao_list)
                 this.lingdaoData = {
-                            total: 16,
-                            per_page: 5,
-                            current_page: 1,
-                            last_page: 4,
-                            next_page_url: "data.data.data?page=2",
-                            prev_page_url: null,
-                            from: 1,
-                            to: 5,
-                            data: lingdao_list
-                        }
+                    total: 16,
+                    per_page: 5,
+                    current_page: 1,
+                    last_page: 4,
+                    next_page_url: "data.data.data?page=2",
+                    prev_page_url: null,
+                    from: 1,
+                    to: 5,
+                    data: lingdao_list
+                }
             })
-
 
             // getlistleaderroomApi(data).then((data) => {
             //     this.loading = false;
@@ -1167,18 +1166,18 @@ export default {
                 } else {
                     notifySomething("保存失败", "基本信息保存失败", "Error")
                 }
-                
-                this.loading=true;
-                this.selectedRoom.edit = false    
+
+                this.loading = true;
+                this.selectedRoom.edit = false
                 this.loading = false;
             });
         },
 
-        enableUpdateUnit(){
-            this.loading=true;
+        enableUpdateUnit() {
+            this.loading = true;
             this.selectedRoom.edit = true;
-            this.loading=false;
-            
+            this.loading = false;
+
         },
 
         openRoom(value) {

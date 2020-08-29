@@ -254,7 +254,33 @@
                                 </baidu-map>
                             </sui-tab-pane>
                             <sui-tab-pane title="资料管理" :attached="false">
-                                <el-upload ref="upload" class="upload-demo" :on-change="uploadZiliaoFile" :file-list="fileList">
+                                <div is="sui-divider" horizontal>
+                                    <h4 is="sui-header">
+                                        <i class="tag icon"></i>
+                                        产证资料
+                                    </h4>
+                                </div>
+                                <el-upload ref="upload" class="upload-demo" :on-change="uploadZiliaoFileChanZheng" :file-list="chanzhenZiLiao">
+                                    <el-button size="small" type="primary">点击上传</el-button>
+                                    <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+                                </el-upload>
+                                <div is="sui-divider" horizontal>
+                                    <h4 is="sui-header">
+                                        <i class="tag icon"></i>
+                                        房屋图纸资料
+                                    </h4>
+                                </div>
+                                <el-upload ref="upload" class="upload-demo" :on-change="uploadZiliaoFileTuzhi" :file-list="tuzhiZiLiao">
+                                    <el-button size="small" type="primary">点击上传</el-button>
+                                    <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+                                </el-upload>
+                                <div is="sui-divider" horizontal>
+                                    <h4 is="sui-header">
+                                        <i class="tag icon"></i>
+                                        其他资料
+                                    </h4>
+                                </div>
+                                <el-upload ref="upload" class="upload-demo" :on-change="uploadZiliaoFileQita" :file-list="fileList">
                                     <el-button size="small" type="primary">点击上传</el-button>
                                     <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
                                 </el-upload>
@@ -342,6 +368,8 @@ export default {
     },
     data() {
         return {
+            chanzhenZiLiao: [],
+            tuzhiZiLiao: [],
             fileList: [],
             sendVal: false,
             modelTitle: "",
@@ -416,7 +444,18 @@ export default {
                 }
             }
         },
-        uploadZiliaoFile(e, fileList) {
+        uploadZiliaoFileTuzhi(e, fileList) {
+            this.uploadZiliaoFile(e, fileList, 'tuzhi');
+        },
+        uploadZiliaoFileChanZheng(e, fileList) {
+            this.uploadZiliaoFile(e, fileList, 'chanzheng');
+        },
+        uploadZiliaoFileQita(e, fileList) {
+            this.uploadZiliaoFile(e, fileList, 'qita');
+
+        },
+        uploadZiliaoFile(e, fileList, mode) {
+            console.log(mode);
             if (this.uploadCount == 1) {
                 this.uploadCount = 0;
                 return;
@@ -426,14 +465,20 @@ export default {
             let formData = new FormData();
             this.loading = true;
             var context = this;
-
             //  this.buildingImage.open = false;
             if (e.raw != undefined) {
                 formData.append('ossfile', e.raw);
                 uploadZiliaoFileApi(formData).then((result) => {
-                    console.log(result);
+                    context.loading = false;
                     if (result.data.code == 0) {
-                        this.fileList.push(result.data.data)
+                        if (mode == 'tuzhi') {
+                            context.tuzhiZiLiao.push(result.data.data);
+                        } else if (mode == 'chanzheng') {
+                            context.chanzhenZiLiao.push(result.data.data);
+
+                        } else {
+                            context.fileList.push(result.data.data)
+                        }
                     }
                 }).catch(function () {
                     context.loading = false;
@@ -1058,6 +1103,14 @@ export default {
                 if (this.fileList.length > 0) {
                     this.selectedRoom.qitaziliao = JSON.stringify(this.fileList);
                     this.fileList = [];
+                }
+                if (this.tuzhiZiLiao.length > 0) {
+                    this.selectedRoom.tuzhiZiLiao = JSON.stringify(this.tuzhiZiLiao);
+                    this.tuzhiZiLiao = [];
+                }
+                if (this.chanzhenZiLiao.length > 0) {
+                    this.selectedRoom.chanzhenZiLiao = JSON.stringify(this.chanzhenZiLiao);
+                    this.chanzhenZiLiao = [];
                 }
                 updateRoomApi(this.selectedRoom).then((result) => {
                     if (result.data.code == 0) {

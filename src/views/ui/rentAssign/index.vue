@@ -38,10 +38,6 @@
                     <sui-button text="删除" basic color="red" v-on:click="handleDelete(props.rowData)">删除</sui-button>
                 </div>
             </vuetable>
-            <div class="pagination ui basic segment grid">
-                <vuetable-pagination-info ref="paginationInfo"></vuetable-pagination-info>
-                <vuetable-pagination ref="pagination" @vuetable-pagination:change-page="onChangePage"></vuetable-pagination>
-            </div>
         </div>
 
         <dialog-bar ref="dialog" :singleTime="deleteTarget" v-model="sendVal" type="danger" title="确认" :content="deleteTarget.text" v-on:cancel="clickCancel()" @danger="clickConfirmDelete()" @confirm="clickConfirmDelete()" :dangerText="deleteTarget.dangerText">
@@ -81,8 +77,6 @@ import {
 } from "@/util/time"
 import dialogBar from '@/components/MDialogNewV'
 import Vuetable from "vuetable-2/src/components/Vuetable";
-import VuetablePagination from "vuetable-2/src/components/VuetablePagination";
-import VuetablePaginationInfo from "vuetable-2/src/components/VuetablePaginationInfo";
 import FieldsDef from "./FieldsDef.js";
 import constants from "@/util/constants";
 import Fields2 from "./fields2.js";
@@ -110,8 +104,6 @@ export default {
     components: {
         'dialog-bar': dialogBar,
         Vuetable,
-        VuetablePagination,
-        VuetablePaginationInfo,
         'weixiu-form': WeiXiuForm
     },
     data() {

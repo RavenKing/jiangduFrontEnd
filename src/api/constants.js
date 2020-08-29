@@ -86,6 +86,15 @@ const constantsJinhui = {
     showunitbyroomidApi:"/geo/showunitbyroomid",
     
     getFloorByIdApi:"/getfloorbyid",
-    showunitroominfo:"geo/showunitroominfo" //详细地址
+    showunitroominfo:"geo/showunitroominfo", //详细地址
+
+        //2020 0827
+    listPatrolApi:"/listpatrol",
+    createPatrolApi:"/createpatrol",
+    editPatrolApi:"/editpatrol",
+    deletePatrolApi:"/delpatrol"
+    
+
+
 }
 export default constantsJinhui;
