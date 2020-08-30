@@ -129,7 +129,7 @@
                                     <vuetable ref="vuetable" :api-mode="false" :data="selectedRoom.patrol" :fields="fieldsPatrol" data-path="data" :key="componentAssignListkey">
                                         <div slot="action" slot-scope="props">
                                             <!-- <sui-button basic color="blue"  content="查看" v-on:click="viewSomeThing(props.rowData,'check')" /> -->
-                                            <sui-button basic color="red" content="删除" v-on:click="deleteRoomAssign(props.rowData)" />
+                                            <sui-button basic color="red" content="删除" v-on:click="deleteRoomPatrol(props.rowData)" />
                                         </div>
                                     </vuetable>
                                 </div>
@@ -211,7 +211,8 @@ import {
     deleteRentRoomAssignmentApi,
     editRentContractDetailApi,
     editRentContractApi,
-    listPatrolApi
+    listPatrolApi,
+    deletePatrolApi
 } from "@/api/roomDataAPI";
 import {
     notifySomething,
@@ -236,7 +237,7 @@ export default {
                 header: "",
                 status: ""
             },
-            fieldsPatrol:FieldsPatrol,
+            fieldsPatrol: FieldsPatrol,
             sendVal: false,
             modelTitle: "",
             editMode: false,
@@ -287,6 +288,7 @@ export default {
         refreshPatrol() {
             listPatrolApi().then((result) => {
                 if (result.data.code == 0) {
+                    this.loading=false;
                     this.selectedRoom.patrol = result.data.data;
                     console.log(this.selectedRoom.patrol);
                 } else {
@@ -442,6 +444,21 @@ export default {
                     }
                 });
 
+            } else if (
+                this.deleteTarget.room_type == constants.typeRoomPatrol
+            ) {
+                deletePatrolApi(this.deleteTarget).then((result) => {
+                    if (result.data.code == 0) {
+
+                        this.refreshPatrol();
+                        notifySomething(constants.DELETESUCCESS, constants.DELETESUCCESS, constants.typeSuccess);
+                    } else {
+                        notifySomething(constants.DELETEFAILED, constants.DELETEFAILED, constants.typeError);
+
+                    }
+
+                    console.log(result)
+                });
             } else {
                 deleteRentRoomApi(this.deleteTarget).then((result) => {
                     if (result.data.code == 0) {
@@ -630,6 +647,14 @@ export default {
                 bookType: 'xlsx' //Optional
             });
 
+        },
+        deleteRoomPatrol(data) {
+            this.sendVal = true;
+            this.deleteTarget = {
+                text: "是否要删除" + data.id + "(" + data.name + ")?",
+                id: data.id,
+                room_type: constants.typeRoomPatrol
+            };
         },
         deleteRoomAssign(data) {
             this.sendVal = true;
