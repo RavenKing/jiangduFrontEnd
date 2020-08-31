@@ -376,7 +376,8 @@ export default {
                 open: false,
                 room_id: "",
                 roomname: "",
-                building_id: null
+                building_id: null,
+                space: null
             },
             selectedBuildingID: null,
             selectedRoom: {
@@ -434,7 +435,37 @@ export default {
 
             }
             var contextF = this;
-            createAssignmentApi({
+
+
+
+            console.log(this.assignList.selectedRoom)
+            console.log(this.selectedRoomInFloor)
+            if(this.assignList.selectedRoom.type1 == '租赁房屋'){
+                var payload = {
+                room_id: this.selectedRoomInFloor.room_id,
+                building_id: this.selectedRoomInFloor.building_id,
+                floor_id: this.selectedRoomInFloor.floor_id,
+                unit_id: this.selectedRoom.id,
+                leader: this.selectedRoomInFloor.isleader,
+                // room: this.$refs.LeaderForm.singleRoom.room,
+                space: this.selectedRoomInFloor.space,
+                room_type: this.selectedRoomInFloor.kind
+            }
+            this.loading = true;
+            console.log(payload)
+            createLeaderAssignApi(payload).then((result) => {
+                this.loading = false;
+                if (result.data.code == 0) {
+                    this.leader.open = false;
+                    notifySomething("创建成功", "创建领导分配成功", "success");
+                    this.refreshLeaderAssignment(this.selectedRoom.id);
+                }
+            }).catch(() => {
+                this.loading = false;
+                notifySomething("创建失败", "创建失败", "Error")
+            });    
+            }else{
+                createAssignmentApi({
                 assignment: JSON.stringify(this.roomAssignment),
                 id: this.assignList.selectedFloor.floor_id
             }).then((result) => {
@@ -455,7 +486,8 @@ export default {
             }).catch(function () {
                 contextF.loading = false;
                 notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
-            });
+            });    
+            }
 
         },
         onClickLou(params) {
@@ -1314,7 +1346,10 @@ export default {
                 this.selectedRoom = data.data.data
                 this.selectedRoom['realname'] = this.selectedRoom['name']
                 this.selectedRoom['edit'] = false
-                console.log(this.selectedRoom)
+                this.selectedRoom['bianzhi_num'] = parseInt(this.selectedRoom['zhengju'])+parseInt(this.selectedRoom['fuju'])+parseInt(this.selectedRoom['zhengchu'])+parseInt(this.selectedRoom['fuchu'])
+                +parseInt(this.selectedRoom['zhengke'])+parseInt(this.selectedRoom['fuke'])+ parseInt(this.selectedRoom['other'])
+                this.selectedRoom['shiji_num']= parseInt(this.selectedRoom['zhengju_r'])+parseInt(this.selectedRoom['fuju_r'])+parseInt(this.selectedRoom['zhengchu_r'])+parseInt(this.selectedRoom['fuchu_r'])
+                +parseInt(this.selectedRoom['zhengke_r'])+ parseInt(this.selectedRoom['fuke_r'])+ parseInt(this.selectedRoom['other_r'])
                 var res_data = data.data.data['building_info']
                 for (var i = res_data.length - 1; i >= 0; i--) {
                     if (res_data[i]['type1'] == 'self')
