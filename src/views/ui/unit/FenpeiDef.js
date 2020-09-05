@@ -31,7 +31,7 @@ export default [
   {
     name: "space",
     sortField: "space",
-    title: '面积',
+    title: '面积(m2)',
     width: "15%",
   },
   {

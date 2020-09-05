@@ -376,7 +376,8 @@ export default {
                 open: false,
                 room_id: "",
                 roomname: "",
-                building_id: null
+                building_id: null,
+                space: null
             },
             selectedBuildingID: null,
             selectedRoom: {
@@ -434,7 +435,35 @@ export default {
 
             }
             var contextF = this;
-            createAssignmentApi({
+
+
+
+        
+            if(this.assignList.selectedRoom.type1 == '租赁房屋'){
+                var payload = {
+                room_id: this.leaderfenpei.room_id,
+                building_id: this.leaderfenpei.building_id,
+                floor_id: this.leaderfenpei.floor_id,
+                unit_id: this.selectedRoom.id,
+                leader: this.selectedRoomInFloor.isleader,
+                // room: this.$refs.LeaderForm.singleRoom.room,
+                space: this.leaderfenpei.space,
+                room_type: this.selectedRoomInFloor.kind
+            }
+            this.loading = true;
+            createLeaderAssignApi(payload).then((result) => {
+                this.loading = false;
+                if (result.data.code == 0) {
+                    this.leader.open = false;
+                    notifySomething("创建成功", "创建领导分配成功", "success");
+                    this.refreshLeaderAssignment(this.selectedRoom.id);
+                }
+            }).catch(() => {
+                this.loading = false;
+                notifySomething("创建失败", "创建失败", "Error")
+            });    
+            }else{
+                createAssignmentApi({
                 assignment: JSON.stringify(this.roomAssignment),
                 id: this.assignList.selectedFloor.floor_id
             }).then((result) => {
@@ -455,7 +484,8 @@ export default {
             }).catch(function () {
                 contextF.loading = false;
                 notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
-            });
+            });    
+            }
 
         },
         onClickLou(params) {
@@ -724,9 +754,6 @@ export default {
             this.leader.open = false;
         },
         createLeaderAssign() {
-            console.log('领导分配')
-            console.log(this.$refs);
-            console.log(this.leaderfenpei)
             var room_type = 1
             if (this.leaderfenpei.type1 == '租赁房屋') {
                 room_type = 2
@@ -849,6 +876,7 @@ export default {
                 console.log(res_data)
                 var lingdao_list = []
                 for (var i = res_data.length - 1; i >= 0; i--) {
+                    var out_room_name = res_data[i]['room_name']
                     var room_assign = res_data[i]['room_assign']
                     var building_name = res_data[i]['buildingn_ame']
                     var floor_name = res_data[i]['floor_name']
@@ -860,7 +888,6 @@ export default {
                         var room_id = room_assign[j]['id']
                         var room_type = ''
                         for (var k = room_details.length - 1; k >= 0; k--) {
-                            // eslint-disable-next-line no-prototype-builtins
                             if (room_details[k].hasOwnProperty(room_id)) {
                                 room_type = room_details[k]['type']
                             }
@@ -878,6 +905,7 @@ export default {
                             room_type = '附属'
                         }
                         room_assign[j]['room_type'] = room_type
+                        room_assign[j]['out_room_name'] = out_room_name
                         lingdao_list.push(room_assign[j])
 
                     }
@@ -1314,7 +1342,10 @@ export default {
                 this.selectedRoom = data.data.data
                 this.selectedRoom['realname'] = this.selectedRoom['name']
                 this.selectedRoom['edit'] = false
-                console.log(this.selectedRoom)
+                this.selectedRoom['bianzhi_num'] = parseInt(this.selectedRoom['zhengju'])+parseInt(this.selectedRoom['fuju'])+parseInt(this.selectedRoom['zhengchu'])+parseInt(this.selectedRoom['fuchu'])
+                +parseInt(this.selectedRoom['zhengke'])+parseInt(this.selectedRoom['fuke'])+ parseInt(this.selectedRoom['other'])
+                this.selectedRoom['shiji_num']= parseInt(this.selectedRoom['zhengju_r'])+parseInt(this.selectedRoom['fuju_r'])+parseInt(this.selectedRoom['zhengchu_r'])+parseInt(this.selectedRoom['fuchu_r'])
+                +parseInt(this.selectedRoom['zhengke_r'])+ parseInt(this.selectedRoom['fuke_r'])+ parseInt(this.selectedRoom['other_r'])
                 var res_data = data.data.data['building_info']
                 for (var i = res_data.length - 1; i >= 0; i--) {
                     if (res_data[i]['type1'] == 'self')
