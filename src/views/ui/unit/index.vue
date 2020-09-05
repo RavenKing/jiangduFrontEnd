@@ -438,21 +438,19 @@ export default {
 
 
 
-            console.log(this.assignList.selectedRoom)
-            console.log(this.selectedRoomInFloor)
+        
             if(this.assignList.selectedRoom.type1 == '租赁房屋'){
                 var payload = {
-                room_id: this.selectedRoomInFloor.room_id,
-                building_id: this.selectedRoomInFloor.building_id,
-                floor_id: this.selectedRoomInFloor.floor_id,
+                room_id: this.leaderfenpei.room_id,
+                building_id: this.leaderfenpei.building_id,
+                floor_id: this.leaderfenpei.floor_id,
                 unit_id: this.selectedRoom.id,
                 leader: this.selectedRoomInFloor.isleader,
                 // room: this.$refs.LeaderForm.singleRoom.room,
-                space: this.selectedRoomInFloor.space,
+                space: this.leaderfenpei.space,
                 room_type: this.selectedRoomInFloor.kind
             }
             this.loading = true;
-            console.log(payload)
             createLeaderAssignApi(payload).then((result) => {
                 this.loading = false;
                 if (result.data.code == 0) {
@@ -756,9 +754,6 @@ export default {
             this.leader.open = false;
         },
         createLeaderAssign() {
-            console.log('领导分配')
-            console.log(this.$refs);
-            console.log(this.leaderfenpei)
             var room_type = 1
             if (this.leaderfenpei.type1 == '租赁房屋') {
                 room_type = 2
@@ -881,6 +876,7 @@ export default {
                 console.log(res_data)
                 var lingdao_list = []
                 for (var i = res_data.length - 1; i >= 0; i--) {
+                    var out_room_name = res_data[i]['room_name']
                     var room_assign = res_data[i]['room_assign']
                     var building_name = res_data[i]['buildingn_ame']
                     var floor_name = res_data[i]['floor_name']
@@ -892,7 +888,6 @@ export default {
                         var room_id = room_assign[j]['id']
                         var room_type = ''
                         for (var k = room_details.length - 1; k >= 0; k--) {
-                            // eslint-disable-next-line no-prototype-builtins
                             if (room_details[k].hasOwnProperty(room_id)) {
                                 room_type = room_details[k]['type']
                             }
@@ -910,6 +905,7 @@ export default {
                             room_type = '附属'
                         }
                         room_assign[j]['room_type'] = room_type
+                        room_assign[j]['out_room_name'] = out_room_name
                         lingdao_list.push(room_assign[j])
 
                     }
