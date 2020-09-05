@@ -288,7 +288,7 @@ export default {
         refreshPatrol() {
             listPatrolApi().then((result) => {
                 if (result.data.code == 0) {
-                    this.loading=false;
+                    this.loading = false;
                     this.selectedRoom.patrol = result.data.data;
                     console.log(this.selectedRoom.patrol);
                 } else {
@@ -687,10 +687,12 @@ export default {
                     this.loading = false;
                     this.localData = data.data.data
                     this.localData.data.map((one) => {
-                        if (one.contract_info.starttime) {
-                            one.qishinianxian = this.formatTime(one.contract_info.starttime) + "到" + this.formatTime(one.contract_info.endtime);
-                        } else {
-                            one.qishinianxian = "无"
+                        if (one.contract_info != null) {
+                            if (one.contract_info.starttime) {
+                                one.qishinianxian = this.formatTime(one.contract_info.starttime) + "到" + this.formatTime(one.contract_info.endtime);
+                            } else {
+                                one.qishinianxian = "无"
+                            }
                         }
                     })
                 } else if (data.data.code == 2) {
