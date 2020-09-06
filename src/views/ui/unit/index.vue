@@ -1393,9 +1393,6 @@ export default {
                     if (parseInt(res_data[i]['fuke'])) {
                         res_data[i]['bianzhi_num'] = res_data[i]['bianzhi_num'] + parseInt(res_data[i]['fuke'])
                     }
-                    if (parseInt(res_data[i]['other'])) {
-                        res_data[i]['bianzhi_num'] = res_data[i]['bianzhi_num'] + parseInt(res_data[i]['other'])
-                    }
                     if (parseInt(res_data[i]['zhengju_r'])) {
                         res_data[i]['shiji_num'] = res_data[i]['shiji_num'] + parseInt(res_data[i]['zhengju_r'])
                     }
