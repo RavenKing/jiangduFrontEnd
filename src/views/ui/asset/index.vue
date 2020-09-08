@@ -180,8 +180,8 @@
                                 <sui-button basic color="blue" @click.native="openBuildingModal" v-show="selectedRoom.kind==1">
                                     新增
                                 </sui-button>
-                                <sui-grid :columns="2" relaxed="very">
-                                    <sui-grid-column :width="5">
+                                <sui-grid :columns="3" relaxed="very">
+                                    <sui-grid-column :width="3">
                                         <div>
                                             <vue-tree-list @click="onClick" @changeName="onChangeName" @delete-node="onDel" @add-node="onAddNode" :model="tree" default-tree-node-name="new node" default-leaf-node-name="new leaf" v-bind:default-expanded="false">
                                                 <span class="icon" slot="addTreeNodeIcon">📂</span>
@@ -194,7 +194,7 @@
                                         </div>
                                     </sui-grid-column>
 
-                                    <sui-grid-column :width="11">
+                                    <sui-grid-column :width="9">
                                         <sui-statistic horizontal size="big">
                                             <sui-statistic-value>
                                                 {{assignList.selectedBuilding.name}}
@@ -207,18 +207,23 @@
                                         </sui-statistic>
                                         <img :src="assignList.selectedFloor.url" ref="backImage" v-show="false" />
                                         <canvas ref="canvas" id="myCanvas" width="500" height="350" />
-                                        <sui-list v-show="roomAssignment.length>0">
-                                            <sui-list-item v-for="unit in roomAssignment" :key="unit[0]">
-                                                房间号:{{unit.roomnumber}} 房间名:{{unit.roomname}} 面积:{{unit.space}}平米
-                                                <sui-button @click.native="deleteBuildingFloorAssignment(unit)">
-                                                    删除
-                                                </sui-button>
-                                            </sui-list-item>
-                                        </sui-list>
+
                                         <div v-show="assignList.selectedBuilding">
                                             <sui-button v-show="assignList.selectedFloor.name!==undefined" @click.native="openImageModal()">
                                                 楼层图
                                             </sui-button>
+                                        </div>
+                                    </sui-grid-column>
+                                    <sui-grid-column :width="4">
+                                        <div>
+                                            <sui-list v-show="roomAssignment.length>0">
+                                                <sui-list-item v-for="unit in roomAssignment" :key="unit[0]">
+                                                    房间号:{{unit.roomnumber}} 房间名:{{unit.roomname}} 面积:{{unit.space}}平米
+                                                    <sui-button @click.native="deleteBuildingFloorAssignment(unit)">
+                                                        删除
+                                                    </sui-button>
+                                                </sui-list-item>
+                                            </sui-list>
                                         </div>
                                     </sui-grid-column>
                                 </sui-grid>
