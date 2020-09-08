@@ -436,7 +436,7 @@ export default {
     methods: {
         clickDingWei() {
             this.activeIndex = 5;
-            this.keyword = this.selectedRoom.address;
+            //this.keyword = this.selectedRoom.address;
         },
         tabChange() {
             this.context = this.$refs.canvas;

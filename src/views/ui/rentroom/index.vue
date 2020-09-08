@@ -286,6 +286,8 @@ export default {
     methods: {
         //patrol
         refreshPatrol() {
+            this.loading = true;
+
             listPatrolApi().then((result) => {
                 if (result.data.code == 0) {
                     this.loading = false;
@@ -306,6 +308,7 @@ export default {
             }
             createPatrolApi(this.newXuncha).then((result) => {
                 if (result.data.code == 0) {
+                    this.refreshPatrol();
                     notifySomething(constants.CREATESUCCESS, constants.CREATESUCCESS, constants.typeSuccess);
                 }
             });
@@ -313,7 +316,7 @@ export default {
         },
         clickDingWei() {
             this.defaultTab = 3;
-            this.keyword = this.selectedRoom.address;
+            // this.keyword = this.selectedRoom.address;
         },
         emptyRentContract() {
             this.selectedRoomContract = {
