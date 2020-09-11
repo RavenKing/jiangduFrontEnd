@@ -53,11 +53,9 @@
         </sui-form-fields>
         <div :key="componentKey" v-for="(item, index) in singleEntry.priceinfo">
             <sui-form-fields inline style="position: relative;">
-                <label>性质{{index+1}}</label>
                 <sui-form-field>
                     <sui-dropdown placeholder="性质" selection :options="xingzhiOptions" v-model="singleEntry.priceinfo[index].pricename" />
                 </sui-form-field>
-
                 <label v-show="singleEntry.priceinfo[index].pricename!='停车位'">面积</label>
                 <sui-form-field v-show="singleEntry.priceinfo[index].pricename!='停车位'">
                     <sui-input placeholder="面积" v-model="singleEntry.priceinfo[index].space" type="number" required />

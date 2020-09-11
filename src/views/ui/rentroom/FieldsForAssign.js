@@ -12,12 +12,7 @@ export default [
   },
   {
     name: "assigned_space",
-    title: '面积',
-    width: "15%"
-  },
-  {
-    name: "space",
-    title: '可分配面积',
+    title: '面积(m2)',
     width: "15%"
   },
   {

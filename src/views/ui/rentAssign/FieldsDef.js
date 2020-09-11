@@ -27,7 +27,7 @@ export default [
   },
   {
     name: "space",
-    title: '合同面积',
+    title: '合同面积(m2)',
     width: "20%",
   },
   {
@@ -37,7 +37,7 @@ export default [
   },
   {
     name: "amt",
-    title: '租金',
+    title: '租金(元/m2)',
     width: "15%",
   },
   {

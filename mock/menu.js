@@ -29,13 +29,13 @@ const menus = [{
         url: "/ui/rentAssign",
         icon:"building icon"
       },
-      {
-        id: "3-10",
-        title: "可视化试图",
-        name: "可视化试图",
-        url: "/ui/visualization",
-        icon:"chart bar icon"
-      },
+      // {
+      //   id: "3-10",
+      //   title: "可视化试图",
+      //   name: "可视化试图",
+      //   url: "/ui/visualization",
+      //   icon:"chart bar icon"
+      // },
       {
         id: "3-11",
         title: "地图",

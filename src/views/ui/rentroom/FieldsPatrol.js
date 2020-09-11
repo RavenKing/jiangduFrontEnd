@@ -1,7 +1,7 @@
 
 export default [
     {
-      name: "name",
+      name: "created_by",
       title: '巡查人',
       width: "15%"
     },

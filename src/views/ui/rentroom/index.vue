@@ -99,11 +99,27 @@
                                         <sui-button basic color="blue" icon="add" content="添加单位" @click.prevent="assignRentRoom()" />
                                     </sui-form-fields>
                                 </sui-form>
+                                <div v-show="newXuncha.open">
+                                    <sui-form>
+                                        <sui-form-fields inline>
+                                            <label>巡查人</label>
+                                            <sui-form-field required>
+                                                <sui-input placeholder="巡查人" v-model="newXuncha.name" />
+                                            </sui-form-field>
+                                            <label>备注</label>
+                                            <sui-form-field required>
+                                                <sui-input placeholder="备注" v-model="newXuncha.memo" />
+                                            </sui-form-field>
+                                            <sui-button basic color="blue" icon="add" content="添加" @click.prevent="createPatrol()" />
+                                        </sui-form-fields>
+                                    </sui-form>
+                                </div>
                                 <div class="vue2Table">
                                     <vuetable ref="vuetable" :api-mode="false" :data="selectedRoom.assignList" :fields="fieldsAssign" data-path="data" :key="componentAssignListkey">
                                         <div slot="action" slot-scope="props">
                                             <!-- <sui-button basic color="blue"  content="查看" v-on:click="viewSomeThing(props.rowData,'check')" /> -->
                                             <sui-button basic color="red" content="删除" v-on:click="deleteRoomAssign(props.rowData)" />
+                                            <sui-button basic color="blue" content="巡查" v-on:click="showPatrol(props.rowData)" />
                                         </div>
                                     </vuetable>
                                 </div>
@@ -112,19 +128,6 @@
                                 <sui-dimmer :active="loading" inverted>
                                     <sui-loader content="Loading..." />
                                 </sui-dimmer>
-                                <sui-form :warning="validationCheck.status=='warning'">
-                                    <sui-form-fields inline>
-                                        <label>巡查人</label>
-                                        <sui-form-field required>
-                                            <sui-input placeholder="巡查人" v-model="newXuncha.name" />
-                                        </sui-form-field>
-                                        <label>备注</label>
-                                        <sui-form-field required>
-                                            <sui-input placeholder="巡查人" v-model="newXuncha.memo" />
-                                        </sui-form-field>
-                                        <sui-button basic color="blue" icon="add" content="添加" @click.prevent="createPatrol()" />
-                                    </sui-form-fields>
-                                </sui-form>
                                 <div class="vue2Table">
                                     <vuetable ref="vuetable" :api-mode="false" :data="selectedRoom.patrol" :fields="fieldsPatrol" data-path="data" :key="componentAssignListkey">
                                         <div slot="action" slot-scope="props">
@@ -246,7 +249,9 @@ export default {
                 jiadi: "",
                 diji: ""
             },
-            newXuncha: {},
+            newXuncha: {
+                open: false
+            },
             unitoptions: [],
             listContract: [],
             componentAssignListkey: 1,
@@ -285,10 +290,20 @@ export default {
 
     methods: {
         //patrol
+
+        showPatrol(data) {
+            console.log(data)
+            this.newXuncha.open = true;
+            this.newXuncha.unit_id = data.unit_id;
+        },
         refreshPatrol() {
-            listPatrolApi().then((result) => {
+            this.loading = true;
+
+            listPatrolApi({
+                room_id: this.selectedRoom.id
+            }).then((result) => {
                 if (result.data.code == 0) {
-                    this.loading=false;
+                    this.loading = false;
                     this.selectedRoom.patrol = result.data.data;
                     console.log(this.selectedRoom.patrol);
                 } else {
@@ -299,21 +314,23 @@ export default {
 
         createPatrol() {
             this.newXuncha.room_id = this.selectedRoom.id
-            this.newXuncha.unit_id = this.selectedRoom.unit_id
+            //this.newXuncha.unit_id = this.selectedRoom.unit_id
             if (!this.newXuncha.name) {
                 notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                 return;
             }
             createPatrolApi(this.newXuncha).then((result) => {
                 if (result.data.code == 0) {
+                    this.refreshPatrol();
+                    this.newXuncha.open = false;
                     notifySomething(constants.CREATESUCCESS, constants.CREATESUCCESS, constants.typeSuccess);
                 }
             });
 
         },
         clickDingWei() {
-            this.defaultTab = 3;
-            this.keyword = this.selectedRoom.address;
+            this.defaultTab = 4;
+            // this.keyword = this.selectedRoom.address;
         },
         emptyRentContract() {
             this.selectedRoomContract = {
@@ -687,10 +704,12 @@ export default {
                     this.loading = false;
                     this.localData = data.data.data
                     this.localData.data.map((one) => {
-                        if (one.contract_info.starttime) {
-                            one.qishinianxian = this.formatTime(one.contract_info.starttime) + "到" + this.formatTime(one.contract_info.endtime);
-                        } else {
-                            one.qishinianxian = "无"
+                        if (one.contract_info != null) {
+                            if (one.contract_info.starttime) {
+                                one.qishinianxian = this.formatTime(one.contract_info.starttime) + "到" + this.formatTime(one.contract_info.endtime);
+                            } else {
+                                one.qishinianxian = "无"
+                            }
                         }
                     })
                 } else if (data.data.code == 2) {

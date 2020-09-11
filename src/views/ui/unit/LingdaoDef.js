@@ -1,18 +1,17 @@
 export default [
   {
-    name: "leader",
-    title: '领导级别',
-    width: "20%",
-    height:"100px",
-    sortField: "leader",
-    titleClass: "center aligned",
-    dataClass: "aligned",
-  },
-  {
-    name: "roomname",
+    name: "out_room_name",
     title: '房屋名称',
     width: "20%",
-    sortField: "roomname",
+    sortField: "out_room_name",
+    titleClass: "center aligned",
+    dataClass: "center aligned",
+  },
+  {
+    name: "building_name",
+    sortField: "building_name",
+    title: '楼名',
+    width: "15%",
     titleClass: "center aligned",
     dataClass: "center aligned",
   },
@@ -40,6 +39,24 @@ export default [
     titleClass: "center aligned",
     dataClass: "center aligned",
   },
+  {
+    name: "leader",
+    title: '领导级别',
+    width: "20%",
+    height:"100px",
+    sortField: "leader",
+    titleClass: "center aligned",
+    dataClass: "aligned",
+  },
+  {
+    name: "roomname",
+    title: '办公室名称',
+    width: "20%",
+    sortField: "roomname",
+    titleClass: "center aligned",
+    dataClass: "center aligned",
+  },
+  
   {
     name: "space",
     sortField: "space",

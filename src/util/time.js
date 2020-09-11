@@ -32,14 +32,14 @@ function toShitFormat(shitDate){
    shitDate=new Date(shitDate);
   var shitTimeformat = shitDate.getFullYear();
   var monthDate=shitDate.getMonth()+1;
-  if (monthDate+1< 10) {
+  if (monthDate< 10) {
       shitTimeformat = shitTimeformat + "0"
   }
-  shitTimeformat = shitTimeformat + monthDate;
+  shitTimeformat = shitTimeformat.toString() + monthDate.toString();
   if (shitDate.getDate() < 10) {
       shitTimeformat = shitTimeformat + "0";
   }
-  shitTimeformat = shitTimeformat + shitDate.getDate();
+  shitTimeformat = shitTimeformat.toString() + shitDate.getDate().toString();
   return shitTimeformat;
 }
 export {

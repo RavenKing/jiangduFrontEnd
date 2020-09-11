@@ -180,8 +180,8 @@
                                 <sui-button basic color="blue" @click.native="openBuildingModal" v-show="selectedRoom.kind==1">
                                     新增
                                 </sui-button>
-                                <sui-grid :columns="2" relaxed="very">
-                                    <sui-grid-column :width="5">
+                                <sui-grid :columns="3" relaxed="very">
+                                    <sui-grid-column :width="3">
                                         <div>
                                             <vue-tree-list @click="onClick" @changeName="onChangeName" @delete-node="onDel" @add-node="onAddNode" :model="tree" default-tree-node-name="new node" default-leaf-node-name="new leaf" v-bind:default-expanded="false">
                                                 <span class="icon" slot="addTreeNodeIcon">📂</span>
@@ -194,7 +194,7 @@
                                         </div>
                                     </sui-grid-column>
 
-                                    <sui-grid-column :width="11">
+                                    <sui-grid-column :width="9">
                                         <sui-statistic horizontal size="big">
                                             <sui-statistic-value>
                                                 {{assignList.selectedBuilding.name}}
@@ -207,18 +207,23 @@
                                         </sui-statistic>
                                         <img :src="assignList.selectedFloor.url" ref="backImage" v-show="false" />
                                         <canvas ref="canvas" id="myCanvas" width="500" height="350" />
-                                        <sui-list v-show="roomAssignment.length>0">
-                                            <sui-list-item v-for="unit in roomAssignment" :key="unit[0]">
-                                                房间号:{{unit.roomnumber}} 房间名:{{unit.roomname}} 面积:{{unit.space}}平米
-                                                <sui-button @click.native="deleteBuildingFloorAssignment(unit)">
-                                                    删除
-                                                </sui-button>
-                                            </sui-list-item>
-                                        </sui-list>
+
                                         <div v-show="assignList.selectedBuilding">
                                             <sui-button v-show="assignList.selectedFloor.name!==undefined" @click.native="openImageModal()">
                                                 楼层图
                                             </sui-button>
+                                        </div>
+                                    </sui-grid-column>
+                                    <sui-grid-column :width="4">
+                                        <div>
+                                            <sui-list v-show="roomAssignment.length>0">
+                                                <sui-list-item v-for="unit in roomAssignment" :key="unit[0]">
+                                                    房间号:{{unit.roomnumber}} 房间名:{{unit.roomname}} 面积:{{unit.space}}平米
+                                                    <sui-button @click.native="deleteBuildingFloorAssignment(unit)">
+                                                        删除
+                                                    </sui-button>
+                                                </sui-list-item>
+                                            </sui-list>
                                         </div>
                                     </sui-grid-column>
                                 </sui-grid>
@@ -280,10 +285,24 @@
                                         其他资料
                                     </h4>
                                 </div>
+
                                 <el-upload ref="upload" class="upload-demo" :on-change="uploadZiliaoFileQita" :file-list="fileList">
                                     <el-button size="small" type="primary">点击上传</el-button>
                                     <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
                                 </el-upload>
+                                <div is="sui-divider" horizontal>
+                                    <h4 is="sui-header">
+                                        <i class="tag icon"></i>
+                                        已上传文档
+                                    </h4>
+                                </div>
+                                <div>
+                                    <sui-list key="213123">
+                                        <sui-list-item v-for="(link,index) in selectedRoom.qitaziliaoList" :key="link[0]">
+                                            <a type="primary" :href="link" target="_blank">文件{{index+1}}</a>
+                                        </sui-list-item>
+                                    </sui-list>
+                                </div>
                             </sui-tab-pane>
                         </sui-tab>
                     </div>
@@ -431,7 +450,7 @@ export default {
     methods: {
         clickDingWei() {
             this.activeIndex = 5;
-            this.keyword = this.selectedRoom.address;
+            //this.keyword = this.selectedRoom.address;
         },
         tabChange() {
             this.context = this.$refs.canvas;
@@ -679,7 +698,21 @@ export default {
         },
         openAssignSection(rowData) {
             this.selectedRoom = rowData;
-            console.log(this.selectedRoom.kind);
+
+            this.selectedRoom.qitaziliao = JSON.parse(this.selectedRoom.qitaziliao)
+            //    / console.log(qitaziliao);
+            this.selectedRoom.qitaziliaoList = [];
+            this.selectedRoom.qitaziliao.map((one) => {
+                this.selectedRoom.qitaziliaoList.push(constants.fileURL + one);
+            })
+            this.selectedRoom.tuzhiziliao = JSON.parse(this.selectedRoom.tuzhiziliao)
+            this.selectedRoom.tuzhiziliao.map((one) => {
+                this.selectedRoom.qitaziliaoList.push(constants.fileURL + one);
+            })
+            this.selectedRoom.chanzhengziliao = JSON.parse(this.selectedRoom.chanzhengziliao)
+            this.selectedRoom.chanzhengziliao.map((one) => {
+                this.selectedRoom.qitaziliaoList.push(constants.fileURL + one);
+            })
             this.modalMode = "edit";
             // point 
             if (rowData.lat === null || rowData.lat == "") {

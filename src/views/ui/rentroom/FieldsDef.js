@@ -12,6 +12,11 @@ export default [
     width: "15%"
   },
   {
+    name: "ori_space",
+    title: '可分配面积(m2)',
+    width: "15%"
+  },
+  {
     name: "contract_info.rent_amt",
     title: '借用年租金(元)',
     width: "15%"
