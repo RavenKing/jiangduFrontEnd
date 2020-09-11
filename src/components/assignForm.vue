@@ -9,12 +9,16 @@
                 <sui-input placeholder="房间号" v-model="singleEntry.roomnumber" />
             </sui-form-field>
             <sui-form-field>
-                <label>房间名字</label>
-                <sui-input placeholder="房间名字" v-model="singleEntry.roomname" />
+                <label>房间名称</label>
+                <sui-input placeholder="房间名称" v-model="singleEntry.roomname" />
             </sui-form-field>
-            <sui-form-field>
+            <sui-form-field v-show="singleEntry.data.type1 != '租赁房屋'">
                 <label>是否领导办公</label>
                 <sui-dropdown placeholder="领导办公" selection :options="leaderOption" v-model="singleEntry.isleader" />
+            </sui-form-field>
+            <sui-form-field v-show="singleEntry.data.type1 == '租赁房屋'">
+                <label>领导级别</label>
+                <sui-dropdown placeholder="领导级别" selection :options="leaderlevelOption" v-model="singleEntry.leader" />
             </sui-form-field>
             <!-- <sui-form-field>
                 <label>选择单位</label>
@@ -26,7 +30,7 @@
                 <label>面积</label>
                 <sui-input placeholder="面积" v-model="singleEntry.space" type="number" />
             </sui-form-field>
-            <sui-form-field>
+            <sui-form-field v-show="singleEntry.data.type1 != '租赁房屋'">
                 <label>房间用途</label>
                 <sui-dropdown placeholder="房间用途" selection :options="yongtuoptions" v-model="singleEntry.kind" />
             </sui-form-field>
@@ -58,6 +62,19 @@ export default {
             }, {
                 text: "不是",
                 value: 0
+            }],
+            leaderlevelOption: [{
+                text: "正局",
+                value: "正局"
+            }, {
+                text: "副局",
+                value: "副局"
+            },{
+                text: "正处",
+                value: "正处"
+            }, {
+                text: "副处",
+                value: "副处"
             }]
         };
     },
