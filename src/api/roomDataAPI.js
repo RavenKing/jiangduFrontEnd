@@ -487,9 +487,8 @@ function editRentContractApi(data)
 {
     return generalRequet(data,constants.editRentContractApi)
 }
-function listPatrolApi()
+function listPatrolApi(data)
 {   
-    var data={};
     return generalRequet(data,constants.listPatrolApi)
 }
 
