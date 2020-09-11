@@ -285,10 +285,24 @@
                                         其他资料
                                     </h4>
                                 </div>
+
                                 <el-upload ref="upload" class="upload-demo" :on-change="uploadZiliaoFileQita" :file-list="fileList">
                                     <el-button size="small" type="primary">点击上传</el-button>
                                     <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
                                 </el-upload>
+                                <div is="sui-divider" horizontal>
+                                    <h4 is="sui-header">
+                                        <i class="tag icon"></i>
+                                        已上传文档
+                                    </h4>
+                                </div>
+                                <div>
+                                    <sui-list key="213123">
+                                        <sui-list-item v-for="(link,index) in selectedRoom.qitaziliaoList" :key="link[0]">
+                                            <a type="primary" :href="link" target="_blank">文件{{index+1}}</a>
+                                        </sui-list-item>
+                                    </sui-list>
+                                </div>
                             </sui-tab-pane>
                         </sui-tab>
                     </div>
@@ -684,7 +698,21 @@ export default {
         },
         openAssignSection(rowData) {
             this.selectedRoom = rowData;
-            console.log(this.selectedRoom.kind);
+
+            this.selectedRoom.qitaziliao = JSON.parse(this.selectedRoom.qitaziliao)
+            //    / console.log(qitaziliao);
+            this.selectedRoom.qitaziliaoList = [];
+            this.selectedRoom.qitaziliao.map((one) => {
+                this.selectedRoom.qitaziliaoList.push(constants.fileURL + one);
+            })
+            this.selectedRoom.tuzhiziliao = JSON.parse(this.selectedRoom.tuzhiziliao)
+            this.selectedRoom.tuzhiziliao.map((one) => {
+                this.selectedRoom.qitaziliaoList.push(constants.fileURL + one);
+            })
+            this.selectedRoom.chanzhengziliao = JSON.parse(this.selectedRoom.chanzhengziliao)
+            this.selectedRoom.chanzhengziliao.map((one) => {
+                this.selectedRoom.qitaziliaoList.push(constants.fileURL + one);
+            })
             this.modalMode = "edit";
             // point 
             if (rowData.lat === null || rowData.lat == "") {

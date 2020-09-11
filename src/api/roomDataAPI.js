@@ -88,25 +88,26 @@ function deleteRentRoomApi(data)
         url: constants.deleteRentRoomAPI,
         method: 'post',
         data: data
-    });
+    });   
 }
-
-function getUnitApi()
+function getUnitApi(data)
 {
+    if(data==null||data==undefined)
+    {
+        data={};
+    }
     let local_auth = localGet(global.project_key, true);
     //console.log(local_auth);
-    const newFormData = {
-        "token": local_auth
-    }
+    data.token=local_auth;
+
 
     return request({
         url: constants.unitGetApi,
         method: 'post',
-        data: newFormData
+        data: data
     });
 
 }
-
 // "curl --location --request POST 'http://118.190.204.202:9002/listunitbyid' \
 // --form 'token=1234' \
 // --form 'id=3'"              

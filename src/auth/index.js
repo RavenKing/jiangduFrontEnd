@@ -76,7 +76,7 @@ function registerRouteGuard() {
             // 整理菜单数据
             store.dispatch('menu/setUserMenu', _menu)
               //get some basic info 
-            getUnitApi().then((test)=>{
+            getUnitApi({extract:1}).then((test)=>{
               if(test.data.code==0)
               {
                 var options=[];
