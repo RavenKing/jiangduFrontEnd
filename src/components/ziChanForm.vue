@@ -18,7 +18,7 @@
         </sui-form-fields>
         <sui-form-fields>
             <sui-form-field style="width:33.33333%">
-                <label>建筑面积(m2)</label>
+                <label>建筑面积(m²)</label>
                 <sui-input placeholder="建筑面积" v-model="singleRoom.space" :disabled="disabled" type="number" />
             </sui-form-field>
             <sui-form-field style="width:33.33333%">

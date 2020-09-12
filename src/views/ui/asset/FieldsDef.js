@@ -27,7 +27,7 @@ export default [
   },
   {
     name: "rawspace",
-    title: '土地面积(m2)',
+    title: '土地面积(m²)',
     width: "15%",
     titleClass: 'v aligned',
     dataClass: 'left aligned',
@@ -37,7 +37,7 @@ export default [
   },
   {
     name: "space",
-    title: '建筑面积(m2)',
+    title: '建筑面积(m²)',
     width: "15%",
     titleClass: 'v aligned',
     dataClass: 'left aligned',
@@ -47,7 +47,7 @@ export default [
   },
   {
     name: "tudispace",
-    title: '土地面积(m2)',
+    title: '土地面积(m²)',
     width: "15%",
     titleClass: 'v aligned',
     dataClass: 'left aligned',
@@ -57,7 +57,7 @@ export default [
   },
   {
     name: "jianzhuspace",
-    title: '建筑面积(m2)',
+    title: '建筑面积(m²)',
     width: "15%",
     titleClass: 'v aligned',
     dataClass: 'left aligned',
@@ -67,7 +67,7 @@ export default [
   },
   {
     name: "wuchanTudiMianji",
-    title: '土地面积(m2)',
+    title: '土地面积(m²)',
     width: "15%",
     titleClass: 'v aligned',
     dataClass: 'left aligned',
@@ -77,7 +77,7 @@ export default [
   },
   {
     name: "wuchanJianZhuMianji",
-    title: '建筑面积(m2)',
+    title: '建筑面积(m²)',
     width: "15%",
     titleClass: 'v aligned',
     dataClass: 'left aligned',
@@ -88,7 +88,7 @@ export default [
   },
   {
     name: "space6",
-    title: '办公室面积(m2)',
+    title: '办公室面积(m²)',
     width: "15%",
     titleClass: 'v aligned',
     dataClass: 'left aligned',
@@ -98,7 +98,7 @@ export default [
   },
   {
     name: "space2",
-    title: '服务用房面积(m2)',
+    title: '服务用房面积(m²)',
     width: "15%",
     titleClass: 'v aligned',
     dataClass: 'left aligned',
@@ -108,7 +108,7 @@ export default [
   },
   {
     name: "space28",
-    title: '设备用房面积(m2)',
+    title: '设备用房面积(m²)',
     width: "15%",
     titleClass: 'v aligned',
     dataClass: 'left aligned',
@@ -118,7 +118,7 @@ export default [
   },
   {
     name: "space39",
-    title: '附属用房面积(m2)',
+    title: '附属用房面积(m²)',
     width: "15%",
     titleClass: 'v aligned',
     dataClass: 'left aligned',
@@ -128,7 +128,7 @@ export default [
   },
   {
     name: "space25",
-    title: '业务用房面积(m2)',
+    title: '业务用房面积(m²)',
     width: "15%",
     titleClass: 'v aligned',
     dataClass: 'left aligned',

@@ -22,7 +22,7 @@
         <sui-form-fields inline>
             
             <sui-form-field style="width:33.33333%">
-                <label style="margin-bottom:10px;display: block;">办公室面积(m2)</label>
+                <label style="margin-bottom:10px;display: block;">办公室面积(m²)</label>
                 <sui-input style="width:100%;" placeholder="办公室面积" v-model="singleRoom.space7" :disabled="disabled" />
             </sui-form-field>
             
@@ -34,7 +34,7 @@
         <sui-form-fields inline>
             
             <sui-form-field style="width:33.33333%">
-                <label style="margin-bottom:10px;display: block;">服务用房面积(m2)</label>
+                <label style="margin-bottom:10px;display: block;">服务用房面积(m²)</label>
                 <sui-input style="width:100%;" placeholder="服务用房面积" v-model="singleRoom.space2" :disabled="disabled" />
             </sui-form-field>
             <!-- <label>土地面积</label>
@@ -47,7 +47,7 @@
             </sui-form-field> -->
             
             <sui-form-field style="width:33.33333%">
-                <label style="margin-bottom:10px;display: block;">设备用房面积(m2)</label>
+                <label style="margin-bottom:10px;display: block;">设备用房面积(m²)</label>
                 <sui-input style="width:100%;" placeholder="设备用房面积" v-model="singleRoom.space28" :disabled="disabled" />
             </sui-form-field>
             <!-- <sui-form-field>
@@ -56,7 +56,7 @@
             </sui-form-field> -->
             
             <sui-form-field style="width:33.33333%">
-                <label style="margin-bottom:10px;display: block;">附属用房面积(m2)</label>
+                <label style="margin-bottom:10px;display: block;">附属用房面积(m²)</label>
                 <sui-input style="width:100%;" placeholder="附属用房面积" v-model="singleRoom.space40" :disabled="disabled" />
             </sui-form-field>
         </sui-form-fields>
@@ -64,7 +64,7 @@
         <sui-form-fields inline>
             
             <sui-form-field style="width:33.33333%">
-                <label style="margin-bottom:10px;display: block;">业务用房面积(m2)</label>
+                <label style="margin-bottom:10px;display: block;">业务用房面积(m²)</label>
                 <sui-input style="width:100%;" placeholder="业务用房面积" v-model="singleRoom.space25" :disabled="disabled" />
             </sui-form-field>
             

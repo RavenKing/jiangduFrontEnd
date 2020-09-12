@@ -62,7 +62,7 @@
                 </sui-form-field>
                 <label v-show="singleEntry.priceinfo[index].pricename!='停车位'"> 单价</label>
                 <sui-form-field v-show="singleEntry.priceinfo[index].pricename!='停车位'">
-                    <sui-input placeholder="单价" v-model="singleEntry.priceinfo[index].price" type="number" @change="caluculateTotal" />元/天/m2
+                    <sui-input placeholder="单价" v-model="singleEntry.priceinfo[index].price" type="number" @change="caluculateTotal" />元/天/m²
                 </sui-form-field>
 
                 <label v-show="singleEntry.priceinfo[index].pricename=='停车位'">停车位</label>
