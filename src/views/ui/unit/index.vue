@@ -183,6 +183,7 @@
                         </sui-grid-column>
                     </sui-grid>
                     <assign-form ref='formComponentAssign' :index="selectedRoomInFloorIndex" :singleEntry="selectedRoomInFloor">
+                        {{}}
                     </assign-form>
                 </sui-modal-content>
                 <sui-modal-actions>
@@ -262,7 +263,8 @@ import {
     getFloorById,
     assignroomApi,
     assignRentRoomApi,
-    getleaderroombyunitApi
+    getleaderroombyunitApi,
+    getlistleaderroomApi
 } from "@/api/roomDataAPI";
 import AssignForm from "@/components/assignForm";
 
@@ -413,21 +415,21 @@ export default {
             }
             var contextF = this;
 
-
-
         
             if(this.assignList.selectedRoom.type1 == '租赁房屋'){
+                console.log(this.selectedRoomInFloor)
+                console.log(this.selectedRoom)
                 var payload = {
-                room_id: this.selectedRoomInFloor.room_id,
+                room_id: this.selectedRoomInFloor.roomnumber,
                 unit_id: this.selectedRoom.id,
                 leader: this.selectedRoomInFloor.leader,
-                // room: this.$refs.LeaderForm.singleRoom.room,
                 space: this.leaderfenpei.space,
                 room_type: this.selectedRoomInFloor.kind
             }
             this.loading = true;
             createLeaderAssignApi(payload).then((result) => {
                 this.loading = false;
+                this.selectedRoomInFloor = {}
                 if (result.data.code == 0) {
                     this.leader.open = false;
                     notifySomething("创建成功", "创建领导分配成功", "success");
@@ -493,15 +495,16 @@ export default {
             this.modalMode = "edit";
             // point 
             this.loading = true;
-            this.tree = new Tree([]);
+            // this.tree = new Tree([]);
             this.assignList.selectedBuilding = false;
             this.assignList.selectedFloor = {
                 url: ""
             };
 
             this.loading = false;
-            this.onClickLou(rowData);
-
+            if(rowData.type1 == '自有房屋'){
+                this.onClickLou(rowData);    
+            }
             //this.getBuildingSection();
 
         },
@@ -775,6 +778,7 @@ export default {
             this.leaderfenpei = data
             this.selectedRoomInFloor['data'] = data
             this.leader.open = true;
+            console.log(this.tree)
             this.openAssignSection(data);
         },
         //tree
@@ -887,7 +891,17 @@ export default {
                     }
 
                 }
+
+
+                getlistleaderroomApi(this.selectedRoom.id).then((data) => {
+                this.loading = false;
+                var rent_room = data.data.data
+                console.log('leader room')
+                for (var k = rent_room.length - 1; k >= 0; k--) {
+                    rent_room[k]['out_room_name'] = rent_room[k]['room_name']
+                }
                 console.log(lingdao_list)
+                lingdao_list = lingdao_list.concat(rent_room)
                 this.lingdaoData = {
                     total: 16,
                     per_page: 5,
@@ -899,25 +913,12 @@ export default {
                     to: 5,
                     data: lingdao_list
                 }
+                
+            })
+                
             })
 
-            // getlistleaderroomApi(data).then((data) => {
-            //     this.loading = false;
-            //     var res_data = data.data.data
-            //     console.log('leader room')
-            //     console.log(res_data)
-            //     this.lingdaoData = {
-            //         total: 16,
-            //         per_page: 5,
-            //         current_page: 1,
-            //         last_page: 4,
-            //         next_page_url: "data.data.data?page=2",
-            //         prev_page_url: null,
-            //         from: 1,
-            //         to: 5,
-            //         data: res_data
-            //     }
-            // })
+            
         },
         refreshFenpei(id) {
             console.log('refresh fenpei')
@@ -1469,7 +1470,6 @@ export default {
                 tree_list = tree_list.sort(function (a, b) {
                     return parseInt(a['seq_code']) - parseInt(b['seq_code'])
                 });
-                console.log(tree_list)
                 store.dispatch("unit/setUnit", tree_list);
                 this.origin_tree_list = tree_list
                 this.tree = new Tree(tree_list)
