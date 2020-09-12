@@ -8,12 +8,12 @@ export default [
   },
   {
     name: "space",
-    title: '借用房屋面积(m2)',
+    title: '借用房屋面积(m²)',
     width: "15%"
   },
   {
     name: "ori_space",
-    title: '可分配面积(m2)',
+    title: '可分配面积(m²)',
     width: "15%"
   },
   {
@@ -23,7 +23,7 @@ export default [
   },
   {
     name: "contract_info.rent_amt",
-    title: '日租金(元/m2)',
+    title: '日租金(元/m²)',
     width: "15%",
     formatter (value) {
       if(value==null||value==undefined)

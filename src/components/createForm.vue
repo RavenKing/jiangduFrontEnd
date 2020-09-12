@@ -35,7 +35,7 @@
             </sui-form-field>
             <sui-form-field style="width:25%;">
                 <label>取得方式:</label>
-                <sui-dropdown placeholder="取得方式" selection :options="qudeOptions" v-model="singleRoom.type" />
+                <sui-dropdown placeholder="取得方式" selection :options="qudeOptions" v-model="singleRoom.accounttype" />
             </sui-form-field>
 
         </sui-form-fields>

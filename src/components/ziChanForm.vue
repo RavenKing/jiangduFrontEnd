@@ -12,13 +12,13 @@
                 <sui-input placeholder="资产类型" v-model="singleRoom.propertytype" :disabled="disabled" />
             </sui-form-field>
             <sui-form-field style="width:33.33333%">
-                <label>资产价值</label>
+                <label>资产价值(元)</label>
                 <sui-input placeholder="资产价值" v-model="singleRoom.propertyvalue" :disabled="disabled" />
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields>
             <sui-form-field style="width:33.33333%">
-                <label>建筑面积</label>
+                <label>建筑面积(m²)</label>
                 <sui-input placeholder="建筑面积" v-model="singleRoom.space" :disabled="disabled" type="number" />
             </sui-form-field>
             <sui-form-field style="width:33.33333%">
@@ -33,25 +33,25 @@
         </sui-form-fields>
         <sui-form-fields>
             <sui-form-field style="width:33.33333%">
-                <label>账面原值</label>
+                <label>账面原值(元)</label>
                 <sui-input placeholder="账面原值" v-model="singleRoom.origin_value" :disabled="disabled" />
             </sui-form-field>
             <sui-form-field style="width:33.33333%">
-                <label>房屋价格</label>
+                <label>房屋价格(元)</label>
                 <sui-input placeholder="房屋价格" v-model="singleRoom.room_value" :disabled="disabled" />
             </sui-form-field>
             <sui-form-field style="width:33.33333%">
-                <label>年折旧率</label>
+                <label>年折旧率(%)</label>
                 <sui-input placeholder="年折旧率" v-model="singleRoom.dep_rate" :disabled="disabled" />
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields>
             <sui-form-field style="width:33.33333%">
-                <label>累计折旧</label>
+                <label>累计折旧(%)</label>
                 <sui-input placeholder="累计折旧" v-model="singleRoom.dep" :disabled="disabled" />
             </sui-form-field>
             <sui-form-field style="width:33.33333%">
-                <label>净值</label>
+                <label>净值(元)</label>
                 <sui-input placeholder="净值" v-model="singleRoom.net_value" :disabled="disabled" />
             </sui-form-field>
         </sui-form-fields>

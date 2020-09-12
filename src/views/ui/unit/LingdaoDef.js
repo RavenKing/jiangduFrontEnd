@@ -60,7 +60,7 @@ export default [
   {
     name: "space",
     sortField: "space",
-    title: '面积(m2)',
+    title: '面积(m²)',
     width: "15%",
     titleClass: "center aligned",
     dataClass: "center aligned",

@@ -187,20 +187,20 @@
                                                 <span class="icon" slot="addTreeNodeIcon">📂</span>
                                                 <span class="icon" slot="addLeafNodeIcon">＋</span>
                                                 <span class="icon" slot="leafNodeIcon">
-                                                    <sui-icon name="home" /></span>
+                                                    </span>
                                                 <span class="icon" slot="treeNodeIcon">
-                                                    <sui-icon name="building outline" /></span>
+                                                    </span>
                                             </vue-tree-list>
                                         </div>
                                     </sui-grid-column>
 
-                                    <sui-grid-column :width="9">
-                                        <sui-statistic horizontal size="big">
+                                    <sui-grid-column :width="8">
+                                        <sui-statistic horizontal size="medium">
                                             <sui-statistic-value>
                                                 {{assignList.selectedBuilding.name}}
                                             </sui-statistic-value>
                                         </sui-statistic>
-                                        <sui-statistic horizontal size="big">
+                                        <sui-statistic horizontal size="medium">
                                             <sui-statistic-value>
                                                 {{assignList.selectedFloor.name}}
                                             </sui-statistic-value>
@@ -214,13 +214,13 @@
                                             </sui-button>
                                         </div>
                                     </sui-grid-column>
-                                    <sui-grid-column :width="4">
+                                    <sui-grid-column :width="5">
                                         <div>
                                             <sui-list v-show="roomAssignment.length>0">
                                                 <sui-list-item v-for="unit in roomAssignment" :key="unit[0]">
-                                                    房间号:{{unit.roomnumber}} 房间名:{{unit.roomname}} 面积:{{unit.space}}平米
-                                                    <sui-button @click.native="deleteBuildingFloorAssignment(unit)">
-                                                        删除
+                                                    {{unit.roomnumber}} {{unit.roomname}} 
+                                                    <sui-button transparant icon="delete" @click.native="deleteBuildingFloorAssignment(unit)">
+                                                        
                                                     </sui-button>
                                                 </sui-list-item>
                                             </sui-list>
@@ -870,7 +870,7 @@ export default {
                 var y = event.clientY - rect.top * (350 / rect.height);
                 console.log("x:" + x + ",y:" + y);
                 contextThis.whereIsTheRoom(x, y, contextThis)
-                contextThis.context.clearRect(0, 0, 500, 350);
+                //contextThis.context.clearRect(0, 0, 500, 350);
                 contextThis.openAssignModalNew(contextThis.assignList.selectedBuilding, contextThis.assignList.selectedFloor, contextThis)
             }, false);
 
