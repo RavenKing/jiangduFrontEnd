@@ -130,30 +130,6 @@
                                 </vuetable>
                             </div>
                         </sui-tab-pane>
-                        <!-- <sui-tab-pane title="地图定位" :attached="false" :disabled="selectedRoom.name==''">
-                            <div class="imageForm" :key="ComponentKey">
-                                <sui-form>
-                                    <sui-form-fields inline>
-                                        <label> 经度
-                                        </label>
-                                        <sui-form-field>
-                                            <sui-input type="text" placeholder="请选择" v-model="selectedRoom.lon" />
-                                        </sui-form-field>
-                                        <label> 维度</label>
-                                        <sui-form-field>
-                                            <sui-input type="text" placeholder="请选择" v-model="selectedRoom.lat" />
-                                        </sui-form-field>
-                                    </sui-form-fields>
-                                </sui-form>
-                            </div>
-
-                            <baidu-map class="map" :center="point" :zoom="15">
-                                <bm-navigation anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-navigation>
-                                <bm-marker v-for="(item,i) in points" :position="{lng: item.lng, lat: item.lat}" :key="i">
-                                </bm-marker>
-                            </baidu-map>
-                        </sui-tab-pane> -->
-
                     </sui-tab>
 
                 </sui-grid-column>
@@ -198,7 +174,7 @@
                                 </sui-statistic-value>
                             </sui-statistic>
                             <img :src="assignList.selectedFloor.url" ref="backImage" v-show="false" />
-                            <canvas ref="canvas" id="myCanvas" width="500" height="350" />
+                            <canvas ref="canvas" id="myCanvas" width="500" height="350" v-show="assignList.selectedRoom.type1 != '租赁房屋'"/>
                             <sui-list v-show="roomAssignment.length>0">
                                 <sui-list-item v-for="unit in roomAssignment" :key="unit[0]">
                                     房间名:{{unit.roomname}} 面积:{{unit.space}}平米
@@ -396,7 +372,8 @@ export default {
             assignList: {
                 buildings: [],
                 selectedBuilding: {},
-                selectedFloor: {}
+                selectedFloor: {},
+                selectedRoom: {}
             },
             listField: FieldsDefList,
             search: '',
@@ -441,11 +418,9 @@ export default {
         
             if(this.assignList.selectedRoom.type1 == '租赁房屋'){
                 var payload = {
-                room_id: this.leaderfenpei.room_id,
-                building_id: this.leaderfenpei.building_id,
-                floor_id: this.leaderfenpei.floor_id,
+                room_id: this.selectedRoomInFloor.room_id,
                 unit_id: this.selectedRoom.id,
-                leader: this.selectedRoomInFloor.isleader,
+                leader: this.selectedRoomInFloor.leader,
                 // room: this.$refs.LeaderForm.singleRoom.room,
                 space: this.leaderfenpei.space,
                 room_type: this.selectedRoomInFloor.kind
@@ -798,6 +773,7 @@ export default {
         },
         assignLeader(data) {
             this.leaderfenpei = data
+            this.selectedRoomInFloor['data'] = data
             this.leader.open = true;
             this.openAssignSection(data);
         },
