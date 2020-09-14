@@ -12,27 +12,19 @@
                 <label>房间名称</label>
                 <sui-input placeholder="房间名称" v-model="singleEntry.roomname" />
             </sui-form-field>
-            <sui-form-field v-show="singleEntry.data.type1 != '租赁房屋'">
-                <label>是否领导办公</label>
-                <sui-dropdown placeholder="领导办公" selection :options="leaderOption" v-model="singleEntry.isleader" />
-            </sui-form-field>
-            <sui-form-field v-show="singleEntry.data.type1 == '租赁房屋'">
+            <sui-form-field>
                 <label>领导级别</label>
                 <sui-dropdown placeholder="领导级别" selection :options="leaderlevelOption" v-model="singleEntry.leader" />
             </sui-form-field>
-            <!-- <sui-form-field>
+            <sui-form-field>
                 <label>选择单位</label>
                 <sui-dropdown placeholder="选择单位" selection :options="options" v-model="singleEntry.unit_id" />
-            </sui-form-field> -->
+            </sui-form-field>
         </sui-form-fields>
         <sui-form-fields>
             <sui-form-field>
                 <label>面积</label>
                 <sui-input placeholder="面积" v-model="singleEntry.space" type="number" />
-            </sui-form-field>
-            <sui-form-field v-show="singleEntry.data.type1 != '租赁房屋'">
-                <label>房间用途</label>
-                <sui-dropdown placeholder="房间用途" selection :options="yongtuoptions" v-model="singleEntry.kind" />
             </sui-form-field>
         </sui-form-fields>
     </sui-form>
@@ -45,7 +37,7 @@ import {
 } from "@/api/roomDataAPI";
 export default {
     name: 'assign-contract',
-    props: ["index", "singleEntry","showLeader"],
+    props: ["index", "singleEntry"],
     data() {
         return {
             options: [],
