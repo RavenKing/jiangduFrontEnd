@@ -160,28 +160,30 @@
             <sui-modal class="modal2" v-model="leader.open">
                 <sui-modal-content scrolling>
 
-                    <sui-grid :columns="1" relaxed="very">
+                    <sui-grid :columns="2" relaxed="very">
 
                         <sui-grid-column :width="11">
-                            <sui-statistic horizontal size="big" >
-                                <sui-statistic-value >
+                            <sui-statistic horizontal size="big">
+                                <sui-statistic-value>
                                     {{assignList.selectedBuilding.name}}
                                 </sui-statistic-value>
                             </sui-statistic>
-                            <sui-statistic horizontal size="big" >
+                            <sui-statistic horizontal size="big">
                                 <sui-statistic-value>
                                     {{assignList.selectedFloor.name}}
                                 </sui-statistic-value>
                             </sui-statistic>
                             <img :src="assignList.selectedFloor.url" ref="backImage" v-show="false" />
-                            <canvas ref="canvas" id="myCanvas" width="500" height="350" v-show="assignList.selectedRoom.type1 != '租赁房屋'"/>
+                        </sui-grid-column>
+                        <sui-grid-column :width="4">
+                            <canvas ref="canvas" id="myCanvas" width="500" height="350" v-show="assignList.selectedRoom.type1 != '租赁房屋'" />
                             <div v-show="assignList.selectedRoom.type1 != '租赁房屋'">
-                            <sui-list >
-                                <sui-list-item v-for="unit in roomAssignment" :key="unit[0]" >
-                                    房间名:{{unit.roomname}} 面积:{{unit.space}}平米
-                                </sui-list-item>
-                            </sui-list>
-                        </div>
+                                <sui-list>
+                                    <sui-list-item v-for="unit in roomAssignment" :key="unit[0]">
+                                        房间名:{{unit.roomname}} 面积:{{unit.space}}平米
+                                    </sui-list-item>
+                                </sui-list>
+                            </div>
                         </sui-grid-column>
                     </sui-grid>
                     <assign-form ref='formComponentAssign' :index="selectedRoomInFloorIndex" :singleEntry="selectedRoomInFloor">
@@ -417,8 +419,7 @@ export default {
             }
             var contextF = this;
 
-        
-            if(this.assignList.selectedRoom.type1 == '租赁房屋'){
+            if (this.assignList.selectedRoom.type1 == '租赁房屋') {
                 console.log(this.selectedRoomInFloor)
                 console.log(this.selectedRoom)
                 var payload = {
@@ -428,37 +429,39 @@ export default {
                 leader: this.selectedRoomInFloor.leader,
                 space: this.selectedRoomInFloor.space,
                 room_type: 2
-            }
-            this.loading = true;
-            createLeaderAssignApi(payload).then((result) => {
-                this.loading = false;
-                this.selectedRoomInFloor = {}
-                if (result.data.code == 0) {
-                    this.leader.open = false;
-                    notifySomething("创建成功", "创建领导分配成功", "success");
-                    this.refreshLeaderAssignment(this.selectedRoom.id);
-                }
-            }).catch(() => {
-                this.loading = false;
-                notifySomething("创建失败", "创建失败", "Error")
-            });    
-            }else{
-                createAssignmentApi({
-                assignment: JSON.stringify(this.roomAssignment),
-                id: this.assignList.selectedFloor.floor_id
-            }).then((result) => {
-                this.loading = false;
-                if (result.data.code == 0) {
-                    this.drawRect(this.select);
-                    notifySomething("分配成功", "分配成功", constants.typeSuccess);
 
-                } else {
-                    notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                 }
-            }).catch(function () {
-                contextF.loading = false;
-                notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
-            });    
+                this.loading = true;
+                createLeaderAssignApi(payload).then((result) => {
+                    this.loading = false;
+                    this.selectedRoomInFloor = {}
+                    if (result.data.code == 0) {
+                        this.leader.open = false;
+                        notifySomething("创建成功", "创建领导分配成功", "success");
+                        this.refreshLeaderAssignment(this.selectedRoom.id);
+
+                    }
+                }).catch(() => {
+                    this.loading = false;
+                    notifySomething("创建失败", "创建失败", "Error")
+                });
+            } else {
+                createAssignmentApi({
+                    assignment: JSON.stringify(this.roomAssignment),
+                    id: this.assignList.selectedFloor.floor_id
+                }).then((result) => {
+                    this.loading = false;
+                    if (result.data.code == 0) {
+                        this.drawRect(this.select);
+                        notifySomething("分配成功", "分配成功", constants.typeSuccess);
+
+                    } else {
+                        notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
+                    }
+                }).catch(function () {
+                    contextF.loading = false;
+                    notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
+                });
             }
 
         },
@@ -499,8 +502,8 @@ export default {
             };
 
             this.loading = false;
-            if(rowData.type1 == '自有房屋'){
-                this.onClickLou(rowData);    
+            if (rowData.type1 == '自有房屋') {
+                this.onClickLou(rowData);
             }
             //this.getBuildingSection();
 
@@ -889,33 +892,31 @@ export default {
 
                 }
 
-
                 getlistleaderroomApi(this.selectedRoom.id).then((data) => {
-                this.loading = false;
-                var rent_room = data.data.data
-                console.log('leader room')
-                for (var k = rent_room.length - 1; k >= 0; k--) {
-                    rent_room[k]['out_room_name'] = rent_room[k]['room_name']
-                }
-                console.log(lingdao_list)
-                lingdao_list = lingdao_list.concat(rent_room)
-                this.lingdaoData = {
-                    total: 16,
-                    per_page: 5,
-                    current_page: 1,
-                    last_page: 4,
-                    next_page_url: "data.data.data?page=2",
-                    prev_page_url: null,
-                    from: 1,
-                    to: 5,
-                    data: lingdao_list
-                }
-                
-            })
-                
+                    this.loading = false;
+                    var rent_room = data.data.data
+                    console.log('leader room')
+                    for (var k = rent_room.length - 1; k >= 0; k--) {
+                        rent_room[k]['out_room_name'] = rent_room[k]['room_name']
+                    }
+                    console.log(lingdao_list)
+                    lingdao_list = lingdao_list.concat(rent_room)
+                    this.lingdaoData = {
+                        total: 16,
+                        per_page: 5,
+                        current_page: 1,
+                        last_page: 4,
+                        next_page_url: "data.data.data?page=2",
+                        prev_page_url: null,
+                        from: 1,
+                        to: 5,
+                        data: lingdao_list
+                    }
+
+                })
+
             })
 
-            
         },
         refreshFenpei(id) {
             console.log('refresh fenpei')
@@ -1175,7 +1176,7 @@ export default {
                 this.selectedRoom.edit = false
                 this.loading = false;
             });
-            
+
         },
 
         enableUpdateUnit() {
@@ -1319,10 +1320,10 @@ export default {
                 this.selectedRoom = data.data.data
                 this.selectedRoom['realname'] = this.selectedRoom['name']
                 this.selectedRoom['edit'] = false
-                this.selectedRoom['bianzhi_num'] = parseInt(this.selectedRoom['zhengju'])+parseInt(this.selectedRoom['fuju'])+parseInt(this.selectedRoom['zhengchu'])+parseInt(this.selectedRoom['fuchu'])
-                +parseInt(this.selectedRoom['zhengke'])+parseInt(this.selectedRoom['fuke'])+ parseInt(this.selectedRoom['other'])
-                this.selectedRoom['shiji_num']= parseInt(this.selectedRoom['zhengju_r'])+parseInt(this.selectedRoom['fuju_r'])+parseInt(this.selectedRoom['zhengchu_r'])+parseInt(this.selectedRoom['fuchu_r'])
-                +parseInt(this.selectedRoom['zhengke_r'])+ parseInt(this.selectedRoom['fuke_r'])+ parseInt(this.selectedRoom['other_r'])
+                this.selectedRoom['bianzhi_num'] = parseInt(this.selectedRoom['zhengju']) + parseInt(this.selectedRoom['fuju']) + parseInt(this.selectedRoom['zhengchu']) + parseInt(this.selectedRoom['fuchu']) +
+                    parseInt(this.selectedRoom['zhengke']) + parseInt(this.selectedRoom['fuke']) + parseInt(this.selectedRoom['other'])
+                this.selectedRoom['shiji_num'] = parseInt(this.selectedRoom['zhengju_r']) + parseInt(this.selectedRoom['fuju_r']) + parseInt(this.selectedRoom['zhengchu_r']) + parseInt(this.selectedRoom['fuchu_r']) +
+                    parseInt(this.selectedRoom['zhengke_r']) + parseInt(this.selectedRoom['fuke_r']) + parseInt(this.selectedRoom['other_r'])
                 var res_data = data.data.data['building_info']
                 for (var i = res_data.length - 1; i >= 0; i--) {
                     if (res_data[i]['type1'] == 'self')

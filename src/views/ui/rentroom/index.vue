@@ -150,10 +150,10 @@
                                             <sui-form-field>
                                                 <sui-input type="text" placeholder="请选择" v-model="selectedRoom.lat" />
                                             </sui-form-field>
-                                            <label>地址</label>
+                                            <!-- <label>地址</label>
                                             <sui-form-field>
                                                 <sui-input type="text" placeholder="输入地址" v-model="keyword" />
-                                            </sui-form-field>
+                                            </sui-form-field> -->
                                         </sui-form-fields>
                                     </sui-form>
                                 </div>
