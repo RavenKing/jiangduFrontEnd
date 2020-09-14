@@ -44,7 +44,8 @@
                 <label>编制人数</label>
                 <sui-input class="ui disabled" :placeholder="singleRoom.bianzhi_num" v-model="singleRoom.bianzhi_num" :disabled="disabled" type="number" />
             </sui-form-field>
-            </sui-form-fields>
+        </sui-form-fields>
+        
             <sui-form-fields>
             <!-- <sui-form-field>
 
@@ -88,7 +89,7 @@
         <sui-form-fields>
             <sui-form-field style="width:25%;" inline>
                 <label>实际人数</label>
-                <sui-input :class="singleRoom.edit?'':'ui disabled'" :placeholder="singleRoom.shiji_num" :disabled="disabled" type="number" />
+                <sui-input class="ui disabled" :placeholder="singleRoom.shiji_num" v-model="singleRoom.shiji_num" :disabled="disabled" type="number" />
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields>
