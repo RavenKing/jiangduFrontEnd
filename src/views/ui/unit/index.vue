@@ -163,23 +163,25 @@
                     <sui-grid :columns="1" relaxed="very">
 
                         <sui-grid-column :width="11">
-                            <sui-statistic horizontal size="big">
-                                <sui-statistic-value>
+                            <sui-statistic horizontal size="big" >
+                                <sui-statistic-value >
                                     {{assignList.selectedBuilding.name}}
                                 </sui-statistic-value>
                             </sui-statistic>
-                            <sui-statistic horizontal size="big">
+                            <sui-statistic horizontal size="big" >
                                 <sui-statistic-value>
                                     {{assignList.selectedFloor.name}}
                                 </sui-statistic-value>
                             </sui-statistic>
                             <img :src="assignList.selectedFloor.url" ref="backImage" v-show="false" />
                             <canvas ref="canvas" id="myCanvas" width="500" height="350" v-show="assignList.selectedRoom.type1 != '租赁房屋'"/>
-                            <sui-list v-show="roomAssignment.length>0">
-                                <sui-list-item v-for="unit in roomAssignment" :key="unit[0]" v-show="assignList.selectedRoom.type1 != '租赁房屋'">
+                            <div v-show="assignList.selectedRoom.type1 != '租赁房屋'">
+                            <sui-list >
+                                <sui-list-item v-for="unit in roomAssignment" :key="unit[0]" >
                                     房间名:{{unit.roomname}} 面积:{{unit.space}}平米
                                 </sui-list-item>
                             </sui-list>
+                        </div>
                         </sui-grid-column>
                     </sui-grid>
                     <assign-form ref='formComponentAssign' :index="selectedRoomInFloorIndex" :singleEntry="selectedRoomInFloor">
@@ -424,7 +426,7 @@ export default {
                 unit_id: this.selectedRoom.id,
                 leader: this.selectedRoomInFloor.leader,
                 space: this.selectedRoomInFloor.space,
-                room_type: this.selectedRoomInFloor.kind
+                room_type: 2
             }
             this.loading = true;
             createLeaderAssignApi(payload).then((result) => {
@@ -1161,16 +1163,18 @@ export default {
             updateUnitApi(formdata).then((result) => {
                 if (result.data.code == 0) {
                     notifySomething("保存成功", "基本信息保存成功", "success");
+                    formdata['name'] = short_name
 
                 } else {
                     notifySomething("保存失败", "基本信息保存失败", "Error")
+                    formdata['name'] = short_name
                 }
 
                 this.loading = true;
                 this.selectedRoom.edit = false
                 this.loading = false;
             });
-            formdata['name'] = short_name
+            
         },
 
         enableUpdateUnit() {
