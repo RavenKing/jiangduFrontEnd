@@ -422,7 +422,8 @@ export default {
                 console.log(this.selectedRoomInFloor)
                 console.log(this.selectedRoom)
                 var payload = {
-                room_id: this.selectedRoomInFloor.roomnumber,
+                room_id: this.selectedRoomInFloor.data.room_id,
+                room:this.selectedRoomInFloor.roomnumber,
                 unit_id: this.selectedRoom.id,
                 leader: this.selectedRoomInFloor.leader,
                 space: this.selectedRoomInFloor.space,
