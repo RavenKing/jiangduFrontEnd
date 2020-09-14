@@ -2,7 +2,7 @@
 <div>
     <sui-form>
 
-        <h1 v-show="singleEntry.data.type1 != '租赁房屋'">当前房间房间{{index}}</h1>
+        <h1>当前房间房间{{index}}</h1>
         <sui-form-fields>
             <sui-form-field>
                 <label>房间号</label>
@@ -16,15 +16,16 @@
                 <label>领导级别</label>
                 <sui-dropdown placeholder="领导级别" selection :options="leaderlevelOption" v-model="singleEntry.leader" />
             </sui-form-field>
-            <sui-form-field>
-                <label>房屋类型</label>
-                {{singleEntry.type}}
-            </sui-form-field>
+
         </sui-form-fields>
         <sui-form-fields>
             <sui-form-field>
                 <label>面积</label>
                 <sui-input placeholder="面积" v-model="singleEntry.space" type="number" />
+            </sui-form-field>
+            <sui-form-field>
+                <label>房屋用途</label>
+            {{singleEntry.type}}
             </sui-form-field>
         </sui-form-fields>
     </sui-form>
@@ -32,9 +33,6 @@
 </template>
 
 <script>
-import {
-    getUnitApi
-} from "@/api/roomDataAPI";
 export default {
     name: 'assign-contract',
     props: ["index", "singleEntry"],
@@ -47,13 +45,6 @@ export default {
             }, {
                 text: "办公性",
                 value: 1
-            }],
-            leaderOption: [{
-                text: "是",
-                value: 1
-            }, {
-                text: "不是",
-                value: 0
             }],
             leaderlevelOption: [{
                 text: "正局",
@@ -72,15 +63,7 @@ export default {
     },
     methods: {},
     created() {
-        getUnitApi().then((data) => {
-            console.log(data)
-            data.data.data.map((one) => {
-                this.options.push({
-                    text: one.name,
-                    value: one.id,
-                })
-            });
-        });
+        console.log("test");
     }
 };
 </script>
