@@ -446,13 +446,7 @@ export default {
             }).then((result) => {
                 this.loading = false;
                 if (result.data.code == 0) {
-                    // this.context.clearRect(0, 0, 500, 350);
-                    //this.leader.open = false;
                     this.drawRect(this.select);
-
-                    //this.roomAssignment = [];
-                    //this.getBuildingSection();
-                    //this.closeAssignModal();
                     notifySomething("分配成功", "分配成功", constants.typeSuccess);
 
                 } else {
@@ -858,7 +852,7 @@ export default {
                 for (var i = res_data.length - 1; i >= 0; i--) {
                     var out_room_name = res_data[i]['room_name']
                     var room_assign = res_data[i]['room_assign']
-                    var building_name = res_data[i]['buildingn_ame']
+                    var building_name = res_data[i]['building_name']
                     var floor_name = res_data[i]['floor_name']
                     var room_details = res_data[i]['room_detail']
                     for (var j = room_assign.length - 1; j >= 0; j--) {
