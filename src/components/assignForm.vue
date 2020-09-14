@@ -2,7 +2,7 @@
 <div>
     <sui-form>
 
-        <h1>当前房间房间{{index}}</h1>
+        <h1 v-show="singleEntry.data.type1 != '租赁房屋'">当前房间房间{{index}}</h1>
         <sui-form-fields>
             <sui-form-field>
                 <label>房间号</label>
