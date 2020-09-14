@@ -187,9 +187,9 @@
                                                 <span class="icon" slot="addTreeNodeIcon">📂</span>
                                                 <span class="icon" slot="addLeafNodeIcon">＋</span>
                                                 <span class="icon" slot="leafNodeIcon">
-                                                    </span>
+                                                </span>
                                                 <span class="icon" slot="treeNodeIcon">
-                                                    </span>
+                                                </span>
                                             </vue-tree-list>
                                         </div>
                                     </sui-grid-column>
@@ -218,9 +218,9 @@
                                         <div>
                                             <sui-list v-show="roomAssignment.length>0">
                                                 <sui-list-item v-for="unit in roomAssignment" :key="unit[0]">
-                                                    {{unit.roomnumber}} {{unit.roomname}} 
+                                                    {{unit.roomnumber}} {{unit.roomname}}
                                                     <sui-button transparant icon="delete" @click.native="deleteBuildingFloorAssignment(unit)">
-                                                        
+
                                                     </sui-button>
                                                 </sui-list-item>
                                             </sui-list>
@@ -698,21 +698,28 @@ export default {
         },
         openAssignSection(rowData) {
             this.selectedRoom = rowData;
-
-            this.selectedRoom.qitaziliao = JSON.parse(this.selectedRoom.qitaziliao)
-            //    / console.log(qitaziliao);
             this.selectedRoom.qitaziliaoList = [];
-            this.selectedRoom.qitaziliao.map((one) => {
-                this.selectedRoom.qitaziliaoList.push(constants.fileURL + one);
-            })
-            this.selectedRoom.tuzhiziliao = JSON.parse(this.selectedRoom.tuzhiziliao)
-            this.selectedRoom.tuzhiziliao.map((one) => {
-                this.selectedRoom.qitaziliaoList.push(constants.fileURL + one);
-            })
-            this.selectedRoom.chanzhengziliao = JSON.parse(this.selectedRoom.chanzhengziliao)
-            this.selectedRoom.chanzhengziliao.map((one) => {
-                this.selectedRoom.qitaziliaoList.push(constants.fileURL + one);
-            })
+
+            if (this.selectedRoom.qitaziliao != "") {
+                this.selectedRoom.qitaziliao = JSON.parse(this.selectedRoom.qitaziliao)
+                this.selectedRoom.qitaziliao.map((one) => {
+                    this.selectedRoom.qitaziliaoList.push(constants.fileURL + one);
+                })
+            }
+            if (this.selectedRoom.tuzhiziliao != "") {
+                this.selectedRoom.tuzhiziliao = JSON.parse(this.selectedRoom.tuzhiziliao)
+
+                this.selectedRoom.tuzhiziliao.map((one) => {
+                    this.selectedRoom.qitaziliaoList.push(constants.fileURL + one);
+                })
+            }
+            if (this.selectedRoom.chanzhengziliao != "") {
+                this.selectedRoom.chanzhengziliao = JSON.parse(this.selectedRoom.chanzhengziliao)
+                this.selectedRoom.chanzhengziliao.map((one) => {
+                    this.selectedRoom.qitaziliaoList.push(constants.fileURL + one);
+                })
+
+            }
             this.modalMode = "edit";
             // point 
             if (rowData.lat === null || rowData.lat == "") {
@@ -1136,14 +1143,20 @@ export default {
                 if (this.fileList.length > 0) {
                     this.selectedRoom.qitaziliao = JSON.stringify(this.fileList);
                     this.fileList = [];
+                } else {
+                    this.selectedRoom.qitaziliao = ""
                 }
                 if (this.tuzhiZiLiao.length > 0) {
                     this.selectedRoom.tuzhiZiLiao = JSON.stringify(this.tuzhiZiLiao);
                     this.tuzhiZiLiao = [];
+                } else {
+                    this.tuzhiziliao = ""
                 }
                 if (this.chanzhenZiLiao.length > 0) {
-                    this.selectedRoom.chanzhenZiLiao = JSON.stringify(this.chanzhenZiLiao);
+                    this.selectedRoom.chanzhengziliao = JSON.stringify(this.chanzhenZiLiao);
                     this.chanzhenZiLiao = [];
+                } else {
+                    this.chanzhengziliao = ""
                 }
                 updateRoomApi(this.selectedRoom).then((result) => {
                     if (result.data.code == 0) {

@@ -22,7 +22,7 @@
         <sui-form-fields>
             <sui-form-field>
                 <label>计划维修时间</label>
-                <datepicker :value="singleEntry.starttime" v-model="singleEntry.starttime" :language="lang['zh']"></datepicker>
+                <datepicker :value="singleEntry.plandate" v-model="singleEntry.plandate" :language="lang['zh']"></datepicker>
             </sui-form-field>
             <sui-form-field>
                 <label>维修金额</label>
@@ -44,7 +44,7 @@
         <sui-form-fields>
             <sui-form-field style="width:100%">
                 <label>维修理由</label>
-                <textarea v-model="singleEntry.reason" />
+                <textarea v-model="singleEntry.memo" />
                 </sui-form-field>
         </sui-form-fields>
                 <sui-form-fields>
