@@ -176,7 +176,7 @@
                             <img :src="assignList.selectedFloor.url" ref="backImage" v-show="false" />
                             <canvas ref="canvas" id="myCanvas" width="500" height="350" v-show="assignList.selectedRoom.type1 != '租赁房屋'"/>
                             <sui-list v-show="roomAssignment.length>0">
-                                <sui-list-item v-for="unit in roomAssignment" :key="unit[0]">
+                                <sui-list-item v-for="unit in roomAssignment" :key="unit[0]" v-show="assignList.selectedRoom.type1 != '租赁房屋'">
                                     房间名:{{unit.roomname}} 面积:{{unit.space}}平米
                                 </sui-list-item>
                             </sui-list>
@@ -423,7 +423,7 @@ export default {
                 room_id: this.selectedRoomInFloor.roomnumber,
                 unit_id: this.selectedRoom.id,
                 leader: this.selectedRoomInFloor.leader,
-                space: this.leaderfenpei.space,
+                space: this.selectedRoomInFloor.space,
                 room_type: this.selectedRoomInFloor.kind
             }
             this.loading = true;
@@ -1161,10 +1161,10 @@ export default {
             delete formdata.parent
             delete formdata.building_info
             delete formdata.pid
+            var short_name = formdata['name']
             formdata['name'] = formdata['realname']
 
             updateUnitApi(formdata).then((result) => {
-                console.log(result)
                 if (result.data.code == 0) {
                     notifySomething("保存成功", "基本信息保存成功", "success");
 
@@ -1176,6 +1176,7 @@ export default {
                 this.selectedRoom.edit = false
                 this.loading = false;
             });
+            formdata['name'] = short_name
         },
 
         enableUpdateUnit() {
