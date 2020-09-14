@@ -17,8 +17,8 @@
                 <sui-dropdown placeholder="领导级别" selection :options="leaderlevelOption" v-model="singleEntry.leader" />
             </sui-form-field>
             <sui-form-field>
-                <label>选择单位</label>
-                <sui-dropdown placeholder="选择单位" selection :options="options" v-model="singleEntry.unit_id" />
+                <label>房屋类型</label>
+                {{singleEntry.type}}
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields>

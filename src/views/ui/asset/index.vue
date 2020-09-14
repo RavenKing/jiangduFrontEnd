@@ -242,10 +242,10 @@
                                             <sui-form-field>
                                                 <sui-input type="text" placeholder="请选择" v-model="selectedRoom.lat" />
                                             </sui-form-field>
-                                            <label>地址</label>
+                                            <!-- <label>地址</label>
                                             <sui-form-field>
                                                 <sui-input type="text" placeholder="输入地址" v-model="keyword" />
-                                            </sui-form-field>
+                                            </sui-form-field> -->
                                         </sui-form-fields>
                                     </sui-form>
                                 </div>
@@ -911,7 +911,23 @@ export default {
                         if (one.id == "room" + index) {
                             context.selectedRoomInFloor = one;
                         }
-                    })
+                    });
+                    switch (room.type) {
+                        case "bangong":
+                            context.selectedRoomInFloor.type = "办公"
+                            break;
+                        case "yewu":
+                            context.selectedRoomInFloor.type = "业务"
+                            break;
+                        case "fushu":
+                            context.selectedRoomInFloor.type = "附属"
+                            break;
+                        case "leader":
+                            context.selectedRoomInFloor.type = "领导办公室"
+                            break;
+                        default:
+                            break;
+                    };
                 }
             });
         },
@@ -1156,7 +1172,7 @@ export default {
                     this.selectedRoom.chanzhengziliao = JSON.stringify(this.chanzhenZiLiao);
                     this.chanzhenZiLiao = [];
                 } else {
-                     this.selectedRoom.chanzhengziliao = ""
+                    this.selectedRoom.chanzhengziliao = ""
                 }
                 updateRoomApi(this.selectedRoom).then((result) => {
                     if (result.data.code == 0) {
