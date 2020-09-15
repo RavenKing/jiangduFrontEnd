@@ -299,7 +299,7 @@
                                 <div>
                                     <sui-list key="213123">
                                         <sui-list-item v-for="(link,index) in selectedRoom.qitaziliaoList" :key="link[0]">
-                                            <a type="primary" :href="link" target="_blank">文件{{index+1}}</a>
+                                            <a type="primary" :href="link.url" target="_blank">{{link.fileName}}--({{link.type}})</a>
                                         </sui-list-item>
                                     </sui-list>
                                 </div>
@@ -318,9 +318,7 @@
                 </sui-modal-actions>
             </sui-modal>
         </div>
-
     </div>
-
 </wl-container>
 </template>
 
@@ -491,12 +489,24 @@ export default {
                     context.loading = false;
                     if (result.data.code == 0) {
                         if (mode == 'tuzhi') {
-                            context.tuzhiZiLiao.push(result.data.data);
+                            context.tuzhiZiLiao.push({
+                                url: result.data.data,
+                                fileName: e.name,
+                                type: '图纸'
+                            });
                         } else if (mode == 'chanzheng') {
-                            context.chanzhenZiLiao.push(result.data.data);
+                            context.chanzhenZiLiao.push({
+                                url: result.data.data,
+                                fileName: e.name,
+                                type: "产证"
+                            });
 
                         } else {
-                            context.fileList.push(result.data.data)
+                            context.fileList.push({
+                                url: result.data.data,
+                                fileName: e.name,
+                                type: "其他"
+                            });
                         }
                     }
                 }).catch(function () {
@@ -703,20 +713,22 @@ export default {
             if (this.selectedRoom.qitaziliao != "") {
                 this.selectedRoom.qitaziliao = JSON.parse(this.selectedRoom.qitaziliao)
                 this.selectedRoom.qitaziliao.map((one) => {
-                    this.selectedRoom.qitaziliaoList.push(constants.fileURL + one);
+                    one.url = constants.fileURL + one.url;
+                    this.selectedRoom.qitaziliaoList.push(one);
                 })
             }
             if (this.selectedRoom.tuzhiziliao != "") {
                 this.selectedRoom.tuzhiziliao = JSON.parse(this.selectedRoom.tuzhiziliao)
-
                 this.selectedRoom.tuzhiziliao.map((one) => {
-                    this.selectedRoom.qitaziliaoList.push(constants.fileURL + one);
+                    one.url = constants.fileURL + one.url;
+                    this.selectedRoom.qitaziliaoList.push(one);
                 })
             }
             if (this.selectedRoom.chanzhengziliao != "") {
                 this.selectedRoom.chanzhengziliao = JSON.parse(this.selectedRoom.chanzhengziliao)
                 this.selectedRoom.chanzhengziliao.map((one) => {
-                    this.selectedRoom.qitaziliaoList.push(constants.fileURL + one);
+                    one.url = constants.fileURL + one.url;
+                    this.selectedRoom.qitaziliaoList.push(one);
                 })
 
             }
@@ -1157,19 +1169,34 @@ export default {
                 });
             } else if (this.modalMode == "edit") {
                 if (this.fileList.length > 0) {
-                    this.selectedRoom.qitaziliao = JSON.stringify(this.fileList);
+                    if (this.selectedRoom.qitaziliao != "") {
+                        this.selectedRoom.qitaziliao.push(this.fileList);
+                        this.selectedRoom.qitaziliao = JSON.stringify(this.selectedRoom.qitaziliao);
+                    } else {
+                        this.selectedRoom.qitaziliao = JSON.stringify(this.fileList);
+                    }
                     this.fileList = [];
                 } else {
                     this.selectedRoom.qitaziliao = ""
                 }
                 if (this.tuzhiZiLiao.length > 0) {
-                    this.selectedRoom.tuzhiZiLiao = JSON.stringify(this.tuzhiZiLiao);
+                    if (this.selectedRoom.tuzhiziliao != "") {
+                        this.selectedRoom.tuzhiziliao.push(this.tuzhiZiLiao);
+                        this.selectedRoom.tuzhiziliao = JSON.stringify(this.selectedRoom.tuzhiZiLiao);
+                    } else {
+                        this.selectedRoom.tuzhiZiLiao = JSON.stringify(this.tuzhiZiLiao);
+                    }
                     this.tuzhiZiLiao = [];
                 } else {
                     this.selectedRoom.tuzhiziliao = ""
                 }
                 if (this.chanzhenZiLiao.length > 0) {
-                    this.selectedRoom.chanzhengziliao = JSON.stringify(this.chanzhenZiLiao);
+                    if (this.selectedRoom.chanzhengziliao != "") {
+                        this.selectedRoom.chanzhengziliao.push(this.chanzhenZiLiao);
+                        this.selectedRoom.chanzhengziliao = JSON.stringify(this.selectedRoom.chanzhengziliao);
+                    } else {
+                        this.selectedRoom.chanzhengziliao = JSON.stringify(this.chanzhenZiLiao);
+                    }
                     this.chanzhenZiLiao = [];
                 } else {
                     this.selectedRoom.chanzhengziliao = ""
