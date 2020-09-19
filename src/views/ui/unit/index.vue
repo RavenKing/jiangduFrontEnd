@@ -9,7 +9,7 @@
 
         </div>
         <div class="filterBiaoDan">
-            <sui-button basic color="green" content="导出" v-on:click="exportToExcel" icon="file green" />            
+            <sui-button basic color="green" content="导出" v-on:click="exportToExcel" icon="file green" />
         </div>
 
         <sui-grid class="margin20">
@@ -173,14 +173,14 @@
                                     {{assignList.selectedFloor.name}}
                                 </sui-statistic-value>
                             </sui-statistic>
+                            <canvas ref="canvas" id="myCanvas" width="500" height="350" v-show="assignList.selectedRoom.type1 != '租赁房屋'" />
                             <img :src="assignList.selectedFloor.url" ref="backImage" v-show="false" />
                         </sui-grid-column>
                         <sui-grid-column :width="4">
-                            <canvas ref="canvas" id="myCanvas" width="500" height="350" v-show="assignList.selectedRoom.type1 != '租赁房屋'" />
                             <div v-show="assignList.selectedRoom.type1 != '租赁房屋'">
                                 <sui-list>
                                     <sui-list-item v-for="unit in roomAssignment" :key="unit[0]">
-                                        房间名:{{unit.roomname}} 面积:{{unit.space}}平米
+                                        房间号码 {{unit.roomnumber}} 房间名:{{unit.roomname}} 面积:{{unit.space}}平米
                                     </sui-list-item>
                                 </sui-list>
                             </div>
@@ -423,12 +423,12 @@ export default {
                 console.log(this.selectedRoomInFloor)
                 console.log(this.selectedRoom)
                 var payload = {
-                room_id: this.selectedRoomInFloor.data.room_id,
-                room:this.selectedRoomInFloor.roomnumber,
-                unit_id: this.selectedRoom.id,
-                leader: this.selectedRoomInFloor.leader,
-                space: this.selectedRoomInFloor.space,
-                room_type: 2
+                    room_id: this.selectedRoomInFloor.data.room_id,
+                    room: this.selectedRoomInFloor.roomnumber,
+                    unit_id: this.selectedRoom.id,
+                    leader: this.selectedRoomInFloor.leader,
+                    space: this.selectedRoomInFloor.space,
+                    room_type: 2
 
                 }
                 this.loading = true;
