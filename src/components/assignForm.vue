@@ -13,10 +13,6 @@
                 <sui-input placeholder="房间名称" v-model="singleEntry.roomname" />
             </sui-form-field>
             <sui-form-field>
-                <label>是否领导办公</label>
-                <sui-dropdown placeholder="领导办公" selection :options="leaderOption" v-model="singleEntry.isleader" />
-            </sui-form-field>
-            <sui-form-field>
                 <label>领导级别</label>
                 <sui-dropdown placeholder="领导级别" selection :options="leaderlevelOption" v-model="singleEntry.leader" />
             </sui-form-field>
@@ -32,7 +28,8 @@
             </sui-form-field>
             <sui-form-field>
                 <label>房间用途</label>
-                <sui-dropdown placeholder="房间用途" selection :options="yongtuoptions" v-model="singleEntry.kind" />
+
+                {{singleEntry.type}}
             </sui-form-field>
         </sui-form-fields>
     </sui-form>

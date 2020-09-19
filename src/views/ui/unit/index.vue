@@ -180,7 +180,7 @@
                             <div v-show="assignList.selectedRoom.type1 != '租赁房屋'">
                                 <sui-list>
                                     <sui-list-item v-for="unit in roomAssignment" :key="unit[0]">
-                                        房间号码 {{unit.roomnumber}} 房间名:{{unit.roomname}} 面积:{{unit.space}}平米
+                                        {{unit.roomnumber}}: {{unit.roomname}} :{{unit.space}}平米
                                     </sui-list-item>
                                 </sui-list>
                             </div>
@@ -452,9 +452,8 @@ export default {
                 }).then((result) => {
                     this.loading = false;
                     if (result.data.code == 0) {
-                        this.drawRect(this.select);
+                        //contextF.drawRect(this.select);
                         notifySomething("分配成功", "分配成功", constants.typeSuccess);
-
                     } else {
                         notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                     }
@@ -687,7 +686,23 @@ export default {
                             context.selectedRoomInFloorIndex = index;
                             context.selectedRoomInFloor = one;
                         }
-                    })
+                    });
+                    switch (room.type) {
+                        case "bangong":
+                            context.selectedRoomInFloor.type = "办公"
+                            break;
+                        case "yewu":
+                            context.selectedRoomInFloor.type = "业务"
+                            break;
+                        case "fushu":
+                            context.selectedRoomInFloor.type = "附属"
+                            break;
+                        case "leader":
+                            context.selectedRoomInFloor.type = "领导办公室"
+                            break;
+                        default:
+                            break;
+                    }
                 }
             });
         },
