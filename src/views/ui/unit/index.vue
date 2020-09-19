@@ -9,7 +9,7 @@
 
         </div>
         <div class="filterBiaoDan">
-            <sui-button content="导出" v-on:click="exportToExcel" icon="file green" v-show="role==1" />
+            <sui-button basic color="green" content="导出" v-on:click="exportToExcel" icon="file green" />            
         </div>
 
         <sui-grid class="margin20">
@@ -898,8 +898,9 @@ export default {
                     console.log('leader room')
                     for (var k = rent_room.length - 1; k >= 0; k--) {
                         rent_room[k]['out_room_name'] = rent_room[k]['room_name']
+                        rent_room[k]['roomnumber'] = rent_room[k]['room']
                     }
-                    console.log(lingdao_list)
+                    console.log(rent_room)
                     lingdao_list = lingdao_list.concat(rent_room)
                     this.lingdaoData = {
                         total: 16,
