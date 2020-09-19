@@ -173,10 +173,10 @@
                                     {{assignList.selectedFloor.name}}
                                 </sui-statistic-value>
                             </sui-statistic>
+                             <canvas ref="canvas" id="myCanvas" width="500" height="350" v-show="assignList.selectedRoom.type1 != '租赁房屋'" />
                             <img :src="assignList.selectedFloor.url" ref="backImage" v-show="false" />
                         </sui-grid-column>
                         <sui-grid-column :width="4">
-                            <canvas ref="canvas" id="myCanvas" width="500" height="350" v-show="assignList.selectedRoom.type1 != '租赁房屋'" />
                             <div v-show="assignList.selectedRoom.type1 != '租赁房屋'">
                                 <sui-list>
                                     <sui-list-item v-for="unit in roomAssignment" :key="unit[0]">
