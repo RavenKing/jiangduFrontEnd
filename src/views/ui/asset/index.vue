@@ -299,7 +299,7 @@
                                 <div>
                                     <sui-list key="213123">
                                         <sui-list-item v-for="(link,index) in selectedRoom.qitaziliaoList" :key="link[0]">
-                                            <a type="primary" :href="link.url" target="_blank">{{link.fileName}}--({{link.type}})</a>
+                                            <a type="primary" :href="link.fileURL" target="_blank">{{link.fileName}}--({{link.type}})</a>
                                         </sui-list-item>
                                     </sui-list>
                                 </div>
@@ -713,25 +713,24 @@ export default {
             if (this.selectedRoom.qitaziliao != "") {
                 this.selectedRoom.qitaziliao = JSON.parse(this.selectedRoom.qitaziliao)
                 this.selectedRoom.qitaziliao.map((one) => {
-                    one.url = constants.fileURL + one.url;
                     this.selectedRoom.qitaziliaoList.push(one);
                 })
             }
             if (this.selectedRoom.tuzhiziliao != "") {
                 this.selectedRoom.tuzhiziliao = JSON.parse(this.selectedRoom.tuzhiziliao)
                 this.selectedRoom.tuzhiziliao.map((one) => {
-                    one.url = constants.fileURL + one.url;
                     this.selectedRoom.qitaziliaoList.push(one);
                 })
             }
             if (this.selectedRoom.chanzhengziliao != "") {
                 this.selectedRoom.chanzhengziliao = JSON.parse(this.selectedRoom.chanzhengziliao)
                 this.selectedRoom.chanzhengziliao.map((one) => {
-                    one.url = constants.fileURL + one.url;
                     this.selectedRoom.qitaziliaoList.push(one);
                 })
-
             }
+            this.selectedRoom.qitaziliaoList.map((one) => {
+                one.fileURL = constants.fileURL + one.url;
+            })
             this.modalMode = "edit";
             // point 
             if (rowData.lat === null || rowData.lat == "") {
@@ -1168,38 +1167,50 @@ export default {
                     notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                 });
             } else if (this.modalMode == "edit") {
+
+                // 有list的时候 ，，不为空时 merge。
                 if (this.fileList.length > 0) {
                     if (this.selectedRoom.qitaziliao != "") {
-                        this.selectedRoom.qitaziliao.push(this.fileList);
+                        this.selectedRoom.qitaziliao = this.selectedRoom.qitaziliao.concat(this.fileList);
                         this.selectedRoom.qitaziliao = JSON.stringify(this.selectedRoom.qitaziliao);
                     } else {
+                        // 为空时 直接等于
                         this.selectedRoom.qitaziliao = JSON.stringify(this.fileList);
                     }
+                    //重置
                     this.fileList = [];
+                    //没有新添加的时候
                 } else {
-                    this.selectedRoom.qitaziliao = ""
+                    //如果没有值 "" 不干嘛， 有值的话 直接stringify
+                    if (this.selectedRoom.qitaziliao != "") {
+                        this.selectedRoom.qitaziliao = JSON.stringify(this.selectedRoom.qitaziliao);
+                    }
                 }
                 if (this.tuzhiZiLiao.length > 0) {
                     if (this.selectedRoom.tuzhiziliao != "") {
-                        this.selectedRoom.tuzhiziliao.push(this.tuzhiZiLiao);
-                        this.selectedRoom.tuzhiziliao = JSON.stringify(this.selectedRoom.tuzhiZiLiao);
+                        this.selectedRoom.tuzhiziliao = this.selectedRoom.tuzhiziliao.concat(this.tuzhiZiLiao);
+                        this.selectedRoom.tuzhiziliao = JSON.stringify(this.selectedRoom.tuzhiziliao);
                     } else {
-                        this.selectedRoom.tuzhiZiLiao = JSON.stringify(this.tuzhiZiLiao);
+                        this.selectedRoom.tuzhiziliao = JSON.stringify(this.tuzhiZiLiao);
                     }
                     this.tuzhiZiLiao = [];
                 } else {
-                    this.selectedRoom.tuzhiziliao = ""
+                    if (this.selectedRoom.tuzhiziliao != "") {
+                        this.selectedRoom.tuzhiziliao = JSON.stringify(this.selectedRoom.tuzhiziliao)
+                    }
                 }
                 if (this.chanzhenZiLiao.length > 0) {
                     if (this.selectedRoom.chanzhengziliao != "") {
-                        this.selectedRoom.chanzhengziliao.push(this.chanzhenZiLiao);
+                        this.selectedRoom.chanzhengziliao = this.selectedRoom.chanzhengziliao.concat(this.chanzhenZiLiao)
                         this.selectedRoom.chanzhengziliao = JSON.stringify(this.selectedRoom.chanzhengziliao);
                     } else {
                         this.selectedRoom.chanzhengziliao = JSON.stringify(this.chanzhenZiLiao);
                     }
                     this.chanzhenZiLiao = [];
                 } else {
-                    this.selectedRoom.chanzhengziliao = ""
+                    if (this.selectedRoom.chanzhengziliao != "") {
+                        this.selectedRoom.chanzhengziliao = JSON.stringify(this.selectedRoom.chanzhengziliao);
+                    }
                 }
                 updateRoomApi(this.selectedRoom).then((result) => {
                     if (result.data.code == 0) {
