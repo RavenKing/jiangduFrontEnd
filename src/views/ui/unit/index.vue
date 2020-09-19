@@ -124,9 +124,9 @@
                                             {{props.rowData.name}}
                                         </div>
                                     </div>
-                                    <!-- <div slot="action" slot-scope="props">
-                                        <sui-button basic color="red" content="删除" v-on:click="deleteleader(props.rowData)" />
-                                    </div> -->
+                                    <div slot="action" slot-scope="props">
+                                        <sui-button basic color="red" content="删除" v-on:click="deleteleader(props.rowData)" v-if="props.rowData.room_rent_type"/>
+                                    </div>
                                 </vuetable>
                             </div>
                         </sui-tab-pane>
@@ -862,10 +862,11 @@ export default {
             this.refreshLeaderAssignment(params.id);
         },
 
-        refreshLeaderAssignment() {
+        refreshLeaderAssignment(id) {
             var input = {}
-            input['unit_id'] = 66
+            input['unit_id'] = id
             getleaderroombyunitApi(input).then((data) => {
+                console.log(input)
                 this.loading = false;
                 var res_data = data.data.data
                 console.log(res_data)
@@ -914,9 +915,11 @@ export default {
                     for (var k = rent_room.length - 1; k >= 0; k--) {
                         rent_room[k]['out_room_name'] = rent_room[k]['room_name']
                         rent_room[k]['roomnumber'] = rent_room[k]['room']
+                        rent_room[k]['room_rent_type'] = true
                     }
-                    console.log(rent_room)
+                    
                     lingdao_list = lingdao_list.concat(rent_room)
+                    console.log(lingdao_list)
                     this.lingdaoData = {
                         total: 16,
                         per_page: 5,
