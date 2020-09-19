@@ -847,10 +847,11 @@ export default {
             this.refreshLeaderAssignment(params.id);
         },
 
-        refreshLeaderAssignment() {
+        refreshLeaderAssignment(id) {
             var input = {}
-            input['unit_id'] = 66
+            input['unit_id'] = id
             getleaderroombyunitApi(input).then((data) => {
+                console.log(input)
                 this.loading = false;
                 var res_data = data.data.data
                 console.log(res_data)
@@ -900,8 +901,9 @@ export default {
                         rent_room[k]['out_room_name'] = rent_room[k]['room_name']
                         rent_room[k]['roomnumber'] = rent_room[k]['room']
                     }
-                    console.log(rent_room)
+                    
                     lingdao_list = lingdao_list.concat(rent_room)
+                    console.log(lingdao_list)
                     this.lingdaoData = {
                         total: 16,
                         per_page: 5,
