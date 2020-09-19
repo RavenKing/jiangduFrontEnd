@@ -125,7 +125,7 @@
                                         </div>
                                     </div>
                                     <div slot="action" slot-scope="props">
-                                        <sui-button basic color="red" content="删除" v-on:click="deleteleader(props.rowData)" />
+                                        <sui-button basic color="red" content="删除" v-on:click="deleteleader(props.rowData)" v-if="props.rowData.room_rent_type"/>
                                     </div>
                                 </vuetable>
                             </div>
@@ -900,6 +900,7 @@ export default {
                     for (var k = rent_room.length - 1; k >= 0; k--) {
                         rent_room[k]['out_room_name'] = rent_room[k]['room_name']
                         rent_room[k]['roomnumber'] = rent_room[k]['room']
+                        rent_room[k]['room_rent_type'] = true
                     }
                     
                     lingdao_list = lingdao_list.concat(rent_room)
