@@ -220,7 +220,6 @@
                                                 <sui-list-item v-for="unit in roomAssignment" :key="unit[0]">
                                                     {{unit.roomnumber}} {{unit.roomname}}
                                                     <sui-button transparant icon="delete" @click.native="deleteBuildingFloorAssignment(unit)">
-
                                                     </sui-button>
                                                 </sui-list-item>
                                             </sui-list>
@@ -938,7 +937,7 @@ export default {
                             break;
                         default:
                             break;
-                    };
+                    }
                 }
             });
         },
