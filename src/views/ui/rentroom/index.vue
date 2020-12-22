@@ -433,10 +433,16 @@ export default {
 
             })
         },
+        //    let filterheaders = ['address', 'space', 'ori_space', 'rent_amt', 'starttime', 'endtime', 'rentowner'];
         formatJson(filterVal, jsonData) {
             return jsonData.map(v => filterVal.map(j => {
                 if (j === 'timestamp') {
                     //  return parseTime(v[j])
+                } else if (j == 'rent_amt' || j == 'starttime' || j == 'endtime' || j == 'rentowner') {
+
+                    if (v['contract_info'] != null) {
+                        return v['contract_info'][j];
+                    }
                 } else {
                     return v[j]
                 }
@@ -654,8 +660,9 @@ export default {
 
         },
         exportToExcel() {
-            let headers = ['id', 'room_id', 'cert_id', 'owner', 'address', 'roomname', 'usage', 'space'];
-            const filtedData = this.formatJson(headers, this.localData.data);
+            let headers = ['租借地址', '借用房屋面积(m²)', '可分配面积(m²)', '借用年租金(元)', '租赁开始时间', '租赁结束时间', '业主名称'];
+            let filterheaders = ['address', 'space', 'ori_space', 'rent_amt', 'starttime', 'endtime', 'rentowner'];
+            const filtedData = this.formatJson(filterheaders, this.localData.data);
             export_json_to_excel({
                 header: headers,
                 data: filtedData,
@@ -696,6 +703,12 @@ export default {
             //     console.log(result)
             // });
         },
+          inDays: function(d1, d2) {
+        var t2 = d2.getTime();
+        var t1 = d1.getTime();
+
+        return parseInt((t2-t1)/(24*3600*1000));
+    },
         refreshRooms(payload) {
             this.loading = true;
             var context = this;
@@ -704,9 +717,16 @@ export default {
                     this.loading = false;
                     this.localData = data.data.data
                     this.localData.data.map((one) => {
+                        one.status="normal";
                         if (one.contract_info != null) {
                             if (one.contract_info.starttime) {
                                 one.qishinianxian = this.formatTime(one.contract_info.starttime) + "到" + this.formatTime(one.contract_info.endtime);
+                               const nowTime=new Date();
+                               if(context.inDays(new Date(one.contract_info.endtime),nowTime)>90)
+                               {
+                                   one.status="warning";
+                               }
+
                             } else {
                                 one.qishinianxian = "无"
                             }

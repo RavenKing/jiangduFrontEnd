@@ -29,6 +29,10 @@
                 <label>建筑面积</label>
                 <sui-input placeholder="建筑面积" v-model="singleRoom.space" type="number" />
             </sui-form-field>
+            <sui-form-field>
+                <label>出租方性质</label>
+                <sui-dropdown placeholder="出租方性质" selection :options="chuzuOptions" v-model="singleRoom.owner"/>
+            </sui-form-field>
         </sui-form-fields>
     </sui-form>
 </div>
@@ -40,6 +44,21 @@ export default {
     props: ['singleRoom', 'clickDingWei'],
     data() {
         return {
+            chuzuOptions:[
+              {
+                text: "国企",
+                value: "国企"
+            },{
+                text: "国企控股",
+                value: "国企控股"
+            },{
+                text: "村委会",
+                value: "村委会"
+            },{
+                text: "私企",
+                value: "私企"
+            },
+            ],
             yongtuOptions: [{
                 text: "办公用房",
                 value: "1"

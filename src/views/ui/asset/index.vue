@@ -297,7 +297,7 @@
                                 </div>
                                 <div>
                                     <sui-list key="213123">
-                                        <sui-list-item v-for="(link,index) in selectedRoom.qitaziliaoList" :key="link[0]">
+                                        <sui-list-item v-for="(link) in selectedRoom.qitaziliaoList" :key="link[0]">
                                             <a type="primary" :href="link.fileURL" target="_blank">{{link.fileName}}--({{link.type}})</a>
                                         </sui-list-item>
                                     </sui-list>
@@ -690,9 +690,10 @@ export default {
                 this.selectedRoom.lon = e.point.lng;
                 this.selectedRoom.lat = e.point.lat;
             }
-            updateRoomApi(this.selectedRoom).then(() => {
-                this.loading = false;
-            });
+            this.loading = false;
+            // updateRoomApi(this.selectedRoom).then(() => {
+            //     this.loading = false;
+            // });
         },
         manualUpdateGeo: function () {
             this.loading = true;
@@ -1037,8 +1038,9 @@ export default {
             });
         },
         exportToExcel() {
-            let headers = ['id', 'room_id', 'certid', 'owner', 'address', 'roomname', 'usage', 'space', 'optional', 'age', 'build_date', 'origin_value', 'room_value', 'dep', 'net_value', 'dep_rate', 'internal_info', 'cur_status'];
-            const filtedData = this.formatJson(headers, this.localData.data);
+            let headers = ['地址', '房屋名称',  '土地面积(m²)', ];
+            let filteredValue = [ 'address', 'roomname',  'space'];
+            const filtedData = this.formatJson(filteredValue, this.localData.data);
             export_json_to_excel({
                 header: headers,
                 data: filtedData,

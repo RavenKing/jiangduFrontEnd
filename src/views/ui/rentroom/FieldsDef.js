@@ -1,6 +1,20 @@
 
 export default [
+  {
+    name: "status",
+    title: '状态',
+    width: "15%",
+    formatter (value) {
+      if(value=="normal")
+      {
 
+        return value
+      }else(value=="warning")
+      {
+        return "<i class=\"el-icon-warning\" style=\"font-size: 20px; color: red\">租期在三个月内</i>";
+      }
+    }
+  },
   {
     name: "address",
     title: '租借地址',
