@@ -120,16 +120,12 @@
                 </sui-form-fields>
             </div>
         </sui-form-fields>
-        <!-- <sui-form-fields inline>
-            <sui-form-field>
-                <label>总面积</label>
-                <sui-input placeholder="总面积" v-model="total"  />
+        <sui-form-fields inline>
+                <label>备注</label>          
+             <sui-form-field>
+                <textarea placeholder="备注" v-model="singleEntry.space4"/>
             </sui-form-field>
-            <sui-form-field>
-                <label>总价</label>
-                <sui-input placeholder="总价" v-model="totalPrice"  />
-            </sui-form-field>
-        </sui-form-fields> -->
+        </sui-form-fields>
     </sui-form>
 </div>
 </template>
