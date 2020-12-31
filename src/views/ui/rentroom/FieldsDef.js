@@ -8,10 +8,10 @@ export default [
       if(value=="normal")
       {
 
-        return value
+        return "<div class=\"normalIcon\"></div>"
       }else(value=="warning")
       {
-        return "<i class=\"el-icon-warning\" style=\"font-size: 20px; color: red\">租期在三个月内</i>";
+        return "<div class=\"alertIcon\"></div>";
       }
     }
   },

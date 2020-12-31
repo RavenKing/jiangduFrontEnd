@@ -28,7 +28,7 @@
                         </vue-tree-list>
                     </div>
                 </sui-grid-column>
-                <sui-grid-column :width="13">
+                <sui-grid-column :width="13" v-show="clickColumn==true">
                     <sui-tab :menu="{ attached: false }">
                         <sui-tab-pane title="基本信息" :attached="false" :key="componentKey">
                             <div>
@@ -320,6 +320,7 @@ export default {
                 field: "email",
                 direction: "asc"
             }],
+            clickColumn:false,
             data: [{
                 id: "2",
                 name: "租房子"
@@ -840,6 +841,7 @@ export default {
             }
             if(params.isLeaf==true)
             {
+                this.clickColumn=true;
             getUnitApiByid(params.id).then((data) => {
                 var res_data = data.data.data['building_info']
                 for (var i = res_data.length - 1; i >= 0; i--) {
@@ -863,6 +865,7 @@ export default {
             this.refreshLeaderAssignment(params.id);
             }
             else{
+                this.clickColumn=false;
                 this.fenpeilocalData=[];
                 this.lingdaoData=[];
 

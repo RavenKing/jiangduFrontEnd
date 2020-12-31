@@ -911,6 +911,17 @@ export default {
     width: 100%;
     height: 400px;
 }
+.normalIcon{
+    height:50px;
+    background:url("../../../../public/green.png") center no-repeat;
+    width:50px;
+    background-size: contain;
+}.alertIcon{
+    height:50px;
+    background:url("../../../../public/alert.png") center no-repeat;
+    width:50px;
+    background-size: contain;
+}
 
 .ui.modal .scrolling.content {
     max-height: none !important;
