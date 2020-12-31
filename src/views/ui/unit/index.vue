@@ -16,7 +16,7 @@
             <sui-grid-row>
                 <sui-grid-column :width="3" v-show="role==1">
                     <div class="filterBiaoDan">
-                        <sui-input style="width:100%;padding-left:15px; margin-bottom:15px;" placeholder="Search..." v-model="search" icon="search" v-on:change="search_unit_list()" />
+                        <sui-input style="width:100%;padding-left:15px; margin-bottom:15px;" placeholder="搜索..." v-model="search" icon="search" v-on:change="search_unit_list()" />
                         <vue-tree-list class="addListIcon" :key="componentKey" @click="onClick" :model="tree" default-tree-node-name="new node" default-leaf-node-name="new leaf" v-bind:default-expanded="false">
                             <span class="icon" slot="addTreeNodeIcon"></span>
                             <span class="icon" slot="addLeafNodeIcon"></span>
@@ -838,7 +838,8 @@ export default {
                 }
                 this.points = temp_points
             }
-
+            if(params.isLeaf==true)
+            {
             getUnitApiByid(params.id).then((data) => {
                 var res_data = data.data.data['building_info']
                 for (var i = res_data.length - 1; i >= 0; i--) {
@@ -860,6 +861,13 @@ export default {
                 }
             })
             this.refreshLeaderAssignment(params.id);
+            }
+            else{
+                this.fenpeilocalData=[];
+                this.lingdaoData=[];
+
+            }
+
         },
 
         refreshLeaderAssignment(id) {
@@ -884,6 +892,7 @@ export default {
                         var room_id = room_assign[j]['id']
                         var room_type = ''
                         for (var k = room_details.length - 1; k >= 0; k--) {
+                            // eslint-disable-next-line no-prototype-builtins
                             if (room_details[k].hasOwnProperty(room_id)) {
                                 room_type = room_details[k]['type']
                             }
