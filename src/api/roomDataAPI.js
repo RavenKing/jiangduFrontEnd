@@ -644,6 +644,15 @@ function showunitroominfo(data)
     });
 }
 
+function exportroomApi()
+{
+
+    //let local_auth = localGet(global.project_key, true);
+    return request({
+        url: constants.createLoanContractApi,
+        method: 'get',
+    });
+}
 
 
 
@@ -713,7 +722,7 @@ export {
     loanamtApi,
     roomspagcerate1Api,
     roomspagcerate2Api,
-
+    exportroomApi,
     showgeolistApi,
     showunitbyroomidApi,
     showunitroominfo,

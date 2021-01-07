@@ -124,19 +124,19 @@
                                     </vuetable>
                                 </div>
                             </sui-tab-pane>
-                            <sui-tab-pane title="巡查记录">
+                            <!-- <sui-tab-pane title="巡查记录" v-show="false">
                                 <sui-dimmer :active="loading" inverted>
                                     <sui-loader content="Loading..." />
                                 </sui-dimmer>
                                 <div class="vue2Table">
                                     <vuetable ref="vuetable" :api-mode="false" :data="selectedRoom.patrol" :fields="fieldsPatrol" data-path="data" :key="componentAssignListkey">
                                         <div slot="action" slot-scope="props">
-                                            <!-- <sui-button basic color="blue"  content="查看" v-on:click="viewSomeThing(props.rowData,'check')" /> -->
+                                            <sui-button basic color="blue"  content="查看" v-on:click="viewSomeThing(props.rowData,'check')" />
                                             <sui-button basic color="red" content="删除" v-on:click="deleteRoomPatrol(props.rowData)" />
                                         </div>
                                     </vuetable>
                                 </div>
-                            </sui-tab-pane>
+                            </sui-tab-pane> -->
                             <sui-tab-pane title="地图定位" :attached="false" :disabled="!editMode">
                                 <div class="imageForm">
                                     <sui-form>
@@ -329,7 +329,7 @@ export default {
 
         },
         clickDingWei() {
-            this.defaultTab = 4;
+            this.defaultTab = 3;
             // this.keyword = this.selectedRoom.address;
         },
         emptyRentContract() {

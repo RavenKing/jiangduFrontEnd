@@ -1,9 +1,9 @@
-
 // const port = 6668; // dev port
 let styleVariables = require('./src/style/variables.scss.js');
 const port = 9527 // dev port
+//const isProduction = process.env.NODE_ENV === 'production';
 const isProduction = process.env.NODE_ENV === 'production';
-
+const TerserPlugin = require("terser-webpack-plugin");
 module.exports = {
 
 
@@ -11,33 +11,38 @@ module.exports = {
     if (isProduction) {
       // 开启分离js
       config.optimization = {
+        minimizer: [new TerserPlugin()],
+        minimize: true,
         runtimeChunk: 'single',
         splitChunks: {
           chunks: 'all',
-          maxInitialRequests: Infinity,
-          minSize: 20000,
+          maxInitialRequests: 5,
+          minSize: 30000,
+          minChunks: 1,
+          maxAsyncRequests: 5,
           cacheGroups: {
             vendor: {
               test: /[\\/]node_modules[\\/]/,
-              name (module) {
-                // get the name. E.g. node_modules/packageName/not/this/part.js
-                // or node_modules/packageName
-                const packageName = module.context.match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)[1]
-                // npm package names are URL-safe, but some servers don't like @ symbols
-                return `npm.${packageName.replace('@', '')}`
-              }
+              name: "common",
+              chunks: 'initial',
+              priority: 2,
+              minChunks: 2,
+            },
+            default: {
+              minChunks: 2,
+              priority: -20,
+              reuseExistingChunk: true
             }
           }
         }
       };
     }
-   },
-
-//     publicPath: process.env.NODE_ENV === 'production' ? '/jgj' : './',
-//  
-//   // build时构建文件的目录 构建时传入 --no-clean 可关闭该行为
-//   outputDir: 'build',
-//  
+  },
+  // publicPath: process.env.NODE_ENV === 'production' ? '/jgj' : './',
+  //
+  //build时构建文件的目录 构建时传入 --no-clean 可关闭该行为
+  //outputDir: 'build',
+  // 
   /* crossorigin: 'anonymous', // htmlWebpackPlugin
   devServer: {
     hot: true,
@@ -48,7 +53,7 @@ module.exports = {
       errors: true
     },
   }, */
-  devServer:{
+  devServer: {
     port: port,
     open: true,
     overlay: {

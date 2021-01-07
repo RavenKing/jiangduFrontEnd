@@ -51,7 +51,7 @@
                 <sui-input v-model="singleEntry.rate" transparent class="width30" />%增长
             </sui-form-field>
         </sui-form-fields>
-        <div :key="componentKey" v-for="(item, index) in singleEntry.priceinfo">
+        <div  v-for="(item, index) in singleEntry.priceinfo" :key="item[index]">
             <sui-form-fields inline style="position: relative;">
                 <sui-form-field>
                     <sui-dropdown placeholder="性质" selection :options="xingzhiOptions" v-model="singleEntry.priceinfo[index].pricename" />
