@@ -618,6 +618,9 @@ export default {
                 this.roomAssignment.push(data); //没有塞进去
 
             }
+             if (this.context == null || this.context == undefined) {
+                this.context = this.$refs.convas.getContext("2d");
+            }
             var contextF = this;
             createAssignmentApi({
                 assignment: JSON.stringify(this.roomAssignment),
@@ -625,7 +628,7 @@ export default {
             }).then((result) => {
                 this.loading = false;
                 if (result.data.code == 0) {
-                    // this.context.clearRect(0, 0, 500, 350);
+                    this.context.clearRect(0, 0, 500, 350);
                     this.roomAssignment = [];
                     this.getBuildingSection();
                     this.closeAssignModal();
@@ -859,7 +862,7 @@ export default {
                             this.roomAssignment.map((one) => {
                                 if (one.id == "room" + index) {
                                     this.context.globalAlpha = 1;
-                                    this.context.strokeText(one.space+"m2", room["room" + index][0] + (room["room" + index][2] / 3), room["room" + index][1] + (room["room" + index][3] / 2));
+                                    this.context.strokeText(one.space+"m²", room["room" + index][0] + (room["room" + index][2] / 3), room["room" + index][1] + (room["room" + index][3] / 2));
                                     textDraw = false;
                                 }
                             })
