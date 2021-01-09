@@ -335,14 +335,15 @@ import ziChanForm from "@/components/ziChanForm";
 import mianjiForm from "@/components/mianjiForm";
 import FormCreate from "@/components/createForm";
 import constants from "@/util/constants";
+import global from "@/global/index"
+import {
+    localGet
+} from "@/util/storage"; // 导入存储函数
 import {
     VueTreeList,
     Tree,
     TreeNode
 } from 'vue-tree-list'
-import {
-    export_json_to_excel
-} from "@/util/Export2Excel";
 import {
     uploadZiliaoFileApi,
     updateFloorInfoApi
@@ -858,7 +859,7 @@ export default {
                             this.roomAssignment.map((one) => {
                                 if (one.id == "room" + index) {
                                     this.context.globalAlpha = 1;
-                                    this.context.strokeText(one.roomnumber, room["room" + index][0] + (room["room" + index][2] / 3), room["room" + index][1] + (room["room" + index][3] / 2));
+                                    this.context.strokeText(one.space+"m2", room["room" + index][0] + (room["room" + index][2] / 3), room["room" + index][1] + (room["room" + index][3] / 2));
                                     textDraw = false;
                                 }
                             })
@@ -1038,17 +1039,8 @@ export default {
             });
         },
         exportToExcel() {
-            let headers = ['地址', '房屋名称',  '土地面积(m²)', ];
-            let filteredValue = [ 'address', 'roomname',  'space'];
-            const filtedData = this.formatJson(filteredValue, this.localData.data);
-            export_json_to_excel({
-                header: headers,
-                data: filtedData,
-                filename: 'excel-list', //Optional
-                autoWidth: true, //Optional
-                bookType: 'xlsx' //Optional
-            });
-
+            let local_auth = localGet(global.project_key, true);
+            window.open(constants.exportroom+"?token="+local_auth);
         },
         deleteRoom(data) {
             this.sendVal = true;

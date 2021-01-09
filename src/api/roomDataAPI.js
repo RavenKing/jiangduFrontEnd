@@ -646,10 +646,9 @@ function showunitroominfo(data)
 
 function exportroomApi()
 {
-
-    //let local_auth = localGet(global.project_key, true);
+    let local_auth = localGet(global.project_key, true);
     return request({
-        url: constants.createLoanContractApi,
+        url: constants.exportroomApi+"?token="+local_auth,
         method: 'get',
     });
 }

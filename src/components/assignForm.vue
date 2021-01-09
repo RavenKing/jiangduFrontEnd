@@ -4,10 +4,10 @@
 
         <h1>当前房间房间{{index}}</h1>
         <sui-form-fields>
-            <sui-form-field>
+            <!-- <sui-form-field>
                 <label>房间号</label>
                 <sui-input placeholder="房间号" v-model="singleEntry.roomnumber" />
-            </sui-form-field>
+            </sui-form-field> -->
             <!-- <sui-form-field>
                 <label>房间名称</label>
                 <sui-input placeholder="房间名称" v-model="singleEntry.roomname" />
