@@ -129,8 +129,37 @@
             </sui-modal>
         </div>
         <div>
+            <sui-modal v-model="exportData.open" class="modal2">
+                <sui-modal-header style="border-bottom:0;">导出选择</sui-modal-header>
+                <sui-modal-content image>
+                    <sui-form>
+                        <sui-form-fields grouped>
+                            <label>选择导出</label>
+                            <sui-form-field>
+                                <sui-checkbox label="办公" radio value="1" v-model="exportData.kind" />
+                            </sui-form-field>
+                            <sui-form-field>
+                                <sui-checkbox label="经营" radio value="2" v-model="exportData.kind" />
+                            </sui-form-field>
+                            <sui-form-field>
+                                <sui-checkbox label="全部" radio value="0" v-model="exportData.kind" />
+                            </sui-form-field>
+                        </sui-form-fields>
+                    </sui-form>
+                </sui-modal-content>
+                <sui-modal-actions>
+                    <sui-button basic color="red" @click.native="closeModalExport">
+                        取消
+                    </sui-button>
+                    <sui-button basic color="blue" @click.native="openExportUrl">
+                        提交
+                    </sui-button>
+                </sui-modal-actions>
+            </sui-modal>
+        </div>
+        <div>
             <sui-modal class="modal2" v-model="assignForm.open">
-                <sui-modal-header style="border-bottom:0;">分配楼层</sui-modal-header>
+                <sui-modal-header style="border-bottom:0;">输入面积</sui-modal-header>
                 <sui-modal-content image>
                     <assign-form ref='formComponentAssign' :index="selectedRoomInFloorIndex" :singleEntry="selectedRoomInFloor">
                     </assign-form>
@@ -218,7 +247,7 @@
                                         <div>
                                             <sui-list v-show="roomAssignment.length>0">
                                                 <sui-list-item v-for="unit in roomAssignment" :key="unit[0]">
-                                                    {{unit.roomnumber}} {{unit.roomname}}
+                                                    {{unit.roomnumber}} {{unit.space}}(m²)
                                                     <sui-button transparant icon="delete" @click.native="deleteBuildingFloorAssignment(unit)">
                                                     </sui-button>
                                                 </sui-list-item>
@@ -392,6 +421,10 @@ export default {
             modelTitle: "",
             modalMode: "create",
             open: false,
+            exportData: {
+                open: false,
+                kind: "0"
+            },
             filterString: {
                 jiadi: "",
                 diji: ""
@@ -618,7 +651,7 @@ export default {
                 this.roomAssignment.push(data); //没有塞进去
 
             }
-             if (this.context == null || this.context == undefined) {
+            if (this.context == null || this.context == undefined) {
                 this.context = this.$refs.convas.getContext("2d");
             }
             var contextF = this;
@@ -862,7 +895,7 @@ export default {
                             this.roomAssignment.map((one) => {
                                 if (one.id == "room" + index) {
                                     this.context.globalAlpha = 1;
-                                    this.context.strokeText(one.space+"m²", room["room" + index][0] + (room["room" + index][2] / 3), room["room" + index][1] + (room["room" + index][3] / 2));
+                                    this.context.strokeText(one.space + "m²", room["room" + index][0] + (room["room" + index][2] / 3), room["room" + index][1] + (room["room" + index][3] / 2));
                                     textDraw = false;
                                 }
                             })
@@ -903,27 +936,35 @@ export default {
                 y: y
             };
             context.roomInFloor.map((room, index) => {
+                var roomindex=0;
+                if(room["room"+index]==null)
+                {
+                    roomindex=index+1;
+                }else{
+                    roomindex=index;
+                }
+                
                 var leftCornor = {
-                    x: room["room" + index][0],
-                    y: room["room" + index][1]
+                    x: room["room" + roomindex][0],
+                    y: room["room" + roomindex][1]
                 }; //左上坐标
                 var rightCornor = {
-                    x: room["room" + index][0] + room["room" + index][2],
-                    y: room["room" + index][1]
+                    x: room["room" + roomindex][0] + room["room" + roomindex][2],
+                    y: room["room" + roomindex][1]
                 };
                 var leftDown = {
-                    x: room["room" + index][0],
-                    y: room["room" + index][1] + room["room" + index][3]
+                    x: room["room" + roomindex][0],
+                    y: room["room" + roomindex][1] + room["room" + roomindex][3]
                 }
                 var rightDown = {
-                    x: room["room" + index][0] + room["room" + index][2],
-                    y: room["room" + index][1] + room["room" + index][3]
+                    x: room["room" + roomindex][0] + room["room" + roomindex][2],
+                    y: room["room" + roomindex][1] + room["room" + roomindex][3]
                 }
                 if (context.withinZuobiao(checkZuoBiao, leftCornor, rightCornor, leftDown, rightDown)) {
                     context.selectedRoomInFloorIndex = index;
                     context.selectedRoomInFloor = {};
                     context.roomAssignment.map((one) => {
-                        if (one.id == "room" + index) {
+                        if (one.id == "room" + roomindex) {
                             context.selectedRoomInFloor = one;
                         }
                     });
@@ -1042,8 +1083,19 @@ export default {
             });
         },
         exportToExcel() {
+            this.exportData.open = true;
+        },
+        openExportUrl() {
             let local_auth = localGet(global.project_key, true);
-            window.open(constants.exportroom+"?token="+local_auth);
+            if (this.exportData.kind != "0") {
+                window.open(constants.exportroom + "?token=" + local_auth + "&kind=" + this.exportData.kind);
+            } else {
+                window.open(constants.exportroom + "?token=" + local_auth);
+            }
+              this.exportData.open = false;
+        },
+        closeModalExport() {
+            this.exportData.open = false;
         },
         deleteRoom(data) {
             this.sendVal = true;

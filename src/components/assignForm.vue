@@ -1,8 +1,6 @@
 <template lang="html">
 <div>
     <sui-form>
-
-        <h1>当前房间房间{{index}}</h1>
         <sui-form-fields>
             <!-- <sui-form-field>
                 <label>房间号</label>
