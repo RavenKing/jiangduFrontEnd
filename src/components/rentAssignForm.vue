@@ -2,28 +2,22 @@
 <div>
     <sui-form class="marginBottom30">
         <sui-form-fields inline>
-
             <sui-form-field style="width:33.33333%;">
                 <label>单位名称</label>
                 <model-select style="width:100%" :options="unitoptions" v-model="singleEntry.unit_id" placeholder="选择单位" @input="changeUnit">
                 </model-select>
             </sui-form-field>
-
             <sui-form-field style="width:33.33333%;">
                 <label>原出租单位</label>
                 <sui-input style="width:100%" placeholder="原出租单位" v-model="singleEntry.loan_name" />
             </sui-form-field>
-        </sui-form-fields>
-        <sui-form-fields inline>
-
-            <sui-form-field style="width:33.33333%;">
+                        <sui-form-field style="width:33.33333%;">
                 <label>房屋名称</label>
                 <model-select style="width:100%" :options="options" v-model="singleEntry.room_id" placeholder="选择房屋" @input="changeUnit">
                 </model-select>
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields inline>
-
             <sui-form-field style="width:33.33333%;">
                 <label>承租方名称</label>
                 <sui-input style="width:100%" placeholder="承租方名称" v-model="singleEntry.rent_name" />
@@ -67,7 +61,7 @@
         <sui-form-fields>
             <sui-form-field style="width:100%">
                 <label>备注</label>
-                <textarea v-model="singleEntry.memo" />
+                <textarea v-model="singleEntry.memo" rows="3"/>
                 </sui-form-field>
         </sui-form-fields>
         <sui-form-fields inline>               

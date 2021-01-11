@@ -110,7 +110,21 @@
                 <sui-modal-content image>
 
                     <sui-item-group divided>
+                        <div>
+                            <sui-message>
+                                <sui-message-header>注意</sui-message-header>
+                                <sui-message-list>
+                                    <sui-message-item v-show="buildingImage.notification">
+                                        上传后会覆盖原有图层并清除所有信息
+                                    </sui-message-item>
+                                    <sui-message-item>
+                                        上传尺寸应为 500 X 350px
+                                    </sui-message-item>
+                                </sui-message-list>
+                            </sui-message>
+                        </div>
                         <sui-item class="imageModal">
+
                             <sui-image :src="assignList.selectedFloor.url" style="display: inline-block; width:700px" />
                             <!-- <pdf :src="this.assignList.selectedFloor.url"  /> -->
                         </sui-item>
@@ -437,7 +451,8 @@ export default {
             },
             singleBuilding: {},
             buildingImage: {
-                open: false
+                open: false,
+                notification: ""
             },
             assignForm: {
                 open: false,
@@ -606,20 +621,14 @@ export default {
         openImageModal() {
             this.loading = true;
             this.assignList.open = false;
-            if (this.assignList.selectedFloor.cadfile != null) {
+            if (this.assignList.selectedFloor.cadfile != null && this.assignList.selectedFloor.cadfile != "") {
                 this.assignList.selectedFloor.url = constants.fileURL + this.assignList.selectedFloor.cadfile;
-                this.buildingImage.open = true
+                this.buildingImage.open = true;
+                this.buildingImage.notification = true;
                 this.loading = false;
-                // getFileOSSApi(this.assignList.selectedFloor.cadfile).then((file) => {
-                //     console.log(file);
-                //     this.buildingImage.open = true;
-                //     this.loading = false;
-                // }).catch(function () {
-                //     this.loading = false;
-                //     notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
-                // });
             } else {
                 this.buildingImage.open = true;
+                this.buildingImage.notification = false;
                 this.loading = false;
             }
 
@@ -760,14 +769,24 @@ export default {
                 })
             }
             if (this.selectedRoom.chanzhengziliao != "") {
-                this.selectedRoom.chanzhengziliao = JSON.parse(this.selectedRoom.chanzhengziliao)
-                this.selectedRoom.chanzhengziliao.map((one) => {
-                    this.selectedRoom.qitaziliaoList.push(one);
-                })
+                try {
+                    this.selectedRoom.chanzhengziliao = JSON.parse(this.selectedRoom.chanzhengziliao)
+                    this.selectedRoom.chanzhengziliao.map((one) => {
+                        this.selectedRoom.qitaziliaoList.push(one);
+                    })
+                } catch (error) {
+                    console.log("error")
+                    //do nothing
+                }
+
             }
-            this.selectedRoom.qitaziliaoList.map((one) => {
-                one.fileURL = constants.fileURL + one.url;
-            })
+            try {
+                this.selectedRoom.qitaziliaoList.map((one) => {
+                    one.fileURL = constants.fileURL + one.url;
+                })
+            } catch (error) {
+                    console.log("error")
+            }
             this.modalMode = "edit";
             // point 
             if (rowData.lat === null || rowData.lat == "") {
@@ -864,7 +883,7 @@ export default {
                 this.context = this.$refs.convas.getContext("2d");
             }
             this.roomAssignment = [];
-            if (info.room_detail != null) {
+            if (info.room_detail != null && info.room_detail != "") {
                 var zuobiao = JSON.parse(info.room_detail);
                 this.roomInFloor = zuobiao;
                 if (info.room_assign != null) {
@@ -936,14 +955,13 @@ export default {
                 y: y
             };
             context.roomInFloor.map((room, index) => {
-                var roomindex=0;
-                if(room["room"+index]==null)
-                {
-                    roomindex=index+1;
-                }else{
-                    roomindex=index;
+                var roomindex = 0;
+                if (room["room" + index] == null) {
+                    roomindex = index + 1;
+                } else {
+                    roomindex = index;
                 }
-                
+
                 var leftCornor = {
                     x: room["room" + roomindex][0],
                     y: room["room" + roomindex][1]
@@ -1092,7 +1110,7 @@ export default {
             } else {
                 window.open(constants.exportroom + "?token=" + local_auth);
             }
-              this.exportData.open = false;
+            this.exportData.open = false;
         },
         closeModalExport() {
             this.exportData.open = false;
@@ -1322,8 +1340,9 @@ export default {
             if (e.target.files[0] != undefined) {
                 formData.append('ossfile', e.target.files[0]);
                 uploadZiliaoFileApi(formData).then((result) => {
-                    this.updateFloorInfo(result, e.target.files[0]);
-                    this.closeImageModal();
+                    context.updateFloorInfo(result, e.target.files[0]);
+                    e.target.value = "";
+                    context.closeImageModal();
                     //uppdate file ppath
                 }).catch(function () {
                     context.loading = false;
@@ -1332,19 +1351,18 @@ export default {
             }
 
         },
-        updateFloorInfo(result, file) {
+        updateFloorInfo(result) {
             this.assignList.selectedFloor.cadfile = result.data.data;
             this.loading = false;
             var context = this;
             var formData = new FormData();
-            formData.append("png", file)
             formData.append("cadfile", result.data.data)
             formData.append("id", this.assignList.selectedFloor.id)
             formData.append("name", this.assignList.selectedFloor.name)
             updateFloorInfoApi(formData).then((data) => {
-                this.loading = false;
+                context.loading = false;
                 if (data.data.code == 0) {
-                    this.$notify({
+                    context.$notify({
                         group: 'foo',
                         title: '成功上传',
                         text: '成功上传',
