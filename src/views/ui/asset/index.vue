@@ -667,7 +667,8 @@ export default {
             }
             var contextF = this;
             createAssignmentApi({
-                assignment: JSON.stringify(this.roomAssignment),
+                space:data.space.toString(),
+                roomid : data.id,
                 id: this.assignList.selectedFloor.id
             }).then((result) => {
                 this.loading = false;
