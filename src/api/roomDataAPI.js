@@ -653,8 +653,10 @@ function exportroomApi()
     });
 }
 
-
-
+function listloanassignmentbyidr(data)
+{
+    return generalRequet(data,constants.listloanassignmentbyidr)
+}
 function getFloorById(data)
 {
     return generalRequet(data,constants.getFloorByIdApi)
@@ -729,4 +731,5 @@ export {
     createPatrolApi,
     editPatrolApi,
     deletePatrolApi,
+    listloanassignmentbyidr
 }

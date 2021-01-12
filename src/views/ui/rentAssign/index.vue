@@ -94,7 +94,8 @@ import {
     listLoanAssignmentApi,
     createLoanAssignmentApi,
     editLoanAssignmentApi,
-    deleteLoanAssignmentApi
+    deleteLoanAssignmentApi,
+    listloanassignmentbyidr
 } from "@/api/roomDataAPI"
 import {
     getroombyid,
@@ -319,9 +320,80 @@ export default {
         onChangePage(page) {
             this.$refs.vuetable.changePage(page);
         },
+        getDataById(data)
+        {
+            listloanassignmentbyidr(data).then((data)=>{
+                   //this.localData = data.data.data;
+                this.loading = false;
+                this.localData = {
+                    total: 16,
+                    per_page: 5,
+                    current_page: 1,
+                    last_page: 4,
+                    next_page_url: "data.data.data?page=2",
+                    prev_page_url: null,
+                    from: 1,
+                    to: 5,
+                    data: data.data.data
+                }
+                this.localData.data.map((one) => {
+                    var unitBasics = store.getters.unit.unitBasic
+                    if (unitBasics.length > 0) {
+                        unitBasics.map((unit) => {
+                            if (unit.value == one.unit_id) {
+                                one.unit_name = unit.text;
+                            }
+                        })
+                    }
+                    one.starttime = fromShitFormat(one.starttime)
+                    one.endtime = fromShitFormat(one.endtime)
+                    getroombyid(one).then((result) => {
+                        console.log(result);
+                        if (result.data.code == 0) {
+                            one.roomname = result.data.data.roomname;
+                            one.address = result.data.data.address;
+                            this.componentKey++;
+                        }
+                    }).catch(function () {
+                        this.loading = false;
+                        notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
+                    });
+                    switch (one.status) {
+                        case 1:
+                            one.statusText = constants.NEW;
+                            break;
+                        case 2:
+                            one.statusText = constants.PASS;
+                            break;
+                        case 3:
+                            one.statusText = constants.FAIL;
+                            break;
+                        default:
+                            break;
+                    }
+                })
+            })
+        }
     },
     created() {
-        this.refresh();
+
+        let uri = window.location.href.split('?');
+        let getVars = {};
+        if (uri.length == 2) {
+            let vars = uri[1].split('&');
+            let tmp = '';
+            vars.forEach(function (v) {
+                tmp = v.split('=');
+                if (tmp.length == 2)
+                    getVars[tmp[0]] = tmp[1];
+            });
+            console.log(getVars);
+            if(getVars.id)
+            {
+                this.getDataById(getVars);
+            }
+        }
+            this.refresh();
     }
 };
 </script>

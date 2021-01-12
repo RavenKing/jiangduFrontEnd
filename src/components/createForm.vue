@@ -63,8 +63,9 @@
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields>
-            <sui-form-field style="width:25%;">
+            <sui-form-field style="width:80%;">
                 <sui-checkbox label="是否入账" toggle v-model="singleRoom.inaccount" />
+                <sui-button v-show="singleRoom.kindShow" floated="right" content="维护出租管理信息"   @click.prevent="clickToHeTong"/>
             </sui-form-field>
         </sui-form-fields>
     </sui-form>
@@ -75,7 +76,7 @@
 <script>
 import * as lang from "vuejs-datepicker/src/locale";
 export default {
-    props: ['singleRoom', 'clickDingWei'],
+    props: ['singleRoom', 'clickDingWei','clickToHeTong'],
     name: 'form-create',
     components: {
 

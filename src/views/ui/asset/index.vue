@@ -75,7 +75,7 @@
                 <sui-modal-header style="border-bottom:0; margin-bottom:-15px;">{{modelTitle}}</sui-modal-header>
                 <sui-modal-content>
                     <sui-segment>
-                        <form-create ref='formComponent' :singleRoom="selectedRoom"></form-create>
+                        <form-create ref='formComponent' :singleRoom="selectedRoom" :clickToHeTong="changeToChuZuHeTong"></form-create>
                         <chanzheng-form ref='chanZhengForm' :singleRoom="selectedRoom" v-show="selectedRoom.hasproperty"></chanzheng-form>
                     </sui-segment>
                 </sui-modal-content>
@@ -200,9 +200,8 @@
                         <sui-tab :menu="{ attached: false }" @change="tabChange" :active-index.sync="activeIndex">
                             <sui-tab-pane title="基本信息" :attached="false">
                                 <div>
-                                    <form-create ref='formComponent' :singleRoom="selectedRoom" :clickDingWei="clickDingWei"></form-create>
+                                    <form-create ref='formComponent' :singleRoom="selectedRoom" :clickDingWei="clickDingWei" :clickToHeTong="changeToChuZuHeTong"></form-create>
                                 </div>
-
                             </sui-tab-pane>
                             <sui-tab-pane title="产证信息" :attached="false" v-show="selectedRoom.hasproperty" :disabled="!selectedRoom.hasproperty">
                                 <div>
@@ -494,6 +493,9 @@ export default {
     },
 
     methods: {
+        changeToChuZuHeTong() {
+            this.$router.push("rentAssign?id="+this.selectedRoom.id);
+        },
         clickDingWei() {
             this.activeIndex = 5;
             //this.keyword = this.selectedRoom.address;
@@ -754,6 +756,8 @@ export default {
         },
         openAssignSection(rowData) {
             this.selectedRoom = rowData;
+            // this.default
+            this.activeIndex = 0;
             this.selectedRoom.qitaziliaoList = [];
 
             if (this.selectedRoom.qitaziliao != "") {
@@ -785,7 +789,7 @@ export default {
                     one.fileURL = constants.fileURL + one.url;
                 })
             } catch (error) {
-                    console.log("error")
+                console.log("error")
             }
             this.modalMode = "edit";
             // point 
@@ -1157,9 +1161,11 @@ export default {
                         switch (one.kind) {
                             case 2:
                                 one.kindText = "经营性"
+                                one.kindShow= true;
                                 break;
                             case 1:
                                 one.kindText = "办公性"
+                                one.kindShow=false;
                                 break;
 
                             default:
