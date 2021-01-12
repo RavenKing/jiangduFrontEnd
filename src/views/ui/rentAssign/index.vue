@@ -388,12 +388,14 @@ export default {
                     getVars[tmp[0]] = tmp[1];
             });
             console.log(getVars);
-            if(getVars.id)
+            if(getVars.room_id)
             {
                 this.getDataById(getVars);
+                return;
             }
-        }
+        }else{
             this.refresh();
+        }
     }
 };
 </script>

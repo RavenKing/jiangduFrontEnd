@@ -259,7 +259,7 @@
                                     <sui-grid-column :width="5">
                                         <div>
                                             <sui-list v-show="roomAssignment.length>0">
-                                                <sui-list-item v-for="unit in roomAssignment" :key="unit[0]">
+                                                <sui-list-item v-for="unit in roomAssignment" :key="unit[0]" v-show="unit.space">
                                                     {{unit.roomnumber}} {{unit.space}}(m²)
                                                     <sui-button transparant icon="delete" @click.native="deleteBuildingFloorAssignment(unit)">
                                                     </sui-button>
@@ -326,7 +326,6 @@
                                         其他资料
                                     </h4>
                                 </div>
-
                                 <el-upload ref="upload" class="upload-demo" :on-change="uploadZiliaoFileQita" :file-list="fileList">
                                     <el-button size="small" type="primary">点击上传</el-button>
                                     <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
@@ -494,7 +493,7 @@ export default {
 
     methods: {
         changeToChuZuHeTong() {
-            this.$router.push("rentAssign?id="+this.selectedRoom.id);
+            this.$router.push("rentAssign?room_id=" + this.selectedRoom.id);
         },
         clickDingWei() {
             this.activeIndex = 5;
@@ -667,8 +666,8 @@ export default {
             }
             var contextF = this;
             createAssignmentApi({
-                space:data.space.toString(),
-                roomid : data.id,
+                space: data.space.toString(),
+                roomid: data.id,
                 id: this.assignList.selectedFloor.id
             }).then((result) => {
                 this.loading = false;
@@ -883,7 +882,6 @@ export default {
             });
         },
         drawRect(info) {
-
             if (this.context == null || this.context == undefined) {
                 this.context = this.$refs.convas.getContext("2d");
             }
@@ -891,13 +889,33 @@ export default {
             if (info.room_detail != null && info.room_detail != "") {
                 var zuobiao = JSON.parse(info.room_detail);
                 this.roomInFloor = zuobiao;
-                if (info.room_assign != null) {
-                    this.roomAssignment = JSON.parse(info.room_assign);
+                if (info.room_detail != null) {
+                    this.roomAssignment = JSON.parse(info.room_detail);
                     if (Object.keys(this.roomAssignment).length === 0 && this.roomAssignment.constructor === Object) {
                         this.roomAssignment = [];
                     }
+                    var spaceObject = JSON.parse(info.room_space);
+                    var spaceArray = [];
+                    for (var name in spaceObject) {
+                        console.log(name);
+                        spaceArray.push({
+                            room: name,
+                            space: spaceObject[name]
+                        });
+                    }
+                    console.log(spaceArray);
+                    this.roomAssignment.map((one, index) => {
+                        for (var i = 0; i < spaceArray.length; i++) {
+                            one.id = "room" + index;
+                            if (spaceArray[i].room == "room" + index) {
+                                one.space = spaceArray[i].space;
+                            }
+                        }
+                    });
+
                 }
             }
+            console.log(this.roomAssignment);
 
             this.context.strokeStyle = "#FFFFFF";
             if (zuobiao != null) {
@@ -919,8 +937,10 @@ export default {
                             this.roomAssignment.map((one) => {
                                 if (one.id == "room" + index) {
                                     this.context.globalAlpha = 1;
-                                    this.context.strokeText(one.space + "m²", room["room" + index][0] + (room["room" + index][2] / 3), room["room" + index][1] + (room["room" + index][3] / 2));
-                                    textDraw = false;
+                                    if (one.space && one.space != 0) {
+                                        this.context.strokeText(one.space + "m²", room["room" + index][0] + (room["room" + index][2] / 3), room["room" + index][1] + (room["room" + index][3] / 2));
+                                        textDraw = false;
+                                    }
                                 }
                             })
                         }
@@ -1162,11 +1182,11 @@ export default {
                         switch (one.kind) {
                             case 2:
                                 one.kindText = "经营性"
-                                one.kindShow= true;
+                                one.kindShow = true;
                                 break;
                             case 1:
                                 one.kindText = "办公性"
-                                one.kindShow=false;
+                                one.kindShow = false;
                                 break;
 
                             default:
