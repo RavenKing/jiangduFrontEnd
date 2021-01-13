@@ -4,7 +4,7 @@
         <sui-form-fields>
             <!-- <sui-form-field>
                 <label>房间号</label>
-                <sui-input placeholder="房间号" v-model="singleEntry.roomnumber" />
+                <sui-input placeholder="房间号" v-model="singleEntry.id" />
             </sui-form-field> -->
             <!-- <sui-form-field>
                 <label>房间名称</label>

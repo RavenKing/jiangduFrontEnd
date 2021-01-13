@@ -258,11 +258,15 @@
                                     </sui-grid-column>
                                     <sui-grid-column :width="5">
                                         <div>
-                                            <sui-list v-show="roomAssignment.length>0">
-                                                <sui-list-item v-for="unit in roomAssignment" :key="unit[0]" v-show="unit.space">
-                                                    {{unit.roomnumber}} {{unit.space}}(m²)
-                                                    <sui-button transparant icon="delete" @click.native="deleteBuildingFloorAssignment(unit)">
-                                                    </sui-button>
+                                            <sui-list v-show="roomAssignmentTotal.length>0">
+                                                <sui-list-item v-for="unit in roomAssignmentTotal" :key="unit[0]" v-show="unit.space>0">
+                                                    <div class="displayInline">
+                                                        <div class="yello" v-show="unit.type=='bangong'"></div>
+                                                        <div class="purple" v-show="unit.type=='fushu'"></div>
+                                                        <div class="redBand" v-show="unit.type=='leader'"></div>
+                                                        <div class="lvse" v-show="unit.type=='shebei'"></div>
+                                                        {{unit.text}} {{unit.space}}(m²)
+                                                    </div>
                                                 </sui-list-item>
                                             </sui-list>
                                         </div>
@@ -486,6 +490,27 @@ export default {
             roomInFloor: [],
             selectedRoomInFloorIndex: 0,
             roomAssignment: [],
+            roomAssignmentTotal: [{
+                    type: "bangong",
+                    space: 0,
+                    text: "办公"
+                },
+                {
+                    type: "fushu",
+                    space: 0,
+                    text: "附属"
+                },
+                {
+                    type: "leader",
+                    space: 0,
+                    text: "领导"
+                },
+                {
+                    types: 'shebei',
+                    space: 0,
+                    text: "设备"
+                }
+            ],
             selectedRoomInFloor: {}
 
         };
@@ -590,6 +615,7 @@ export default {
                     url: ""
                 };
                 this.roomAssignment = [];
+                this.roomAssignmentTotal = [];
             } else {
                 this.assignList.selectedFloor = params;
                 console.log(params);
@@ -645,6 +671,7 @@ export default {
             console.log(JSON.stringify(data));
             if (this.roomAssignment == null || this.roomAssignment == {}) {
                 this.roomAssignment = [];
+                this.roomAssignmentTotal = [];
             }
             var found = 0;
             this.roomAssignment.map((one) => {
@@ -674,6 +701,7 @@ export default {
                 if (result.data.code == 0) {
                     this.context.clearRect(0, 0, 500, 350);
                     this.roomAssignment = [];
+                    this.roomAssignmentTotal = [];
                     this.getBuildingSection();
                     this.closeAssignModal();
                 } else {
@@ -885,7 +913,15 @@ export default {
             if (this.context == null || this.context == undefined) {
                 this.context = this.$refs.convas.getContext("2d");
             }
+            var tmpSum = {
+                bangong: 0,
+                fushu: 0,
+                leader: 0,
+                shebei: 0,
+                qita:0
+            }
             this.roomAssignment = [];
+            this.roomAssignmentTotal = [];
             if (info.room_detail != null && info.room_detail != "") {
                 var zuobiao = JSON.parse(info.room_detail);
                 this.roomInFloor = zuobiao;
@@ -893,6 +929,7 @@ export default {
                     this.roomAssignment = JSON.parse(info.room_detail);
                     if (Object.keys(this.roomAssignment).length === 0 && this.roomAssignment.constructor === Object) {
                         this.roomAssignment = [];
+                        this.roomAssignmentTotal = [];
                     }
                     var spaceObject = JSON.parse(info.room_space);
                     var spaceArray = [];
@@ -904,18 +941,64 @@ export default {
                         });
                     }
                     console.log(spaceArray);
+
                     this.roomAssignment.map((one, index) => {
                         for (var i = 0; i < spaceArray.length; i++) {
                             one.id = "room" + index;
                             if (spaceArray[i].room == "room" + index) {
                                 one.space = spaceArray[i].space;
+                                switch (one.type) {
+                                    case "bangong":
+                                        tmpSum.bangong += parseInt(one.space);
+                                        break;
+                                    case "fushu":
+                                        tmpSum.fushu += parseInt(one.space);
+                                        break;
+                                    case "leader":
+                                        tmpSum.leader += parseInt(one.space);
+                                        break;
+                                    case "shebei":
+                                        tmpSum.shebei += parseInt(one.space);
+                                        break;
+                                    case "qita":
+                                        tmpSum.qita += parseInt(one.space);
+                                        break;
+                                }
                             }
+
                         }
                     });
 
                 }
             }
             console.log(this.roomAssignment);
+            this.roomAssignmentTotal = [{
+                    type: "bangong",
+                    space: tmpSum.bangong,
+                    text: "办公"
+                },
+                {
+                    type: "fushu",
+                    space: tmpSum.fushu,
+                    text: "附属"
+                },
+                {
+                    type: "leader",
+                    space: tmpSum.leader,
+                    text: "领导"
+                },
+                {
+                    type: "shebei",
+                    space: tmpSum.shebei,
+                    text: "设备"
+                },
+                {
+                    type: "qita",
+                    space: tmpSum.qita,
+                    text: "qita"
+                }
+
+            ]
 
             this.context.strokeStyle = "#FFFFFF";
             if (zuobiao != null) {
@@ -946,10 +1029,18 @@ export default {
                         }
                         if (textDraw) {
                             this.context.globalAlpha = 1;
-                            this.context.strokeText("房间" + index, room["room" + index][0] + (room["room" + index][2] / 2), room["room" + index][1] + (room["room" + index][3] / 2));
+                            try {
+                                this.context.strokeText("房间" + index, room["room" + index][0] + (room["room" + index][2] / 2), room["room" + index][1] + (room["room" + index][3] / 2));
+                            } catch (error) {
+                                console.log("parse error")
+                            }
                         }
                         this.context.globalAlpha = 0;
-                        this.context.strokeRect(room["room" + index][0], room["room" + index][1], room["room" + index][2], room["room" + index][3])
+                        try {
+                            this.context.strokeRect(room["room" + index][0], room["room" + index][1], room["room" + index][2], room["room" + index][3])
+                        } catch (error) {
+                            console.log("parse error")
+                        }
                     });
                 }
 
@@ -1012,6 +1103,15 @@ export default {
                         }
                     });
                     switch (room.type) {
+                        case "yewuyongfang":
+                            context.selectedRoomInFloor.type = "业务用房"
+                            break;
+                        case "qita":
+                            context.selectedRoomInFloor.type = "其他"
+                            break;
+                        case "shebei":
+                            context.selectedRoomInFloor.type = "设备"
+                            break;
                         case "bangong":
                             context.selectedRoomInFloor.type = "办公"
                             break;
@@ -1097,6 +1197,7 @@ export default {
                     if (result.data.code == 0) {
                         // this.context.clearRect(0, 0, 500, 350);
                         this.roomAssignment = [];
+                        this.roomAssignmentTotal = [];
                         this.getBuildingSection();
                         // this.closeAssignModal();
                         notifySomething(constants.DELETESUCCESS, constants.DELETESUCCESS, constants.typeSuccess);
@@ -1540,5 +1641,38 @@ export default {
     box-shadow: none;
     font-weight: 1000;
     color: #75ADBF;
+}
+
+.yello {
+    background-color: #E6A23C;
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+}
+
+.purple {
+    background-color: purple;
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+}
+
+.redBand {
+    background-color: red;
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+}
+
+.lvse {
+    background-color: rgb(0, 255, 200);
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+}
+
+.displayInline {
+    display: inline;
+
 }
 </style>

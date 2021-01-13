@@ -794,7 +794,6 @@ export default {
             this.leaderfenpei = data
             this.selectedRoomInFloor['data'] = data
             this.leader.open = true;
-            console.log(this.tree)
             this.openAssignSection(data);
         },
         //tree
