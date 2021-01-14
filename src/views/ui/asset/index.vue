@@ -1479,11 +1479,12 @@ export default {
             }
 
         },
-        updateFloorInfo(result) {
+        updateFloorInfo(result,file) {
             this.assignList.selectedFloor.cadfile = result.data.data;
             this.loading = false;
             var context = this;
             var formData = new FormData();
+              formData.append("png", file)
             formData.append("cadfile", result.data.data)
             formData.append("id", this.assignList.selectedFloor.id)
             formData.append("name", this.assignList.selectedFloor.name)

@@ -94,7 +94,8 @@ const constantsJinhui = {
     editPatrolApi:"/editpatrol",
     deletePatrolApi:"/delpatrol",
     exportroomApi:"/exportroom",
-    listloanassignmentbyidr:"/listloanassignmentbyid"
+    listloanassignmentbyidr:"/listloanassignmentbyid",
+    assignRoomDetail:"/assignfloordetail"
     
 
 

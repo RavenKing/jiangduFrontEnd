@@ -661,9 +661,13 @@ function getFloorById(data)
 {
     return generalRequet(data,constants.getFloorByIdApi)
 }
+function assignRoomDetailApi(data)
+{
+    return generalRequet(data,constants.assignRoomDetail)
 
+}
 export {
-    
+    assignRoomDetailApi,
     editRentContractApi,
     getRoomDataApi,
     createRoomApi,
