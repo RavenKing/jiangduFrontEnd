@@ -4,7 +4,7 @@
         <sui-form-fields>
             <sui-form-field>
                 <label>房间号</label>
-                <sui-input placeholder="房间号" v-model="singleEntry.roomnumber" disabled />
+                <sui-input placeholder="房间号" v-model="assignEntry.roomnumber" />
             </sui-form-field>
             <sui-form-field>
                 <label>房间名字</label>
@@ -41,7 +41,7 @@
                 <sui-input placeholder="副处级" v-model="assignEntry.fuchuji" type="number" />
             </sui-form-field>
         </sui-form-fields>
-        <sui-form-fields>
+        <sui-form-fields v-show="singleEntry.type=='领导办公室'||singleEntry.type=='办公'">
             <sui-form-field>
                 <label>科级</label>
                 <sui-input placeholder="科级" v-model="assignEntry.keji" type="number" />
