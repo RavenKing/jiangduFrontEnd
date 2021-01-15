@@ -409,16 +409,37 @@ export default {
             data.room_id = this.selectedRoomInFloor.id;
             data.building_id = this.assignForm.building_id;
             data.floor_id = this.leaderfenpei.floor_id;
+            var dict = {};
             if (data.type != "领导办公室") {
                 if (data.assign) {
-                    var dict = {
+                    dict = {
                         keji: data.assign.keji,
                         fukeji: data.assign.fukeji,
                         keyuan: data.assign.keyuan,
-                        qita: data.assign.qita
+                        qita: data.assign.qita,
+                        juji: data.assign.juji,
+                        fujuji: data.assign.fujuji,
+                        chuji: data.assign.chuji,
+                        fuchuji: data.assign.fuchuji,
+                        roomname: data.assign.roomname,
+                        beizhu: data.assign.beizhu
                     }
                 }
                 data.detail = JSON.stringify(dict);
+            } else if (data.type == "领导办公室") {
+                if (data.assign) {
+                    dict = {
+                        keji: data.assign.keji,
+                        fukeji: data.assign.fukeji,
+                        keyuan: data.assign.keyuan,
+                        qita: data.assign.qita,
+                        roomname: data.assign.roomname,
+                        beizhu: data.assign.beizhu
+
+                    }
+                }
+                data.detail = JSON.stringify(dict);
+
             }
             assignRoomDetailApi(data).then((result) => {
                 this.loading = false;

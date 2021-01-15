@@ -7,6 +7,14 @@
                 <sui-input placeholder="房间号" v-model="singleEntry.roomnumber" disabled />
             </sui-form-field>
             <sui-form-field>
+                <label>房间名字</label>
+                <sui-input placeholder="房间名字" v-model="assignEntry.roomname" />
+            </sui-form-field>
+            <sui-form-field>
+                <label>备注</label>
+                <sui-input placeholder="备注" v-model="assignEntry.beizhu" />
+            </sui-form-field>
+            <sui-form-field>
                 <label>面积</label>
                 <sui-input placeholder="面积" v-model="singleEntry.space" type="number" disabled />
             </sui-form-field>
