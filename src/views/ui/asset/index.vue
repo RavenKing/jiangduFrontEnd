@@ -997,8 +997,6 @@ export default {
                             });
                         }
                     }
-                    console.log(spaceArray);
-
                     this.roomAssignment.map((one, index) => {
                         for (var i = 0; i < spaceArray.length; i++) {
                             one.id = "room" + index;
@@ -1022,7 +1020,6 @@ export default {
                                         break;
                                 }
                             }
-
                         }
                     });
                     if (otherObject != {}) {
@@ -1031,7 +1028,6 @@ export default {
 
                 }
             }
-            console.log(this.roomAssignment);
             this.roomAssignmentTotal = [{
                     type: "bangong",
                     space: tmpSum.bangong,
