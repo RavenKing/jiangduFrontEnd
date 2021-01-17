@@ -446,6 +446,7 @@ export default {
                 this.loading = false;
                 if (result.data.code == 0) {
                     //contextF.drawRect(this.select);
+                    this.refreshFloor(this.leaderfenpei.floor_id);
                     notifySomething("分配成功", "分配成功", constants.typeSuccess);
                 } else {
                     notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
@@ -527,6 +528,20 @@ export default {
             }
 
         },
+
+        refreshFloor(id) {
+            getFloorById({
+                floor_id: id
+            }).then((result) => {
+                if (result.data.code == 0) {
+                    this.assignList.selectedFloor.url = constants.fileURL + result.data.data.cadfile;
+                    if (this.context) {
+                        this.context.clearRect(0, 0, 500, 350);
+                    }
+                    this.drawRect(result.data.data);
+                }
+            })
+        },
         onClickLou(params) {
             this.tabChange();
             if (params.floor_id == undefined) {
@@ -537,17 +552,7 @@ export default {
                 this.roomAssignment = [];
             } else {
                 this.assignList.selectedFloor = params;
-                getFloorById({
-                    floor_id: params.floor_id
-                }).then((result) => {
-                    if (result.data.code == 0) {
-                        this.assignList.selectedFloor.url = constants.fileURL + result.data.data.cadfile;
-                        if (this.context) {
-                            this.context.clearRect(0, 0, 500, 350);
-                        }
-                        this.drawRect(result.data.data);
-                    }
-                })
+                this.refreshFloor(params.floor_id);
                 this.treeData.map((building) => {
                     if (building.id == params.pid) {
                         this.assignList.selectedBuilding = building;
