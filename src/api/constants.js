@@ -31,7 +31,7 @@ const constantsJinhui = {
     createAssignmentRentApi:hostname+'/assignrentroom',
     baiduMapCheck:"http://api.map.baidu.com/geoconv/v1/?from=1&to=5&ak=vWGxcQlbdPyDTihpzGpiVeXcha5fdmea",
     createBuildingApi:hostname+"/assignroombuilding",
-    assignroomApi:hostname+"/assignroom",
+    assignroomApi:hostname+"/assignunitfloor",
     listBuildingApi:hostname+"/listroombuilding",
     createBuildingFloorApi:hostname+"/generatebuildingfloor",
     deleteBuildingApi:hostname+"/removeroombuilding",

@@ -235,7 +235,6 @@
                                             </vue-tree-list>
                                         </div>
                                     </sui-grid-column>
-
                                     <sui-grid-column :width="8">
                                         <sui-statistic horizontal size="medium">
                                             <sui-statistic-value>
@@ -249,7 +248,21 @@
                                         </sui-statistic>
                                         <img :src="assignList.selectedFloor.url" ref="backImage" v-show="false" />
                                         <canvas ref="canvas" id="myCanvas" width="500" height="350" />
-
+                                        <div v-show="selectedRoomInFloor.type">
+                                            <sui-grid>
+                                                <sui-grid-row>
+                                                    <sui-grid-column :width="12">
+                                                        <assign-form ref='formComponentAssign' :index="selectedRoomInFloorIndex" :singleEntry="selectedRoomInFloor">
+                                                        </assign-form>
+                                                    </sui-grid-column>
+                                                    <sui-grid-column :width="4">
+                                                        <sui-button basic color="blue" @click.native="createAssignment">
+                                                            提交
+                                                        </sui-button>
+                                                    </sui-grid-column>
+                                                </sui-grid-row>
+                                            </sui-grid>
+                                        </div>
                                         <div v-show="assignList.selectedBuilding">
                                             <sui-button v-show="assignList.selectedFloor.name!==undefined" @click.native="openImageModal()">
                                                 楼层图
@@ -265,6 +278,7 @@
                                                         <div class="purple" v-show="unit.type=='fushu'"></div>
                                                         <div class="redBand" v-show="unit.type=='leader'"></div>
                                                         <div class="lvse" v-show="unit.type=='shebei'"></div>
+                                                        <div class="baise" v-show="unit.type=='other'"></div>
                                                         {{unit.text}} {{unit.space}}(m²)
                                                     </div>
                                                 </sui-list-item>
@@ -666,7 +680,11 @@ export default {
             data.room_id = this.assignForm.room_id;
             data.building_id = this.assignForm.building_id;
             data.floor_id = this.assignForm.floor_id;
-            data.id = "room" + this.selectedRoomInFloorIndex;
+            if (this.selectedRoomInFloorIndex != "roomother") {
+                data.id = "room" + this.selectedRoomInFloorIndex;
+            } else {
+                data.id = this.selectedRoomInFloorIndex;
+            }
             data.isleader = this.assignForm.isleader;
             console.log(JSON.stringify(data));
             if (this.roomAssignment == null || this.roomAssignment == {}) {
@@ -692,6 +710,9 @@ export default {
                 this.context = this.$refs.convas.getContext("2d");
             }
             var contextF = this;
+            if (!data.space) {
+                data.space = 0
+            }
             createAssignmentApi({
                 space: data.space.toString(),
                 roomid: data.id,
@@ -702,8 +723,10 @@ export default {
                     this.context.clearRect(0, 0, 500, 350);
                     this.roomAssignment = [];
                     this.roomAssignmentTotal = [];
-                    this.getBuildingSection();
-                    this.closeAssignModal();
+                    // this.getBuildingSection();
+                    this.refreshFloor(this.assignList.selectedFloor.id)
+
+                    // this.closeAssignModal();
                 } else {
                     notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                 }
@@ -727,8 +750,8 @@ export default {
             context.assignForm.building_id = building.id;
             context.assignForm.floor_id = floor.id;
             //TODO floor_id
-            context.assignForm.open = true;
-            context.assignList.open = false;
+            //context.assignForm.open = true;
+            //context.assignList.open = false;
         },
 
         createBuildingFloor(data) {
@@ -784,21 +807,33 @@ export default {
         },
         openAssignSection(rowData) {
             this.selectedRoom = rowData;
+            this.selectedRoomInFloor = {}
+            this.selectedRoomInFloorIndex = 0
             // this.default
             this.activeIndex = 0;
             this.selectedRoom.qitaziliaoList = [];
 
             if (this.selectedRoom.qitaziliao != "") {
-                this.selectedRoom.qitaziliao = JSON.parse(this.selectedRoom.qitaziliao)
-                this.selectedRoom.qitaziliao.map((one) => {
-                    this.selectedRoom.qitaziliaoList.push(one);
-                })
+
+                try {
+                    this.selectedRoom.qitaziliao = JSON.parse(this.selectedRoom.qitaziliao)
+                    this.selectedRoom.qitaziliao.map((one) => {
+                        this.selectedRoom.qitaziliaoList.push(one);
+                    })
+                } catch (error) {
+                    console.log("error")
+                }
+
             }
             if (this.selectedRoom.tuzhiziliao != "") {
-                this.selectedRoom.tuzhiziliao = JSON.parse(this.selectedRoom.tuzhiziliao)
-                this.selectedRoom.tuzhiziliao.map((one) => {
-                    this.selectedRoom.qitaziliaoList.push(one);
-                })
+                try {
+                    this.selectedRoom.tuzhiziliao = JSON.parse(this.selectedRoom.tuzhiziliao)
+                    this.selectedRoom.tuzhiziliao.map((one) => {
+                        this.selectedRoom.qitaziliaoList.push(one);
+                    })
+                } catch (error) {
+                    console.log("error")
+                }
             }
             if (this.selectedRoom.chanzhengziliao != "") {
                 try {
@@ -887,6 +922,20 @@ export default {
                 notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
             });
         },
+        refreshFloor(id) {
+            getFloorById({
+                floor_id: id
+            }).then((result) => {
+                if (result.data.code == 0) {
+                    this.assignList.selectedFloor.url = constants.fileURL + result.data.data.cadfile;
+                    if (this.context) {
+                        this.context.clearRect(0, 0, 500, 350);
+                    }
+                    this.drawRect(result.data.data);
+                }
+            })
+        },
+
         getBuildingFloorSection(building) {
             var data = {
                 building_id: building.id
@@ -918,7 +967,7 @@ export default {
                 fushu: 0,
                 leader: 0,
                 shebei: 0,
-                qita:0
+                qita: 0
             }
             this.roomAssignment = [];
             this.roomAssignmentTotal = [];
@@ -933,12 +982,20 @@ export default {
                     }
                     var spaceObject = JSON.parse(info.room_space);
                     var spaceArray = [];
+                    var otherObject = {};
                     for (var name in spaceObject) {
-                        console.log(name);
-                        spaceArray.push({
-                            room: name,
-                            space: spaceObject[name]
-                        });
+                        //console.log(name);
+                        if (name == "roomother") {
+                            otherObject.id = "roomother";
+                            otherObject.space = spaceObject[name];
+                            tmpSum.qita = spaceObject[name];
+                            otherObject.type = "其他";
+                        } else {
+                            spaceArray.push({
+                                room: name,
+                                space: spaceObject[name]
+                            });
+                        }
                     }
                     console.log(spaceArray);
 
@@ -968,6 +1025,9 @@ export default {
 
                         }
                     });
+                    if (otherObject != {}) {
+                        this.roomAssignment.push(otherObject)
+                    }
 
                 }
             }
@@ -993,9 +1053,9 @@ export default {
                     text: "设备"
                 },
                 {
-                    type: "qita",
+                    type: "other",
                     space: tmpSum.qita,
-                    text: "qita"
+                    text: "其他"
                 }
 
             ]
@@ -1058,14 +1118,23 @@ export default {
                 //2
                 var x = event.clientX - rect.left * (500 / rect.width);
                 var y = event.clientY - rect.top * (350 / rect.height);
-                console.log("x:" + x + ",y:" + y);
-                contextThis.whereIsTheRoom(x, y, contextThis)
+
+                var withinOrNot = contextThis.whereIsTheRoom(x, y, contextThis)
+                console.log("within or Not " + withinOrNot);
+                if (!withinOrNot) {
+                    contextThis.selectedRoomInFloorIndex = "roomother";
+                    contextThis.selectedRoomInFloor = {
+                        type: "其他",
+                        space: tmpSum.qita
+                    }
+                }
                 //contextThis.context.clearRect(0, 0, 500, 350);
                 contextThis.openAssignModalNew(contextThis.assignList.selectedBuilding, contextThis.assignList.selectedFloor, contextThis)
             }, false);
 
         },
         whereIsTheRoom(x, y, context) {
+            var withinOrNot = false;
             const checkZuoBiao = {
                 x: x,
                 y: y
@@ -1095,6 +1164,7 @@ export default {
                     y: room["room" + roomindex][1] + room["room" + roomindex][3]
                 }
                 if (context.withinZuobiao(checkZuoBiao, leftCornor, rightCornor, leftDown, rightDown)) {
+                    withinOrNot = true;
                     context.selectedRoomInFloorIndex = index;
                     context.selectedRoomInFloor = {};
                     context.roomAssignment.map((one) => {
@@ -1129,6 +1199,7 @@ export default {
                     }
                 }
             });
+            return withinOrNot;
         },
         withinZuobiao(checkZuoBiao, leftCornor, rightCornor, leftDown, rightDown) {
 
@@ -1479,12 +1550,12 @@ export default {
             }
 
         },
-        updateFloorInfo(result,file) {
+        updateFloorInfo(result, file) {
             this.assignList.selectedFloor.cadfile = result.data.data;
             this.loading = false;
             var context = this;
             var formData = new FormData();
-              formData.append("png", file)
+            formData.append("png", file)
             formData.append("cadfile", result.data.data)
             formData.append("id", this.assignList.selectedFloor.id)
             formData.append("name", this.assignList.selectedFloor.name)
@@ -1670,6 +1741,16 @@ export default {
     width: 10px;
     height: 10px;
     display: inline-block;
+}
+
+.baise {
+    background-color: white;
+    border: 1px;
+    height: 10px;
+    display: inline-block;
+    width: 10px;
+    border-color: black;
+    border-style: solid;
 }
 
 .displayInline {
