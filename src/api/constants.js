@@ -43,6 +43,7 @@ const constantsJinhui = {
     deleteRentRoomAssignmentApi: hostname+"/delassignrentroom",
     assignRentRoomApi: hostname+"/assignrentroom",
     getleaderroombyunitApi: hostname+"/getroomstat",
+    getRoomStatApi: hostname+"/getroomstat",
     //MR request
     getMRAPI:"/listmr",
     updateMRAPI:"",

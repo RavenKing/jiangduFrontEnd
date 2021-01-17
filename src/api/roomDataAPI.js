@@ -664,7 +664,10 @@ function getFloorById(data)
 function assignRoomDetailApi(data)
 {
     return generalRequet(data,constants.assignRoomDetail)
-
+}
+function getRoomStatApi(data)
+{
+    return generalRequet(data,constants.getRoomStatApi)
 }
 export {
     assignRoomDetailApi,
@@ -735,5 +738,6 @@ export {
     createPatrolApi,
     editPatrolApi,
     deletePatrolApi,
-    listloanassignmentbyidr
+    listloanassignmentbyidr,
+    getRoomStatApi
 }

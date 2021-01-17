@@ -424,7 +424,8 @@ import {
     createAssignmentApi,
     deleteBuildingApi,
     getBuildingFloorApi,
-    getFloorById
+    getFloorById,
+    getRoomStatApi
 } from "@/api/roomDataAPI";
 export default {
     name: "MyVuetable",
@@ -878,6 +879,23 @@ export default {
             this.assignList.open = true;
 
             this.getBuildingSection();
+            // get room Stats
+            this.getRoomStat({
+                unit_id: this.selectedRoom.id
+            })
+
+        },
+        getRoomStat(data) {
+            getRoomStatApi(data).then((result) => {
+                if (result.data.code == 0) {
+                    var roomSpaceData=result.data.data;
+                    this.selectedRoom.space7=roomSpaceData.bangong[1];//办公
+                    this.selectedRoom.space8=roomSpaceData.bangong[0];//办公
+                    this.selectedRoom.space28=roomSpaceData.shebei[1];//设备
+                    this.selectedRoom.space40=roomSpaceData.fushu[1];//附属
+                    this.selectedRoom.space25=roomSpaceData.yewuyongfang[1];//业务用房
+                }
+            })
 
         },
         getBuildingSection() {
@@ -1506,8 +1524,8 @@ export default {
             console.log(this.filterString);
         },
         onPaginationData(paginationData) {
-            this.$refs.pagination.setPaginationData(paginationData);
-            this.$refs.paginationInfo.setPaginationData(paginationData);
+             this.$refs.pagination.setPaginationData(paginationData);
+            // this.$refs.paginationInfo.setPaginationData(paginationData);
         },
         onChangePage(page) {
             this.loading = true;
