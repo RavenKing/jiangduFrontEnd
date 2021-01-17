@@ -30,11 +30,11 @@
             </sui-form-field>
             <sui-form-field>
                 <label>副局级</label>
-                <sui-input placeholder="副局级" v-model="assignEntry.fuju" type="number" />
+                <sui-input placeholder="副局级" v-model="assignEntry.fujuji" type="number" />
             </sui-form-field>
             <sui-form-field>
                 <label>处级</label>
-                <sui-input placeholder="处级" v-model="assignEntry.chuju" type="number" />
+                <sui-input placeholder="处级" v-model="assignEntry.chuji" type="number" />
             </sui-form-field>
             <sui-form-field>
                 <label>副处级</label>

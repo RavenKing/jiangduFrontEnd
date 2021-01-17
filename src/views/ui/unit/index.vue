@@ -417,25 +417,26 @@ export default {
                         fukeji: data.assign.fukeji,
                         keyuan: data.assign.keyuan,
                         qita: data.assign.qita,
-                        juji: data.assign.juji,
-                        fujuji: data.assign.fujuji,
-                        chuji: data.assign.chuji,
-                        fuchuji: data.assign.fuchuji,
                         roomname: data.assign.roomname,
-                        beizhu: data.assign.beizhu
+                        beizhu: data.assign.beizhu,
+                        roomnumber: data.assign.roomnumber
                     }
                 }
                 data.detail = JSON.stringify(dict);
             } else if (data.type == "领导办公室") {
                 if (data.assign) {
                     dict = {
+                        juji: data.assign.juji,
+                        fujuji: data.assign.fujuji,
+                        chuji: data.assign.chuji,
+                        fuchuji: data.assign.fuchuji,
                         keji: data.assign.keji,
                         fukeji: data.assign.fukeji,
                         keyuan: data.assign.keyuan,
                         qita: data.assign.qita,
                         roomname: data.assign.roomname,
-                        beizhu: data.assign.beizhu
-
+                        beizhu: data.assign.beizhu,
+                        roomnumber: data.assign.roomnumber
                     }
                 }
                 data.detail = JSON.stringify(dict);
@@ -769,7 +770,13 @@ export default {
                         if (this.roomAssignment.length != null) {
                             this.roomAssignment.map((one) => {
                                 if (one.id == "room" + index) {
-                                    this.roomAssignment.roomnumber = "房间" + index;
+                                    if (one.assign) {
+                                        if (!one.assign.roomnumber) {
+                                            one.roomnumber = "房间" + index;
+                                        } else {
+                                            one.roomnumber = one.assign.roomnumber
+                                        }
+                                    }
                                     this.context.globalAlpha = 1;
                                     this.context.strokeText(one.roomnumber, room["room" + index][0] + (room["room" + index][2] / 3), room["room" + index][1] + (room["room" + index][3] / 2));
                                     textDraw = false;
