@@ -1179,6 +1179,7 @@ export default {
         },
         clickConfirmDelete() {
             this.loading = true;
+            var context = this;
             if (this.deletetype == 'fenpei') {
                 var input = {}
                 input['room_id'] = this.deleteTarget.room_id
@@ -1186,6 +1187,7 @@ export default {
                 input['floor_id'] = this.deleteTarget.floor_id
                 input['unit_id'] = this.selectedRoom.id
                 console.log(this.deleteTarget)
+
                 if (this.deleteTarget.type1 == '租赁房屋') {
                     console.log('租赁房屋')
                     deleteRentRoomAssignmentApi(input).then(() => {
@@ -1208,12 +1210,19 @@ export default {
                                 to: 5,
                                 data: res_data
                             }
-                        })
-                        this.loading = false
+                        }).catch(function () {
+                            context.loading = false;
+                            notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
+                        });
+                        context.loading = false
+                    }).catch(function () {
+                        context.loading = false;
+                        notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                     });
 
                 } else {
                     deleteBuildingFloorAssignmentApi(input).then(() => {
+                        this.loading = false
                         getUnitApiByid(this.selectedRoom.id).then((data) => {
                             var res_data = data.data.data['building_info']
                             for (var i = res_data.length - 1; i >= 0; i--) {
@@ -1233,8 +1242,14 @@ export default {
                                 to: 5,
                                 data: res_data
                             }
-                        })
-                        this.loading = false
+                        }).catch(function () {
+                            context.loading = false;
+                            notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
+                        });
+                        context.loading = false
+                    }).catch(function () {
+                        context.loading = false;
+                        notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                     });
 
                 }
