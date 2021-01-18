@@ -162,7 +162,7 @@
 
                     <sui-grid :columns="2" relaxed="very">
 
-                        <sui-grid-column :width="11">
+                        <sui-grid-column :width="11" v-show="assignList.selectedRoom.type1 != '租赁房屋'">
                             <sui-statistic horizontal size="big">
                                 <sui-statistic-value>
                                     {{assignList.selectedBuilding.name}}
@@ -542,6 +542,16 @@ export default {
                 }
             })
         },
+        clearRect() {
+            this.selectedRoomInFloorIndex = 0;
+            this.selectedRoomInFloor = {
+                assign: {}
+            };
+            this.roomAssignment = [];
+            if (this.context) {
+                this.context.clearRect(0, 0, 500, 350);
+            }
+        },
         onClickLou(params) {
             this.tabChange();
             if (params.floor_id == undefined) {
@@ -549,8 +559,12 @@ export default {
                 this.assignList.selectedFloor = {
                     url: ""
                 };
-                this.roomAssignment = [];
+
+                this.clearRect();
+                // clear Rect
+
             } else {
+                this.clearRect()
                 this.assignList.selectedFloor = params;
                 this.refreshFloor(params.floor_id);
                 this.treeData.map((building) => {
