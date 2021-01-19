@@ -39,7 +39,7 @@ const constantsJinhui = {
     uploadUrlApi:hostname+"/uploaddwg",
     getOSSURLApi:hostname+"/getpdf",
     updateFloorApi:hostname+"/editbuildingfloor",
-    deleteBuildingFloorAssignmentApi:hostname+"/delassignroom",
+    deleteBuildingFloorAssignmentApi:hostname+"/unassignunitfloor",
     deleteRentRoomAssignmentApi: hostname+"/delassignrentroom",
     assignRentRoomApi: hostname+"/assignrentroom",
     getleaderroombyunitApi: hostname+"/getroomstat",

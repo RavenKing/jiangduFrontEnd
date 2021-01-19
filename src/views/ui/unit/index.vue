@@ -270,12 +270,12 @@ import {
     deleteBuildingFloorAssignmentApi,
     delleaderroomApi,
     createLeaderAssignApi,
-    deleteRentRoomAssignmentApi,
+    // deleteRentRoomAssignmentApi,
     getBuildingFloorApi,
     getBuildingListApi,
     getFloorById,
     assignroomApi,
-    assignRentRoomApi,
+    //  assignRentRoomApi,
     getleaderroombyunitApi,
     getlistleaderroomApi,
     assignRoomDetailApi
@@ -409,6 +409,7 @@ export default {
             data.room_id = this.selectedRoomInFloor.id;
             data.building_id = this.assignForm.building_id;
             data.floor_id = this.leaderfenpei.floor_id;
+            data.unit_id = this.selectedRoom.id;
             var dict = {};
             if (data.type != "领导办公室") {
                 if (data.assign) {
@@ -1187,72 +1188,36 @@ export default {
                 input['floor_id'] = this.deleteTarget.floor_id
                 input['unit_id'] = this.selectedRoom.id
                 console.log(this.deleteTarget)
-
-                if (this.deleteTarget.type1 == '租赁房屋') {
-                    console.log('租赁房屋')
-                    deleteRentRoomAssignmentApi(input).then(() => {
-                        getUnitApiByid(this.selectedRoom.id).then((data) => {
-                            var res_data = data.data.data['building_info']
-                            for (var i = res_data.length - 1; i >= 0; i--) {
-                                if (res_data[i]['type1'] == 'self')
-                                    res_data[i]['type1'] = '自有房屋'
-                                else
-                                    res_data[i]['type1'] = '租赁房屋'
-                            }
-                            this.fenpeilocalData = {
-                                total: 16,
-                                per_page: 5,
-                                current_page: 1,
-                                last_page: 4,
-                                next_page_url: "data.data.data?page=2",
-                                prev_page_url: null,
-                                from: 1,
-                                to: 5,
-                                data: res_data
-                            }
-                        }).catch(function () {
-                            context.loading = false;
-                            notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
-                        });
-                        context.loading = false
+                deleteBuildingFloorAssignmentApi(input).then(() => {
+                    this.loading = false
+                    getUnitApiByid(this.selectedRoom.id).then((data) => {
+                        var res_data = data.data.data['building_info']
+                        for (var i = res_data.length - 1; i >= 0; i--) {
+                            if (res_data[i]['type1'] == 'self')
+                                res_data[i]['type1'] = '自有房屋'
+                            else
+                                res_data[i]['type1'] = '租赁房屋'
+                        }
+                        this.fenpeilocalData = {
+                            total: 16,
+                            per_page: 5,
+                            current_page: 1,
+                            last_page: 4,
+                            next_page_url: "data.data.data?page=2",
+                            prev_page_url: null,
+                            from: 1,
+                            to: 5,
+                            data: res_data
+                        }
                     }).catch(function () {
                         context.loading = false;
                         notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                     });
-
-                } else {
-                    deleteBuildingFloorAssignmentApi(input).then(() => {
-                        this.loading = false
-                        getUnitApiByid(this.selectedRoom.id).then((data) => {
-                            var res_data = data.data.data['building_info']
-                            for (var i = res_data.length - 1; i >= 0; i--) {
-                                if (res_data[i]['type1'] == 'self')
-                                    res_data[i]['type1'] = '自有房屋'
-                                else
-                                    res_data[i]['type1'] = '租赁房屋'
-                            }
-                            this.fenpeilocalData = {
-                                total: 16,
-                                per_page: 5,
-                                current_page: 1,
-                                last_page: 4,
-                                next_page_url: "data.data.data?page=2",
-                                prev_page_url: null,
-                                from: 1,
-                                to: 5,
-                                data: res_data
-                            }
-                        }).catch(function () {
-                            context.loading = false;
-                            notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
-                        });
-                        context.loading = false
-                    }).catch(function () {
-                        context.loading = false;
-                        notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
-                    });
-
-                }
+                    context.loading = false
+                }).catch(function () {
+                    context.loading = false;
+                    notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
+                });
 
             }
             if (this.deletetype == 'leader') {
@@ -1445,16 +1410,14 @@ export default {
                     'floor_id': fenpei_data[i].floor_id,
                     'space': parseInt(fenpei_data[i].space)
                 })
-            }
-
-            if (this.selectedfenpei.roomtype == '1') {
-                var input = {}
-                input['room_id'] = this.selectedfenpei.room_id
-                input['unit_id'] = this.selectedRoom.id
-                input['valuelist'] = JSON.stringify(value_list)
-
-                console.log(input)
-                assignroomApi(input).then((data) => {
+                var payload = {
+                    unit_id: this.selectedRoom.id,
+                    room_id: this.selectedfenpei.room_id,
+                    'building_id': fenpei_data[i].building_id,
+                    'floor_id': fenpei_data[i].floor_id,
+                    type: this.selectedRoom.roomtype
+                }
+                assignroomApi(payload).then((data) => {
                     if (data.data.code == 0) {
                         notifySomething("分配成功", "创建领导分配成功", "success");
                         this.refreshFenpei(this.selectedRoom.id);
@@ -1464,36 +1427,56 @@ export default {
                         this.refreshFenpei(this.selectedRoom.id);
                         this.fenpeiopen = false;
                     }
+                })
+            }
 
-                })
-            }
-            if (this.selectedfenpei.roomtype == '2') {
-                input = {}
-                // console.log(this.selectedfenpei)
-                input['room_id'] = this.selectedfenpei.room_id
-                input['unit_id'] = this.selectedRoom.id
-                input['type'] = 2
-                input['space'] = parseInt(this.$refs.FormFenpei.rentspace)
-                // var rent_list = [{
-                //     'space': parseInt(this.$refs.FormFenpei.rentspace),
-                //     'building_id': 0,
-                //     'floor_id': 0,
-                // }]
-                // input['valuelist'] = JSON.stringify(rent_list)
-                console.log(input)
-                assignRentRoomApi(input).then((data) => {
-                    if (data.data.code == 0) {
-                        notifySomething("分配成功", "创建领导分配成功", "success");
-                        this.refreshFenpei(this.selectedRoom.id);
-                        this.fenpeiopen = false;
-                    } else {
-                        notifySomething("分配失败", "创建领导分配失败", "fail");
-                        this.refreshFenpei(this.selectedRoom.id);
-                        this.fenpeiopen = false;
-                    }
-                    // console.log(data)
-                })
-            }
+            // if (this.selectedfenpei.roomtype == '1') {
+            //     var input = {}
+            //     input['room_id'] = this.selectedfenpei.room_id
+            //     input['unit_id'] = this.selectedRoom.id
+            //     input['valuelist'] = JSON.stringify(value_list)
+
+            //     console.log(input)
+            //     assignroomApi(input).then((data) => {
+            //         if (data.data.code == 0) {
+            //             notifySomething("分配成功", "创建领导分配成功", "success");
+            //             this.refreshFenpei(this.selectedRoom.id);
+            //             this.fenpeiopen = false;
+            //         } else {
+            //             notifySomething("分配失败", "创建领导分配失败", "fail");
+            //             this.refreshFenpei(this.selectedRoom.id);
+            //             this.fenpeiopen = false;
+            //         }
+
+            //     })
+            // }
+            // if (this.selectedfenpei.roomtype == '2') {
+            //     input = {}
+            //     // console.log(this.selectedfenpei)
+            //     input['room_id'] = this.selectedfenpei.room_id
+            //     input['unit_id'] = this.selectedRoom.id
+            //     input['type'] = 2
+            //     input['space'] = parseInt(this.$refs.FormFenpei.rentspace)
+            //     // var rent_list = [{
+            //     //     'space': parseInt(this.$refs.FormFenpei.rentspace),
+            //     //     'building_id': 0,
+            //     //     'floor_id': 0,
+            //     // }]
+            //     // input['valuelist'] = JSON.stringify(rent_list)
+            //     console.log(input)
+            //     assignRentRoomApi(input).then((data) => {
+            //         if (data.data.code == 0) {
+            //             notifySomething("分配成功", "创建领导分配成功", "success");
+            //             this.refreshFenpei(this.selectedRoom.id);
+            //             this.fenpeiopen = false;
+            //         } else {
+            //             notifySomething("分配失败", "创建领导分配失败", "fail");
+            //             this.refreshFenpei(this.selectedRoom.id);
+            //             this.fenpeiopen = false;
+            //         }
+            //         // console.log(data)
+            //     })
+            // }
 
         }
 
