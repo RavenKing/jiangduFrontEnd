@@ -270,6 +270,7 @@ import {
     deleteBuildingFloorAssignmentApi,
     delleaderroomApi,
     createLeaderAssignApi,
+    getCurrentAssignApi,
     // deleteRentRoomAssignmentApi,
     getBuildingFloorApi,
     getBuildingListApi,
@@ -371,6 +372,7 @@ export default {
                 building_id: null,
                 space: null
             },
+            currentAssign: {},
             selectedBuildingID: null,
             selectedRoom: {
                 name: "",
@@ -531,17 +533,26 @@ export default {
         },
 
         refreshFloor(id) {
-            getFloorById({
+            getCurrentAssignApi({
                 floor_id: id
             }).then((result) => {
                 if (result.data.code == 0) {
-                    this.assignList.selectedFloor.url = constants.fileURL + result.data.data.cadfile;
-                    if (this.context) {
-                        this.context.clearRect(0, 0, 500, 350);
-                    }
-                    this.drawRect(result.data.data);
+                    this.currentAssign = JSON.parse(result.data.data);
+                    console.log(this.currentAssign);
+                    getFloorById({
+                        floor_id: id
+                    }).then((result) => {
+                        if (result.data.code == 0) {
+                            this.assignList.selectedFloor.url = constants.fileURL + result.data.data.cadfile;
+                            if (this.context) {
+                                this.context.clearRect(0, 0, 500, 350);
+                            }
+                            this.drawRect(result.data.data);
+                        }
+                    })
                 }
-            })
+            });
+
         },
         clearRect() {
             this.selectedRoomInFloorIndex = 0;
@@ -589,6 +600,7 @@ export default {
             this.loading = false;
             if (rowData.type1 == '自有房屋') {
                 this.onClickLou(rowData);
+
             }
             //this.getBuildingSection();
 
@@ -698,25 +710,45 @@ export default {
                     var assignArray = [];
                     if (assignObject != null) {
                         for (var roomNew in assignObject) {
-                            console.log(roomNew);
                             assignArray.push({
                                 room: roomNew,
                                 assign: JSON.parse(assignObject[roomNew])
                             });
                         }
                     }
+                    // get current Room Assign Info
+                    var currentArray = [];
+                    if (this.currentAssign != {}) {
+                        for (var assignNew in this.currentAssign) {
+                            currentArray.push({
+                                room: assignNew,
+                                unit_id: this.currentAssign[assignNew]
+                            });
+                        }
+                    }
+
                     this.roomAssignment.map((one, index) => {
+                        //current Room
+                        one.id = "room" + index;
+                        one.status = false;
+                        for (var t = 0; t < currentArray.length; t++) {
+                            if (one.id == currentArray[t].room) {
+                                if (currentArray[t].unit_id != this.selectedRoom.id) {
+                                    one.status = true;
+                                }
+                            }
+                        }
+
                         //assign info 
                         for (var ij = 0; ij < assignArray.length; ij++) {
-                            one.id = "room" + index;
-                            if (assignArray[ij].room == "room" + index) {
+
+                            if (assignArray[ij].room == one.id) {
                                 one.assign = assignArray[ij].assign;
                             }
                         }
                         //space info
                         for (var i = 0; i < spaceArray.length; i++) {
-                            one.id = "room" + index;
-                            if (spaceArray[i].room == "room" + index) {
+                            if (spaceArray[i].room == one.id) {
                                 one.space = spaceArray[i].space;
                                 switch (one.type) {
                                     case "bangong":

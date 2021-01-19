@@ -4,15 +4,15 @@
         <sui-form-fields>
             <sui-form-field>
                 <label>房间号</label>
-                <sui-input placeholder="房间号" v-model="assignEntry.roomnumber" />
+                <sui-input placeholder="房间号" v-model="assignEntry.roomnumber" :disabled="singleEntry.status" />
             </sui-form-field>
             <sui-form-field>
                 <label>房间名字</label>
-                <sui-input placeholder="房间名字" v-model="assignEntry.roomname" />
+                <sui-input placeholder="房间名字" v-model="assignEntry.roomname" :disabled="singleEntry.status" />
             </sui-form-field>
             <sui-form-field>
                 <label>备注</label>
-                <sui-input placeholder="备注" v-model="assignEntry.beizhu" />
+                <sui-input placeholder="备注" v-model="assignEntry.beizhu" :disabled="singleEntry.status" />
             </sui-form-field>
             <sui-form-field>
                 <label>面积</label>
@@ -26,37 +26,37 @@
         <sui-form-fields v-show="singleEntry.type=='领导办公室'">
             <sui-form-field>
                 <label>局级</label>
-                <sui-input placeholder="局级" v-model="assignEntry.juji" type="number" />
+                <sui-input placeholder="局级" v-model="assignEntry.juji" type="number" :disabled="singleEntry.status" />
             </sui-form-field>
             <sui-form-field>
                 <label>副局级</label>
-                <sui-input placeholder="副局级" v-model="assignEntry.fujuji" type="number" />
+                <sui-input placeholder="副局级" v-model="assignEntry.fujuji" type="number" :disabled="singleEntry.status" />
             </sui-form-field>
             <sui-form-field>
                 <label>处级</label>
-                <sui-input placeholder="处级" v-model="assignEntry.chuji" type="number" />
+                <sui-input placeholder="处级" v-model="assignEntry.chuji" type="number" :disabled="singleEntry.status" />
             </sui-form-field>
             <sui-form-field>
                 <label>副处级</label>
-                <sui-input placeholder="副处级" v-model="assignEntry.fuchuji" type="number" />
+                <sui-input placeholder="副处级" v-model="assignEntry.fuchuji" type="number" :disabled="singleEntry.status" />
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields v-show="singleEntry.type=='领导办公室'||singleEntry.type=='办公'">
             <sui-form-field>
                 <label>科级</label>
-                <sui-input placeholder="科级" v-model="assignEntry.keji" type="number" />
+                <sui-input placeholder="科级" v-model="assignEntry.keji" type="number" :disabled="singleEntry.status" />
             </sui-form-field>
             <sui-form-field>
                 <label>副科级</label>
-                <sui-input placeholder="副科级" v-model="assignEntry.fukeji" type="number" />
+                <sui-input placeholder="副科级" v-model="assignEntry.fukeji" type="number" :disabled="singleEntry.status" />
             </sui-form-field>
             <sui-form-field>
                 <label>科员</label>
-                <sui-input placeholder="科员" v-model="assignEntry.keyuan" type="number" />
+                <sui-input placeholder="科员" v-model="assignEntry.keyuan" type="number" :disabled="singleEntry.status" />
             </sui-form-field>
             <sui-form-field>
                 <label>其他</label>
-                <sui-input placeholder="其他" v-model="assignEntry.qita" type="number" />
+                <sui-input placeholder="其他" v-model="assignEntry.qita" type="number" :disabled="singleEntry.status" />
             </sui-form-field>
         </sui-form-fields>
     </sui-form>
