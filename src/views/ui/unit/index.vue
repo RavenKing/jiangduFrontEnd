@@ -1187,7 +1187,12 @@ export default {
                 input['building_id'] = this.deleteTarget.building_id
                 input['floor_id'] = this.deleteTarget.floor_id
                 input['unit_id'] = this.selectedRoom.id
-                console.log(this.deleteTarget)
+                if (this.deleteTarget.type1 == "自有房屋") {
+                    input['type'] = "1";
+                } else {
+                    input['type'] = "2";
+                }
+                // delete detail
                 deleteBuildingFloorAssignmentApi(input).then(() => {
                     this.loading = false
                     getUnitApiByid(this.selectedRoom.id).then((data) => {

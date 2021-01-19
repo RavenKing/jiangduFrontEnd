@@ -669,6 +669,10 @@ function getRoomStatApi(data)
 {
     return generalRequet(data,constants.getRoomStatApi)
 }
+// function deleteRoomAssignDetail(data)
+// {
+//     return generalRequet(data,constants.deleteRoomAssignDetail)
+// }
 export {
     assignRoomDetailApi,
     editRentContractApi,

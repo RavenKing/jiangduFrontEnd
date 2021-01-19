@@ -1,5 +1,7 @@
 const hostname= "";
 const constantsJinhui = {
+    
+    //deleteRoomAssignDetail:""
     LoginURL:hostname+"/login",
     roomGetAPI:hostname+"/listroom",
     roomCreateAPI:hostname+'/createroom',
