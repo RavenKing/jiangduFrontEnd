@@ -1,14 +1,14 @@
 export default [
   {
-    name: "out_room_name",
+    name: "roomname",
     title: '房屋名称',
     width: "20%",
-    sortField: "out_room_name",
+    sortField: "roomname",
     titleClass: "center aligned",
     dataClass: "center aligned",
   },
   {
-    name: "building_name",
+    name: "buildingname",
     sortField: "building_name",
     title: '楼名',
     width: "15%",
@@ -16,8 +16,8 @@ export default [
     dataClass: "center aligned",
   },
   {
-    name: "floor_name",
-    sortField: "floor_name",
+    name: "floorname",
+    sortField: "floorname",
     title: '楼层',
     width: "15%",
     titleClass: "center aligned",
@@ -40,8 +40,8 @@ export default [
     dataClass: "center aligned",
   },
   {
-    name: "leader",
-    title: '领导级别',
+    name: "keji",
+    title: '科级',
     width: "20%",
     height:"100px",
     sortField: "leader",
@@ -49,8 +49,26 @@ export default [
     dataClass: "aligned",
   },
   {
-    name: "roomname",
-    title: '办公室名称',
+    name: "fukeji",
+    title: '副科级',
+    width: "20%",
+    sortField: "roomname",
+    titleClass: "center aligned",
+    dataClass: "center aligned",
+  },
+  
+  {
+    name: "keyuan",
+    title: '科员',
+    width: "20%",
+    sortField: "roomname",
+    titleClass: "center aligned",
+    dataClass: "center aligned",
+  },
+  
+  {
+    name: "qita",
+    title: '其他',
     width: "20%",
     sortField: "roomname",
     titleClass: "center aligned",
@@ -61,14 +79,6 @@ export default [
     name: "space",
     sortField: "space",
     title: '面积(m²)',
-    width: "15%",
-    titleClass: "center aligned",
-    dataClass: "center aligned",
-  },
-  {
-    name: "action",
-    sortField: "action",
-    title: '操作',
     width: "15%",
     titleClass: "center aligned",
     dataClass: "center aligned",

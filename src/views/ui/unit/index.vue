@@ -254,13 +254,13 @@ import {
     createLeaderAssignApi,
     getCurrentAssignApi,
     // deleteRentRoomAssignmentApi,
-    getBuildingFloorApi,
-    getBuildingListApi,
+    //  getBuildingFloorApi,
+    // getBuildingListApi,
     getFloorById,
     assignroomApi,
     //  assignRentRoomApi,
     getleaderroombyunitApi,
-    getlistleaderroomApi,
+    //getlistleaderroomApi,
     assignRoomDetailApi
 } from "@/api/roomDataAPI";
 
@@ -582,74 +582,7 @@ export default {
             this.loading = false;
             if (rowData.type1 == '自有房屋') {
                 this.onClickLou(rowData);
-
             }
-            //this.getBuildingSection();
-
-        },
-        getBuildingSection() {
-            let data = {};
-            data.room_id = this.assignList.selectedRoom.room_id;
-            var context = this;
-            // get room
-            getBuildingListApi(data).then((result) => {
-                this.loading = false;
-                this.assignList.selectedFloor = {
-                    url: ""
-                };
-                this.assignList.selectedBuilding = {
-                    name: ""
-                };
-                //get floor
-                this.assignList.buildings = [];
-                this.assignList.buildings = result.data.data;
-                let root = [];
-                this.assignList.buildings.map((building) => {
-                    building.building_id = building.id;
-                    building.pid = 0;
-                    building.dragDisabled = true;
-                    building.addTreeNodeDisabled = true;
-                    building.addLeafNodeDisabled = true;
-                    building.editLeafNodeDisabled = true;
-                    building.delLeafNodeDisabled = true;
-                    building.editNodeDisabled = true;
-                    building.delNodeDisabled = false;
-                    building.children = [];
-                    root.push(building);
-                    this.getBuildingFloorSection(building);
-                })
-                if (this.assignList.buildings.length > 0) {
-                    this.selectedBuildingID = this.assignList.buildings[0].id;
-                }
-                this.treeData = root;
-                this.assignList.open = true;
-                // this.ComponentKey++;
-            }).catch(function () {
-                context.loading = false;
-                notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
-            });
-        },
-        getBuildingFloorSection(building) {
-            var data = {
-                building_id: building.id
-            }
-            var context = this;
-            //console.log(data);
-            getBuildingFloorApi(data).then((result) => {
-                building.floors = result.data.data;
-                building.floors.map((floor) => {
-                    floor.pid = building.id;
-                    floor.isLeaf = true;
-                    floor.floor_id = floor.id;
-                    floor.disabled = true;
-                    building.children.push(floor)
-                })
-                this.loutree = new Tree(this.treeData);
-                // this.drawRect()
-            }).catch(function () {
-                context.loading = false;
-                notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
-            });
         },
         tabChange() {
             this.context = this.$refs.canvas.getContext("2d");
@@ -1083,69 +1016,132 @@ export default {
                 var res_data = data.data.data
                 console.log(res_data)
                 var lingdao_list = []
-                for (var i = res_data.length - 1; i >= 0; i--) {
-                    var out_room_name = res_data[i]['room_name']
-                    var room_assign = res_data[i]['room_assign']
-                    var building_name = res_data[i]['building_name']
-                    var floor_name = res_data[i]['floor_name']
-                    var room_details = res_data[i]['room_detail']
-                    for (var j = room_assign.length - 1; j >= 0; j--) {
-                        room_assign[j]['building_name'] = building_name
-                        room_assign[j]['floor_name'] = floor_name
+                lingdao_list = res_data
+                res_data.map((one) => {
 
-                        var room_id = room_assign[j]['id']
-                        var room_type = ''
-                        for (var k = room_details.length - 1; k >= 0; k--) {
-                            // eslint-disable-next-line no-prototype-builtins
-                            if (room_details[k].hasOwnProperty(room_id)) {
-                                room_type = room_details[k]['type']
-                            }
-                        }
-                        if (room_type == 'yewu') {
-                            room_type = '业务'
-                        }
-                        if (room_type == 'bangong') {
-                            room_type = '办公'
-                        }
-                        if (room_type == 'shebei') {
-                            room_type = '设备'
-                        }
-                        if (room_type == 'fushu') {
-                            room_type = '附属'
-                        }
-                        room_assign[j]['room_type'] = room_type
-                        room_assign[j]['out_room_name'] = out_room_name
-                        lingdao_list.push(room_assign[j])
+                    //     {
+                    //     type: "bangong",
+                    //     space: tmpSum.bangong,
+                    //     text: "办公"
+                    // },
+                    // {
+                    //     type: "fushu",
+                    //     space: tmpSum.fushu,
+                    //     text: "附属"
+                    // },
+                    // {
+                    //     type: "leader",
+                    //     space: tmpSum.leader,
+                    //     text: "领导"
+                    // },
+                    // {
+                    //     type: "shebei",
+                    //     space: tmpSum.shebei,
+                    //     text: "设备"
+                    // },
+                    // {
+                    //     type: "other",
+                    //     space: tmpSum.qita,
+                    //     text: "其他"
+                    // }
+                    switch (one.type) {
+                        case 'bangong':
+                            one.room_type = "办公";
+                            break;
+
+                        case 'fushu':
+                            one.room_type = "附属";
+                            break;
+
+                        case 'leader':
+                            one.room_type = "领导";
+                            break;
+
+                        case 'shebei':
+                            one.room_type = "设备";
+                            break;
+
+                        case 'other':
+                            one.room_type = "其他";
+                            break;
 
                     }
+                })
+                // for (var i = res_data.length - 1; i >= 0; i--) {
+                //     // var out_room_name = res_data[i]['room_name']
+                //     // var room_assign = res_data[i]['room_assign']
+                //     // var building_name = res_data[i]['building_name']
+                //     // var floor_name = res_data[i]['floor_name']
+                //     // var room_details = res_data[i]['room_detail']
+                //     // for (var j = room_assign.length - 1; j >= 0; j--) {
+                //     //     room_assign[j]['building_name'] = building_name
+                //     //     room_assign[j]['floor_name'] = floor_name
 
+                //     //     var room_id = room_assign[j]['id']
+                //     //     var room_type = ''
+                //     //     for (var k = room_details.length - 1; k >= 0; k--) {
+                //     //         // eslint-disable-next-line no-prototype-builtins
+                //     //         if (room_details[k].hasOwnProperty(room_id)) {
+                //     //             room_type = room_details[k]['type']
+                //     //         }
+                //     //     }
+                //     //     if (room_type == 'yewu') {
+                //     //         room_type = '业务'
+                //     //     }
+                //     //     if (room_type == 'bangong') {
+                //     //         room_type = '办公'
+                //     //     }
+                //     //     if (room_type == 'shebei') {
+                //     //         room_type = '设备'
+                //     //     }
+                //     //     if (room_type == 'fushu') {
+                //     //         room_type = '附属'
+                //     //     }
+                //     //     room_assign[j]['room_type'] = room_type
+                //     //     room_assign[j]['out_room_name'] = out_room_name
+                //     //     lingdao_list.push(room_assign[j])
+
+                //     // }
+
+                // }
+                console.log(lingdao_list)
+                this.lingdaoData = {
+                    total: 16,
+                    per_page: 5,
+                    current_page: 1,
+                    last_page: 4,
+                    next_page_url: "data.data.data?page=2",
+                    prev_page_url: null,
+                    from: 1,
+                    to: 5,
+                    data: lingdao_list
                 }
 
-                getlistleaderroomApi(this.selectedRoom.id).then((data) => {
-                    this.loading = false;
-                    var rent_room = data.data.data
-                    console.log('leader room')
-                    for (var k = rent_room.length - 1; k >= 0; k--) {
-                        rent_room[k]['out_room_name'] = rent_room[k]['room_name']
-                        rent_room[k]['roomnumber'] = rent_room[k]['room']
-                        rent_room[k]['room_rent_type'] = true
-                    }
+                // getlistleaderroomApi(this.selectedRoom.id).then((data) => {
+                //     this.loading = false;
+                //     var rent_room = data.data.data
+                //     console.log('leader room')
+                //     for (var k = rent_room.length - 1; k >= 0; k--) {
+                //         rent_room[k]['out_room_name'] = rent_room[k]['room_name']
+                //         rent_room[k]['roomnumber'] = rent_room[k]['room']
+                //         rent_room[k]['room_rent_type'] = true
+                //     }
 
-                    lingdao_list = lingdao_list.concat(rent_room)
-                    console.log(lingdao_list)
-                    this.lingdaoData = {
-                        total: 16,
-                        per_page: 5,
-                        current_page: 1,
-                        last_page: 4,
-                        next_page_url: "data.data.data?page=2",
-                        prev_page_url: null,
-                        from: 1,
-                        to: 5,
-                        data: lingdao_list
-                    }
+                //     lingdao_list = lingdao_list.concat(rent_room)
+                //     console.log(lingdao_list)
+                //     this.lingdaoData = {
+                //         total: 16,
+                //         per_page: 5,
+                //         current_page: 1,
+                //         last_page: 4,
+                //         next_page_url: "data.data.data?page=2",
+                //         prev_page_url: null,
+                //         from: 1,
+                //         to: 5,
+                //         data: lingdao_list
+                //     }
 
-                })
+                // })
 
             })
 
