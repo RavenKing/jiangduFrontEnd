@@ -139,24 +139,6 @@
 
         <dialog-bar v-model="sendVal" type="danger" title="是否要删除" :content="deleteTarget.text" v-on:cancel="clickCancel()" @danger="clickConfirmDelete()" @confirm="clickConfirmDelete()" dangerText="确认删除"></dialog-bar>
         <div>
-            <sui-modal class="modal2" v-model="open">
-                <sui-modal-header style="border-bottom:0; margin-bottom:-15px;">{{modelTitle}}</sui-modal-header>
-                <sui-modal-content scrolling>
-                    <div>
-                        <form-create ref='formComponent' :singleRoom="selectedfenpei"></form-create>
-                    </div>
-                </sui-modal-content>
-                <sui-modal-actions>
-                    <sui-button basic color="red" @click.native="closeModal">
-                        取消
-                    </sui-button>
-                    <sui-button v-if="modalMode !== 'check'" basic color="blue" @click.native="toggle">
-                        提交
-                    </sui-button>
-                </sui-modal-actions>
-            </sui-modal>
-        </div>
-        <div>
             <sui-modal class="modal2" v-model="leader.open" :componentKey="componentKey">
                 <sui-modal-content scrolling>
 
@@ -1433,13 +1415,22 @@ export default {
         onChangePage(page) {
             this.$refs.vuetable.changePage(page);
         },
+        resetAndCloseFenpei: function () {
+            this.fenpeiopen = false;
+            this.selectedfenpei = {
+                unit: '',
+                room: '',
+                roomtype: '',
+                roomname: '',
+                ziyousource: [],
+                rentroomoptions: []
+            }
+        },
         closeModal: function () {
-            this.open = false;
-            this.fenpeiopen = false
+            this.resetAndCloseFenpei();
         },
         newfenpei() {
             var fenpei_data = this.$refs.FormFenpei.fenpei_data
-            console.log('newfenpei')
             var value_list = []
             for (var i = fenpei_data.length - 1; i >= 0; i--) {
                 value_list.push({
@@ -1458,11 +1449,13 @@ export default {
                     if (data.data.code == 0) {
                         notifySomething("分配成功", "创建领导分配成功", "success");
                         this.refreshFenpei(this.selectedRoom.id);
-                        this.fenpeiopen = false;
+                        this.resetAndCloseFenpei();
                     } else {
                         notifySomething("分配失败", "创建领导分配失败", "fail");
                         this.refreshFenpei(this.selectedRoom.id);
                         this.fenpeiopen = false;
+                        this.resetAndCloseFenpei();
+
                     }
                 })
             }

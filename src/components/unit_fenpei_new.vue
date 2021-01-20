@@ -13,8 +13,6 @@
                 <sui-checkbox radio name="type" label="租赁房屋" value="2" v-model="singleRoom.roomtype" />
             </sui-form-field>
         </sui-form-fields>
-
-
             <sui-form-fields v-if="singleRoom.roomtype == '1'">
                 <sui-form-field class="width300">
                     <label>选择房屋</label>

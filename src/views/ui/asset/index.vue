@@ -815,7 +815,6 @@ export default {
             this.selectedRoom.qitaziliaoList = [];
 
             if (this.selectedRoom.qitaziliao != "") {
-
                 try {
                     this.selectedRoom.qitaziliao = JSON.parse(this.selectedRoom.qitaziliao)
                     this.selectedRoom.qitaziliao.map((one) => {
@@ -888,12 +887,12 @@ export default {
         getRoomStat(data) {
             getRoomStatApi(data).then((result) => {
                 if (result.data.code == 0) {
-                    var roomSpaceData=result.data.data;
-                    this.selectedRoom.space7=roomSpaceData.bangong[1];//办公
-                    this.selectedRoom.space8=roomSpaceData.bangong[0];//办公
-                    this.selectedRoom.space28=roomSpaceData.shebei[1];//设备
-                    this.selectedRoom.space40=roomSpaceData.fushu[1];//附属
-                    this.selectedRoom.space25=roomSpaceData.yewuyongfang[1];//业务用房
+                    var roomSpaceData = result.data.data;
+                    this.selectedRoom.space7 = roomSpaceData.bangong[1]; //办公
+                    this.selectedRoom.space8 = roomSpaceData.bangong[0]; //办公
+                    this.selectedRoom.space28 = roomSpaceData.shebei[1]; //设备
+                    this.selectedRoom.space40 = roomSpaceData.fushu[1]; //附属
+                    this.selectedRoom.space25 = roomSpaceData.yewuyongfang[1]; //业务用房
                 }
             })
 
@@ -1446,51 +1445,53 @@ export default {
                     notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                 });
             } else if (this.modalMode == "edit") {
-
+                this.selectedRoom.qitaziliao = JSON.stringify("none");
+                this.selectedRoom.tuzhiziliao = JSON.stringify("none");
+                this.selectedRoom.chanzhengziliao = JSON.stringify("none");
                 // 有list的时候 ，，不为空时 merge。
-                if (this.fileList.length > 0) {
-                    if (this.selectedRoom.qitaziliao != "") {
-                        this.selectedRoom.qitaziliao = this.selectedRoom.qitaziliao.concat(this.fileList);
-                        this.selectedRoom.qitaziliao = JSON.stringify(this.selectedRoom.qitaziliao);
-                    } else {
-                        // 为空时 直接等于
-                        this.selectedRoom.qitaziliao = JSON.stringify(this.fileList);
-                    }
-                    //重置
-                    this.fileList = [];
-                    //没有新添加的时候
-                } else {
-                    //如果没有值 "" 不干嘛， 有值的话 直接stringify
-                    if (this.selectedRoom.qitaziliao != "") {
-                        this.selectedRoom.qitaziliao = JSON.stringify(this.selectedRoom.qitaziliao);
-                    }
-                }
-                if (this.tuzhiZiLiao.length > 0) {
-                    if (this.selectedRoom.tuzhiziliao != "") {
-                        this.selectedRoom.tuzhiziliao = this.selectedRoom.tuzhiziliao.concat(this.tuzhiZiLiao);
-                        this.selectedRoom.tuzhiziliao = JSON.stringify(this.selectedRoom.tuzhiziliao);
-                    } else {
-                        this.selectedRoom.tuzhiziliao = JSON.stringify(this.tuzhiZiLiao);
-                    }
-                    this.tuzhiZiLiao = [];
-                } else {
-                    if (this.selectedRoom.tuzhiziliao != "") {
-                        this.selectedRoom.tuzhiziliao = JSON.stringify(this.selectedRoom.tuzhiziliao)
-                    }
-                }
-                if (this.chanzhenZiLiao.length > 0) {
-                    if (this.selectedRoom.chanzhengziliao != "") {
-                        this.selectedRoom.chanzhengziliao = this.selectedRoom.chanzhengziliao.concat(this.chanzhenZiLiao)
-                        this.selectedRoom.chanzhengziliao = JSON.stringify(this.selectedRoom.chanzhengziliao);
-                    } else {
-                        this.selectedRoom.chanzhengziliao = JSON.stringify(this.chanzhenZiLiao);
-                    }
-                    this.chanzhenZiLiao = [];
-                } else {
-                    if (this.selectedRoom.chanzhengziliao != "") {
-                        this.selectedRoom.chanzhengziliao = JSON.stringify(this.selectedRoom.chanzhengziliao);
-                    }
-                }
+                // if (this.fileList.length > 0) {
+                //     if (this.selectedRoom.qitaziliao != "") {
+                //         this.selectedRoom.qitaziliao = this.selectedRoom.qitaziliao.concat(this.fileList);
+                //         this.selectedRoom.qitaziliao = JSON.stringify(this.selectedRoom.qitaziliao);
+                //     } else {
+                //         // 为空时 直接等于
+                //         this.selectedRoom.qitaziliao = JSON.stringify(this.fileList);
+                //     }
+                //     //重置
+                //     this.fileList = [];
+                //     //没有新添加的时候
+                // } else {
+                //     //如果没有值 "" 不干嘛， 有值的话 直接stringify
+                //     if (this.selectedRoom.qitaziliao != "") {
+                //         this.selectedRoom.qitaziliao = JSON.stringify(this.selectedRoom.qitaziliao);
+                //     }
+                // }
+                // if (this.tuzhiZiLiao.length > 0) {
+                //     if (this.selectedRoom.tuzhiziliao != "") {
+                //         this.selectedRoom.tuzhiziliao = this.selectedRoom.tuzhiziliao.concat(this.tuzhiZiLiao);
+                //         this.selectedRoom.tuzhiziliao = JSON.stringify(this.selectedRoom.tuzhiziliao);
+                //     } else {
+                //         this.selectedRoom.tuzhiziliao = JSON.stringify(this.tuzhiZiLiao);
+                //     }
+                //     this.tuzhiZiLiao = [];
+                // } else {
+                //     if (this.selectedRoom.tuzhiziliao != "") {
+                //         this.selectedRoom.tuzhiziliao = JSON.stringify(this.selectedRoom.tuzhiziliao)
+                //     }
+                // }
+                // if (this.chanzhenZiLiao.length > 0) {
+                //     if (this.selectedRoom.chanzhengziliao != "") {
+                //         this.selectedRoom.chanzhengziliao = this.selectedRoom.chanzhengziliao.concat(this.chanzhenZiLiao)
+                //         this.selectedRoom.chanzhengziliao = JSON.stringify(this.selectedRoom.chanzhengziliao);
+                //     } else {
+                //         this.selectedRoom.chanzhengziliao = JSON.stringify(this.chanzhenZiLiao);
+                //     }
+                //     this.chanzhenZiLiao = [];
+                // } else {
+                //     if (this.selectedRoom.chanzhengziliao != "") {
+                //         this.selectedRoom.chanzhengziliao = JSON.stringify(this.selectedRoom.chanzhengziliao);
+                //     }
+                // }
                 updateRoomApi(this.selectedRoom).then((result) => {
                     if (result.data.code == 0) {
                         this.closeModal();
@@ -1524,7 +1525,7 @@ export default {
             console.log(this.filterString);
         },
         onPaginationData(paginationData) {
-             this.$refs.pagination.setPaginationData(paginationData);
+            this.$refs.pagination.setPaginationData(paginationData);
             // this.$refs.paginationInfo.setPaginationData(paginationData);
         },
         onChangePage(page) {
