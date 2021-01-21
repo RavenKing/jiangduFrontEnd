@@ -1445,53 +1445,61 @@ export default {
                     notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                 });
             } else if (this.modalMode == "edit") {
-                this.selectedRoom.qitaziliao = JSON.stringify("none");
-                this.selectedRoom.tuzhiziliao = JSON.stringify("none");
-                this.selectedRoom.chanzhengziliao = JSON.stringify("none");
+                // this.selectedRoom.qitaziliao = JSON.stringify([])
+                // this.selectedRoom.tuzhiziliao = JSON.stringify([])
+                // this.selectedRoom.chanzhengziliao = JSON.stringify([])
                 // 有list的时候 ，，不为空时 merge。
-                // if (this.fileList.length > 0) {
-                //     if (this.selectedRoom.qitaziliao != "") {
-                //         this.selectedRoom.qitaziliao = this.selectedRoom.qitaziliao.concat(this.fileList);
-                //         this.selectedRoom.qitaziliao = JSON.stringify(this.selectedRoom.qitaziliao);
-                //     } else {
-                //         // 为空时 直接等于
-                //         this.selectedRoom.qitaziliao = JSON.stringify(this.fileList);
-                //     }
-                //     //重置
-                //     this.fileList = [];
-                //     //没有新添加的时候
-                // } else {
-                //     //如果没有值 "" 不干嘛， 有值的话 直接stringify
-                //     if (this.selectedRoom.qitaziliao != "") {
-                //         this.selectedRoom.qitaziliao = JSON.stringify(this.selectedRoom.qitaziliao);
-                //     }
-                // }
-                // if (this.tuzhiZiLiao.length > 0) {
-                //     if (this.selectedRoom.tuzhiziliao != "") {
-                //         this.selectedRoom.tuzhiziliao = this.selectedRoom.tuzhiziliao.concat(this.tuzhiZiLiao);
-                //         this.selectedRoom.tuzhiziliao = JSON.stringify(this.selectedRoom.tuzhiziliao);
-                //     } else {
-                //         this.selectedRoom.tuzhiziliao = JSON.stringify(this.tuzhiZiLiao);
-                //     }
-                //     this.tuzhiZiLiao = [];
-                // } else {
-                //     if (this.selectedRoom.tuzhiziliao != "") {
-                //         this.selectedRoom.tuzhiziliao = JSON.stringify(this.selectedRoom.tuzhiziliao)
-                //     }
-                // }
-                // if (this.chanzhenZiLiao.length > 0) {
-                //     if (this.selectedRoom.chanzhengziliao != "") {
-                //         this.selectedRoom.chanzhengziliao = this.selectedRoom.chanzhengziliao.concat(this.chanzhenZiLiao)
-                //         this.selectedRoom.chanzhengziliao = JSON.stringify(this.selectedRoom.chanzhengziliao);
-                //     } else {
-                //         this.selectedRoom.chanzhengziliao = JSON.stringify(this.chanzhenZiLiao);
-                //     }
-                //     this.chanzhenZiLiao = [];
-                // } else {
-                //     if (this.selectedRoom.chanzhengziliao != "") {
-                //         this.selectedRoom.chanzhengziliao = JSON.stringify(this.selectedRoom.chanzhengziliao);
-                //     }
-                // }
+                if (this.fileList.length > 0) {
+                    if (this.selectedRoom.qitaziliao != "") {
+                        this.selectedRoom.qitaziliao = this.selectedRoom.qitaziliao.concat(this.fileList);
+                        this.selectedRoom.qitaziliao = JSON.stringify(this.selectedRoom.qitaziliao);
+                    } else {
+                        // 为空时 直接等于
+                        this.selectedRoom.qitaziliao = JSON.stringify(this.fileList);
+                    }
+                    //重置
+                    this.fileList = [];
+                    //没有新添加的时候
+                } else {
+                    //如果没有值 "" 不干嘛， 有值的话 直接stringify
+                    //if (this.selectedRoom.qitaziliao != "") {
+                    if (this.selectedRoom.qitaziliao == "") {
+                        this.selectedRoom.qitaziliao = [];
+                    }
+                    this.selectedRoom.qitaziliao = JSON.stringify(this.selectedRoom.qitaziliao);
+                    //}
+                }
+                if (this.tuzhiZiLiao.length > 0) {
+                    if (this.selectedRoom.tuzhiziliao != "") {
+                        this.selectedRoom.tuzhiziliao = this.selectedRoom.tuzhiziliao.concat(this.tuzhiZiLiao);
+                        this.selectedRoom.tuzhiziliao = JSON.stringify(this.selectedRoom.tuzhiziliao);
+                    } else {
+                        this.selectedRoom.tuzhiziliao = JSON.stringify(this.tuzhiZiLiao);
+                    }
+                    this.tuzhiZiLiao = [];
+                } else {
+                    //if (this.selectedRoom.tuzhiziliao.length) {
+                    if (this.selectedRoom.tuzhiziliao == "") {
+                        this.selectedRoom.tuzhiziliao = [];
+                    }
+                    this.selectedRoom.tuzhiziliao = JSON.stringify(this.selectedRoom.tuzhiziliao)
+                    //}
+                }
+                if (this.chanzhenZiLiao.length > 0) {
+                    if (this.selectedRoom.chanzhengziliao != "") {
+                        this.selectedRoom.chanzhengziliao = this.selectedRoom.chanzhengziliao.concat(this.chanzhenZiLiao)
+                        this.selectedRoom.chanzhengziliao = JSON.stringify(this.selectedRoom.chanzhengziliao);
+                    } else {
+                        this.selectedRoom.chanzhengziliao = JSON.stringify(this.chanzhenZiLiao);
+                    }
+                    this.chanzhenZiLiao = [];
+                } else {
+                    if (this.selectedRoom.chanzhengziliao == "") {
+                        this.selectedRoom.chanzhengziliao = [];
+                        //this.selectedRoom.chanzhengziliao = JSON.stringify(this.selectedRoom.chanzhengziliao);
+                    }
+                    this.selectedRoom.chanzhengziliao = JSON.stringify(this.selectedRoom.chanzhengziliao);
+                }
                 updateRoomApi(this.selectedRoom).then((result) => {
                     if (result.data.code == 0) {
                         this.closeModal();
