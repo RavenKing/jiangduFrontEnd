@@ -68,10 +68,10 @@
                 <sui-input style="width:100%;" placeholder="业务用房面积" v-model="singleRoom.space25" disabled />
             </sui-form-field>
             
-            <sui-form-field style="width:33.33333%">
+            <!-- <sui-form-field style="width:33.33333%">
                 <label style="margin-bottom:10px;display: block;">业务用房类型</label>
                 <sui-input style="width:100%;" placeholder="业务用房类型" v-model="singleRoom.space24" disabled />
-            </sui-form-field>
+            </sui-form-field> -->
         </sui-form-fields>
 
         <!-- <div v-show="singleRoom.space8&&singleRoom.space7&&singleRoom.space8>0&&singleRoom.space7>0">
