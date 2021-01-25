@@ -32,11 +32,11 @@
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields inline>
-            
+<!--             
             <sui-form-field style="width:33.33333%">
                 <label style="margin-bottom:10px;display: block;">服务用房面积(m²)</label>
                 <sui-input style="width:100%;" placeholder="服务用房面积" v-model="singleRoom.space2" disabled />
-            </sui-form-field>
+            </sui-form-field> -->
             <!-- <label>土地面积</label>
             <sui-form-field>
                 <sui-input placeholder="土地面积" v-model="singleRoom.tudispace" disabled />
@@ -62,10 +62,13 @@
         </sui-form-fields>
 
         <sui-form-fields inline>
-            
             <sui-form-field style="width:33.33333%">
                 <label style="margin-bottom:10px;display: block;">业务用房面积(m²)</label>
                 <sui-input style="width:100%;" placeholder="业务用房面积" v-model="singleRoom.space25" disabled />
+            </sui-form-field>
+            <sui-form-field style="width:33.33333%">
+                <label style="margin-bottom:10px;display: block;">其他用房面积(m²)</label>
+                <sui-input style="width:100%;" placeholder="其他用房面积" v-model="singleRoom.space24" disabled />
             </sui-form-field>
             
             <!-- <sui-form-field style="width:33.33333%">

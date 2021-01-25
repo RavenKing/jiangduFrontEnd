@@ -892,7 +892,8 @@ export default {
                     this.selectedRoom.space8 = roomSpaceData.bangong[0] + roomSpaceData.leader[0]; //办公
                     this.selectedRoom.space28 = roomSpaceData.shebei[1]; //设备
                     this.selectedRoom.space40 = roomSpaceData.fushu[1]; //附属
-                    this.selectedRoom.space25 = roomSpaceData.yewuyongfang[1]; //业务用房
+                    this.selectedRoom.space25 = roomSpaceData.yewuyongfang[1]; //业务用
+                    this.selectedRoom.space24 = roomSpaceData.other[1];
                 }
             })
 
@@ -1538,6 +1539,15 @@ export default {
         },
         onChangePage(page) {
             this.loading = true;
+            if (page == "next") {
+                page =
+                    1 + this.$refs.vuetable.currentPage
+            }
+            if (page == "prev") {
+                page =
+                    this.$refs.vuetable.currentPage - 1
+            }
+
             this.refreshRooms({
                 page: page
             });

@@ -715,7 +715,7 @@ export default {
                 {
                     type: "qita",
                     space: tmpSum.qita,
-                    text: "qita"
+                    text: "其他"
                 }
             ]
             this.context.strokeStyle = "#FFFFFF";
@@ -831,6 +831,15 @@ export default {
                             break;
                         case "leader":
                             context.selectedRoomInFloor.type = "领导办公室"
+                            break;
+                        case "shebei":
+                            context.selectedRoomInFloor.type = "设备"
+                            break;
+                        case "qita":
+                            context.selectedRoomInFloor.type = "其他"
+                            break;
+                        case "other":
+                            context.selectedRoomInFloor.type = "其他"
                             break;
                         default:
                             break;
