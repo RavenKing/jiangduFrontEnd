@@ -126,5 +126,13 @@ export default [
     width: "15%",
     titleClass: "center aligned",
     dataClass: "center aligned",
+  },
+  {
+    name: "action",
+    sortField: "space",
+    title: '操作',
+    width: "15%",
+    titleClass: "center aligned",
+    dataClass: "center aligned",
   }
 ];

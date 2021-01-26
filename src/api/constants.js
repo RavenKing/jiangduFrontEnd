@@ -58,7 +58,7 @@ const constantsJinhui = {
     updateMCApi:"/editproj",
     approveMRApi:"/approvemr",
     rejectMRApi:"/rejectmr",
-    delleaderroomApi:"/delleaderroom",
+    delleaderroomApi:"/delunitroom",
     // deleteRentRoomAssignmentApi:"/delassignroom",
     createLeaderAssignApi:"/assignleaderroom",
     editRentContractDetailApi:"/editrentcontractdetail",

@@ -118,14 +118,14 @@
                                 <!-- <sui-button basic color="blue" @click.native="assignLeader">
                                     新增
                                 </sui-button> -->
-                                <vuetable ref="vuetable" :api-mode="false" :data="lingdaoData" :fields="lingdaofields" :sort-order="sortOrder" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
+                                <vuetable ref="vuetable" :api-mode="false" :data="lingdaoData" :fields="lingdaofields" :sort-order="sortOrder" data-path="data">
                                     <div slot="name" slot-scope="props">
                                         <div :class="props.rowData.status!=99?'center aligned':'' ">
                                             {{props.rowData.name}}
                                         </div>
                                     </div>
                                     <div slot="action" slot-scope="props">
-                                        <sui-button basic color="red" content="删除" v-on:click="deleteleader(props.rowData)" v-if="props.rowData.room_rent_type" />
+                                        <sui-button basic color="red" content="删除" v-on:click="deleteleader(props.rowData)" />
                                     </div>
                                 </vuetable>
                             </div>
@@ -1307,6 +1307,8 @@ export default {
         deleteleader(data) {
             this.sendVal = true;
             this.deleteTarget = data
+            this.deleteTarget.unit_id = this.selectedRoom.id;
+          this.deleteTarget.room_id=this.deleteTarget.roomid;
             this.deletetype = 'leader'
         },
         refreshUnits() {
