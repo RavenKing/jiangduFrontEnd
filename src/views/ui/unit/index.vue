@@ -1020,139 +1020,136 @@ export default {
             var input = {}
             input['unit_id'] = id
             getleaderroombyunitApi(input).then((data) => {
-                console.log(input)
-                this.loading = false;
-                var res_data = data.data.data
-                console.log(res_data)
-                var lingdao_list = []
-                lingdao_list = res_data
-                res_data.map((one) => {
+                    console.log(input)
+                    this.loading = false;
+                    var res_data = data.data.data
+                    console.log(res_data)
+                    var lingdao_list = []
+                    lingdao_list = res_data
+                    res_data.map((one) => {
 
-                    //     {
-                    //     type: "bangong",
-                    //     space: tmpSum.bangong,
-                    //     text: "办公"
-                    // },
-                    // {
-                    //     type: "fushu",
-                    //     space: tmpSum.fushu,
-                    //     text: "附属"
-                    // },
-                    // {
-                    //     type: "leader",
-                    //     space: tmpSum.leader,
-                    //     text: "领导"
-                    // },
-                    // {
-                    //     type: "shebei",
-                    //     space: tmpSum.shebei,
-                    //     text: "设备"
-                    // },
-                    // {
-                    //     type: "other",
-                    //     space: tmpSum.qita,
-                    //     text: "其他"
+                        //     {
+                        //     type: "bangong",
+                        //     space: tmpSum.bangong,
+                        //     text: "办公"
+                        // },
+                        // {
+                        //     type: "fushu",
+                        //     space: tmpSum.fushu,
+                        //     text: "附属"
+                        // },
+                        // {
+                        //     type: "leader",
+                        //     space: tmpSum.leader,
+                        //     text: "领导"
+                        // },
+                        // {
+                        //     type: "shebei",
+                        //     space: tmpSum.shebei,
+                        //     text: "设备"
+                        // },
+                        // {
+                        //     type: "other",
+                        //     space: tmpSum.qita,
+                        //     text: "其他"
+                        // }
+                        switch (one.type) {
+                            case 'bangong':
+                                one.room_type = "办公";
+                                break;
+
+                            case 'fushu':
+                                one.room_type = "附属";
+                                break;
+
+                            case 'leader':
+                                one.room_type = "领导";
+                                break;
+
+                            case 'shebei':
+                                one.room_type = "设备";
+                                break;
+
+                            case 'other':
+                                one.room_type = "其他";
+                                break;
+
+                        }
+                    })
+                    // for (var i = res_data.length - 1; i >= 0; i--) {
+                    //     // var out_room_name = res_data[i]['room_name']
+                    //     // var room_assign = res_data[i]['room_assign']
+                    //     // var building_name = res_data[i]['building_name']
+                    //     // var floor_name = res_data[i]['floor_name']
+                    //     // var room_details = res_data[i]['room_detail']
+                    //     // for (var j = room_assign.length - 1; j >= 0; j--) {
+                    //     //     room_assign[j]['building_name'] = building_name
+                    //     //     room_assign[j]['floor_name'] = floor_name
+
+                    //     //     var room_id = room_assign[j]['id']
+                    //     //     var room_type = ''
+                    //     //     for (var k = room_details.length - 1; k >= 0; k--) {
+                    //     //         // eslint-disable-next-line no-prototype-builtins
+                    //     //         if (room_details[k].hasOwnProperty(room_id)) {
+                    //     //             room_type = room_details[k]['type']
+                    //     //         }
+                    //     //     }
+                    //     //     if (room_type == 'yewu') {
+                    //     //         room_type = '业务'
+                    //     //     }
+                    //     //     if (room_type == 'bangong') {
+                    //     //         room_type = '办公'
+                    //     //     }
+                    //     //     if (room_type == 'shebei') {
+                    //     //         room_type = '设备'
+                    //     //     }
+                    //     //     if (room_type == 'fushu') {
+                    //     //         room_type = '附属'
+                    //     //     }
+                    //     //     room_assign[j]['room_type'] = room_type
+                    //     //     room_assign[j]['out_room_name'] = out_room_name
+                    //     //     lingdao_list.push(room_assign[j])
+
+                    //     // }
+
                     // }
-                    switch (one.type) {
-                        case 'bangong':
-                            one.room_type = "办公";
-                            break;
-
-                        case 'fushu':
-                            one.room_type = "附属";
-                            break;
-
-                        case 'leader':
-                            one.room_type = "领导";
-                            break;
-
-                        case 'shebei':
-                            one.room_type = "设备";
-                            break;
-
-                        case 'other':
-                            one.room_type = "其他";
-                            break;
-
+                    console.log(lingdao_list)
+                    this.lingdaoData = {
+                        data: lingdao_list
                     }
+
+                    // getlistleaderroomApi(this.selectedRoom.id).then((data) => {
+                    //     this.loading = false;
+                    //     var rent_room = data.data.data
+                    //     console.log('leader room')
+                    //     for (var k = rent_room.length - 1; k >= 0; k--) {
+                    //         rent_room[k]['out_room_name'] = rent_room[k]['room_name']
+                    //         rent_room[k]['roomnumber'] = rent_room[k]['room']
+                    //         rent_room[k]['room_rent_type'] = true
+                    //     }
+
+                    //     lingdao_list = lingdao_list.concat(rent_room)
+                    //     console.log(lingdao_list)
+                    //     this.lingdaoData = {
+                    //         total: 16,
+                    //         per_page: 5,
+                    //         current_page: 1,
+                    //         last_page: 4,
+                    //         next_page_url: "data.data.data?page=2",
+                    //         prev_page_url: null,
+                    //         from: 1,
+                    //         to: 5,
+                    //         data: lingdao_list
+                    //     }
+
+                    // })
+
                 })
-                // for (var i = res_data.length - 1; i >= 0; i--) {
-                //     // var out_room_name = res_data[i]['room_name']
-                //     // var room_assign = res_data[i]['room_assign']
-                //     // var building_name = res_data[i]['building_name']
-                //     // var floor_name = res_data[i]['floor_name']
-                //     // var room_details = res_data[i]['room_detail']
-                //     // for (var j = room_assign.length - 1; j >= 0; j--) {
-                //     //     room_assign[j]['building_name'] = building_name
-                //     //     room_assign[j]['floor_name'] = floor_name
-
-                //     //     var room_id = room_assign[j]['id']
-                //     //     var room_type = ''
-                //     //     for (var k = room_details.length - 1; k >= 0; k--) {
-                //     //         // eslint-disable-next-line no-prototype-builtins
-                //     //         if (room_details[k].hasOwnProperty(room_id)) {
-                //     //             room_type = room_details[k]['type']
-                //     //         }
-                //     //     }
-                //     //     if (room_type == 'yewu') {
-                //     //         room_type = '业务'
-                //     //     }
-                //     //     if (room_type == 'bangong') {
-                //     //         room_type = '办公'
-                //     //     }
-                //     //     if (room_type == 'shebei') {
-                //     //         room_type = '设备'
-                //     //     }
-                //     //     if (room_type == 'fushu') {
-                //     //         room_type = '附属'
-                //     //     }
-                //     //     room_assign[j]['room_type'] = room_type
-                //     //     room_assign[j]['out_room_name'] = out_room_name
-                //     //     lingdao_list.push(room_assign[j])
-
-                //     // }
-
-                // }
-                console.log(lingdao_list)
-                this.lingdaoData = {
-                    total: 16,
-                    per_page: 5,
-                    current_page: 1,
-                    last_page: 4,
-                    next_page_url: "data.data.data?page=2",
-                    prev_page_url: null,
-                    from: 1,
-                    to: 5,
-                    data: lingdao_list
-                }
-
-                // getlistleaderroomApi(this.selectedRoom.id).then((data) => {
-                //     this.loading = false;
-                //     var rent_room = data.data.data
-                //     console.log('leader room')
-                //     for (var k = rent_room.length - 1; k >= 0; k--) {
-                //         rent_room[k]['out_room_name'] = rent_room[k]['room_name']
-                //         rent_room[k]['roomnumber'] = rent_room[k]['room']
-                //         rent_room[k]['room_rent_type'] = true
-                //     }
-
-                //     lingdao_list = lingdao_list.concat(rent_room)
-                //     console.log(lingdao_list)
-                //     this.lingdaoData = {
-                //         total: 16,
-                //         per_page: 5,
-                //         current_page: 1,
-                //         last_page: 4,
-                //         next_page_url: "data.data.data?page=2",
-                //         prev_page_url: null,
-                //         from: 1,
-                //         to: 5,
-                //         data: lingdao_list
-                //     }
-
-                // })
-
-            })
+                .catch(() => {
+                    this.lingdaoData = {
+                        data: []
+                    };
+                });
 
         },
         refreshFenpei(id) {
@@ -1308,7 +1305,7 @@ export default {
             this.sendVal = true;
             this.deleteTarget = data
             this.deleteTarget.unit_id = this.selectedRoom.id;
-          this.deleteTarget.room_id=this.deleteTarget.roomid;
+            this.deleteTarget.room_id = this.deleteTarget.roomid;
             this.deletetype = 'leader'
         },
         refreshUnits() {

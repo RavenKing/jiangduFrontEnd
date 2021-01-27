@@ -757,17 +757,18 @@ export default {
 
         createBuildingFloor(data) {
             this.loading = true;
+            var context = this;
             createBuildingFloorApi(data).then(() => {
-                this.loading = false;
-                this.$refs.formComponentBuilding.singleBuilding = {
-                    room_id: this.selectedRappoom.id,
+                context.loading = false;
+                context.$refs.formComponentBuilding.singleBuilding = {
+                    room_id: context.selectedRoom.id,
                     name: "",
                     upper: "",
                     lower: "",
                     detail: ""
                 };
             }).catch(function () {
-                this.loading = false;
+                context.loading = false;
                 notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
             });
         },
@@ -1022,19 +1023,19 @@ export default {
                                 one.space = spaceArray[i].space;
                                 switch (one.type) {
                                     case "bangong":
-                                        tmpSum.bangong += parseInt(one.space);
+                                        tmpSum.bangong += parseFloat(one.space);
                                         break;
                                     case "fushu":
-                                        tmpSum.fushu += parseInt(one.space);
+                                        tmpSum.fushu += parseFloat(one.space);
                                         break;
                                     case "leader":
-                                        tmpSum.leader += parseInt(one.space);
+                                        tmpSum.leader += parseFloat(one.space);
                                         break;
                                     case "shebei":
-                                        tmpSum.shebei += parseInt(one.space);
+                                        tmpSum.shebei += parseFloat(one.space);
                                         break;
                                     case "qita":
-                                        tmpSum.qita += parseInt(one.space);
+                                        tmpSum.qita += parseFloat(one.space);
                                         break;
                                 }
                             }

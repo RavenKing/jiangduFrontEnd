@@ -1,6 +1,6 @@
 export default [
   {
-    name: "roomname",
+    name: "roomename",
     title: '房屋名称',
     width: "20%",
     sortField: "roomname",
