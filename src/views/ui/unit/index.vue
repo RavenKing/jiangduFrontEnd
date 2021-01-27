@@ -1421,14 +1421,17 @@ export default {
         },
         resetAndCloseFenpei: function () {
             this.fenpeiopen = false;
-            this.selectedfenpei = {
-                unit: '',
-                room: '',
-                roomtype: '',
-                roomname: '',
-                ziyousource: [],
-                rentroomoptions: []
-            }
+            this.selectedfenpei.unit='';
+            this.selectedfenpei.room='';
+            this.selectedfenpei.roomtype='';
+            this.selectedfenpei.roomname='';
+            //     unit: '',
+            //     room: '',
+            //     roomtype: '',
+            //     roomname: '',
+            //  //   // ziyousource: [],
+            //     rentroomoptions: []
+            // }
         },
         closeModal: function () {
             this.resetAndCloseFenpei();
