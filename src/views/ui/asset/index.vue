@@ -1248,6 +1248,8 @@ export default {
                             title: '删除楼层成功',
                             text: '删除楼层成功'
                         });
+                    } else if (result.data.code == 3) {
+                        notifySomething(constants.GENERALERROR, "楼层被占用", constants.typeError);
                     }
                 }).catch(function () {
                     this.loading = false;
