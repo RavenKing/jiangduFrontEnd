@@ -1,5 +1,6 @@
 const hostname= "";
 const constantsJinhui = {
+    deleteFloorApi:"/removebuildingfloor",
     getCurrentAssignApi:"/getcurrentassign",
     //deleteRoomAssignDetail:""
     LoginURL:hostname+"/login",

@@ -223,11 +223,9 @@
                                     新增
                                 </sui-button>
                                 <sui-grid :columns="3" relaxed="very">
-                                    <sui-grid-column :width="3">
+                                    <sui-grid-column :width="4">
                                         <div>
                                             <vue-tree-list @click="onClick" @changeName="onChangeName" @delete-node="onDel" @add-node="onAddNode" :model="tree" default-tree-node-name="new node" default-leaf-node-name="new leaf" v-bind:default-expanded="false">
-                                                <span class="icon" slot="addTreeNodeIcon">📂</span>
-                                                <span class="icon" slot="addLeafNodeIcon">＋</span>
                                                 <span class="icon" slot="leafNodeIcon">
                                                 </span>
                                                 <span class="icon" slot="treeNodeIcon">
@@ -235,7 +233,7 @@
                                             </vue-tree-list>
                                         </div>
                                     </sui-grid-column>
-                                    <sui-grid-column :width="8">
+                                    <sui-grid-column :width="7">
                                         <sui-statistic horizontal size="medium">
                                             <sui-statistic-value>
                                                 {{assignList.selectedBuilding.name}}
@@ -425,7 +423,8 @@ import {
     deleteBuildingApi,
     getBuildingFloorApi,
     getFloorById,
-    getRoomStatApi
+    getRoomStatApi,
+    deleteFloorApi
 } from "@/api/roomDataAPI";
 export default {
     name: "MyVuetable",
@@ -922,8 +921,8 @@ export default {
                     building.dragDisabled = true;
                     building.addTreeNodeDisabled = true;
                     building.addLeafNodeDisabled = true;
-                    building.editLeafNodeDisabled = true;
-                    building.delLeafNodeDisabled = true;
+                    // building.editLeafNodeDisabled = false;
+                    // building.delLeafNodeDisabled = false;
                     building.editNodeDisabled = true;
                     building.delNodeDisabled = false;
                     building.children = [];
@@ -967,7 +966,7 @@ export default {
                     floor.pid = building.id;
                     floor.isLeaf = true;
                     floor.floor_id = floor.id;
-                    floor.disabled = true;
+                    floor.disabled = false;
                     building.children.push(floor)
                 })
                 this.tree = new Tree(this.treeData);
@@ -1228,6 +1227,7 @@ export default {
         },
         clickConfirmDelete() {
             this.loading = true;
+
             if (this.deleteTarget.type == "Room") {
                 deleteRoomApi(this.deleteTarget).then(() => {
                     this.refreshRooms({
@@ -1238,6 +1238,20 @@ export default {
                         title: '删除自有房屋成功',
                         text: '删除自有房屋成功'
                     });
+                });
+            } else if (this.deleteTarget.type == "Floor") {
+                deleteFloorApi(this.deleteTarget).then((result) => {
+                    this.getBuildingSection();
+                    if (result.data.code == 0) {
+                        this.$notify({
+                            group: 'foo',
+                            title: '删除楼层成功',
+                            text: '删除楼层成功'
+                        });
+                    }
+                }).catch(function () {
+                    this.loading = false;
+                    notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                 });
             } else if (this.deleteTarget.type == "Building") {
                 deleteBuildingApi(this.deleteTarget).then((result) => {
@@ -1342,6 +1356,9 @@ export default {
                 id: building.id,
                 type: "Building"
             };
+            if (building.isLeaf) {
+                this.deleteTarget.type = "Floor"
+            }
         },
         deleteBuildingFloorAssignment(building) {
             this.sendVal = true;

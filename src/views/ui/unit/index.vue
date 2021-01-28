@@ -643,8 +643,10 @@ export default {
                     }
 
                     this.roomAssignment.map((one, index) => {
-                        //current Room
+                        //current Room  
                         one.id = "room" + index;
+
+                        one.space = 0;
                         one.status = false;
                         for (var t = 0; t < currentArray.length; t++) {
                             if (one.id == currentArray[t].room) {
@@ -663,8 +665,10 @@ export default {
                         }
                         //space info
                         for (var i = 0; i < spaceArray.length; i++) {
+
                             if (spaceArray[i].room == one.id) {
                                 one.space = spaceArray[i].space;
+
                                 switch (one.type) {
                                     case "bangong":
                                         tmpSum.bangong += parseInt(one.space);
@@ -683,6 +687,9 @@ export default {
                                         break;
                                 }
                             }
+                        }
+                        if (one.space == 0) {
+                            one.status = true;
                         }
                     });
                 }
@@ -1421,10 +1428,10 @@ export default {
         },
         resetAndCloseFenpei: function () {
             this.fenpeiopen = false;
-            this.selectedfenpei.unit='';
-            this.selectedfenpei.room='';
-            this.selectedfenpei.roomtype='';
-            this.selectedfenpei.roomname='';
+            this.selectedfenpei.unit = '';
+            this.selectedfenpei.room = '';
+            this.selectedfenpei.roomtype = '';
+            this.selectedfenpei.roomname = '';
             //     unit: '',
             //     room: '',
             //     roomtype: '',

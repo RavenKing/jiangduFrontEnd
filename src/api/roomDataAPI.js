@@ -673,7 +673,11 @@ function getCurrentAssignApi(data)
 {
     return generalRequet(data,constants.getCurrentAssignApi)
 }
+function deleteFloorApi(data)
+{    return generalRequet(data,constants.deleteFloorApi)
+}
 export {
+    deleteFloorApi,
     getCurrentAssignApi,
     assignRoomDetailApi,
     editRentContractApi,
