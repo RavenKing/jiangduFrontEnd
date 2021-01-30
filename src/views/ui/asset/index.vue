@@ -253,7 +253,7 @@
                                                         </assign-form>
                                                     </sui-grid-column>
                                                     <sui-grid-column :width="4">
-                                                        <sui-button basic color="blue" @click.native="createAssignment">
+                                                        <sui-button basic color="blue" @click.native="createAssignment" class="buttonblueFun">
                                                             提交
                                                         </sui-button>
                                                     </sui-grid-column>
@@ -1236,15 +1236,20 @@ export default {
             this.loading = true;
 
             if (this.deleteTarget.type == "Room") {
-                deleteRoomApi(this.deleteTarget).then(() => {
-                    this.refreshRooms({
-                        page: 1
-                    });
-                    this.$notify({
-                        group: 'foo',
-                        title: '删除自有房屋成功',
-                        text: '删除自有房屋成功'
-                    });
+                deleteRoomApi(this.deleteTarget).then((result) => {
+                    if (result.data.code == 0) {
+                        this.refreshRooms({
+                            page: 1
+                        });
+                        this.$notify({
+                            group: 'foo',
+                            title: '删除自有房屋成功',
+                            text: '删除自有房屋成功'
+                        });
+                    } else if (result.data.code == 3) {
+                        notifySomething(constants.GENERALERROR, "房屋被占用", constants.typeError);
+
+                    }
                 });
             } else if (this.deleteTarget.type == "Floor") {
                 deleteFloorApi(this.deleteTarget).then((result) => {
@@ -1271,6 +1276,8 @@ export default {
                             title: '删除房成功',
                             text: '删除房成功'
                         });
+                    } else if (result.data.code == 3) {
+                        notifySomething(constants.GENERALERROR, "楼房被占用", constants.typeError);
                     }
                 }).catch(function () {
                     this.loading = false;
@@ -1815,6 +1822,12 @@ export default {
 
 .displayInline {
     display: inline;
+
+}
+
+.buttonblueFun {
+    margin-top: 20px!important;
+    font-size: 10px!important;
 
 }
 
