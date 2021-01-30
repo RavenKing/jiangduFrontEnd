@@ -73,7 +73,7 @@
 
             <sui-form-field style="width:25%;" inline>
                 <label>正科</label>
-                <sui-input :class="singleRoom.edit?'':'ui disabled'" placeholder="正科" v-model="singleRoom.zhengke" :disabled="disabled" type="number" v-on:change="bianzhisum()" />
+                <sui-input :class="singleRoom.edit?'':'ui disabled'" placeholder="正科" v-model="singleRoom.memberinfozhengke" :disabled="disabled" type="number" v-on:change="bianzhisum()" />
             </sui-form-field>
             <sui-form-field style="width:25%;" inline>
                 <label>副科</label>
@@ -93,9 +93,9 @@
 
         </sui-form-fields>
         <sui-form-fields>
-            <sui-form-field style="width:25%;" inline>
+            <sui-form-field style="width:25%;" inline v-if="singleRoom.memberinfo">
                 <label>实际人数</label>
-                <sui-input class="ui disabled" :placeholder="singleRoom.shiji_num" v-model="singleRoom.shiji_num" :disabled="disabled" type="number" />
+                <sui-input class="ui disabled" :placeholder="总数" v-model="singleRoom.memberinfo.total" :disabled="disabled" type="number" />
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields>
@@ -103,37 +103,37 @@
                 <label>实际人数</label>
                 <sui-input placeholder="实际人数" v-model="singleRoom.enumber_r" :disabled="disabled" />
             </sui-form-field> -->
-            <sui-form-field style="width:25%;" inline>
-                <label>正局</label>
-                <sui-input :class="singleRoom.edit?'':'ui disabled'" placeholder="正局" v-model="singleRoom.zhengju_r" :disabled="disabled" type="number" v-on:change="shijisum()" />
+            <sui-form-field style="width:25%;" inline v-if="singleRoom.memberinfo">
+                <label>处级</label>
+                <sui-input :class="singleRoom.edit?'':'ui disabled'" placeholder="处级" v-model="singleRoom.memberinfo.chuji" :disabled="disabled" type="number" v-on:change="shijisum()" />
             </sui-form-field>
             <sui-form-field style="width:25%;" inline>
-                <label>副局</label>
-                <sui-input :class="singleRoom.edit?'':'ui disabled'" placeholder="副局" v-model="singleRoom.fuju_r" :disabled="disabled" type="number" v-on:change="shijisum()" />
+                <label>副处级</label>
+                <sui-input :class="singleRoom.edit?'':'ui disabled'" placeholder="副处级" v-model="singleRoom.memberinfo.fuchuji" :disabled="disabled" type="number" v-on:change="shijisum()" />
             </sui-form-field>
 
-            <sui-form-field style="width:25%;" inline>
-                <label>正处</label>
-                <sui-input :class="singleRoom.edit?'':'ui disabled'" placeholder="正处" v-model="singleRoom.zhengchu_r" :disabled="disabled" type="number" v-on:change="shijisum()" />
+            <sui-form-field style="width:25%;" inline v-if="singleRoom.memberinfo">
+                <label>局级</label>
+                <sui-input :class="singleRoom.edit?'':'ui disabled'" placeholder="局级" v-model="singleRoom.memberinfo.juji" :disabled="disabled" type="number" v-on:change="shijisum()" />
             </sui-form-field>
-            <sui-form-field style="width:25%;" inline>
-                <label>副处</label>
-                <sui-input :class="singleRoom.edit?'':'ui disabled'" placeholder="副处" v-model="singleRoom.fuchu_r" :disabled="disabled" type="number" v-on:change="shijisum()" />
+            <sui-form-field style="width:25%;" inline v-if="singleRoom.memberinfo">
+                <label>副局级</label>
+                <sui-input :class="singleRoom.edit?'':'ui disabled'" placeholder="副局级" v-model="singleRoom.memberinfo.fujuji" :disabled="disabled" type="number" v-on:change="shijisum()" />
             </sui-form-field>
         </sui-form-fields>
-        <sui-form-fields>
+        <sui-form-fields v-if="singleRoom.memberinfo">
 
             <sui-form-field style="width:25%;" inline>
-                <label>正科</label>
-                <sui-input :class="singleRoom.edit?'':'ui disabled'" placeholder="正科" v-model="singleRoom.zhengke_r" :disabled="disabled" type="number" v-on:change="shijisum()" />
+                <label>科级</label>
+                <sui-input :class="singleRoom.edit?'':'ui disabled'" placeholder="正科" v-model="singleRoom.memberinfo.keji" :disabled="disabled" type="number" v-on:change="shijisum()" />
             </sui-form-field>
-            <sui-form-field style="width:25%;" inline>
-                <label>副科</label>
-                <sui-input :class="singleRoom.edit?'':'ui disabled'" placeholder="副科" v-model="singleRoom.fuke_r" :disabled="disabled" type="number" v-on:change="shijisum()" />
+            <sui-form-field style="width:25%;" inline v-if="singleRoom.memberinfo">
+                <label>副科级</label>
+                <sui-input :class="singleRoom.edit?'':'ui disabled'" placeholder="正科" v-model="singleRoom.memberinfo.fukeji" :disabled="disabled" type="number" v-on:change="shijisum()" />
             </sui-form-field>
             <sui-form-field style="width:25%;" inline>
                 <label>科员</label>
-                <sui-input :class="singleRoom.edit?'':'ui disabled'" placeholder="科员" v-model="singleRoom.other_r" :disabled="disabled" type="number" v-on:change="shijisum()" />
+                <sui-input :class="singleRoom.edit?'':'ui disabled'" placeholder="科员" v-model="singleRoom.memberinfo.keyuan" :disabled="disabled" type="number" v-on:change="shijisum()" />
             </sui-form-field>
         </sui-form-fields>
     </sui-form>

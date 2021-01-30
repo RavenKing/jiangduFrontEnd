@@ -106,9 +106,8 @@
         </div>
         <div>
             <sui-modal class="imageModal" v-model="buildingImage.open" :key="imgeComponentKey">
-                <sui-modal-header style="border-bottom:0;">放大图</sui-modal-header>
-                <sui-modal-content image>
-
+                <sui-modal-header style="border-bottom:0;"> </sui-modal-header>
+                <sui-modal-content scrolling image>
                     <sui-item-group divided>
                         <div>
                             <sui-message>
@@ -145,7 +144,7 @@
         <div>
             <sui-modal v-model="exportData.open" class="modal2">
                 <sui-modal-header style="border-bottom:0;">导出选择</sui-modal-header>
-                <sui-modal-content image>
+                <sui-modal-content scrolling image>
                     <sui-form>
                         <sui-form-fields grouped>
                             <label>选择导出</label>
@@ -630,6 +629,14 @@ export default {
                 };
                 this.roomAssignment = [];
                 this.roomAssignmentTotal = [];
+
+                if (this.context == null || this.context == undefined) {
+                    this.context = this.$refs.convas.getContext("2d");
+                    this.context.clearRect(0, 0, 500, 350);
+                } else {
+                    this.context.clearRect(0, 0, 500, 350);
+
+                }
             } else {
                 this.assignList.selectedFloor = params;
                 console.log(params);
@@ -1665,14 +1672,14 @@ export default {
 }
 
 .imageModal {
-    height: 600px;
+    height: 500px;
 }
 
 .ui.modal {
     top: auto;
     left: auto;
     height: auto !important;
-    /* min-height: 500px !important; */
+    max-height: 900px !important;
 }
 
 .ui.modal>.actions {
@@ -1809,5 +1816,10 @@ export default {
 .displayInline {
     display: inline;
 
+}
+
+.ui.modal .scrolling.content {
+    overflow: auto;
+    max-height: 500px !important;
 }
 </style>

@@ -993,8 +993,10 @@ export default {
             }
             if (params.isLeaf == true) {
                 this.clickColumn = true;
+                var context = this;
                 getUnitApiByid(params.id).then((data) => {
                     var res_data = data.data.data['building_info']
+                    context.selectedRoom.memberinfo = data.data.data.memberinfo;
                     for (var i = res_data.length - 1; i >= 0; i--) {
                         if (res_data[i]['type1'] == 'self')
                             res_data[i]['type1'] = '自有房屋'
@@ -1576,7 +1578,8 @@ export default {
 
         if (this.role == 2) {
             getUnitApiByid(this.unitid).then((data) => {
-                this.selectedRoom = data.data.data
+                this.selectedRoom = data.data.data;
+                this.selectedRoom.memberinfo = JSON.parse(this.selectedRoom.memberinfo);
                 this.selectedRoom['realname'] = this.selectedRoom['name']
                 this.selectedRoom['edit'] = false
                 this.selectedRoom['bianzhi_num'] = parseInt(this.selectedRoom['zhengju']) + parseInt(this.selectedRoom['fuju']) + parseInt(this.selectedRoom['zhengchu']) + parseInt(this.selectedRoom['fuchu']) +
