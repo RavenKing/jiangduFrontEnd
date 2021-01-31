@@ -1023,9 +1023,10 @@ export default {
                         }
                     }
                     this.roomAssignment.map((one, index) => {
+                        var roomindex = index + 1;
                         for (var i = 0; i < spaceArray.length; i++) {
-                            one.id = "room" + index;
-                            if (spaceArray[i].room == "room" + index) {
+                            one.id = "room" + roomindex;
+                            if (spaceArray[i].room == "room" + roomindex) {
                                 one.space = spaceArray[i].space;
                                 switch (one.type) {
                                     case "bangong":
@@ -1097,12 +1098,13 @@ export default {
                         //     room["room" + index][0], room["room" + index][1]);
                         // this.context.lineTo(room["room" + index][2], room["room" + index][3]);
                         var textDraw = true;
+                        var roomindex = index + 1;
                         if (this.roomAssignment.length != null) {
                             this.roomAssignment.map((one) => {
-                                if (one.id == "room" + index) {
+                                if (one.id == "room" + roomindex) {
                                     this.context.globalAlpha = 1;
                                     if (one.space && one.space != 0) {
-                                        this.context.strokeText(one.space + "m²", room["room" + index][0] + (room["room" + index][2] / 3), room["room" + index][1] + (room["room" + index][3] / 2));
+                                        this.context.strokeText(one.space + "m²", room["room" + roomindex][0] + (room["room" + roomindex][2] / 3), room["room" + roomindex][1] + (room["room" + roomindex][3] / 2));
                                         textDraw = false;
                                     }
                                 }
@@ -1111,14 +1113,14 @@ export default {
                         if (textDraw) {
                             this.context.globalAlpha = 1;
                             try {
-                                this.context.strokeText("房间" + index, room["room" + index][0] + (room["room" + index][2] / 2), room["room" + index][1] + (room["room" + index][3] / 2));
+                                this.context.strokeText("房间" + roomindex, room["room" + roomindex][0] + (room["room" + roomindex][2] / 2), room["room" + roomindex][1] + (room["room" + roomindex][3] / 2));
                             } catch (error) {
                                 console.log("parse error")
                             }
                         }
                         this.context.globalAlpha = 0;
                         try {
-                            this.context.strokeRect(room["room" + index][0], room["room" + index][1], room["room" + index][2], room["room" + index][3])
+                            this.context.strokeRect(room["room" + roomindex][0], room["room" + roomindex][1], room["room" + roomindex][2], room["room" + roomindex][3])
                         } catch (error) {
                             console.log("parse error")
                         }
@@ -1165,7 +1167,7 @@ export default {
                 if (room["room" + index] == null) {
                     roomindex = index + 1;
                 } else {
-                    roomindex = index;
+                    roomindex = index + 1;
                 }
 
                 var leftCornor = {
@@ -1826,8 +1828,8 @@ export default {
 }
 
 .buttonblueFun {
-    margin-top: 20px!important;
-    font-size: 10px!important;
+    margin-top: 20px !important;
+    font-size: 10px !important;
 
 }
 
