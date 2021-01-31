@@ -274,6 +274,7 @@
                                                         <div class="yello" v-show="unit.type=='bangong'"></div>
                                                         <div class="purple" v-show="unit.type=='fushu'"></div>
                                                         <div class="redBand" v-show="unit.type=='leader'"></div>
+                                                        <div class="yewuyongfang" v-show="unit.type=='yewuyongfang'"></div>
                                                         <div class="lvse" v-show="unit.type=='shebei'"></div>
                                                         <div class="baise" v-show="unit.type=='other'"></div>
                                                         {{unit.text}} {{unit.space}}(m²)
@@ -992,7 +993,8 @@ export default {
                 fushu: 0,
                 leader: 0,
                 shebei: 0,
-                qita: 0
+                qita: 0,
+                yewuyongfang: 0
             }
             this.roomAssignment = [];
             this.roomAssignmentTotal = [];
@@ -1029,6 +1031,9 @@ export default {
                             if (spaceArray[i].room == "room" + roomindex) {
                                 one.space = spaceArray[i].space;
                                 switch (one.type) {
+                                    case "yewuyongfang":
+                                        tmpSum.yewuyongfang += parseFloat(one.space);
+                                        break;
                                     case "bangong":
                                         tmpSum.bangong += parseFloat(one.space);
                                         break;
@@ -1058,6 +1063,10 @@ export default {
                     type: "bangong",
                     space: tmpSum.bangong,
                     text: "办公"
+                }, {
+                    type: "yewuyongfang",
+                    space: tmpSum.yewuyongfang,
+                    text: "业务用房"
                 },
                 {
                     type: "fushu",
@@ -1188,7 +1197,7 @@ export default {
                 }
                 if (context.withinZuobiao(checkZuoBiao, leftCornor, rightCornor, leftDown, rightDown)) {
                     withinOrNot = true;
-                    context.selectedRoomInFloorIndex = index;
+                    context.selectedRoomInFloorIndex = roomindex;
                     context.selectedRoomInFloor = {};
                     context.roomAssignment.map((one) => {
                         if (one.id == "room" + roomindex) {
@@ -1803,6 +1812,14 @@ export default {
     width: 10px;
     height: 10px;
     display: inline-block;
+}
+
+.yewuyongfang {
+    background-color: blue;
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+
 }
 
 .lvse {
