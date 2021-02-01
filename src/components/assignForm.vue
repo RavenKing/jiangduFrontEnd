@@ -18,13 +18,14 @@
                 <label>选择单位</label>
                 <sui-dropdown placeholder="选择单位" selection :options="options" v-model="singleEntry.unit_id" />
             </sui-form-field> -->
-            <sui-form-field>
-                <label>面积</label>
-                <sui-input placeholder="面积" v-model="singleEntry.space" type="number" />
-            </sui-form-field>
-            <sui-form-field>
+            
+            <sui-form-field style="width:33.33333%;">
                 <label>房间用途</label>
                 {{singleEntry.type}}
+            </sui-form-field>
+            <sui-form-field style="width:50.33333%;">
+                <label>面积</label>
+                <sui-input placeholder="面积" v-model="singleEntry.space" type="number" />
             </sui-form-field>
         </sui-form-fields>
     </sui-form>

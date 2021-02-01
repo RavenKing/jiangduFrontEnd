@@ -233,12 +233,12 @@
                                         </div>
                                     </sui-grid-column>
                                     <sui-grid-column :width="7">
-                                        <sui-statistic horizontal size="medium">
+                                        <sui-statistic horizontal size="small">
                                             <sui-statistic-value>
                                                 {{assignList.selectedBuilding.name}}
                                             </sui-statistic-value>
                                         </sui-statistic>
-                                        <sui-statistic horizontal size="medium">
+                                        <sui-statistic horizontal size="small">
                                             <sui-statistic-value>
                                                 {{assignList.selectedFloor.name}}
                                             </sui-statistic-value>
