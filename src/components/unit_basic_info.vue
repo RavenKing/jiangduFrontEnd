@@ -95,7 +95,7 @@
         <sui-form-fields>
             <sui-form-field style="width:25%;" inline v-if="singleRoom.memberinfo">
                 <label>实际人数</label>
-                <sui-input class="ui disabled" :placeholder="总数" v-model="singleRoom.memberinfo.total" :disabled="disabled" type="number" />
+                <sui-input class="ui disabled" placeholder="总数" v-model="singleRoom.memberinfo.total" :disabled="disabled" type="number" />
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields>
@@ -107,7 +107,7 @@
                 <label>处级</label>
                 <sui-input :class="singleRoom.edit?'':'ui disabled'" placeholder="处级" v-model="singleRoom.memberinfo.chuji" :disabled="disabled" type="number" v-on:change="shijisum()" />
             </sui-form-field>
-            <sui-form-field style="width:25%;" inline>
+            <sui-form-field style="width:25%;" inline v-if="singleRoom.memberinfo">
                 <label>副处级</label>
                 <sui-input :class="singleRoom.edit?'':'ui disabled'" placeholder="副处级" v-model="singleRoom.memberinfo.fuchuji" :disabled="disabled" type="number" v-on:change="shijisum()" />
             </sui-form-field>

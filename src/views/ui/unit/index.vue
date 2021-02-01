@@ -433,6 +433,8 @@ export default {
                     //contextF.drawRect(this.select);
                     this.refreshFloor(this.leaderfenpei.floor_id);
                     notifySomething("分配成功", "分配成功", constants.typeSuccess);
+                    this.refreshLeaderAssignment(this.selectedRoom.id);
+
                 } else {
                     notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                 }
@@ -495,14 +497,16 @@ export default {
                     notifySomething("创建失败", "创建失败", "Error")
                 });
             } else {
+                var context = this;
                 createAssignmentApi({
                     assignment: JSON.stringify(this.roomAssignment),
                     id: this.assignList.selectedFloor.floor_id
                 }).then((result) => {
-                    this.loading = false;
+                    context.loading = false;
                     if (result.data.code == 0) {
                         //contextF.drawRect(this.select);
                         notifySomething("分配成功", "分配成功", constants.typeSuccess);
+                        context.refreshLeaderAssignment(context.selectedRoom.id);
                     } else {
                         notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                     }
@@ -641,11 +645,12 @@ export default {
                             });
                         }
                     }
-
                     this.roomAssignment.map((one, index) => {
                         //current Room  
-                        one.id = "room" + index;
-
+                        var roomindex = index + 1;
+                        one.kind = this.selectedRoom.kind;
+                        one.id = "room" + roomindex;
+                        one.roomnumber = "房间" + roomindex;
                         one.space = 0;
                         one.status = false;
                         for (var t = 0; t < currentArray.length; t++) {
@@ -694,10 +699,7 @@ export default {
                     });
                 }
             }
-            this.roomAssignment.map((one, index) => {
-                one.id = "room" + index;
-                one.roomnumber = "房间" + index;
-            })
+
             console.log(this.roomAssignment);
             this.roomAssignmentTotal = [{
                     type: "bangong",
@@ -735,6 +737,7 @@ export default {
                     this.context.globalAlpha = 1;
                     this.context.drawImage(img, 0, 0, 500, 350)
                     zuobiao.map((room, index) => {
+                        var roomindex = index + 1;
                         // console.log(room)
                         // this.context.beginPath();
                         // this.context.moveTo(
@@ -743,26 +746,27 @@ export default {
                         var textDraw = true;
                         if (this.roomAssignment.length != null) {
                             this.roomAssignment.map((one) => {
-                                if (one.id == "room" + index) {
+
+                                if (one.id == "room" + roomindex) {
                                     if (one.assign) {
                                         if (!one.assign.roomnumber) {
-                                            one.roomnumber = "房间" + index;
+                                            one.roomnumber = "房间" + roomindex;
                                         } else {
                                             one.roomnumber = one.assign.roomnumber
                                         }
                                     }
                                     this.context.globalAlpha = 1;
-                                    this.context.strokeText(one.roomnumber, room["room" + index][0] + (room["room" + index][2] / 3), room["room" + index][1] + (room["room" + index][3] / 2));
+                                    this.context.strokeText(one.roomnumber, room["room" + roomindex][0] + (room["room" + roomindex][2] / 3), room["room" + roomindex][1] + (room["room" + roomindex][3] / 2));
                                     textDraw = false;
                                 }
                             })
                         }
                         if (textDraw) {
                             this.context.globalAlpha = 1;
-                            this.context.strokeText("房间" + index, room["room" + index][0] + (room["room" + index][2] / 2), room["room" + index][1] + (room["room" + index][3] / 2));
+                            this.context.strokeText("房间" + roomindex, room["room" + roomindex][0] + (room["room" + roomindex][2] / 2), room["room" + roomindex][1] + (room["room" + roomindex][3] / 2));
                         }
                         this.context.globalAlpha = 0;
-                        this.context.strokeRect(room["room" + index][0], room["room" + index][1], room["room" + index][2], room["room" + index][3])
+                        this.context.strokeRect(room["room" + roomindex][0], room["room" + roomindex][1], room["room" + roomindex][2], room["room" + roomindex][3])
                     });
                 }
 
@@ -801,40 +805,64 @@ export default {
                 y: y
             };
             context.roomInFloor.map((room, index) => {
+                var roomindex = index + 1;
+
                 var leftCornor = {
-                    x: room["room" + index][0],
-                    y: room["room" + index][1]
+                    x: room["room" + roomindex][0],
+                    y: room["room" + roomindex][1]
                 }; //左上坐标
                 var rightCornor = {
-                    x: room["room" + index][0] + room["room" + index][2],
-                    y: room["room" + index][1]
+                    x: room["room" + roomindex][0] + room["room" + roomindex][2],
+                    y: room["room" + roomindex][1]
                 };
                 var leftDown = {
-                    x: room["room" + index][0],
-                    y: room["room" + index][1] + room["room" + index][3]
+                    x: room["room" + roomindex][0],
+                    y: room["room" + roomindex][1] + room["room" + roomindex][3]
                 }
                 var rightDown = {
-                    x: room["room" + index][0] + room["room" + index][2],
-                    y: room["room" + index][1] + room["room" + index][3]
+                    x: room["room" + roomindex][0] + room["room" + roomindex][2],
+                    y: room["room" + roomindex][1] + room["room" + roomindex][3]
                 }
                 if (context.withinZuobiao(checkZuoBiao, leftCornor, rightCornor, leftDown, rightDown)) {
                     context.selectedRoomInFloor = {};
-                    context.selectedRoomInFloorIndex = index;
+                    context.selectedRoomInFloorIndex = roomindex;
                     context.roomAssignment.map((one) => {
-                        if (one.id == "room" + index) {
-                            context.selectedRoomInFloorIndex = index;
+                        if (one.id == "room" + roomindex) {
+                            context.selectedRoomInFloorIndex = roomindex;
                             context.selectedRoomInFloor = one;
+                            //check where or not can be assigned kind1 
+                            // zhengchu 30 fuchu 24 zhengke 18 fuke 12 keyuan 9
+                            // zhengju 42 fuju30  zhengchu 24 fuchu 18 zhengke 9 fuke 9 keyuan 9
+                            var assignedSpace = 0;
+                            if (one.type == "办公") {
+                              //  one.status = ;
+                                one.statusText = "面积不够"
+                                if (one.assign && one.assign > 9) {
+                                    if (one.kind == "2") {
+                                        assignedSpace = one.assign.keji * 18 + one.assign.fukeji * 12 + one.assign.keyuan * 9;
+
+                                        if (assignedSpace > one.space - 9) {
+                                            one.status = true;
+                                            one.statusText = "面积不够"
+
+                                        }
+                                    }
+                                }
+                            }
                         }
                     });
                     switch (room.type) {
                         case "bangong":
                             context.selectedRoomInFloor.type = "办公"
                             break;
-                        case "yewu":
-                            context.selectedRoomInFloor.type = "业务"
+                        case "yewuyongfang":
+                            context.selectedRoomInFloor.type = "业务用房"
                             break;
                         case "fushu":
                             context.selectedRoomInFloor.type = "附属"
+                            break;
+                        case "reserved":
+                            context.selectedRoomInFloor.type = "保留"
                             break;
                         case "leader":
                             context.selectedRoomInFloor.type = "领导办公室"
@@ -967,7 +995,7 @@ export default {
         },
 
         onClick(params) {
-            this.selectedRoom = params;
+            // this.selectedRoom = params;
             var building_info = params['building_info']
             var temp_points = []
             var temp_x = 0
@@ -996,6 +1024,7 @@ export default {
                 var context = this;
                 getUnitApiByid(params.id).then((data) => {
                     var res_data = data.data.data['building_info']
+                    this.selectedRoom = params;
                     context.selectedRoom.memberinfo = data.data.data.memberinfo;
                     for (var i = res_data.length - 1; i >= 0; i--) {
                         if (res_data[i]['type1'] == 'self')

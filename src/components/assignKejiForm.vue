@@ -5,10 +5,9 @@
             <sui-message v-show="singleEntry.status">
                 <sui-message-header>注意</sui-message-header>
                 <sui-message-list>
-                    <sui-message-item>
-                        该房间已被其他单位占用或者面积为0
+                    <sui-message-item v-if="singleEntry.statusText">
+                        {{singleEntry.statusText}}
                     </sui-message-item>
-
                 </sui-message-list>
             </sui-message>
         </div>

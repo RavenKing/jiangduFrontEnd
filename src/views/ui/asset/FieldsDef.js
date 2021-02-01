@@ -87,63 +87,6 @@ export default [
     }
   },
   {
-    name: "space6",
-    title: '办公室面积(m²)',
-    width: "15%",
-    titleClass: 'v aligned',
-    dataClass: 'left aligned',
-    formatter (value) {
-      return parseFloat(value).toFixed(2)
-    }
-  },
-  {
-    name: "space2",
-    title: '服务用房面积(m²)',
-    width: "15%",
-    titleClass: 'v aligned',
-    dataClass: 'left aligned',
-    formatter (value) {
-      return parseFloat(value).toFixed(2)
-    }
-  },
-  {
-    name: "space28",
-    title: '设备用房面积(m²)',
-    width: "15%",
-    titleClass: 'v aligned',
-    dataClass: 'left aligned',
-    formatter (value) {
-      return parseFloat(value).toFixed(2)
-    }
-  },
-  {
-    name: "space39",
-    title: '附属用房面积(m²)',
-    width: "15%",
-    titleClass: 'v aligned',
-    dataClass: 'left aligned',
-    formatter (value) {
-      return parseFloat(value).toFixed(2)
-    }
-  },
-  {
-    name: "space25",
-    title: '业务用房面积(m²)',
-    width: "15%",
-    titleClass: 'v aligned',
-    dataClass: 'left aligned',
-    formatter (value) {
-      return parseFloat(value).toFixed(2)
-    }
-  },
-  {
-    name: "space24",
-    title: '业务用房用途',
-    width: "15%",
-    titleClass: 'v aligned',
-    dataClass: 'left aligned',
-  },
-  {
     name: "action",
     title: '',
     titleClass: "left aligned",

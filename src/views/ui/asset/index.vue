@@ -45,7 +45,7 @@
                             <th colspan="5" class="thTextcenter">基本信息</th>
                             <th colspan="2" class="thTextcenter">有产证</th>
                             <th colspan="2" class="thTextcenter">无产证</th>
-                            <th colspan="7" class="thTextcenter">其中</th>
+                            <th colspan="1" class="thTextcenter">操作</th>
                         </tr>
                     </template>
                     <vuetable-row-header></vuetable-row-header>
@@ -733,7 +733,9 @@ export default {
                     this.roomAssignmentTotal = [];
                     // this.getBuildingSection();
                     this.refreshFloor(this.assignList.selectedFloor.id)
-
+                    this.getRoomStat({
+                        unit_id: this.selectedRoom.id
+                    });
                     // this.closeAssignModal();
                 } else {
                     notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
