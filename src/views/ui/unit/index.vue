@@ -696,6 +696,8 @@ export default {
                         if (one.space == 0) {
                             one.status = true;
                         }
+                        //check by space
+                        this.checkAssignable(one);
                     });
                 }
             }
@@ -830,25 +832,7 @@ export default {
                         if (one.id == "room" + roomindex) {
                             context.selectedRoomInFloorIndex = roomindex;
                             context.selectedRoomInFloor = one;
-                            //check where or not can be assigned kind1 
-                            // zhengchu 30 fuchu 24 zhengke 18 fuke 12 keyuan 9
-                            // zhengju 42 fuju30  zhengchu 24 fuchu 18 zhengke 9 fuke 9 keyuan 9
-                            var assignedSpace = 0;
-                            if (one.type == "办公") {
-                              //  one.status = ;
-                                one.statusText = "面积不够"
-                                if (one.assign && one.assign > 9) {
-                                    if (one.kind == "2") {
-                                        assignedSpace = one.assign.keji * 18 + one.assign.fukeji * 12 + one.assign.keyuan * 9;
 
-                                        if (assignedSpace > one.space - 9) {
-                                            one.status = true;
-                                            one.statusText = "面积不够"
-
-                                        }
-                                    }
-                                }
-                            }
                         }
                     });
                     switch (room.type) {
@@ -884,6 +868,53 @@ export default {
                     context.selectedRoomInFloor.assign = {};
                 }
             });
+        },
+        checkAssignable(one) {
+            //check where or not can be assigned kind1 
+            // zhengchu 30 fuchu 24 zhengke 18 fuke 12 keyuan 9 kind =2 
+            // zhengju 42 fuju30  zhengchu 24 fuchu 18 zhengke 9 fuke 9 keyuan 9 kinde =1 
+            var assignedSpace = 0;
+            if (one.space == 0) {
+                one.statusText = "面积为0！请先分配面积";
+            }
+            if (one.type == "bangong") {
+                //  one.status = ;
+                one.statusText = "面积不够"
+                if (one.assign) {
+                    if (one.kind == "2") {
+                        assignedSpace = one.assign.keji * 18 + one.assign.fukeji * 12 + one.assign.keyuan * 9;
+                        if (assignedSpace > one.space - 9) {
+                            one.status = true;
+                            one.statusText = "面积不够"
+                        }
+                    } else if (one.kind == "1") {
+                        assignedSpace = one.assign.keji * 9 + one.assign.fukeji * 9 + one.assign.keyuan * 9;
+                        if (assignedSpace > one.space - 9) {
+                            one.status = true;
+                            one.statusText = "面积不够"
+                        }
+                    }
+                }
+            }
+            if (one.type == "leader") {
+                //  one.status = ;
+                one.statusText = "面积不够"
+                if (one.assign) {
+                    if (one.kind == "2") {
+                        assignedSpace = one.assign.chuji * 30 + one.assign.fuchuji * 35 + one.assign.keji * 18 + one.assign.fukeji * 12 + one.assign.keyuan * 9;
+                        if (assignedSpace > one.space - 9) {
+                            one.status = true;
+                            one.statusText = "面积不够"
+                        }
+                    } else if (one.kind == "1") {
+                        assignedSpace = one.assign.juji * 42 + one.assign.fujuji * 30 + one.assign.chuji * 24 + one.assign.fuchuji * 18 + one.assign.keji * 9 + one.assign.fukeji * 9 + one.assign.keyuan * 9;
+                        if (assignedSpace > one.space - 9) {
+                            one.status = true;
+                            one.statusText = "面积不够"
+                        }
+                    }
+                }
+            }
         },
         withinZuobiao(checkZuoBiao, leftCornor, rightCornor, leftDown, rightDown) {
 
