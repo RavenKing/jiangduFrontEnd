@@ -51,7 +51,7 @@
                 <sui-input v-model="singleEntry.rate" transparent class="width30" />%增长
             </sui-form-field>
         </sui-form-fields>
-        <div  v-for="(item, index) in singleEntry.priceinfo" :key="item[index]">
+        <div v-for="(item, index) in singleEntry.priceinfo" :key="item[index]">
             <sui-form-fields inline style="position: relative;">
                 <sui-form-field>
                     <sui-dropdown placeholder="性质" selection :options="xingzhiOptions" v-model="singleEntry.priceinfo[index].pricename" />
@@ -111,7 +111,7 @@
                 <sui-form-fields inline style="position: relative;">
                     <label>面积</label>
                     <sui-form-field>
-                        <sui-input placeholder="面积" v-model="singleEntry.space1" type="number" required />
+                        <sui-input placeholder="面积" v-model="singleEntry.spaceJianzhu" type="number" disabled />
                     </sui-form-field>
                     <label>单价</label>
                     <sui-form-field>
@@ -121,10 +121,10 @@
             </div>
         </sui-form-fields>
         <sui-form-fields inline>
-                <label>备注</label>          
-             <sui-form-field>
-                <textarea placeholder="备注" v-model="singleEntry.space4"/>
-            </sui-form-field>
+            <label>备注</label>
+            <sui-form-field>
+                <textarea placeholder="备注" v-model="singleEntry.space4" />
+                </sui-form-field>
         </sui-form-fields>
     </sui-form>
 </div>
@@ -176,9 +176,10 @@ export default {
         caluculateTotal() {
             var base = this.singleEntry.priceinfo;
             this.singleEntry.rent_amt = 0;
-            if (this.singleEntry.space1 != "" && this.singleEntry.space1 > 0) {
-                this.singleEntry.rent_amt = this.singleEntry.space1 * this.singleEntry.price1;
+            if (this.singleEntry.space2 != "1" && this.singleEntry.price1 > 0) {
+                this.singleEntry.rent_amt = this.singleEntry.spaceJianzhu * this.singleEntry.price1;
             }
+            console.log(this.singleEntry.rent_amt);
             if (base.length > 0) {
                 base.map((one) => {
                     if (one.pricename == "停车位") {

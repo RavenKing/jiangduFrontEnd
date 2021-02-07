@@ -95,6 +95,14 @@ export default {
                     text: "自建",
                     value: "自建"
                 },
+                {
+                    text: "置换",
+                    value: "置换"
+                },
+                {
+                    text: "租借",
+                    value: "租借"
+                },
             ],
             kindOptions: [{
                 text: "经营性",

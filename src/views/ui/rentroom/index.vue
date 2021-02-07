@@ -108,7 +108,7 @@
                                     </div>
                                 </div>
                             </sui-tab-pane>
-                            <sui-tab-pane title="分配单位" :attached="false" :disabled="!editMode" :key="componentFenpeikey">
+                            <sui-tab-pane title="使用单位" :attached="false" :disabled="!editMode" :key="componentFenpeikey">
                                 <sui-dimmer :active="loading" inverted>
                                     <sui-loader content="Loading..." />
                                 </sui-dimmer>
@@ -735,6 +735,7 @@ export default {
                     } else {
                         this.listContract = [];
                         this.selectedRoomContract = result.data.data[latestOne - 1];
+                        this.selectedRoomContract.spaceJianzhu = this.selectedRoom.space;
                         var rule = JSON.parse(this.selectedRoomContract.rule);
                         if (rule != null) {
                             this.selectedRoomContract.rate = rule.rate;
@@ -762,7 +763,7 @@ export default {
             } else {
                 window.open(constants.exportroomr + "?token=" + local_auth);
             }
-              this.exportData.open = false;
+            this.exportData.open = false;
         },
         closeModalExport() {
             this.exportData.open = false;

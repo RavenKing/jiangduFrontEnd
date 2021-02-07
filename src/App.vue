@@ -6,7 +6,7 @@
     </div>
     <!-- 网站默认脚部信息 -->
     <footer class="wlui-footer">
-      Copyright@2018 www.xxx.cn All Rights Reserved 上海奉贤人民政府 ICP 备案： 沪05003300号
+      Copyright@2021 www.xxx.cn All Rights Reserved
     </footer>
 </div>
 </template>
