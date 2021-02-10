@@ -740,6 +740,12 @@ export default {
                     this.context.drawImage(img, 0, 0, 500, 350)
                     zuobiao.map((room, index) => {
                         var roomindex = index + 1;
+                        var changIndex = room.origin_width / 500;
+                        var gaoIndex = room.origin_height / 350;
+                        room["room" + roomindex][0] = room["room" + roomindex][0] / changIndex;
+                        room["room" + roomindex][1] = room["room" + roomindex][1] / gaoIndex;
+                        room["room" + roomindex][2] = room["room" + roomindex][2] / changIndex;
+                        room["room" + roomindex][3] = room["room" + roomindex][3] / gaoIndex;
                         // console.log(room)
                         // this.context.beginPath();
                         // this.context.moveTo(

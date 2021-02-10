@@ -232,7 +232,7 @@
                                             </vue-tree-list>
                                         </div>
                                     </sui-grid-column>
-                                    <sui-grid-column :width="7">
+                                    <sui-grid-column :width="8">
                                         <sui-statistic horizontal size="small">
                                             <sui-statistic-value>
                                                 {{assignList.selectedBuilding.name}}
@@ -266,7 +266,7 @@
                                             </sui-button>
                                         </div>
                                     </sui-grid-column>
-                                    <sui-grid-column :width="5">
+                                    <sui-grid-column :width="3">
                                         <div>
                                             <sui-list v-show="roomAssignmentTotal.length>0">
                                                 <sui-list-item v-for="unit in roomAssignmentTotal" :key="unit[0]" v-show="unit.space>0">
@@ -1110,6 +1110,14 @@ export default {
                         // this.context.lineTo(room["room" + index][2], room["room" + index][3]);
                         var textDraw = true;
                         var roomindex = index + 1;
+
+                        var changIndex = room.origin_width / 500;
+                        var gaoIndex = room.origin_height / 350;
+                        room["room" + roomindex][0] = room["room" + roomindex][0] / changIndex;
+                        room["room" + roomindex][1] = room["room" + roomindex][1] / gaoIndex;
+                        room["room" + roomindex][2] = room["room" + roomindex][2] / changIndex;
+                        room["room" + roomindex][3] = room["room" + roomindex][3] / gaoIndex;
+
                         if (this.roomAssignment.length != null) {
                             this.roomAssignment.map((one) => {
                                 if (one.id == "room" + roomindex) {
