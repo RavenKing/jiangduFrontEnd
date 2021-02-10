@@ -382,11 +382,13 @@ export default {
         emptyRentContract() {
             this.selectedRoomContract = {
                 mode: "new",
+                spaceJianzhu: this.selectedRoom.space,
+                rent_amt: 0,
                 priceinfo: [{
                     pricename: "",
                     price: "",
-                    space: "",
-                }, ],
+                    space: ""
+                }]
             };
         },
         changeUnit() {
