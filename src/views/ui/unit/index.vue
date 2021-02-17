@@ -67,8 +67,8 @@
                                         <span v-show="role!==1 && props.rowData.type1!=='租赁房屋'">
                                             <sui-button basic color="blue" content="维修" v-on:click="applyRepair(props.rowData)" />
                                         </span>
-                                        <sui-button v-show="role==1" basic color="red" content="删除" v-on:click="deletefenpei(props.rowData)" />
-                                        <sui-button basic color="blue" content="分配" v-on:click="assignLeader(props.rowData)" />
+                                        <sui-button v-show="role==1" basic color="red" content="删除" v-on:click="deletefenpei(props.rowData)" size="tiny" />
+                                        <sui-button basic color="blue" content="分配" v-on:click="assignLeader(props.rowData)" size="tiny"/>
 
                                     </div>
                                 </vuetable>

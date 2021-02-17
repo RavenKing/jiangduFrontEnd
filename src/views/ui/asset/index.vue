@@ -502,6 +502,7 @@ export default {
             keyword: "",
             uploadCount: 0,
             roomInFloor: [],
+            roomType:1,
             selectedRoomInFloorIndex: 0,
             roomAssignment: [],
             roomAssignmentTotal: [{
@@ -767,6 +768,7 @@ export default {
         createBuildingFloor(data) {
             this.loading = true;
             var context = this;
+            data.type=this.roomType;
             createBuildingFloorApi(data).then(() => {
                 context.loading = false;
                 context.$refs.formComponentBuilding.singleBuilding = {
@@ -904,6 +906,7 @@ export default {
                     this.selectedRoom.space40 = roomSpaceData.fushu[1]; //附属
                     this.selectedRoom.space25 = roomSpaceData.yewuyongfang[1]; //业务用
                     this.selectedRoom.space24 = roomSpaceData.other[1];
+                    this.selectedRoom.space29 = roomSpaceData.reserved[1];
                 }
             })
 
@@ -1271,6 +1274,8 @@ export default {
                         notifySomething(constants.GENERALERROR, "房屋被占用", constants.typeError);
 
                     }
+                    this.loading = false;
+
                 });
             } else if (this.deleteTarget.type == "Floor") {
                 deleteFloorApi(this.deleteTarget).then((result) => {
@@ -1353,6 +1358,7 @@ export default {
         createBuilding: function () {
             this.$refs.formComponentBuilding.singleBuilding.room_id = this.selectedRoom.id;
             this.loading = true;
+            this.$refs.formComponentBuilding.singleBuilding.type=this.roomType;
             createBuildingApi(this.$refs.formComponentBuilding.singleBuilding).then((result) => {
                 this.buildingForm.open = false;
                 this.getBuildingSection();
