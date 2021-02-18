@@ -1,47 +1,45 @@
 <template lang="html">
 <div>
     <sui-segment>
-    <sui-form>
-        <sui-form-fields inline>
-            <label for="roomtype">请选择房屋类型</label>
-        </sui-form-fields>
-        <sui-form-fields>
-            <sui-form-field>
-                <sui-checkbox radio name="type" label="自有房屋" value="1" v-model="singleRoom.roomtype" />
-            </sui-form-field>
-            <sui-form-field>
-                <sui-checkbox radio name="type" label="租赁房屋" value="2" v-model="singleRoom.roomtype" />
-            </sui-form-field>
-        </sui-form-fields>
+        <sui-form>
+            <sui-form-fields inline>
+                <label for="roomtype">请选择房屋类型</label>
+            </sui-form-fields>
+            <sui-form-fields>
+                <sui-form-field>
+                    <sui-checkbox radio name="type" label="自有房屋" value="1" v-model="singleRoom.roomtype" />
+                </sui-form-field>
+                <sui-form-field>
+                    <sui-checkbox radio name="type" label="租赁房屋" value="2" v-model="singleRoom.roomtype" />
+                </sui-form-field>
+            </sui-form-fields>
             <sui-form-fields v-if="singleRoom.roomtype == '1'">
                 <sui-form-field class="width300">
                     <label>选择房屋</label>
                     <model-select :options="singleRoom.ziyousource" v-model="item" placeholder="" width="300px" @input="handleOnInput">
                     </model-select>
                 </sui-form-field>
-        </sui-form-fields>
-        <sui-form-fields v-if="singleRoom.roomtype == '2'">
-            <sui-form-field class="width300">
-                <label>选择租赁房屋</label>
-                <model-select :options="singleRoom.rentroomoptions" v-model="item" placeholder="" width="300px" @input="handleOnInputRent">
-                </model-select>
-            </sui-form-field>
-        </sui-form-fields>
-    </sui-form>
+            </sui-form-fields>
+            <sui-form-fields v-if="singleRoom.roomtype == '2'">
+                <sui-form-field class="width300">
+                    <label>选择租赁房屋</label>
+                    <model-select :options="singleRoom.rentroomoptions" v-model="item" placeholder="" width="300px" @input="handleOnInputRent">
+                    </model-select>
+                </sui-form-field>
+            </sui-form-fields>
+        </sui-form>
     </sui-segment>
-    <div class="transfet-box"  v-if="singleRoom.roomtype == '1'">
+    <div class="transfet-box">
         <wl-tree-transfer :key="transferKey" ref="wl-tree-transfer" filter high-light default-transfer :mode="mode" :title="title" :to_data="toData" :from_data="fromData" :filterNode="filterNode" :defaultProps="defaultProps" :defaultCheckedKeys="defaultCheckedKeys" :defaultExpandedKeys="[2,3]" @right-check-change="rightCheckChange" @left-check-change="leftCheckChange" @removeBtn="remove" @addBtn="add" height="400px" node_key="id">
             <span slot="title-right" class="my-title-right" @click="handleTitleRight">楼</span>
         </wl-tree-transfer>
-        
-        
     </div>
     <!-- <sui-form-fields v-if="checked_node == true && singleRoom.roomtype == '1'" >
             <sui-form-field v-for="fenpei in fenpei_data"  :key="fenpei[0]" inline>
                 <label>   {{fenpei.name}} (m²) </label>
                 <sui-input  placeholder="面积(m²)" v-model="fenpei.space" width="800px" type="number" />
             </sui-form-field>
-            
+
         </sui-form-fields>
         <sui-form-fields v-if="singleRoom.roomtype == '2'">
             <sui-input  placeholder="面积(m²)" v-model="rentspace" width="800px" type="number" />
@@ -49,7 +47,6 @@
 </div>
 </template>
 
-    
 <script>
 import {
     ModelSelect
@@ -100,6 +97,7 @@ export default {
     methods: {
         handleOnInputRent(props) {
             this.singleRoom.room_id = props;
+            this.setFang();
             console.log(props);
         },
         handleOnInput(props) {
@@ -230,13 +228,13 @@ export default {
             console.log('clicked')
             treeObj.checkedNodes
             var fenpei_data = []
-            var building_id,children_list,floor_id;
+            var building_id, children_list, floor_id;
             for (var i = treeObj.checkedNodes.length - 1; i >= 0; i--) {
-                if(treeObj.checkedNodes[i].children){
-                     building_id = treeObj.checkedNodes[i].id
-                     children_list = treeObj.checkedNodes[i].children
-                    for ( i = children_list.length - 1; i >= 0; i--) {
-                         floor_id = children_list[i].id
+                if (treeObj.checkedNodes[i].children) {
+                    building_id = treeObj.checkedNodes[i].id
+                    children_list = treeObj.checkedNodes[i].children
+                    for (i = children_list.length - 1; i >= 0; i--) {
+                        floor_id = children_list[i].id
                         fenpei_data.push({
                             'building_id': building_id,
                             'floor_id': floor_id,
@@ -246,21 +244,21 @@ export default {
                     }
                 }
             }
-            for ( i = treeObj.halfCheckedNodes.length - 1; i >= 0; i--) {
-                if(treeObj.halfCheckedNodes[i].children){
-                     building_id = treeObj.halfCheckedNodes[i].id
-                     children_list = treeObj.halfCheckedNodes[i].children
+            for (i = treeObj.halfCheckedNodes.length - 1; i >= 0; i--) {
+                if (treeObj.halfCheckedNodes[i].children) {
+                    building_id = treeObj.halfCheckedNodes[i].id
+                    children_list = treeObj.halfCheckedNodes[i].children
                     for (var j = children_list.length - 1; j >= 0; j--) {
-                         floor_id = children_list[j].id
+                        floor_id = children_list[j].id
                         for (var k = treeObj.checkedNodes.length - 1; k >= 0; k--) {
-                            if(children_list[j].id == treeObj.checkedNodes[k].id){
+                            if (children_list[j].id == treeObj.checkedNodes[k].id) {
                                 fenpei_data.push({
-                                'building_id': building_id,
-                                'floor_id': floor_id,
-                                'name': children_list[j].name,
-                                'space': ''
-                                })    
-                            }  
+                                    'building_id': building_id,
+                                    'floor_id': floor_id,
+                                    'name': children_list[j].name,
+                                    'space': ''
+                                })
+                            }
                         }
                     }
                 }
@@ -282,7 +280,6 @@ export default {
 };
 </script>
 
-    
 <style>
 .width300 {
     width: 300px !important

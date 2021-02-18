@@ -64,11 +64,11 @@
                                         </div>
                                     </div>
                                     <div slot="action" slot-scope="props">
-                                        <span v-show="role!==1 && props.rowData.type1!=='租赁房屋'">
+                                        <span v-show="role!==1">
                                             <sui-button basic color="blue" content="维修" v-on:click="applyRepair(props.rowData)" />
                                         </span>
                                         <sui-button v-show="role==1" basic color="red" content="删除" v-on:click="deletefenpei(props.rowData)" size="tiny" />
-                                        <sui-button basic color="blue" content="分配" v-on:click="assignLeader(props.rowData)" size="tiny"/>
+                                        <sui-button basic color="blue" content="分配" v-on:click="assignLeader(props.rowData)" size="tiny" />
 
                                     </div>
                                 </vuetable>
@@ -144,7 +144,7 @@
 
                     <sui-grid :columns="2" relaxed="very">
 
-                        <sui-grid-column :width="11" v-show="assignList.selectedRoom.type1 != '租赁房屋'">
+                        <sui-grid-column :width="11">
                             <sui-statistic horizontal size="big">
                                 <sui-statistic-value>
                                     {{assignList.selectedBuilding.name}}
@@ -560,7 +560,6 @@ export default {
 
                 this.clearRect();
                 // clear Rect
-
             } else {
                 this.clearRect()
                 this.assignList.selectedFloor = params;
@@ -584,9 +583,9 @@ export default {
             };
 
             this.loading = false;
-            if (rowData.type1 == '自有房屋') {
-                this.onClickLou(rowData);
-            }
+            //  if (rowData.type1 == '自有房屋') {
+            this.onClickLou(rowData);
+            // }
         },
         tabChange() {
             this.context = this.$refs.canvas.getContext("2d");
@@ -1525,7 +1524,7 @@ export default {
                     room_id: this.selectedfenpei.room_id,
                     'building_id': fenpei_data[i].building_id,
                     'floor_id': fenpei_data[i].floor_id,
-                    type: this.selectedRoom.roomtype
+                    type: this.selectedfenpei.roomtype
                 }
                 assignroomApi(payload).then((data) => {
                     if (data.data.code == 0) {

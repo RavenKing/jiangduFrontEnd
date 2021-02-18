@@ -81,59 +81,9 @@
                 </sui-modal-actions>
             </sui-modal>
         </div>
-        <div>
-            <sui-modal class="imageModal" v-model="buildingImage.open" :key="imgeComponentKey">
-                <sui-modal-header style="border-bottom:0;"> </sui-modal-header>
-                <sui-modal-content scrolling image>
-                    <sui-item-group divided>
-                        <div>
-                            <sui-message>
-                                <sui-message-header>注意</sui-message-header>
-                                <sui-message-list>
-                                    <sui-message-item v-show="buildingImage.notification">
-                                        上传后会覆盖原有图层并清除所有信息
-                                    </sui-message-item>
-                                    <sui-message-item>
-                                        上传尺寸应为 500 X 350px
-                                    </sui-message-item>
-                                </sui-message-list>
-                            </sui-message>
-                        </div>
-                        <sui-item class="imageModal">
-
-                            <!-- <pdf :src="this.assignList.selectedFloor.url"  /> -->
-                        </sui-item>
-                        <sui-item>
-                            <input type="file" placeholder="上传Cad图" @change="uploadFile" />
-                        </sui-item>
-
-                    </sui-item-group>
-                </sui-modal-content>
-                <sui-modal-actions>
-                    <sui-button basic color="red" @click.native="closeImageModal">
-                        取消
-                    </sui-button>
-                </sui-modal-actions>
-            </sui-modal>
-        </div>
-        <div>
-            <sui-modal class="modal2" v-model="buildingForm.open">
-                <sui-modal-content image>
-                    <building-form ref='formComponentBuilding'></building-form>
-                </sui-modal-content>
-                <sui-modal-actions>
-                    <sui-button basic color="red" @click.native="closeModal">
-                        取消
-                    </sui-button>
-                    <sui-button basic color="blue" @click.native="createBuilding">
-                        提交
-                    </sui-button>
-                </sui-modal-actions>
-            </sui-modal>
-        </div>
 
         <div>
-            <sui-modal class="modal2" v-model="assignList.open">
+            <sui-modal class="modal2" v-model="open">
                 <sui-modal-content scrolling class="modalStep">
                     <div>
                         <sui-tab :menu="{ attached: false }" :active-index.sync="defaultTab">
@@ -245,75 +195,6 @@
                                     <bm-local-search :keyword="keyword" :auto-viewport="true" location="上海" @markersset="setFirstPoint"></bm-local-search>
                                 </baidu-map>
                             </sui-tab-pane>
-                            <sui-tab-pane title="楼层管理" :attached="false" :disabled="selectedRoom.kind==2">
-                                <sui-button basic color="blue" @click.native="openBuildingModal">
-                                    新增
-                                </sui-button>
-                                <sui-grid :columns="3" relaxed="very">
-                                    <sui-grid-column :width="4">
-                                        <div>
-                                            <vue-tree-list @click="onClick" @changeName="onChangeName" @delete-node="onDel" @add-node="onAddNode" :model="tree" default-tree-node-name="new node" default-leaf-node-name="new leaf" v-bind:default-expanded="false">
-                                                <span class="icon" slot="leafNodeIcon">
-                                                </span>
-                                                <span class="icon" slot="treeNodeIcon">
-                                                </span>
-                                            </vue-tree-list>
-                                        </div>
-                                    </sui-grid-column>
-                                    <sui-grid-column :width="8">
-                                        <sui-statistic horizontal size="small">
-                                            <sui-statistic-value>
-                                                {{assignList.selectedBuilding.name}}
-                                            </sui-statistic-value>
-                                        </sui-statistic>
-                                        <sui-statistic horizontal size="small">
-                                            <sui-statistic-value>
-                                                {{assignList.selectedFloor.name}}
-                                            </sui-statistic-value>
-                                        </sui-statistic>
-                                        <img :src="assignList.selectedFloor.url" ref="backImage" v-show="false" />
-                                        <canvas ref="canvas" id="myCanvas" width="500" height="350" />
-                                        <div v-show="selectedRoomInFloor.type">
-                                            <sui-grid>
-                                                <sui-grid-row>
-                                                    <sui-grid-column :width="12">
-                                                        <assign-form ref='formComponentAssign' :index="selectedRoomInFloorIndex" :singleEntry="selectedRoomInFloor">
-                                                        </assign-form>
-                                                    </sui-grid-column>
-                                                    <sui-grid-column :width="4">
-                                                        <sui-button basic color="blue" @click.native="createAssignment" class="buttonblueFun">
-                                                            提交
-                                                        </sui-button>
-                                                    </sui-grid-column>
-                                                </sui-grid-row>
-                                            </sui-grid>
-                                        </div>
-                                        <div v-show="assignList.selectedBuilding">
-                                            <sui-button v-show="assignList.selectedFloor.name!==undefined" @click.native="openImageModal()">
-                                                楼层图
-                                            </sui-button>
-                                        </div>
-                                    </sui-grid-column>
-                                    <sui-grid-column :width="3">
-                                        <div>
-                                            <sui-list v-show="roomAssignmentTotal.length>0">
-                                                <sui-list-item v-for="unit in roomAssignmentTotal" :key="unit[0]" v-show="unit.space>0">
-                                                    <div class="displayInline">
-                                                        <div class="yello" v-show="unit.type=='bangong'"></div>
-                                                        <div class="purple" v-show="unit.type=='fushu'"></div>
-                                                        <div class="redBand" v-show="unit.type=='leader'"></div>
-                                                        <div class="yewuyongfang" v-show="unit.type=='yewuyongfang'"></div>
-                                                        <div class="lvse" v-show="unit.type=='shebei'"></div>
-                                                        <div class="baise" v-show="unit.type=='other'"></div>
-                                                        {{unit.text}} {{unit.space}}(m²)
-                                                    </div>
-                                                </sui-list-item>
-                                            </sui-list>
-                                        </div>
-                                    </sui-grid-column>
-                                </sui-grid>
-
-                            </sui-tab-pane>
                         </sui-tab>
                     </div>
                 </sui-modal-content>
@@ -340,28 +221,17 @@ import VuetablePagination from "vuetable-2/src/components/VuetablePagination";
 import FieldsDef from "./FieldsDef.js";
 import FieldsAssign from "./FieldsForAssign.js";
 import FieldsPatrol from "./FieldsPatrol.js";
-import BuildingForm from "@/components/buildingForm";
-import AssignForm from "@/components/assignForm";
+
 import rentHeTongForm from "@/components/rentHeTongForm";
 import {
     ModelSelect
 } from "vue-search-select";
 import constants from "@/util/constants";
-import {
-    uploadZiliaoFileApi,
-    updateFloorInfoApi
-    // getFileOSSApi
-    //getRentRoomContractListApi
-} from "@/api/utilApi";
+
 import global from "@/global/index";
 import {
     localGet
 } from "@/util/storage"; // 导入存储函数
-import {
-    VueTreeList,
-    Tree,
-    TreeNode
-} from 'vue-tree-list'
 import {
     createPatrolApi,
     getRentRoomDataApi,
@@ -377,13 +247,7 @@ import {
     editRentContractDetailApi,
     editRentContractApi,
     listPatrolApi,
-    getFloorById,
     deletePatrolApi,
-    createAssignmentApi,
-    createBuildingFloorApi,
-    createBuildingApi,
-    getBuildingListApi,
-    getBuildingFloorApi
 } from "@/api/roomDataAPI";
 import {
     notifySomething,
@@ -392,29 +256,15 @@ import {
 export default {
     name: "MyVuetable",
     components: {
-        VueTreeList,
-
         "model-select": ModelSelect,
         "dialog-bar": dialogBar,
         Vuetable,
         VuetablePagination,
         "rentroom-form": RentRoomForm,
         "contract-form": rentHeTongForm,
-        'building-form': BuildingForm,
-        'assign-form': AssignForm,
-
     },
     data() {
         return {
-            imgeComponentKey: 1,
-            singleBuilding: {},
-            buildingImage: {
-                open: false,
-                notification: ""
-            },
-            buildingForm: {
-                open: false
-            },
             validationCheck: {
                 unit_id: false,
                 space: false,
@@ -459,13 +309,6 @@ export default {
                 open: false,
                 kind: "0"
             },
-            roomType: 2,
-            assignList: {
-                open: false,
-                buildings: [],
-                selectedBuilding: {},
-                selectedFloor: {}
-            },
             contractForm: {
                 open: false,
                 model: "create",
@@ -478,630 +321,10 @@ export default {
                 endtime: "",
             },
             keyword: "",
-            treeData: [],
-            tree: new Tree([]),
-            roomInFloor: [],
-            selectedRoomInFloorIndex: 0,
-            roomAssignment: [],
-            roomAssignmentTotal: [{
-                    type: "bangong",
-                    space: 0,
-                    text: "办公"
-                },
-                {
-                    type: "fushu",
-                    space: 0,
-                    text: "附属"
-                },
-                {
-                    type: "leader",
-                    space: 0,
-                    text: "领导"
-                },
-                {
-                    types: 'shebei',
-                    space: 0,
-                    text: "设备"
-                }
-            ],
-            selectedRoomInFloor: {},
-            assignForm: {
-                open: false,
-                room_id: "",
-                roomname: "",
-                building_id: null
-            },
         };
     },
 
     methods: {
-        closeImageModal() {
-            this.buildingImage.open = false;
-            this.assignList.open = true;
-        },
-        uploadFile: function (e) {
-            let formData = new FormData();
-            this.loading = true;
-            var context = this;
-            this.buildingImage.open = false;
-            if (e.target.files[0] != undefined) {
-                formData.append('ossfile', e.target.files[0]);
-                uploadZiliaoFileApi(formData).then((result) => {
-                    context.updateFloorInfo(result, e.target.files[0]);
-                    e.target.value = "";
-                    context.closeImageModal();
-                    //uppdate file ppath
-                }).catch(function () {
-                    context.loading = false;
-                    notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
-                });
-            }
-
-        },
-        updateFloorInfo(result, file) {
-            this.assignList.selectedFloor.cadfile = result.data.data;
-            this.loading = false;
-            var context = this;
-            var formData = new FormData();
-            formData.append("png", file)
-            formData.append("cadfile", result.data.data)
-            formData.append("id", this.assignList.selectedFloor.id)
-            formData.append("name", this.assignList.selectedFloor.name)
-            updateFloorInfoApi(formData).then((data) => {
-                context.loading = false;
-                if (data.data.code == 0) {
-                    context.$notify({
-                        group: 'foo',
-                        title: '成功上传',
-                        text: '成功上传',
-                        type: "success"
-                    });
-                }
-            }).catch(function (error) {
-                console.log(error);
-                context.loading = false;
-                notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
-            });
-        },
-        drawRect(info) {
-            if (this.context == null || this.context == undefined) {
-                this.context = this.$refs.canvas.getContext("2d");
-            }
-            var tmpSum = {
-                bangong: 0,
-                fushu: 0,
-                leader: 0,
-                shebei: 0,
-                qita: 0,
-                yewuyongfang: 0
-            }
-            this.roomAssignment = [];
-            this.roomAssignmentTotal = [];
-            if (info.room_detail != null && info.room_detail != "") {
-                var zuobiao = JSON.parse(info.room_detail);
-                this.roomInFloor = zuobiao;
-                if (info.room_detail != null) {
-                    this.roomAssignment = JSON.parse(info.room_detail);
-                    if (Object.keys(this.roomAssignment).length === 0 && this.roomAssignment.constructor === Object) {
-                        this.roomAssignment = [];
-                        this.roomAssignmentTotal = [];
-                    }
-                    var spaceObject = JSON.parse(info.room_space);
-                    var spaceArray = [];
-                    var otherObject = {};
-                    for (var name in spaceObject) {
-                        //console.log(name);
-                        if (name == "roomother") {
-                            otherObject.id = "roomother";
-                            otherObject.space = spaceObject[name];
-                            tmpSum.qita = spaceObject[name];
-                            otherObject.type = "其他";
-                        } else {
-                            spaceArray.push({
-                                room: name,
-                                space: spaceObject[name]
-                            });
-                        }
-                    }
-                    this.roomAssignment.map((one, index) => {
-                        var roomindex = index + 1;
-                        for (var i = 0; i < spaceArray.length; i++) {
-                            one.id = "room" + roomindex;
-                            if (spaceArray[i].room == "room" + roomindex) {
-                                one.space = spaceArray[i].space;
-                                switch (one.type) {
-                                    case "yewuyongfang":
-                                        tmpSum.yewuyongfang += parseFloat(one.space);
-                                        break;
-                                    case "bangong":
-                                        tmpSum.bangong += parseFloat(one.space);
-                                        break;
-                                    case "fushu":
-                                        tmpSum.fushu += parseFloat(one.space);
-                                        break;
-                                    case "leader":
-                                        tmpSum.leader += parseFloat(one.space);
-                                        break;
-                                    case "shebei":
-                                        tmpSum.shebei += parseFloat(one.space);
-                                        break;
-                                    case "qita":
-                                        tmpSum.qita += parseFloat(one.space);
-                                        break;
-                                }
-                            }
-                        }
-                    });
-                    if (otherObject != {}) {
-                        this.roomAssignment.push(otherObject)
-                    }
-
-                }
-            }
-            this.roomAssignmentTotal = [{
-                    type: "bangong",
-                    space: tmpSum.bangong,
-                    text: "办公"
-                }, {
-                    type: "yewuyongfang",
-                    space: tmpSum.yewuyongfang,
-                    text: "业务用房"
-                },
-                {
-                    type: "fushu",
-                    space: tmpSum.fushu,
-                    text: "附属"
-                },
-                {
-                    type: "leader",
-                    space: tmpSum.leader,
-                    text: "领导"
-                },
-                {
-                    type: "shebei",
-                    space: tmpSum.shebei,
-                    text: "设备"
-                },
-                {
-                    type: "other",
-                    space: tmpSum.qita,
-                    text: "其他"
-                }
-
-            ]
-
-            this.context.strokeStyle = "#FFFFFF";
-            if (zuobiao != null) {
-                var img = this.$refs.backImage;
-                img = new Image();
-                img.src = this.assignList.selectedFloor.url;
-                // var that =this;
-                img.onload = () => {
-                    this.context.globalAlpha = 1;
-                    this.context.drawImage(img, 0, 0, 500, 350)
-                    zuobiao.map((room, index) => {
-                        // console.log(room)
-                        // this.context.beginPath();
-                        // this.context.moveTo(
-                        //     room["room" + index][0], room["room" + index][1]);
-                        // this.context.lineTo(room["room" + index][2], room["room" + index][3]);
-                        var textDraw = true;
-                        var roomindex = index + 1;
-
-                        var changIndex = room.origin_width / 500;
-                        var gaoIndex = room.origin_height / 350;
-                        room["room" + roomindex][0] = room["room" + roomindex][0] / changIndex;
-                        room["room" + roomindex][1] = room["room" + roomindex][1] / gaoIndex;
-                        room["room" + roomindex][2] = room["room" + roomindex][2] / changIndex;
-                        room["room" + roomindex][3] = room["room" + roomindex][3] / gaoIndex;
-
-                        if (this.roomAssignment.length != null) {
-                            this.roomAssignment.map((one) => {
-                                if (one.id == "room" + roomindex) {
-                                    this.context.globalAlpha = 1;
-                                    if (one.space && one.space != 0) {
-                                        this.context.strokeText(one.space + "m²", room["room" + roomindex][0] + (room["room" + roomindex][2] / 3), room["room" + roomindex][1] + (room["room" + roomindex][3] / 2));
-                                        textDraw = false;
-                                    }
-                                }
-                            })
-                        }
-                        if (textDraw) {
-                            this.context.globalAlpha = 1;
-                            try {
-                                this.context.strokeText("房间" + roomindex, room["room" + roomindex][0] + (room["room" + roomindex][2] / 2), room["room" + roomindex][1] + (room["room" + roomindex][3] / 2));
-                            } catch (error) {
-                                console.log("parse error")
-                            }
-                        }
-                        this.context.globalAlpha = 0;
-                        try {
-                            this.context.strokeRect(room["room" + roomindex][0], room["room" + roomindex][1], room["room" + roomindex][2], room["room" + roomindex][3])
-                        } catch (error) {
-                            console.log("parse error")
-                        }
-                    });
-                }
-
-            } else {
-                this.context.clearRect(0, 0, 500, 350);
-            }
-
-            // this.context.strokeStyle = "#FF0000";
-            // this.context.strokeText("201", 10, 20);
-            // this.context.strokeRect(0, 0, 60, 100);
-            var canvas = this.$refs.canvas;
-            var contextThis = this;
-            this.$refs.canvas.addEventListener('click', function (event) {
-                var rect = canvas.getBoundingClientRect();
-                //2
-                var x = event.clientX - rect.left * (500 / rect.width);
-                var y = event.clientY - rect.top * (350 / rect.height);
-
-                var withinOrNot = contextThis.whereIsTheRoom(x, y, contextThis)
-                console.log("within or Not " + withinOrNot);
-                if (!withinOrNot) {
-                    contextThis.selectedRoomInFloorIndex = "roomother";
-                    contextThis.selectedRoomInFloor = {
-                        type: "其他",
-                        space: tmpSum.qita
-                    }
-                }
-                //contextThis.context.clearRect(0, 0, 500, 350);
-                contextThis.openAssignModalNew(contextThis.assignList.selectedBuilding, contextThis.assignList.selectedFloor, contextThis)
-            }, false);
-
-        },
-        whereIsTheRoom(x, y, context) {
-            var withinOrNot = false;
-            const checkZuoBiao = {
-                x: x,
-                y: y
-            };
-            context.roomInFloor.map((room, index) => {
-                var roomindex = 0;
-                if (room["room" + index] == null) {
-                    roomindex = index + 1;
-                } else {
-                    roomindex = index + 1;
-                }
-
-                var leftCornor = {
-                    x: room["room" + roomindex][0],
-                    y: room["room" + roomindex][1]
-                }; //左上坐标
-                var rightCornor = {
-                    x: room["room" + roomindex][0] + room["room" + roomindex][2],
-                    y: room["room" + roomindex][1]
-                };
-                var leftDown = {
-                    x: room["room" + roomindex][0],
-                    y: room["room" + roomindex][1] + room["room" + roomindex][3]
-                }
-                var rightDown = {
-                    x: room["room" + roomindex][0] + room["room" + roomindex][2],
-                    y: room["room" + roomindex][1] + room["room" + roomindex][3]
-                }
-                if (context.withinZuobiao(checkZuoBiao, leftCornor, rightCornor, leftDown, rightDown)) {
-                    withinOrNot = true;
-                    context.selectedRoomInFloorIndex = roomindex;
-                    context.selectedRoomInFloor = {};
-                    context.roomAssignment.map((one) => {
-                        if (one.id == "room" + roomindex) {
-                            context.selectedRoomInFloor = one;
-                        }
-                    });
-                    switch (room.type) {
-                        case "yewuyongfang":
-                            context.selectedRoomInFloor.type = "业务用房"
-                            break;
-                        case "qita":
-                            context.selectedRoomInFloor.type = "其他"
-                            break;
-                        case "shebei":
-                            context.selectedRoomInFloor.type = "设备"
-                            break;
-                        case "bangong":
-                            context.selectedRoomInFloor.type = "办公"
-                            break;
-                        case "yewu":
-                            context.selectedRoomInFloor.type = "业务"
-                            break;
-                        case "fushu":
-                            context.selectedRoomInFloor.type = "附属"
-                            break;
-                        case "leader":
-                            context.selectedRoomInFloor.type = "领导办公室"
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            });
-            return withinOrNot;
-        },
-        withinZuobiao(checkZuoBiao, leftCornor, rightCornor, leftDown, rightDown) {
-
-            if (checkZuoBiao.x >= leftCornor.x && checkZuoBiao.y <= rightDown.y) {
-                if (checkZuoBiao.x <= rightCornor.x && checkZuoBiao.y >= rightCornor.y) {
-                    return true;
-                }
-                return false;
-            }
-            return false;
-        },
-        getBuildingFloorSection(building) {
-            var data = {
-                building_id: building.id
-            }
-            var context = this;
-            //console.log(data);
-            getBuildingFloorApi(data).then((result) => {
-                building.floors = result.data.data;
-                building.floors.map((floor) => {
-                    floor.pid = building.id;
-                    floor.isLeaf = true;
-                    floor.floor_id = floor.id;
-                    floor.disabled = false;
-                    building.children.push(floor)
-                })
-                this.tree = new Tree(this.treeData);
-                // this.drawRect()
-            }).catch(function () {
-                context.loading = false;
-                notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
-            });
-        },
-        getBuildingSection() {
-            let data = {};
-            data.room_id = this.selectedRoom.id;
-            var context = this;
-            // get room
-            getBuildingListApi(data).then((result) => {
-                context.loading = false;
-                context.assignList.selectedFloor = {
-                    url: ""
-                };
-                context.assignList.selectedBuilding = {
-                    name: ""
-                };
-                //get floor
-                context.assignList.buildings = [];
-                context.assignList.buildings = result.data.data;
-                let root = [];
-
-                context.assignList.buildings.map((building) => {
-                    building.building_id = building.id;
-                    building.pid = 0;
-                    building.dragDisabled = true;
-                    building.addTreeNodeDisabled = true;
-                    building.addLeafNodeDisabled = true;
-                    // building.editLeafNodeDisabled = false;
-                    // building.delLeafNodeDisabled = false;
-                    building.editNodeDisabled = true;
-                    building.delNodeDisabled = false;
-                    building.children = [];
-                    root.push(building);
-                    context.getBuildingFloorSection(building);
-                })
-                if (this.assignList.buildings.length > 0) {
-                    this.selectedBuildingID = this.assignList.buildings[0].id;
-                }
-                this.treeData = root;
-                this.assignList.open = true;
-                // this.ComponentKey++;
-            }).catch(function () {
-                context.loading = false;
-                notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
-            });
-        },
-        createBuilding: function () {
-            this.$refs.formComponentBuilding.singleBuilding.room_id = this.selectedRoom.id;
-            this.loading = true;
-            var context = this;
-            this.$refs.formComponentBuilding.singleBuilding.type = this.roomType;
-            createBuildingApi(this.$refs.formComponentBuilding.singleBuilding).then((result) => {
-                this.buildingForm.open = false;
-                this.getBuildingSection();
-                this.$refs.formComponentBuilding.singleBuilding.building_id = result.data.data;
-                this.createBuildingFloor(this.$refs.formComponentBuilding.singleBuilding);
-            }).catch(function () {
-                context.loading = false;
-                notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
-            });
-        },
-        openBuildingModal() {
-            this.assignList.open = false;
-            this.buildingForm.open = true;
-        },
-        onDel(node) {
-            console.log(node)
-            this.deleteBuilding(node);
-        },
-
-        onChangeName(params) {
-            console.log(params)
-        },
-
-        onAddNode(params) {
-            console.log(params)
-        },
-
-        onClick(params) {
-            if (params.floor_id == undefined) {
-                this.assignList.selectedBuilding = params;
-                this.assignList.selectedFloor = {
-                    url: ""
-                };
-                this.roomAssignment = [];
-                this.roomAssignmentTotal = [];
-
-                if (this.context == null || this.context == undefined) {
-                    this.context = this.$refs.canvas.getContext("2d");
-                    this.context.clearRect(0, 0, 500, 350);
-                } else {
-                    this.context.clearRect(0, 0, 500, 350);
-
-                }
-            } else {
-                this.assignList.selectedFloor = params;
-                console.log(params);
-                getFloorById({
-                    floor_id: params.id
-                }).then((result) => {
-                    if (result.data.code == 0) {
-                        this.assignList.selectedFloor.url = constants.fileURL + this.assignList.selectedFloor.cadfile;
-                        this.drawRect(result.data.data);
-                    }
-                })
-                this.treeData.map((building) => {
-                    if (building.id == params.pid) {
-                        this.assignList.selectedBuilding = building;
-                    }
-                })
-            }
-        },
-
-        addNode() {
-            var node = new TreeNode({
-                name: 'new node',
-                isLeaf: false
-            })
-            if (!this.data.children) this.data.children = []
-            this.data.addChildren(node)
-        },
-        //
-
-        openImageModal() {
-            this.loading = true;
-            this.assignList.open = false;
-            if (this.assignList.selectedFloor.cadfile != null && this.assignList.selectedFloor.cadfile != "") {
-                this.assignList.selectedFloor.url = constants.fileURL + this.assignList.selectedFloor.cadfile;
-                this.buildingImage.open = true;
-                this.buildingImage.notification = true;
-                this.loading = false;
-            } else {
-                this.buildingImage.open = true;
-                this.buildingImage.notification = false;
-                this.loading = false;
-            }
-
-        },
-        createAssignment() {
-            this.loading = true;
-            let data = this.selectedRoomInFloor;
-            data.room_id = this.assignForm.room_id;
-            data.building_id = this.assignForm.building_id;
-            data.floor_id = this.assignForm.floor_id;
-            if (this.selectedRoomInFloorIndex != "roomother") {
-                data.id = "room" + this.selectedRoomInFloorIndex;
-            } else {
-                data.id = this.selectedRoomInFloorIndex;
-            }
-            data.isleader = this.assignForm.isleader;
-            console.log(JSON.stringify(data));
-            if (this.roomAssignment == null || this.roomAssignment == {}) {
-                this.roomAssignment = [];
-                this.roomAssignmentTotal = [];
-            }
-            var found = 0;
-            this.roomAssignment.map((one) => {
-                if (one.id == data.id) { //已经有了的话 直接更新
-                    one = data;
-                    found = 1;
-                }
-            })
-            if (found == 0) {
-                this.roomAssignment.push(data); //没有塞进去
-
-            }
-            if (this.roomAssignment.length == 0) {
-                this.roomAssignment.push(data); //没有塞进去
-
-            }
-            if (this.context == null || this.context == undefined) {
-                this.context = this.$refs.canvas.getContext("2d");
-            }
-            var contextF = this;
-            if (!data.space) {
-                data.space = 0
-            }
-            createAssignmentApi({
-                space: data.space.toString(),
-                roomid: data.id,
-                id: this.assignList.selectedFloor.id
-            }).then((result) => {
-                this.loading = false;
-                if (result.data.code == 0) {
-                    this.context.clearRect(0, 0, 500, 350);
-                    this.roomAssignment = [];
-                    this.roomAssignmentTotal = [];
-                    // this.getBuildingSection();
-                    this.refreshFloor(this.assignList.selectedFloor.id)
-                    // this.getRoomStat({
-                    //     unit_id: this.selectedRoom.id
-                    // });
-                    // this.closeAssignModal();
-                } else {
-                    notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
-                }
-            }).catch(function () {
-                contextF.loading = false;
-                notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
-            });
-
-        },
-        refreshFloor(id) {
-            getFloorById({
-                floor_id: id
-            }).then((result) => {
-                if (result.data.code == 0) {
-                    this.assignList.selectedFloor.url = constants.fileURL + result.data.data.cadfile;
-                    if (this.context) {
-                        this.context.clearRect(0, 0, 500, 350);
-                    }
-                    this.drawRect(result.data.data);
-                }
-            })
-        },
-
-        openAssignModal(building, floor) {
-            this.assignForm.room_id = building.room_id;
-            this.assignForm.building_id = building.id;
-            this.assignForm.floor_id = floor.id;
-            //TODO floor_id
-            this.assignForm.open = true;
-            this.assignList.open = false;
-        },
-        openAssignModalNew(building, floor, context) {
-
-            context.assignForm.room_id = building.room_id;
-            context.assignForm.building_id = building.id;
-            context.assignForm.floor_id = floor.id;
-            //TODO floor_id
-            //context.assignForm.open = true;
-            //context.assignList.open = false;
-        },
-
-        createBuildingFloor(data) {
-            this.loading = true;
-            var context = this;
-            data.type = this.roomType;
-            createBuildingFloorApi(data).then(() => {
-                context.loading = false;
-                context.$refs.formComponentBuilding.singleBuilding = {
-                    room_id: context.selectedRoom.id,
-                    name: "",
-                    upper: "",
-                    lower: "",
-                    detail: ""
-                };
-            }).catch(function () {
-                context.loading = false;
-                notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
-            });
-        },
-
         //patrol
 
         showPatrol(data) {
@@ -1470,8 +693,6 @@ export default {
             this.loading = true;
             this.defaultTab = 0;
             this.selectedRoom = data;
-            this.selectedRoomInFloor = {};
-            this.selectedRoomInFloorIndex = 0;
             if (
                 !this.selectedRoom.priceinfo ||
                 this.selectedRoom.priceinfo.length == 0
@@ -1497,18 +718,7 @@ export default {
                 };
             }
             this.validationCheck.status = "";
-            this.assignList.open = true;
-            this.tree = new Tree([]);
-            this.assignList.selectedBuilding = false;
-            this.assignList.selectedFloor = {
-                url: ""
-            };
-
-            this.loading = false;
-            this.assignList.open = true;
-
-            this.getBuildingSection();
-
+            this.open = true;
             this.selectedRoom.space_assign = data.space;
             listRentRoomAssignmentApi({
                 room_id: this.selectedRoom.id,
@@ -1533,8 +743,7 @@ export default {
                             this.selectedRoomContract.rate = rule.rate;
                             this.selectedRoomContract.year = rule.year;
                         }
-                        ``
-                        result.data.data.map((one) => {
+            ``            result.data.data.map((one) => {
                             this.listContract.push({
                                 value: one.id,
                                 text: one.rentcontact,
@@ -1546,7 +755,6 @@ export default {
                 });
             });
         },
-
         exportToExcel() {
             this.exportData.open = true;
         },
@@ -1652,8 +860,7 @@ export default {
             // show create Model
             this.modelTitle = "创建租赁房屋";
             this.editMode = false;
-            this.assignList.open = true;
-
+            this.open = true;
             this.selectedRoom = {
                 area: "奉贤区",
             };
@@ -1665,7 +872,7 @@ export default {
                 return;
             }
 
-            this.assignList.open = !this.assignList.open;
+            this.open = !this.open;
 
             if (!this.editMode) {
                 createRentRoomApi(this.selectedRoom).then((result) => {
@@ -1731,7 +938,7 @@ export default {
             this.refreshRooms({
                 page: 1,
             });
-            this.assignList.open = false;
+            this.open = false;
             this.contractForm.open = false;
         },
     },
@@ -1846,9 +1053,5 @@ export default {
 
 .ui.modal .scrolling.content {
     max-height: none !important;
-}
-
-.imageModal {
-    height: 500px;
 }
 </style>

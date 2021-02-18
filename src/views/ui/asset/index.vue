@@ -633,7 +633,7 @@ export default {
                 this.roomAssignmentTotal = [];
 
                 if (this.context == null || this.context == undefined) {
-                    this.context = this.$refs.convas.getContext("2d");
+                    this.context = this.$refs.canvas.getContext("2d");
                     this.context.clearRect(0, 0, 500, 350);
                 } else {
                     this.context.clearRect(0, 0, 500, 350);
@@ -716,7 +716,7 @@ export default {
 
             }
             if (this.context == null || this.context == undefined) {
-                this.context = this.$refs.convas.getContext("2d");
+                this.context = this.$refs.canvas.getContext("2d");
             }
             var contextF = this;
             if (!data.space) {
@@ -991,7 +991,7 @@ export default {
         },
         drawRect(info) {
             if (this.context == null || this.context == undefined) {
-                this.context = this.$refs.convas.getContext("2d");
+                this.context = this.$refs.canvas.getContext("2d");
             }
             var tmpSum = {
                 bangong: 0,
