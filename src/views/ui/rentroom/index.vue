@@ -245,6 +245,9 @@
                                     <bm-local-search :keyword="keyword" :auto-viewport="true" location="上海" @markersset="setFirstPoint"></bm-local-search>
                                 </baidu-map>
                             </sui-tab-pane>
+                            <sui-tab-pane title="房屋面积" :attached="false" style="max-height:600px;overflow-y: auto;">
+                                <mianji-form ref='mianjiForm' :singleRoom="selectedRoom"></mianji-form>
+                            </sui-tab-pane>
                             <sui-tab-pane title="楼层管理" :attached="false" :disabled="selectedRoom.kind==2">
                                 <sui-button basic color="blue" @click.native="openBuildingModal">
                                     新增
@@ -362,7 +365,10 @@ import {
     Tree,
     TreeNode
 } from 'vue-tree-list'
+import mianjiForm from "@/components/mianjiForm";
+
 import {
+    getRoomStatApi,
     createPatrolApi,
     getRentRoomDataApi,
     createRentRoomApi,
@@ -402,7 +408,7 @@ export default {
         "contract-form": rentHeTongForm,
         'building-form': BuildingForm,
         'assign-form': AssignForm,
-
+        'mianji-form': mianjiForm
     },
     data() {
         return {
@@ -1038,10 +1044,10 @@ export default {
                     this.roomAssignmentTotal = [];
                     // this.getBuildingSection();
                     this.refreshFloor(this.assignList.selectedFloor.id)
-                    // this.getRoomStat({
-                    //     unit_id: this.selectedRoom.id
-                    // });
-                    // this.closeAssignModal();
+                    this.getRoomStat({
+                        unit_id: this.selectedRoom.id
+                    });
+                    this.closeAssignModal();
                 } else {
                     notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                 }
@@ -1049,6 +1055,21 @@ export default {
                 contextF.loading = false;
                 notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
             });
+
+        },
+        getRoomStat(data) {
+            getRoomStatApi(data).then((result) => {
+                if (result.data.code == 0) {
+                    var roomSpaceData = result.data.data;
+                    this.selectedRoom.space7 = roomSpaceData.bangong[1] + roomSpaceData.leader[1]; //办公
+                    this.selectedRoom.space8 = roomSpaceData.bangong[0] + roomSpaceData.leader[0]; //办公
+                    this.selectedRoom.space28 = roomSpaceData.shebei[1]; //设备
+                    this.selectedRoom.space40 = roomSpaceData.fushu[1]; //附属
+                    this.selectedRoom.space25 = roomSpaceData.yewuyongfang[1]; //业务用
+                    this.selectedRoom.space24 = roomSpaceData.other[1];
+                    this.selectedRoom.space29 = roomSpaceData.reserved[1];
+                }
+            })
 
         },
         refreshFloor(id) {
@@ -1508,7 +1529,9 @@ export default {
             this.assignList.open = true;
 
             this.getBuildingSection();
-
+            this.getRoomStat({
+                unit_id: this.selectedRoom.id
+            });
             this.selectedRoom.space_assign = data.space;
             listRentRoomAssignmentApi({
                 room_id: this.selectedRoom.id,
@@ -1533,7 +1556,6 @@ export default {
                             this.selectedRoomContract.rate = rule.rate;
                             this.selectedRoomContract.year = rule.year;
                         }
-                        ``
                         result.data.data.map((one) => {
                             this.listContract.push({
                                 value: one.id,

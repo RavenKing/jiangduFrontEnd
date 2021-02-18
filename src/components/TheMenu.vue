@@ -133,7 +133,7 @@ export default {
         font-weight: 600;
         color: white;
         cursor: pointer;
-        background: #ffffff url("../../public/logo.jpg") center;
+        background: #2a3f54 url("../../public/logo.jpg") center;
         background-repeat: no-repeat;
         background-size: contain;
         line-height: 60px;

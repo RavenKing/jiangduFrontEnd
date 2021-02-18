@@ -125,7 +125,7 @@
                                         </div>
                                     </div>
                                     <div slot="action" slot-scope="props">
-                                        <sui-button basic color="red" content="删除" v-on:click="deleteleader(props.rowData)" />
+                                        <sui-button basic color="red" content="删除" v-on:click="deleteleader(props.rowData)" size="tiny"/>
                                     </div>
                                 </vuetable>
                             </div>

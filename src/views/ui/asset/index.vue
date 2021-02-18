@@ -502,7 +502,7 @@ export default {
             keyword: "",
             uploadCount: 0,
             roomInFloor: [],
-            roomType:1,
+            roomType: 1,
             selectedRoomInFloorIndex: 0,
             roomAssignment: [],
             roomAssignmentTotal: [{
@@ -768,7 +768,7 @@ export default {
         createBuildingFloor(data) {
             this.loading = true;
             var context = this;
-            data.type=this.roomType;
+            data.type = this.roomType;
             createBuildingFloorApi(data).then(() => {
                 context.loading = false;
                 context.$refs.formComponentBuilding.singleBuilding = {
@@ -1358,7 +1358,7 @@ export default {
         createBuilding: function () {
             this.$refs.formComponentBuilding.singleBuilding.room_id = this.selectedRoom.id;
             this.loading = true;
-            this.$refs.formComponentBuilding.singleBuilding.type=this.roomType;
+            this.$refs.formComponentBuilding.singleBuilding.type = this.roomType;
             createBuildingApi(this.$refs.formComponentBuilding.singleBuilding).then((result) => {
                 this.buildingForm.open = false;
                 this.getBuildingSection();
@@ -1798,6 +1798,7 @@ export default {
 
 .thTextcenter {
     text-align: center !important;
+    border-bottom: 0px !important;
 }
 
 .ui.text.menu .active.item {

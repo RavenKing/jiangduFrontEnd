@@ -2,7 +2,7 @@ export default [
   {
     name: "roomname",
     title: '房屋名称',
-    width: "20%",
+    width: "40%",
     height:"100px",
   },
   {
@@ -26,12 +26,6 @@ export default [
     name: "floorname",
     sortField: "floorname",
     title: '楼层',
-    width: "15%",
-  },
-  {
-    name: "space",
-    sortField: "space",
-    title: '面积(m²)',
     width: "15%",
   },
   {

@@ -2,7 +2,7 @@ export default [
   {
     name: "roomename",
     title: '房屋名称',
-    width: "20%",
+    width: "30%",
     sortField: "roomname",
     titleClass: "center aligned",
     dataClass: "center aligned",
@@ -42,7 +42,7 @@ export default [
     {
     name: "room_type",
     sortField: "room_type",
-    title: '房屋类型',
+    title: '类型',
     width: "15%",
     titleClass: "center aligned",
     dataClass: "center aligned",

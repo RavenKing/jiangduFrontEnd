@@ -7,7 +7,7 @@
             </sui-dimmer>
         </div>
 
-        <div class="filterBiaoDan" style="padding-left:15px;margin:0;">
+        <div class="filterBiaoDan" style="padding-left:15px;">
             <sui-grid>
                 <sui-grid-row>
                     <sui-grid-column :width="12">
@@ -34,8 +34,8 @@
                     </el-tag>
                 </div>
                 <div slot="action" slot-scope="props">
-                    <sui-button text="编辑" basic color="blue" v-on:click="editWeixiuShenqing(props.rowData)">编辑</sui-button>
-                    <sui-button text="删除" basic color="red" v-on:click="handleDelete(props.rowData)">删除</sui-button>
+                    <sui-button text="编辑" basic color="blue" v-on:click="editWeixiuShenqing(props.rowData)" size="tiny"> 编辑</sui-button>
+                    <sui-button text="删除" basic color="red" v-on:click="handleDelete(props.rowData)" size="tiny">删除</sui-button>
                 </div>
             </vuetable>
         </div>
@@ -445,7 +445,7 @@ export default {
 }
 
 .filterBiaoDan {
-    margin: 0 0 15px 0
+    margin: 10px;
 }
 
 .vue2Table {
