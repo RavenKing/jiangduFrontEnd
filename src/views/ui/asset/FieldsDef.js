@@ -3,7 +3,7 @@ export default [
   {
     name: "roomname",
     title: '房屋名称',
-    width: "45%",
+    width: "30%",
     titleClass: 'left aligned',
     dataClass: 'left aligned',
   },
@@ -91,6 +91,6 @@ export default [
     title: '',
     titleClass: "left aligned",
     dataClass: "left aligned",
-    width: "20%",
+    width: "30%",
   },
 ];

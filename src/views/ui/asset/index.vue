@@ -59,8 +59,8 @@
                 <div slot="action" slot-scope="props">
 
                     <!-- <sui-button basic color="red"  content="查看" v-on:click="viewSomeThing(props.rowData,'check')" /> -->
-                    <sui-button basic color="blue" content="编辑" v-on:click="openAssignSection(props.rowData)" />
-                    <sui-button basic color="red" content="删除" v-on:click="deleteRoom(props.rowData)" />
+                    <sui-button basic color="blue" content="编辑" v-on:click="openAssignSection(props.rowData)" size="tiny" />
+                    <sui-button basic color="red" content="删除" v-on:click="deleteRoom(props.rowData)" size="tiny" />
                     <!-- <sui-button content="分配房屋列表" v-on:click="openAssignList(props.rowData)" /> -->
                 </div>
             </vuetable>
@@ -253,7 +253,7 @@
                                                         </assign-form>
                                                     </sui-grid-column>
                                                     <sui-grid-column :width="4">
-                                                        <sui-button basic color="blue" @click.native="createAssignment" class="buttonblueFun">
+                                                        <sui-button basic color="blue" @click.native="createAssignment" class="buttonblueFun" size="tiny">
                                                             提交
                                                         </sui-button>
                                                     </sui-grid-column>
@@ -277,6 +277,7 @@
                                                         <div class="yewuyongfang" v-show="unit.type=='yewuyongfang'"></div>
                                                         <div class="lvse" v-show="unit.type=='shebei'"></div>
                                                         <div class="baise" v-show="unit.type=='other'"></div>
+                                                        <div class="reversed" v-show="unit.type=='reversed'"></div>
                                                         {{unit.text}} {{unit.space}}(m²)
                                                     </div>
                                                 </sui-list-item>
@@ -360,6 +361,11 @@
                                     </sui-list>
                                 </div>
                             </sui-tab-pane>
+
+                            <!-- <sui-tab-pane title="单位" :attached="false">
+                                <vuetable ref="vuetable" :api-mode="false" :data="selectedRoom.assignList" :fields="fieldsAssign" data-path="data" :key="componentAssignListkey">
+                                </vuetable>
+                            </sui-tab-pane> -->
                         </sui-tab>
                     </div>
 
@@ -424,7 +430,8 @@ import {
     getBuildingFloorApi,
     getFloorById,
     getRoomStatApi,
-    deleteFloorApi
+    deleteFloorApi,
+    getroomunitinfo
 } from "@/api/roomDataAPI";
 export default {
     name: "MyVuetable",
@@ -532,6 +539,18 @@ export default {
     },
 
     methods: {
+        getroomunitinfo(data) {
+            var context = this;
+            getroomunitinfo(data).then((result) => {
+                if (result.data.code == 0) {
+                    console.log(result.data.data);
+                }
+            }).catch(function () {
+                context.loading = false;
+                notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
+            });
+
+        },
         changeToChuZuHeTong() {
             this.$router.push("rentAssign?room_id=" + this.selectedRoom.id);
         },
@@ -894,9 +913,14 @@ export default {
             this.getRoomStat({
                 unit_id: this.selectedRoom.id
             })
+            this.getroomunitinfo({
+                room_id: this.selectedRoom.id,
+                room_type: this.roomType
+            })
 
         },
         getRoomStat(data) {
+            data.room_type = this.roomType;
             getRoomStatApi(data).then((result) => {
                 if (result.data.code == 0) {
                     var roomSpaceData = result.data.data;
@@ -999,7 +1023,8 @@ export default {
                 leader: 0,
                 shebei: 0,
                 qita: 0,
-                yewuyongfang: 0
+                yewuyongfang: 0,
+                reversed: 0
             }
             this.roomAssignment = [];
             this.roomAssignmentTotal = [];
@@ -1054,6 +1079,9 @@ export default {
                                     case "qita":
                                         tmpSum.qita += parseFloat(one.space);
                                         break;
+                                    case "reversed":
+                                        tmpSum.reversed += parseFloat(one.space);
+                                        break;
                                 }
                             }
                         }
@@ -1092,6 +1120,11 @@ export default {
                     type: "other",
                     space: tmpSum.qita,
                     text: "其他"
+                },
+                {
+                    type: "reversed",
+                    space: tmpSum.reversed,
+                    text: "服务"
                 }
 
             ]
@@ -1229,6 +1262,9 @@ export default {
                             break;
                         case "bangong":
                             context.selectedRoomInFloor.type = "办公"
+                            break;
+                        case "reversed":
+                            context.selectedRoomInFloor.type = "服务"
                             break;
                         case "yewu":
                             context.selectedRoomInFloor.type = "业务"
@@ -1854,6 +1890,13 @@ export default {
     width: 10px;
     border-color: black;
     border-style: solid;
+}
+
+.reversed {
+    background-color: rgb(10, 10, 10);
+    width: 10px;
+    height: 10px;
+    display: inline-block;
 }
 
 .displayInline {

@@ -1,19 +1,24 @@
 
 export default [
-  {
-    name: "status",
-    title: '状态',
-    width: "15%",
-    formatter (value) {
-      if(value=="normal")
-      {
+  // {
+  //   name: "status",
+  //   title: '名称',
+  //   width: "15%",
+  //   formatter (value) {
+  //     if(value=="normal")
+  //     {
 
-        return "<div class=\"normalIcon\"></div>"
-      }else(value=="warning")
-      {
-        return "<div class=\"alertIcon\"></div>";
-      }
-    }
+  //       return "<div class=\"normalIcon\"></div>"
+  //     }else(value=="warning")
+  //     {
+  //       return "<div class=\"alertIcon\"></div>";
+  //     }
+  //   }
+  // },
+  {
+    name: "roomname",
+    title: '房屋名称',
+    width: "35%"
   },
   {
     name: "address",

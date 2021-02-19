@@ -125,7 +125,7 @@
                                         </div>
                                     </div>
                                     <div slot="action" slot-scope="props">
-                                        <sui-button basic color="red" content="删除" v-on:click="deleteleader(props.rowData)" size="tiny"/>
+                                        <sui-button basic color="red" content="删除" v-on:click="deleteleader(props.rowData)" size="tiny" />
                                     </div>
                                 </vuetable>
                             </div>
@@ -734,7 +734,10 @@ export default {
                 img = new Image();
                 img.src = this.assignList.selectedFloor.url;
                 // var that =this;
+                this.loading = true;
                 img.onload = () => {
+                    this.loading = false;
+
                     this.context.globalAlpha = 1;
                     this.context.drawImage(img, 0, 0, 500, 350)
                     zuobiao.map((room, index) => {
@@ -851,7 +854,7 @@ export default {
                             context.selectedRoomInFloor.type = "附属"
                             break;
                         case "reserved":
-                            context.selectedRoomInFloor.type = "保留"
+                            context.selectedRoomInFloor.type = "服务用房"
                             break;
                         case "leader":
                             context.selectedRoomInFloor.type = "领导办公室"
@@ -1283,7 +1286,13 @@ export default {
                     input['type'] = "2";
                 }
                 // delete detail
-                deleteBuildingFloorAssignmentApi(input).then(() => {
+                deleteBuildingFloorAssignmentApi(input).then((result) => {
+                    if (result.data.code == 3) {
+                        notifySomething(constants.GENERALERROR, "无法删除。被占用", constants.typeError);
+                    }
+                    if (result.data.code == 0) {
+                        notifySomething("删除成功", "删除成功", constants.typeSuccess);
+                    }
                     this.loading = false
                     getUnitApiByid(this.selectedRoom.id).then((data) => {
                         var res_data = data.data.data['building_info']

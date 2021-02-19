@@ -52,6 +52,19 @@
                     <sui-segment>
                         <weixiu-form :singleEntry="selectedWeixiu" ref="weixiuForm" :mode="modalMode"> </weixiu-form>
                     </sui-segment>
+                    <div is="sui-divider" horizontal>
+                        <h4 is="sui-header">
+                            <i class="tag icon"></i>
+                            已上传文档
+                        </h4>
+                    </div>
+                    <div>
+                        <sui-list key="213123">
+                            <sui-list-item v-for="(link,index) in selectedWeixiu.ziliaoList" :key="link[0]">
+                                <a type="primary" :href="link.fileURL" target="_blank">文件{{index+1}}</a>
+                            </sui-list-item>
+                        </sui-list>
+                    </div>
                 </sui-modal-content>
 
                 <sui-modal-actions>
@@ -263,6 +276,16 @@ export default {
                             }
                         })
                     }
+
+                    one.ziliaoListData = JSON.parse(one.url);
+                    one.ziliaoList = [];
+                    one.ziliaoListData.map((one1) => {
+                        var newOne = {
+                            fileURL: constants.fileURL + one1
+                        }
+                        one.ziliaoList.push(newOne);
+                    })
+
                     one.starttime = fromShitFormat(one.starttime)
                     one.endtime = fromShitFormat(one.endtime)
                     getroombyid(one).then((result) => {
@@ -320,10 +343,9 @@ export default {
         onChangePage(page) {
             this.$refs.vuetable.changePage(page);
         },
-        getDataById(data)
-        {
-            listloanassignmentbyidr(data).then((data)=>{
-                   //this.localData = data.data.data;
+        getDataById(data) {
+            listloanassignmentbyidr(data).then((data) => {
+                //this.localData = data.data.data;
                 this.loading = false;
                 this.localData = {
                     total: 16,
@@ -388,12 +410,11 @@ export default {
                     getVars[tmp[0]] = tmp[1];
             });
             console.log(getVars);
-            if(getVars.room_id)
-            {
+            if (getVars.room_id) {
                 this.getDataById(getVars);
                 return;
             }
-        }else{
+        } else {
             this.refresh();
         }
     }

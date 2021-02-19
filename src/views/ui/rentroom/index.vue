@@ -41,8 +41,8 @@
             <vuetable ref="vuetable" :api-mode="false" :data="localData" :fields="fields" :sort-order="sortOrder" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
                 <div slot="action" slot-scope="props">
                     <!-- <sui-button basic color="blue"  content="查看" v-on:click="viewSomeThing(props.rowData,'check')" /> -->
-                    <sui-button basic color="blue" content="修改" v-on:click="viewSomeThing(props.rowData)" />
-                    <sui-button basic color="red" content="删除" v-on:click="deleteRoom(props.rowData)" />
+                    <sui-button basic color="blue" content="修改" v-on:click="viewSomeThing(props.rowData)" size="tiny" />
+                    <sui-button basic color="red" content="删除" v-on:click="deleteRoom(props.rowData)" size="tiny" />
 
                 </div>
             </vuetable>
@@ -100,7 +100,7 @@
                             </sui-message>
                         </div>
                         <sui-item class="imageModal">
-
+                            <sui-image :src="assignList.selectedFloor.url" style="display: inline-block; width:700px" />
                             <!-- <pdf :src="this.assignList.selectedFloor.url"  /> -->
                         </sui-item>
                         <sui-item>
@@ -249,6 +249,9 @@
                                 <mianji-form ref='mianjiForm' :singleRoom="selectedRoom"></mianji-form>
                             </sui-tab-pane>
                             <sui-tab-pane title="楼层管理" :attached="false" :disabled="selectedRoom.kind==2">
+                                <sui-dimmer :active="loading" inverted>
+                                    <sui-loader content="Loading..." />
+                                </sui-dimmer>
                                 <sui-button basic color="blue" @click.native="openBuildingModal">
                                     新增
                                 </sui-button>
@@ -308,6 +311,8 @@
                                                         <div class="yewuyongfang" v-show="unit.type=='yewuyongfang'"></div>
                                                         <div class="lvse" v-show="unit.type=='shebei'"></div>
                                                         <div class="baise" v-show="unit.type=='other'"></div>
+                                                        <div class="reversed" v-show="unit.type=='reversed'"></div>
+
                                                         {{unit.text}} {{unit.space}}(m²)
                                                     </div>
                                                 </sui-list-item>
@@ -579,7 +584,8 @@ export default {
                 leader: 0,
                 shebei: 0,
                 qita: 0,
-                yewuyongfang: 0
+                yewuyongfang: 0,
+                reversed: 0
             }
             this.roomAssignment = [];
             this.roomAssignmentTotal = [];
@@ -634,6 +640,9 @@ export default {
                                     case "qita":
                                         tmpSum.qita += parseFloat(one.space);
                                         break;
+                                    case "reversed":
+                                        tmpSum.reversed += parseFloat(one.space);
+                                        break;
                                 }
                             }
                         }
@@ -672,6 +681,12 @@ export default {
                     type: "other",
                     space: tmpSum.qita,
                     text: "其他"
+                },
+
+                {
+                    type: "reversed",
+                    space: tmpSum.reversed,
+                    text: "服务"
                 }
 
             ]
@@ -682,9 +697,12 @@ export default {
                 img = new Image();
                 img.src = this.assignList.selectedFloor.url;
                 // var that =this;
+                var that = this;
+                this.loading = true;
                 img.onload = () => {
-                    this.context.globalAlpha = 1;
-                    this.context.drawImage(img, 0, 0, 500, 350)
+                    that.loading = false;
+                    that.context.globalAlpha = 1;
+                    that.context.drawImage(img, 0, 0, 500, 350)
                     zuobiao.map((room, index) => {
                         // console.log(room)
                         // this.context.beginPath();
@@ -701,28 +719,28 @@ export default {
                         room["room" + roomindex][2] = room["room" + roomindex][2] / changIndex;
                         room["room" + roomindex][3] = room["room" + roomindex][3] / gaoIndex;
 
-                        if (this.roomAssignment.length != null) {
-                            this.roomAssignment.map((one) => {
+                        if (that.roomAssignment.length != null) {
+                            that.roomAssignment.map((one) => {
                                 if (one.id == "room" + roomindex) {
-                                    this.context.globalAlpha = 1;
+                                    that.context.globalAlpha = 1;
                                     if (one.space && one.space != 0) {
-                                        this.context.strokeText(one.space + "m²", room["room" + roomindex][0] + (room["room" + roomindex][2] / 3), room["room" + roomindex][1] + (room["room" + roomindex][3] / 2));
+                                        that.context.strokeText(one.space + "m²", room["room" + roomindex][0] + (room["room" + roomindex][2] / 3), room["room" + roomindex][1] + (room["room" + roomindex][3] / 2));
                                         textDraw = false;
                                     }
                                 }
                             })
                         }
                         if (textDraw) {
-                            this.context.globalAlpha = 1;
+                            that.context.globalAlpha = 1;
                             try {
-                                this.context.strokeText("房间" + roomindex, room["room" + roomindex][0] + (room["room" + roomindex][2] / 2), room["room" + roomindex][1] + (room["room" + roomindex][3] / 2));
+                                that.context.strokeText("房间" + roomindex, room["room" + roomindex][0] + (room["room" + roomindex][2] / 2), room["room" + roomindex][1] + (room["room" + roomindex][3] / 2));
                             } catch (error) {
                                 console.log("parse error")
                             }
                         }
-                        this.context.globalAlpha = 0;
+                        that.context.globalAlpha = 0;
                         try {
-                            this.context.strokeRect(room["room" + roomindex][0], room["room" + roomindex][1], room["room" + roomindex][2], room["room" + roomindex][3])
+                            that.context.strokeRect(room["room" + roomindex][0], room["room" + roomindex][1], room["room" + roomindex][2], room["room" + roomindex][3])
                         } catch (error) {
                             console.log("parse error")
                         }
@@ -730,7 +748,7 @@ export default {
                 }
 
             } else {
-                this.context.clearRect(0, 0, 500, 350);
+                that.context.clearRect(0, 0, 500, 350);
             }
 
             // this.context.strokeStyle = "#FF0000";
@@ -810,11 +828,11 @@ export default {
                         case "bangong":
                             context.selectedRoomInFloor.type = "办公"
                             break;
-                        case "yewu":
-                            context.selectedRoomInFloor.type = "业务"
-                            break;
                         case "fushu":
                             context.selectedRoomInFloor.type = "附属"
+                            break;
+                        case "reversed":
+                            context.selectedRoomInFloor.type = "服务"
                             break;
                         case "leader":
                             context.selectedRoomInFloor.type = "领导办公室"
@@ -1058,6 +1076,7 @@ export default {
 
         },
         getRoomStat(data) {
+            data.room_type = this.roomType;
             getRoomStatApi(data).then((result) => {
                 if (result.data.code == 0) {
                     var roomSpaceData = result.data.data;
@@ -1085,7 +1104,10 @@ export default {
                 }
             })
         },
-
+        closeAssignModal() {
+            this.assignForm.open = false;
+            this.assignList.open = true;
+        },
         openAssignModal(building, floor) {
             this.assignForm.room_id = building.room_id;
             this.assignForm.building_id = building.id;
@@ -1488,6 +1510,7 @@ export default {
             }
         },
         viewSomeThing(data) {
+            this.roomAssignmentTotal = [];
             this.loading = true;
             this.defaultTab = 0;
             this.selectedRoom = data;
@@ -1755,6 +1778,10 @@ export default {
             });
             this.assignList.open = false;
             this.contractForm.open = false;
+            this.buildingForm.open = false;
+            this.buildingFloorForm.open = false;
+            this.buildingImage.open = false;
+            this.assignList.open = false;
         },
     },
     created() {
@@ -1850,6 +1877,19 @@ export default {
 .map {
     width: 100%;
     height: 400px;
+}
+
+.buttonblueFun {
+    margin-top: 20px !important;
+    font-size: 10px !important;
+
+}
+
+.reversed {
+    background-color: rgb(10, 10, 10);
+    width: 10px;
+    height: 10px;
+    display: inline-block;
 }
 
 .normalIcon {

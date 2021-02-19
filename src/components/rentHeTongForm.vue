@@ -122,7 +122,7 @@
         </sui-form-fields>
         <sui-form-fields inline>
             <label>备注</label>
-            <sui-form-field>
+            <sui-form-field style="width:90%;">
                 <textarea placeholder="备注" v-model="singleEntry.space4" />
                 </sui-form-field>
         </sui-form-fields>
