@@ -245,9 +245,6 @@
                                     <bm-local-search :keyword="keyword" :auto-viewport="true" location="上海" @markersset="setFirstPoint"></bm-local-search>
                                 </baidu-map>
                             </sui-tab-pane>
-                            <sui-tab-pane title="房屋面积" :attached="false" style="max-height:600px;overflow-y: auto;">
-                                <mianji-form ref='mianjiForm' :singleRoom="selectedRoom"></mianji-form>
-                            </sui-tab-pane>
                             <sui-tab-pane title="楼层管理" :attached="false" :disabled="selectedRoom.kind==2">
                                 <sui-dimmer :active="loading" inverted>
                                     <sui-loader content="Loading..." />
@@ -321,6 +318,9 @@
                                     </sui-grid-column>
                                 </sui-grid>
 
+                            </sui-tab-pane>
+                            <sui-tab-pane title="房屋面积" :attached="false" style="max-height:600px;overflow-y: auto;">
+                                <mianji-form ref='mianjiForm' :singleRoom="selectedRoom"></mianji-form>
                             </sui-tab-pane>
                         </sui-tab>
                     </div>
@@ -1087,6 +1087,8 @@ export default {
                     this.selectedRoom.space25 = roomSpaceData.yewuyongfang[1]; //业务用
                     this.selectedRoom.space24 = roomSpaceData.other[1];
                     this.selectedRoom.space29 = roomSpaceData.reserved[1];
+                    this.selectedRoom.space10 = this.selectedRoom.space7 + this.selectedRoom.space28 + this.selectedRoom.space40 + this.selectedRoom.space25 + this.selectedRoom.space29 + this.selectedRoom.space24;
+
                 }
             })
 

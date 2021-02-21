@@ -18,6 +18,6 @@ export default [
   {
     name: "action",
     title: '操作',
-    width: "15%"
+    width: "150px"
   },
 ];

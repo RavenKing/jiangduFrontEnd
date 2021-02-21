@@ -131,7 +131,7 @@ export default [
     name: "action",
     sortField: "space",
     title: '操作',
-    width: "15%",
+    width: "150px",
     titleClass: "center aligned",
     dataClass: "center aligned",
   }

@@ -3,8 +3,8 @@
     <sui-form class="marginBottom30">
         <sui-form-fields inline>
             <sui-form-field style="width:33.33333%;">
-                <label>单位名称</label>
-                <model-select style="width:100%" :options="unitoptions" v-model="singleEntry.unit_id" placeholder="选择单位" @input="changeUnit">
+                <label>产权单位</label>
+                <model-select style="width:100%" :options="unitoptions" v-model="singleEntry.unit_id" placeholder="产权单位" @input="changeUnit">
                 </model-select>
             </sui-form-field>
             <sui-form-field style="width:33.33333%;">
@@ -53,8 +53,8 @@
             </sui-form-field>
 
             <sui-form-field style="width:33.33333%;">
-                <label>租金</label>
-                <sui-input style="width:100%" placeholder="租金" v-model="singleEntry.amt" />
+                <label>年租金</label>
+                <sui-input style="width:100%" placeholder="年租金" v-model="singleEntry.amt" />
             </sui-form-field>
         </sui-form-fields>
 

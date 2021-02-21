@@ -40,6 +40,6 @@ export default [
     title: '操作',
     titleClass: "center aligned",
     dataClass: "center aligned",
-    width: "15%"
+    width: "150px"
   },
 ];

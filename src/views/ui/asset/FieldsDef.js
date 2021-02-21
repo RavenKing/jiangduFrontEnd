@@ -88,9 +88,9 @@ export default [
   },
   {
     name: "action",
-    title: '',
+    title: '操作',
     titleClass: "left aligned",
     dataClass: "left aligned",
-    width: "30%",
+    width: "150px",
   },
 ];

@@ -109,13 +109,13 @@
         <sui-form-fields inline>
             <div v-show="singleEntry.space2=='0'">
                 <sui-form-fields inline style="position: relative;">
-                    <label>面积</label>
+                    <label>物业费(每年)  面积</label>
                     <sui-form-field>
                         <sui-input placeholder="面积" v-model="singleEntry.spaceJianzhu" type="number" disabled />
                     </sui-form-field>
                     <label>单价</label>
                     <sui-form-field>
-                        <sui-input placeholder="单价" v-model="singleEntry.price1" type="number" @change="caluculateTotal" />
+                        <sui-input placeholder="单价" v-model="singleEntry.price1" type="number" @change="caluculateTotal" />月/m²
                     </sui-form-field>
                 </sui-form-fields>
             </div>

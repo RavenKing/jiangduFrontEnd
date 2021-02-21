@@ -93,6 +93,6 @@ export default [
     title: '操作',
     titleClass: "center aligned",
     dataClass: "",
-    width: "15%"
+    width: "150px"
   },
 ];
