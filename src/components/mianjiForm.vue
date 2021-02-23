@@ -21,9 +21,15 @@
         </sui-form-fields> -->
         <sui-form-fields inline>
             <sui-form-field style="width:25%;">
+                <label>建筑面积(m²)</label>
+                <sui-input placeholder="建筑面积(m²)" v-model="singleRoom.space" disabled type="number" />
+            </sui-form-field>
+            <sui-form-field style="width:25%;">
                 <label>实际建筑面积(m²)</label>
                 <sui-input placeholder="实际建筑面积(m²)" v-model="singleRoom.space10" disabled type="number" />
             </sui-form-field>
+        </sui-form-fields>
+        <sui-form-fields inline>
             <sui-form-field style="width:33.33333%">
                 <label style="margin-bottom:10px;display: block;">办公室面积(m²)</label>
                 <sui-input style="width:100%;" placeholder="办公室面积" v-model="singleRoom.space7" disabled />

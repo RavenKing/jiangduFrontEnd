@@ -5,13 +5,11 @@ export default [
     width: "10%",
     titleClass: 'center aligned',
     dataClass: 'center aligned',
-    sortField: "usage1"
   },
   {
     name: "unit_id",
     title: '<i class="white address card icon"></i>unit_id',
     width: "10%",
-    sortField: "unit_id",
     titleClass: 'center aligned',
     dataClass: 'center aligned',
   },

@@ -109,7 +109,11 @@
         <sui-form-fields inline>
             <div v-show="singleEntry.space2=='0'">
                 <sui-form-fields inline style="position: relative;">
-                    <label>物业费(每年)  面积</label>
+                    <label>物业费(每年)</label>
+                    <sui-form-field>
+                        <sui-input placeholder="物业费" v-model="wuyefei" type="number" disabled />
+                    </sui-form-field>
+                    <label>面积</label>
                     <sui-form-field>
                         <sui-input placeholder="面积" v-model="singleEntry.spaceJianzhu" type="number" disabled />
                     </sui-form-field>
@@ -146,6 +150,7 @@ export default {
     props: ["singleEntry", "mianji", "disabled"],
     data() {
         return {
+            wuyefei: 0,
             componentKey: 0,
             options: [],
             louOptions: [],
@@ -178,6 +183,7 @@ export default {
             this.singleEntry.rent_amt = 0;
             if (this.singleEntry.space2 != "1" && this.singleEntry.price1 > 0) {
                 this.singleEntry.rent_amt = this.singleEntry.spaceJianzhu * this.singleEntry.price1;
+                this.wuyefei = this.singleEntry.spaceJianzhu * this.singleEntry.price1;
             }
             console.log(this.singleEntry.rent_amt);
             if (base.length > 0) {
@@ -254,7 +260,9 @@ export default {
                 pricename: "",
             }, ];
         }
-
+        if (this.singleEntry.space2 != "1" && this.singleEntry.price1 > 0) {
+            this.wuyefei = this.singleEntry.spaceJianzhu * this.singleEntry.price1;
+        }
         this.total = 0;
         this.totalPrice = 0;
         getRoomDataApi({}).then((data) => {

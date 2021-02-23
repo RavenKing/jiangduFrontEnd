@@ -52,20 +52,21 @@
                 <label>建筑面积</label>
                 <sui-input placeholder="建筑面积" v-model="singleRoom.space" :disabled="disabled" />
             </sui-form-field>
-
         </sui-form-fields>
         <sui-form-fields>
             <sui-form-field style="width:25%;">
-                <sui-checkbox label="是否机关局统一管理" toggle v-model="singleRoom.isunimanage" />
+                <label>是否机关局统一管理</label>
+                <sui-dropdown placeholder="是否机关局统一管理" selection :options="isunimanageOptions" v-model="singleRoom.isunimanage" />
             </sui-form-field>
+        </sui-form-fields>
+        <sui-form-fields>
+
             <sui-form-field style="width:25%;">
                 <sui-checkbox label="是否有产证" toggle v-model="singleRoom.hasproperty" />
             </sui-form-field>
-        </sui-form-fields>
-        <sui-form-fields>
             <sui-form-field style="width:80%;">
                 <sui-checkbox label="是否入账" toggle v-model="singleRoom.inaccount" />
-                <sui-button v-show="singleRoom.kindShow" floated="right" content="维护出租管理信息"   @click.prevent="clickToHeTong"/>
+                <sui-button v-show="singleRoom.kindShow" floated="right" content="维护出租管理信息" @click.prevent="clickToHeTong" />
             </sui-form-field>
         </sui-form-fields>
     </sui-form>
@@ -76,13 +77,20 @@
 <script>
 import * as lang from "vuejs-datepicker/src/locale";
 export default {
-    props: ['singleRoom', 'clickDingWei','clickToHeTong'],
+    props: ['singleRoom', 'clickDingWei', 'clickToHeTong'],
     name: 'form-create',
     components: {
 
     },
     data() {
         return {
+            isunimanageOptions: [{
+                text: "机管局统一管理",
+                value: "机管局统一管理"
+            }, {
+                text: "主管单位自行管理",
+                value: "主管单位自行管理"
+            }],
             qudeOptions: [{
                     text: "自购",
                     value: "自购"
