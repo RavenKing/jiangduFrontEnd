@@ -12,19 +12,16 @@ export default [
   },
   {
     name: "type1",
-    sortField: "type1",
     title: '房屋性质',
     width: "15%",
   },
   {
     name: "buildingname",
-    sortField: "buildingname",
     title: '楼',
     width: "15%",
   },
   {
     name: "floorname",
-    sortField: "floorname",
     title: '楼层',
     width: "15%",
   },

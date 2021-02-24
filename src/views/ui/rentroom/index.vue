@@ -41,7 +41,7 @@
             <vuetable ref="vuetable" :api-mode="false" :data="localData" :fields="fields" :sort-order="sortOrder" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
                 <div slot="action" slot-scope="props">
                     <!-- <sui-button basic color="blue"  content="查看" v-on:click="viewSomeThing(props.rowData,'check')" /> -->
-                    <sui-button basic color="blue" content="修改" v-on:click="viewSomeThing(props.rowData)" size="tiny" />
+                    <sui-button basic color="blue" content="编辑" v-on:click="viewSomeThing(props.rowData)" size="tiny" />
                     <sui-button basic color="red" content="删除" v-on:click="deleteRoom(props.rowData)" size="tiny" />
 
                 </div>
@@ -1176,6 +1176,7 @@ export default {
 
         createPatrol() {
             this.newXuncha.room_id = this.selectedRoom.id;
+            this.newXuncha.room_type = 2;
             //this.newXuncha.unit_id = this.selectedRoom.unit_id
             if (!this.newXuncha.name) {
                 notifySomething(

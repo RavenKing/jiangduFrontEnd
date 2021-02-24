@@ -49,22 +49,70 @@
                 </sui-modal-header>
 
                 <sui-modal-content scrolling>
-                    <sui-segment>
-                        <weixiu-form :singleEntry="selectedWeixiu" ref="weixiuForm" :mode="modalMode"> </weixiu-form>
-                    </sui-segment>
-                    <div is="sui-divider" horizontal>
-                        <h4 is="sui-header">
-                            <i class="tag icon"></i>
-                            已上传文档
-                        </h4>
-                    </div>
                     <div>
-                        <sui-list key="213123">
-                            <sui-list-item v-for="(link,index) in selectedWeixiu.ziliaoList" :key="link[0]">
-                                <a type="primary" :href="link.fileURL" target="_blank">文件{{index+1}}</a>
-                            </sui-list-item>
-                        </sui-list>
+                        <sui-dimmer :active="loading" inverted>
+                            <sui-loader content="Loading..." />
+                        </sui-dimmer>
                     </div>
+                    <sui-tab :menu="{ attached: false }">
+                        <sui-tab-pane title="基本信息">
+                            <sui-segment>
+                                <weixiu-form :singleEntry="selectedWeixiu" ref="weixiuForm" :mode="modalMode"> </weixiu-form>
+                            </sui-segment>
+                            <div is="sui-divider" horizontal>
+                                <h4 is="sui-header">
+                                    <i class="tag icon"></i>
+                                    已上传文档
+                                </h4>
+                            </div>
+                            <div>
+                                <sui-list key="213123">
+                                    <sui-list-item v-for="(link,index) in selectedWeixiu.ziliaoList" :key="link[0]">
+                                        <a type="primary" :href="link.fileURL" target="_blank">文件{{index+1}}</a>
+                                    </sui-list-item>
+                                </sui-list>
+                            </div>
+                        </sui-tab-pane>
+                        <sui-tab-pane title="巡查记录">
+                            <sui-dimmer :active="loading" inverted>
+                                <sui-loader content="Loading..." />
+                            </sui-dimmer>
+                            <div v-show="newXuncha.open">
+                                <sui-form>
+                                    <sui-form-fields inline>
+
+                                        <sui-form-field required>
+                                            <model-select style="width:100%" :options="options" v-model="selectedWeixiu.room_id" :isDisabled="true">
+                                            </model-select>
+                                        </sui-form-field>
+                                        <sui-form-field required>
+                                            <model-select style="width:100%" :options="unitoptions" v-model="selectedWeixiu.unit_id" :isDisabled="true">
+                                            </model-select>
+                                        </sui-form-field>
+                                    </sui-form-fields>
+                                    <sui-form-fields inline>
+                                        <label>巡查人</label>
+                                        <sui-form-field required>
+                                            <sui-input placeholder="巡查人" v-model="newXuncha.name" />
+                                        </sui-form-field>
+                                        <label>备注</label>
+                                        <sui-form-field required>
+                                            <sui-input placeholder="备注" v-model="newXuncha.memo" />
+                                        </sui-form-field>
+                                        <sui-button basic color="blue" icon="add" content="添加" @click.prevent="createPatrol()" />
+                                    </sui-form-fields>
+                                </sui-form>
+                            </div>
+                            <div class="vue2Table">
+                                <vuetable ref="vuetable" :api-mode="false" :data="selectedWeixiu.patrol" :fields="fieldsPatrol" data-path="data">
+                                    <div slot="action" slot-scope="props">
+                                        <sui-button basic color="blue" content="查看" v-on:click="viewSomeThing(props.rowData,'check')" />
+                                        <sui-button basic color="red" content="删除" v-on:click="deleteRoomPatrol(props.rowData)" />
+                                    </div>
+                                </vuetable>
+                            </div>
+                        </sui-tab-pane>
+                    </sui-tab>
                 </sui-modal-content>
 
                 <sui-modal-actions>
@@ -102,14 +150,23 @@ import {
 import store from "@/store";
 import {
     notifySomething,
-} from "@/util/utils"
+} from "@/util/utils";
+import FieldsPatrol from "./FieldsPatrol.js";
+
 import {
     listLoanAssignmentApi,
     createLoanAssignmentApi,
     editLoanAssignmentApi,
     deleteLoanAssignmentApi,
-    listloanassignmentbyidr
+    listloanassignmentbyidr,
+    listPatrolApi,
+    getUnitApi,
+    createPatrolApi,
+    getRoomDataApi
 } from "@/api/roomDataAPI"
+import {
+    ModelSelect
+} from 'vue-search-select';
 import {
     getroombyid,
 } from "@/api/weixiuAPI";
@@ -118,10 +175,16 @@ export default {
     components: {
         'dialog-bar': dialogBar,
         Vuetable,
-        'weixiu-form': WeiXiuForm
+        'weixiu-form': WeiXiuForm,
+        'model-select': ModelSelect,
+
     },
     data() {
         return {
+            fieldsPatrol: FieldsPatrol,
+            newXuncha: {
+                open: true,
+            },
             lang: lang,
             hetongdata: [],
             hetongComponentKey: 1,
@@ -156,12 +219,80 @@ export default {
                 owner: "",
                 rentunit: "",
                 starttime: "",
-                endtime: ""
+                endtime: "",
+                unitoptions: [],
+                options: []
             },
         };
     },
 
     methods: {
+        getUnit() {
+            this.unitoptions = [];
+            if (store.getters.unit.unitBasic.length > 0) {
+                this.unitoptions = store.getters.unit.unitBasic;
+            } else {
+                getUnitApi().then((data) => {
+                    var res_data = data.data.data
+                    for (var i = res_data.length - 1; i >= 0; i--) {
+                        this.unitoptions.push({
+                            'text': res_data[i]['name'],
+                            'value': res_data[i]['id']
+                        })
+                    }
+                });
+            }
+        },
+        showPatrol(data) {
+            console.log(data);
+            this.newXuncha.open = true;
+            this.newXuncha.unit_id = data.unit_id;
+        },
+        createPatrol() {
+            this.newXuncha.room_type = 2;
+            this.newXuncha.room_id = this.selectedWeixiu.room_id;
+            this.newXuncha.unit_id = this.selectedWeixiu.unit_id;
+            //this.newXuncha.unit_id = this.selectedRoom.unit_id
+            if (!this.newXuncha.name) {
+                notifySomething(
+                    constants.GENERALERROR,
+                    constants.GENERALERROR,
+                    constants.typeError
+                );
+                return;
+            }
+            createPatrolApi(this.newXuncha).then((result) => {
+                if (result.data.code == 0) {
+                    this.refreshPatrol();
+                    this.newXuncha.open = false;
+                    notifySomething(
+                        constants.CREATESUCCESS,
+                        constants.CREATESUCCESS,
+                        constants.typeSuccess
+                    );
+                }
+            });
+        },
+        refreshPatrol() {
+            this.loading = true;
+            listPatrolApi({
+                room_id: this.selectedWeixiu.room_id,
+                type: 2
+            }).then((result) => {
+                if (result.data.code == 0) {
+                    this.loading = false;
+                    this.selectedWeixiu.patrol = result.data.data;
+                    console.log(this.selectedWeixiu.patrol);
+                } else {
+                    notifySomething(
+                        constants.GENERALERROR,
+                        constants.GENERALERROR,
+                        constants.typeError
+                    );
+                }
+            });
+        },
+
         handleDelete(props) {
             console.log(props);
             this.deleteTarget.text = "是否要删除" + props.roomname + "?";
@@ -202,7 +333,23 @@ export default {
             //  this.refresh();
         },
         editWeixiuShenqing(props) {
+            var context = this;
+            context.options = [];
+            getRoomDataApi({
+                kind: 2,
+                extract: 1
+            }).then((data) => {
+                //this.localData = data.data.data;
+                data.data.data.map((one) => {
+                    context.options.push({
+                        text: one.name,
+                        value: one.id,
+                    })
+                });
+            });
+            this.getUnit();
             this.selectedWeixiu = props;
+            this.refreshPatrol();
             this.modelTitle = "编辑";
             this.loading = true;
             this.openWeiXiuForm("edit");
@@ -321,6 +468,7 @@ export default {
             });
         },
         openWeiXiuForm(mode) {
+
             if (mode == "edit") {
                 this.modelTitle = "编辑";
                 this.modalMode = "edit";
@@ -398,7 +546,6 @@ export default {
         }
     },
     created() {
-
         let uri = window.location.href.split('?');
         let getVars = {};
         if (uri.length == 2) {

@@ -11,13 +11,11 @@ export default [
   },
   {
     name: "assigned_space",
-    sortField: "assigned_space",
     title: '<i class="white sitemap icon"></i>assigned_space',
     width: "10%",
   },
   {
     name: "status",
-    sortField: "status",
     title: '<i class="white sitemap icon"></i>status',
     width: "10%",
   },

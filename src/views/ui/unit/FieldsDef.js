@@ -2,23 +2,20 @@ export default [
   {
     name: "name",
     title: '单位名称',
-    width: "20%",
+    width: "15%",
     height:"100px",
-    sortField: "name",
     titleClass: "center aligned",
     dataClass: "aligned",
   },
   {
     name: "level_num",
     title: '各个级别人数',
-    width: "20%",
-    sortField: "cert_id",
+    width: "15%",
     titleClass: "center aligned",
     dataClass: "center aligned",
   },
   {
     name: "enumber",
-    sortField: "enumber",
     title: '单位人数',
     width: "15%",
     titleClass: "center aligned",
@@ -26,7 +23,6 @@ export default [
   },
   {
     name: "level",
-    sortField: "level",
     title: '单位级别',
     width: "15%",
     titleClass: "center aligned",
@@ -34,7 +30,6 @@ export default [
   },
   {
     name: "zhengting",
-    sortField: "zhengting",
     title: '正厅',
     width: "40px",
     titleClass: "center aligned",
@@ -42,7 +37,6 @@ export default [
   },
   {
     name: "futing",
-    sortField: "futing",
     title: '副厅',
     width: "40px",
     titleClass: "center aligned",
@@ -50,7 +44,6 @@ export default [
   },
   {
     name: "zhengchu",
-    sortField: "zhengchu",
     title: '正处',
     width: "40px",
     titleClass: "center aligned",
@@ -58,7 +51,6 @@ export default [
   },
   {
     name: "fuchu",
-    sortField: "fuchu",
     title: '副处',
     width: "40px",
     titleClass: "center aligned",
@@ -66,7 +58,6 @@ export default [
   },
   {
     name: "zhengke",
-    sortField: "zhengke",
     title: '正科',
     width: "40px",
     titleClass: "center aligned",
@@ -74,7 +65,6 @@ export default [
   },
   {
     name: "fuke",
-    sortField: "fuke",
     title: '副科',
     width: "40px",
     titleClass: "center aligned",
@@ -82,7 +72,6 @@ export default [
   },
   {
     name: "keji",
-    sortField: "keji",
     title: '科级',
     width: "40px",
     titleClass: "center aligned",

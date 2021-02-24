@@ -182,8 +182,8 @@ export default {
             var base = this.singleEntry.priceinfo;
             this.singleEntry.rent_amt = 0;
             if (this.singleEntry.space2 != "1" && this.singleEntry.price1 > 0) {
-                this.singleEntry.rent_amt = this.singleEntry.spaceJianzhu * this.singleEntry.price1;
-                this.wuyefei = this.singleEntry.spaceJianzhu * this.singleEntry.price1;
+                this.singleEntry.rent_amt = this.singleEntry.spaceJianzhu * this.singleEntry.price1*12;
+               this.wuyefei = this.singleEntry.spaceJianzhu * this.singleEntry.price1*12;
             }
             console.log(this.singleEntry.rent_amt);
             if (base.length > 0) {
@@ -261,7 +261,7 @@ export default {
             }, ];
         }
         if (this.singleEntry.space2 != "1" && this.singleEntry.price1 > 0) {
-            this.wuyefei = this.singleEntry.spaceJianzhu * this.singleEntry.price1;
+            this.wuyefei = this.singleEntry.spaceJianzhu * this.singleEntry.price1*12;
         }
         this.total = 0;
         this.totalPrice = 0;
