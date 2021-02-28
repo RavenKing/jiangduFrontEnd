@@ -277,6 +277,7 @@ export default {
             this.loading = true;
             listPatrolApi({
                 room_id: this.selectedWeixiu.room_id,
+                room_type:2,
                 type: 2
             }).then((result) => {
                 if (result.data.code == 0) {
