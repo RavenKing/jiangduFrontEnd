@@ -1035,6 +1035,8 @@ export default {
 
         onClick(params) {
             // this.selectedRoom = params;
+
+            this.loading = true;
             var building_info = params['building_info']
             var temp_points = []
             var temp_x = 0
@@ -1057,6 +1059,8 @@ export default {
                     lon: temp_y / counter
                 }
                 this.points = temp_points
+                this.loading = false;
+
             }
             if (params.isLeaf == true) {
                 this.clickColumn = true;
@@ -1082,9 +1086,12 @@ export default {
                         to: 5,
                         data: res_data
                     }
+
+                    this.loading = false;
                 })
                 this.refreshLeaderAssignment(params.id);
             } else {
+                this.loading = false;
                 this.clickColumn = false;
                 this.fenpeilocalData = [];
                 this.lingdaoData = [];
@@ -1094,6 +1101,7 @@ export default {
         },
 
         refreshLeaderAssignment(id) {
+            this.loading = true;
             var input = {}
             input['unit_id'] = id
             getleaderroombyunitApi(input).then((data) => {

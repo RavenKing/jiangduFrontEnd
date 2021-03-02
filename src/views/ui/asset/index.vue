@@ -361,7 +361,6 @@
                                     </sui-list>
                                 </div>
                             </sui-tab-pane>
-
                             <!-- <sui-tab-pane title="单位" :attached="false">
                                 <vuetable ref="vuetable" :api-mode="false" :data="selectedRoom.assignList" :fields="fieldsAssign" data-path="data" :key="componentAssignListkey">
                                 </vuetable>

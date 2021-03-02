@@ -85,7 +85,6 @@ import {
 import store from "@/store";
 import constants from "@/util/constants";
 import {
-    getRoomDataApi,
     getBuildingListApi,
     getBuildingFloorApi,
     getUnitApi
@@ -100,10 +99,9 @@ export default {
         'model-select': ModelSelect,
 
     },
-    props: ['singleEntry', 'mode'],
+    props: ['singleEntry', 'mode','options'],
     data() {
         return {
-            options: [],
             louOptions: [],
             floorOptions: [],
             floorLoading: false,
@@ -195,18 +193,6 @@ export default {
     },
     created() {
         this.getUnit();
-        getRoomDataApi({
-            kind: 2,
-            extract: 1
-        }).then((data) => {
-            //this.localData = data.data.data;
-            data.data.data.map((one) => {
-                this.options.push({
-                    text: one.name,
-                    value: one.id,
-                })
-            });
-        });
     }
 };
 </script>

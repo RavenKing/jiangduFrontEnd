@@ -700,7 +700,6 @@ export default {
                 var that = this;
                 this.loading = true;
                 img.onload = () => {
-                    that.loading = false;
                     that.context.globalAlpha = 1;
                     that.context.drawImage(img, 0, 0, 500, 350)
                     zuobiao.map((room, index) => {
@@ -744,6 +743,8 @@ export default {
                         } catch (error) {
                             console.log("parse error")
                         }
+                        that.loading = false;
+
                     });
                 }
 
