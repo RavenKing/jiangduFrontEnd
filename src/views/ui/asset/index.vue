@@ -361,10 +361,10 @@
                                     </sui-list>
                                 </div>
                             </sui-tab-pane>
-                            <!-- <sui-tab-pane title="单位" :attached="false">
-                                <vuetable ref="vuetable" :api-mode="false" :data="selectedRoom.assignList" :fields="fieldsAssign" data-path="data" :key="componentAssignListkey">
+                            <sui-tab-pane title="单位" :attached="false">
+                                <vuetable ref="vuetable" :api-mode="false" :data="unitRoomData" :fields="fieldsUnit" data-path="data" :key="componentAssignListkey">
                                 </vuetable>
-                            </sui-tab-pane> -->
+                            </sui-tab-pane>
                         </sui-tab>
                     </div>
 
@@ -390,6 +390,7 @@ import Vuetable from "vuetable-2/src/components/Vuetable";
 import VuetablePagination from "vuetable-2/src/components/VuetablePagination";
 import FieldsDef from "./FieldsDef.js";
 import FieldsDefList from "./FieldsDefList.js";
+import FieldsUnit from "./FieldsUnit.js";
 import BuildingForm from "@/components/buildingForm";
 import AssignForm from "@/components/assignForm";
 import chanZhengForm from "@/components/chanZhengForm";
@@ -450,6 +451,7 @@ export default {
     },
     data() {
         return {
+            componentAssignListkey: 1,
             chanzhenZiLiao: [],
             tuzhiZiLiao: [],
             fileList: [],
@@ -493,6 +495,7 @@ export default {
             ComponentKey: 1,
             listField: FieldsDefList,
             fields: FieldsDef,
+            fieldsUnit: FieldsUnit,
             imgeComponentKey: 1,
             assignList: {
                 open: false,
@@ -532,10 +535,23 @@ export default {
                     text: "设备"
                 }
             ],
-            selectedRoomInFloor: {}
+            selectedRoomInFloor: {},
+            unitRoomData: []
 
         };
     },
+
+    //     juji: data.assign.juji,
+    // fujuji: data.assign.fujuji,
+    // chuji: data.assign.chuji,
+    // fuchuji: data.assign.fuchuji,
+    // keji: data.assign.keji,
+    // fukeji: data.assign.fukeji,
+    // keyuan: data.assign.keyuan,
+    // qita: data.assign.qita,
+    // roomname: data.assign.roomname,
+    // beizhu: data.assign.beizhu,
+    // roomnumber: data.assign.roomnumber
 
     methods: {
         getroomunitinfo(data) {
@@ -543,6 +559,30 @@ export default {
             getroomunitinfo(data).then((result) => {
                 if (result.data.code == 0) {
                     console.log(result.data.data);
+                    this.unitRoomData = [];
+                    var resultSet = result.data.data;
+                    resultSet.map((one) => {
+                        var dataOne = {
+                            name: one.unit_name,
+                            keyuan: 0,
+                            qita: 0,
+                            keji: 0,
+                            fukeji: 0,
+                            juji: 0,
+                            fujuji: 0
+                        }
+                        if (one.room_info != null) {
+                            one.room_info.map((infoData) => {
+                                var parsedData = JSON.parse(infoData[0]);
+                                if (parsedData.hasOwnProperty("keji")) {
+                                    dataOne.keji += parsedData.keji;
+                                }
+
+                            })
+                        }
+                        this.unitRoomData.push(dataOne)
+                    });
+
                 }
             }).catch(function () {
                 context.loading = false;
