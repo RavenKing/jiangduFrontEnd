@@ -273,7 +273,7 @@ export default {
             createPatrolApi(this.newXuncha).then((result) => {
                 if (result.data.code == 0) {
                     this.refreshPatrol();
-                    this.newXuncha.open = false;
+                    //   this.newXuncha.open = false;
                     notifySomething(
                         constants.CREATESUCCESS,
                         constants.CREATESUCCESS,

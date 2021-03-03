@@ -562,25 +562,43 @@ export default {
                     this.unitRoomData = [];
                     var resultSet = result.data.data;
                     resultSet.map((one) => {
-                        var dataOne = {
-                            name: one.unit_name,
-                            keyuan: 0,
-                            qita: 0,
-                            keji: 0,
-                            fukeji: 0,
-                            juji: 0,
-                            fujuji: 0
-                        }
+
                         if (one.room_info != null) {
                             one.room_info.map((infoData) => {
+                                var dataOne = {
+                                    name: one.unit_name,
+                                    roomNumber: one.roomnumber,
+                                    roomName: one.roomName,
+                                    keyuan: 0,
+                                    qita: 0,
+                                    keji: 0,
+                                    fukeji: 0,
+                                    juji: 0,
+                                    fujuji: 0
+                                }
                                 var parsedData = JSON.parse(infoData[0]);
                                 if (parsedData.hasOwnProperty("keji")) {
                                     dataOne.keji += parsedData.keji;
                                 }
-
+                                if (parsedData.hasOwnProperty("fukeji")) {
+                                    dataOne.fukeji += parsedData.fukeji;
+                                }
+                                if (parsedData.hasOwnProperty("juji")) {
+                                    dataOne.juji += parsedData.juji;
+                                }
+                                if (parsedData.hasOwnProperty("fujuji")) {
+                                    dataOne.fujuji += parsedData.fujuji;
+                                }
+                                if (parsedData.hasOwnProperty("qita")) {
+                                    dataOne.qita += parsedData.qita;
+                                }
+                                if (parsedData.hasOwnProperty("keyuan")) {
+                                    dataOne.keyuan += parsedData.keyuan;
+                                }
+                                this.unitRoomData.push(dataOne)
                             })
                         }
-                        this.unitRoomData.push(dataOne)
+
                     });
 
                 }
