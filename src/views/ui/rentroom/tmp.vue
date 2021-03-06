@@ -200,6 +200,10 @@
                                     新增
                                 </sui-button>
                             </sui-tab-pane>
+                            <sui-tab-pane title="房间列表" :attached="false">
+                                <vuetable ref="vuetable" :api-mode="false" :data="unitRoomData" :fields="fieldsUnit" data-path="data" :key="componentAssignListkey">
+                                </vuetable>
+                            </sui-tab-pane>
                         </sui-tab>
                     </div>
                 </sui-modal-content>

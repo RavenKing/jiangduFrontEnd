@@ -49,8 +49,8 @@
                 <sui-input placeholder="科员" v-model="singleUnit.keji" :disabled="disabled" />
             </sui-form-field>
             <sui-form-field>
-                <label>非编</label>
-                <sui-input placeholder="非编" v-model="singleUnit.feibian" :disabled="disabled" />
+                <label>其他</label>
+                <sui-input placeholder="非编" v-model="singleUnit.qita" :disabled="disabled" />
             </sui-form-field>
             <sui-form-field>
 

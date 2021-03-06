@@ -79,7 +79,7 @@
                             </sui-dimmer>
                             <div v-show="newXuncha.open">
                                 <sui-form>
-                                    <sui-form-fields inline>
+                                    <sui-form-fields inline v-show="false">
 
                                         <sui-form-field required>
                                             <model-select style="width:100%" :options="options" v-model="selectedWeixiu.room_id" :isDisabled="true">
@@ -106,7 +106,7 @@
                             <div class="vue2Table">
                                 <vuetable ref="vuetable" :api-mode="false" :data="selectedWeixiu.patrol" :fields="fieldsPatrol" data-path="data">
                                     <div slot="action" slot-scope="props">
-                                        <sui-button basic color="red" content="删除" v-on:click="deleteRoomPatrol(props.rowData)" />
+                                        <sui-button basic color="red" content="删除" v-on:click="deleteRoomPatrol(props.rowData)" size="tiny"/>
                                     </div>
                                 </vuetable>
                             </div>

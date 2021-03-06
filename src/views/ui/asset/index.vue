@@ -361,7 +361,7 @@
                                     </sui-list>
                                 </div>
                             </sui-tab-pane>
-                            <sui-tab-pane title="单位" :attached="false">
+                            <sui-tab-pane title="房间列表" :attached="false">
                                 <vuetable ref="vuetable" :api-mode="false" :data="unitRoomData" :fields="fieldsUnit" data-path="data" :key="componentAssignListkey">
                                 </vuetable>
                             </sui-tab-pane>
@@ -570,13 +570,29 @@ export default {
                                     roomNumber: one.roomnumber,
                                     roomName: one.roomName,
                                     keyuan: 0,
+                                    chuji:0,
+                                    fuchuji:0,
                                     qita: 0,
                                     keji: 0,
                                     fukeji: 0,
                                     juji: 0,
-                                    fujuji: 0
+                                    fujuji: 0,
+                                    space: 0
                                 }
                                 var parsedData = JSON.parse(infoData[0]);
+
+                                if (parsedData.hasOwnProperty("roomname")) {
+                                    dataOne.roomName = parsedData.roomname;
+                                }
+                                if (parsedData.hasOwnProperty("roomnumber")) {
+                                    dataOne.roomNumber = parsedData.roomnumber;
+                                }
+                                if (parsedData.hasOwnProperty("chuji")) {
+                                    dataOne.chuji += parsedData.chuji;
+                                }
+                                if (parsedData.hasOwnProperty("fuchuji")) {
+                                    dataOne.fuchuji += parsedData.fuchuji;
+                                }
                                 if (parsedData.hasOwnProperty("keji")) {
                                     dataOne.keji += parsedData.keji;
                                 }
@@ -595,6 +611,9 @@ export default {
                                 if (parsedData.hasOwnProperty("keyuan")) {
                                     dataOne.keyuan += parsedData.keyuan;
                                 }
+
+                                dataOne.space = JSON.parse(infoData[1]);
+
                                 this.unitRoomData.push(dataOne)
                             })
                         }

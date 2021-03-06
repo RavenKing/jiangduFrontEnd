@@ -322,6 +322,10 @@
                             <sui-tab-pane title="房屋面积" :attached="false" style="max-height:600px;overflow-y: auto;">
                                 <mianji-form ref='mianjiForm' :singleRoom="selectedRoom"></mianji-form>
                             </sui-tab-pane>
+                            <sui-tab-pane title="房间列表" :attached="false">
+                                <vuetable ref="vuetable" :api-mode="false" :data="unitRoomData" :fields="fieldsUnit" data-path="data" :key="componentAssignListkey">
+                                </vuetable>
+                            </sui-tab-pane>
                         </sui-tab>
                     </div>
                 </sui-modal-content>
@@ -362,6 +366,8 @@ import {
     //getRentRoomContractListApi
 } from "@/api/utilApi";
 import global from "@/global/index";
+import FieldsUnit from "./FieldsUnit.js";
+
 import {
     localGet
 } from "@/util/storage"; // 导入存储函数
@@ -394,7 +400,8 @@ import {
     createBuildingFloorApi,
     createBuildingApi,
     getBuildingListApi,
-    getBuildingFloorApi
+    getBuildingFloorApi,
+    getroomunitinfo
 } from "@/api/roomDataAPI";
 import {
     notifySomething,
@@ -417,6 +424,8 @@ export default {
     },
     data() {
         return {
+            unitRoomData: [],
+            fieldsUnit: FieldsUnit,
             imgeComponentKey: 1,
             singleBuilding: {},
             buildingImage: {
@@ -526,6 +535,81 @@ export default {
     },
 
     methods: {
+
+        getroomunitinfo(data) {
+            var context = this;
+            getroomunitinfo(data).then((result) => {
+                if (result.data.code == 0) {
+                    console.log(result.data.data);
+                    this.unitRoomData = [];
+                    var resultSet = result.data.data;
+                    resultSet.map((one) => {
+
+                        if (one.room_info != null) {
+                            one.room_info.map((infoData) => {
+                                var dataOne = {
+                                    name: one.unit_name,
+                                    roomNumber: one.roomnumber,
+                                    roomName: one.roomName,
+                                    keyuan: 0,
+                                    chuji: 0,
+                                    fuchuji: 0,
+                                    qita: 0,
+                                    keji: 0,
+                                    fukeji: 0,
+                                    juji: 0,
+                                    fujuji: 0,
+                                    space: 0
+                                }
+                                var parsedData = JSON.parse(infoData[0]);
+
+                                if (parsedData.hasOwnProperty("roomname")) {
+                                    dataOne.roomName = parsedData.roomname;
+                                }
+                                if (parsedData.hasOwnProperty("roomnumber")) {
+                                    dataOne.roomNumber = parsedData.roomnumber;
+                                }
+                                if (parsedData.hasOwnProperty("chuji")) {
+                                    dataOne.chuji += parsedData.chuji;
+                                }
+                                if (parsedData.hasOwnProperty("fuchuji")) {
+                                    dataOne.fuchuji += parsedData.fuchuji;
+                                }
+                                if (parsedData.hasOwnProperty("keji")) {
+                                    dataOne.keji += parsedData.keji;
+                                }
+                                if (parsedData.hasOwnProperty("fukeji")) {
+                                    dataOne.fukeji += parsedData.fukeji;
+                                }
+                                if (parsedData.hasOwnProperty("juji")) {
+                                    dataOne.juji += parsedData.juji;
+                                }
+                                if (parsedData.hasOwnProperty("fujuji")) {
+                                    dataOne.fujuji += parsedData.fujuji;
+                                }
+                                if (parsedData.hasOwnProperty("qita")) {
+                                    dataOne.qita += parsedData.qita;
+                                }
+                                if (parsedData.hasOwnProperty("keyuan")) {
+                                    dataOne.keyuan += parsedData.keyuan;
+                                }
+
+                                dataOne.space = JSON.parse(infoData[1]);
+
+                                this.unitRoomData.push(dataOne)
+                            })
+                        }
+
+                    });
+
+                }
+            }).catch(function () {
+                context.loading = false;
+                notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
+            });
+
+        },
+
         closeImageModal() {
             this.buildingImage.open = false;
             this.assignList.open = true;
@@ -1559,6 +1643,10 @@ export default {
             this.getRoomStat({
                 unit_id: this.selectedRoom.id
             });
+            this.getroomunitinfo({
+                room_id: this.selectedRoom.id,
+                room_type: this.roomType
+            })
             this.selectedRoom.space_assign = data.space;
             listRentRoomAssignmentApi({
                 room_id: this.selectedRoom.id,

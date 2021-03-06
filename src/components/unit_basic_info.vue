@@ -84,8 +84,8 @@
                 <sui-input :class="singleRoom.edit?'':'ui disabled'" placeholder="科员" v-model="singleRoom.keji" :disabled="disabled" type="number" v-on:change="bianzhisum()" />
             </sui-form-field>
             <sui-form-field style="width:25%;" inline>
-                <label>非编</label>
-                <sui-input :class="singleRoom.edit?'':'ui disabled'" placeholder="非编" v-model="singleRoom.feibian" :disabled="disabled" type="number" v-on:change="bianzhisum()" />
+                <label>其他</label>
+                <sui-input :class="singleRoom.edit?'':'ui disabled'" placeholder="其他" v-model="singleRoom.qita" :disabled="disabled" type="number" v-on:change="bianzhisum()" />
             </sui-form-field>
 
         </sui-form-fields>
@@ -134,6 +134,10 @@
             <sui-form-field style="width:25%;" inline>
                 <label>科员</label>
                 <sui-input :class="singleRoom.edit?'':'ui disabled'" placeholder="科员" v-model="singleRoom.memberinfo.keyuan" :disabled="disabled" type="number" v-on:change="shijisum()" />
+            </sui-form-field>
+            <sui-form-field style="width:25%;" inline>
+                <label>其他</label>
+                <sui-input :class="singleRoom.edit?'':'ui disabled'" placeholder="其他" v-model="singleRoom.memberinfo.qita" :disabled="disabled" type="number" v-on:change="bianzhisum()" />
             </sui-form-field>
         </sui-form-fields>
     </sui-form>
