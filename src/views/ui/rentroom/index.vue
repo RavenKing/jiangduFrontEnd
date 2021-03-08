@@ -133,7 +133,7 @@
             <sui-modal class="modal2" v-model="assignList.open">
                 <sui-modal-content scrolling class="modalStep">
                     <div>
-                        <sui-tab :menu="{ attached: false }" :active-index.sync="defaultTab">
+                        <sui-tab :menu="{ attached: false }" :active-index.sync="defaultTab" @change="tabChange">
                             <sui-tab-pane title="基本信息" :attached="false">
                                 <div>
                                     <rentroom-form :clickDingWei="clickDingWei" :singleRoom="selectedRoom"></rentroom-form>
@@ -260,7 +260,7 @@
                                             </vue-tree-list>
                                         </div>
                                     </sui-grid-column>
-                                    <sui-grid-column :width="8">
+                                    <sui-grid-column :width="8" :key="canvasKey">
                                         <sui-statistic horizontal size="small">
                                             <sui-statistic-value>
                                                 {{assignList.selectedBuilding.name}}
@@ -327,10 +327,10 @@
                     </div>
                 </sui-modal-content>
                 <sui-modal-actions>
-                    <sui-button basic color="red" @click.native="closeModal">
+                    <sui-button basic color="red" @click.prevent="closeModal">
                         取消
                     </sui-button>
-                    <sui-button basic color="blue" @click.native="toggle">
+                    <sui-button basic color="blue" @click.prevent="toggle">
                         提交
                     </sui-button>
                 </sui-modal-actions>
@@ -421,6 +421,7 @@ export default {
     },
     data() {
         return {
+            canvasKey: 1,
             unitRoomData: [],
             fieldsUnit: FieldsUnit,
             imgeComponentKey: 1,
@@ -532,7 +533,17 @@ export default {
     },
 
     methods: {
-
+        tabChange() {
+            this.context = this.$refs.canvas;
+            if (this.activeIndex == 4) {
+                if (this.context == undefined) {
+                    setTimeout(this.tabChange, 1000)
+                } else {
+                    this.context = this.context.getContext("2d");
+                    this.drawRect(null);
+                }
+            }
+        },
         onSearch() {
             this.refreshRooms({
                 name: this.filterString.name,
@@ -790,6 +801,7 @@ export default {
                 img.onload = () => {
                     that.context.globalAlpha = 1;
                     that.context.drawImage(img, 0, 0, 500, 350)
+                    //this.canvasKey++;
                     zuobiao.map((room, index) => {
                         // console.log(room)
                         // this.context.beginPath();
@@ -1872,10 +1884,7 @@ export default {
             this.refreshRooms({
                 page: 1,
             });
-            this.assignList.open = false;
-            this.contractForm.open = false;
             this.buildingForm.open = false;
-            this.buildingFloorForm.open = false;
             this.buildingImage.open = false;
             this.assignList.open = false;
         },
@@ -2008,5 +2017,63 @@ export default {
 
 .imageModal {
     height: 500px;
+}
+
+.yello {
+    background-color: #E6A23C;
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+}
+
+.purple {
+    background-color: purple;
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+}
+
+.redBand {
+    background-color: red;
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+}
+
+.yewuyongfang {
+    background-color: blue;
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+
+}
+
+.lvse {
+    background-color: rgb(0, 255, 200);
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+}
+
+.baise {
+    background-color: white;
+    border: 1px;
+    height: 10px;
+    display: inline-block;
+    width: 10px;
+    border-color: black;
+    border-style: solid;
+}
+
+.reversed {
+    background-color: rgb(10, 10, 10);
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+}
+
+.displayInline {
+    display: inline;
+
 }
 </style>
