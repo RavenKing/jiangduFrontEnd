@@ -217,6 +217,7 @@ import {
     notifySomething
 } from "@/util/utils";
 import store from "@/store";
+import global from "@/global/index"
 
 import constants from "@/util/constants";
 import FormCreate from "@/components/unit_basic_info";
@@ -238,9 +239,6 @@ import {
 import {
     localGet
 } from "@/util/storage";
-import {
-    export_json_to_excel
-} from "@/util/Export2Excel";
 import {
     deleteRoomApi,
     getUnitApi,
@@ -1360,15 +1358,23 @@ export default {
             }
         },
         exportToExcel() {
-            let headers = ['id', 'name', 'enumber', 'level', 'level_num'];
-            const filtedData = this.formatJson(headers, this.localData.data);
-            export_json_to_excel({
-                header: headers,
-                data: filtedData,
-                filename: 'excel-list', //Optional
-                autoWidth: true, //Optional
-                bookType: 'xlsx' //Optional
-            });
+            let local_auth = localGet(global.project_key, true);
+            // if (this.exportData.kind != "0") {
+            //     window.open(constants.exportunit + "?token=" + local_auth + "&kind=" + this.exportData.kind);
+            // } else {
+            window.open(constants.exportunit + "?token=" + local_auth);
+            // }
+            // this.exportData.open = false;
+
+            // let headers = ['id', 'name', 'enumber', 'level', 'level_num'];
+            // const filtedData = this.formatJson(headers, this.localData.data);
+            // export_json_to_excel({
+            //     header: headers,
+            //     data: filtedData,
+            //     filename: 'excel-list', //Optional
+            //     autoWidth: true, //Optional
+            //     bookType: 'xlsx' //Optional
+            // });
 
         },
         deleteRoom(data) {

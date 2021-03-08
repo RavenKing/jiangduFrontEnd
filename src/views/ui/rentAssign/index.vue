@@ -106,7 +106,7 @@
                             <div class="vue2Table">
                                 <vuetable ref="vuetable" :api-mode="false" :data="selectedWeixiu.patrol" :fields="fieldsPatrol" data-path="data">
                                     <div slot="action" slot-scope="props">
-                                        <sui-button basic color="red" content="删除" v-on:click="deleteRoomPatrol(props.rowData)" size="tiny"/>
+                                        <sui-button basic color="red" content="删除" v-on:click="deleteRoomPatrol(props.rowData)" size="tiny" />
                                     </div>
                                 </vuetable>
                             </div>

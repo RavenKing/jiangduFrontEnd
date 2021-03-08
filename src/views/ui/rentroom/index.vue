@@ -13,15 +13,15 @@
                     <sui-grid-column :width="12">
                         <sui-form>
                             <sui-form-fields inline>
-                                <label> 产证面积</label>
+                                <label> 房屋名字</label>
                                 <sui-form-field>
-                                    <sui-input type="text" placeholder="请选择" v-model="filterString.hezhunyongtu" />
+                                    <sui-input type="text" placeholder="请选择" v-model="filterString.name" />
                                 </sui-form-field>
-                                <label> 至</label>
+                                <label> 房屋性质</label>
                                 <sui-form-field>
                                     <input type="text" placeholder="请选择" v-model="filterString.shijiyongtu" />
                                 </sui-form-field>
-                                <sui-button basic color="blue" content="搜索" v-on:click="submit" />
+                                <sui-button basic color="blue" content="搜索" v-on:click="onSearch" />
                             </sui-form-fields>
                         </sui-form>
                     </sui-grid-column>
@@ -92,9 +92,6 @@
                                 <sui-message-list>
                                     <sui-message-item v-show="buildingImage.notification">
                                         上传后会覆盖原有图层并清除所有信息
-                                    </sui-message-item>
-                                    <sui-message-item>
-                                        上传尺寸应为 500 X 350px
                                     </sui-message-item>
                                 </sui-message-list>
                             </sui-message>
@@ -448,7 +445,7 @@ export default {
             editMode: false,
             open: false,
             filterString: {
-                jiadi: "",
+                name: "",
                 diji: "",
             },
             newXuncha: {
@@ -536,6 +533,13 @@ export default {
 
     methods: {
 
+        onSearch() {
+            this.refreshRooms({
+                name: this.filterString.name,
+                page: 1,
+            })
+
+        },
         getroomunitinfo(data) {
             var context = this;
             getroomunitinfo(data).then((result) => {

@@ -12,15 +12,15 @@
                     <sui-grid-column :width="12">
                         <sui-form>
                             <sui-form-fields inline>
-                                <label> 产证面积</label>
+                                <label> 房屋名字</label>
                                 <sui-form-field>
-                                    <input type="text" placeholder="请选择" v-model="filterString.hezhunyongtu" />
+                                    <input type="text" placeholder="房屋名字" v-model="filterString.name" />
                                 </sui-form-field>
-                                <label> 至</label>
+                                <label> 房屋性质</label>
                                 <sui-form-field>
-                                    <input type="text" placeholder="请选择" v-model="filterString.shijiyongtu" />
+                                    <input type="text" placeholder="房屋性质" v-model="filterString.shijiyongtu" />
                                 </sui-form-field>
-                                <sui-button basic color="blue" content="查询" v-on:click="submit" />
+                                <sui-button basic color="blue" content="查询" @click.prevent="onSearch" />
                                 <sui-button content="重置" />
                             </sui-form-fields>
                         </sui-form>
@@ -115,9 +115,6 @@
                                 <sui-message-list>
                                     <sui-message-item v-show="buildingImage.notification">
                                         上传后会覆盖原有图层并清除所有信息
-                                    </sui-message-item>
-                                    <sui-message-item>
-                                        上传尺寸应为 500 X 350px
                                     </sui-message-item>
                                 </sui-message-list>
                             </sui-message>
@@ -554,6 +551,13 @@ export default {
     // roomnumber: data.assign.roomnumber
 
     methods: {
+        onSearch() {
+            this.refreshRooms({
+                name: this.filterString.name,
+                page: 1,
+            })
+
+        },
         getroomunitinfo(data) {
             var context = this;
             getroomunitinfo(data).then((result) => {
@@ -570,8 +574,8 @@ export default {
                                     roomNumber: one.roomnumber,
                                     roomName: one.roomName,
                                     keyuan: 0,
-                                    chuji:0,
-                                    fuchuji:0,
+                                    chuji: 0,
+                                    fuchuji: 0,
                                     qita: 0,
                                     keji: 0,
                                     fukeji: 0,
@@ -982,7 +986,6 @@ export default {
             };
 
             this.loading = false;
-            this.assignList.open = true;
 
             this.getBuildingSection();
             // get room Stats
@@ -1047,12 +1050,14 @@ export default {
                     this.selectedBuildingID = this.assignList.buildings[0].id;
                 }
                 this.treeData = root;
-                this.assignList.open = true;
                 // this.ComponentKey++;
             }).catch(function () {
                 context.loading = false;
                 notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
             });
+        },
+        openAssignSec() {
+            this.assignList.open = true;
         },
         refreshFloor(id) {
             getFloorById({
@@ -1084,6 +1089,7 @@ export default {
                     building.children.push(floor)
                 })
                 this.tree = new Tree(this.treeData);
+                this.openAssignSec();
                 // this.drawRect()
             }).catch(function () {
                 context.loading = false;
