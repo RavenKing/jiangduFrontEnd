@@ -8,15 +8,26 @@
             </sui-dimmer>
 
         </div>
-        <div class="filterBiaoDan">
-            <sui-button basic color="green" content="导出" v-on:click="exportToExcel" icon="file green" />
+        <div class="filterBiaoDan" style="padding-left:15px;margin:0;">
+            <sui-grid>
+                <sui-grid-row>
+                    <sui-grid-column :width="12">
+                        <sui-input style="width:30%;padding-left:15px; margin-bottom:15px;" placeholder="搜索..." v-model="search" icon="search" v-on:change="search_unit_list()" />
+                    </sui-grid-column>
+                    <sui-grid-column :width="4" style="padding-right:0">
+                        <div style="float:right;">
+                            <sui-button basic color="green" content="导出" v-on:click="exportToExcel" icon="file green" />
+
+                        </div>
+                    </sui-grid-column>
+                </sui-grid-row>
+            </sui-grid>
         </div>
 
         <sui-grid class="margin20">
             <sui-grid-row>
                 <sui-grid-column :width="3" v-show="role==1">
                     <div class="filterBiaoDan">
-                        <sui-input style="width:100%;padding-left:15px; margin-bottom:15px;" placeholder="搜索..." v-model="search" icon="search" v-on:change="search_unit_list()" />
                         <vue-tree-list class="addListIcon" :key="componentKey" @click="onClick" :model="tree" default-tree-node-name="new node" default-leaf-node-name="new leaf" v-bind:default-expanded="false">
                             <span class="icon" slot="addTreeNodeIcon"></span>
                             <span class="icon" slot="addLeafNodeIcon"></span>
