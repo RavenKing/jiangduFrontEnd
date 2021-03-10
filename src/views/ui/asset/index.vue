@@ -212,9 +212,7 @@
                                 </div>
                             </sui-tab-pane>
                             <sui-tab-pane title="楼层管理" :attached="false" :disabled="selectedRoom.kind==2">
-                                <sui-button basic color="blue" @click.native="openBuildingModal" v-show="selectedRoom.kind==1">
-                                    新增
-                                </sui-button>
+
                                 <sui-grid :columns="3" relaxed="very">
                                     <sui-grid-column :width="4">
                                         <div>
@@ -225,6 +223,9 @@
                                                 </span>
                                             </vue-tree-list>
                                         </div>
+                                        <sui-button basic color="blue" @click.native="openBuildingModal" v-show="selectedRoom.kind==1" size="tiny">
+                                            新增
+                                        </sui-button>
                                     </sui-grid-column>
                                     <sui-grid-column :width="8">
                                         <sui-statistic horizontal size="small">

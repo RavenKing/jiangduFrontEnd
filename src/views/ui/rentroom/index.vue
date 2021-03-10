@@ -246,9 +246,6 @@
                                 <sui-dimmer :active="loading" inverted>
                                     <sui-loader content="Loading..." />
                                 </sui-dimmer>
-                                <sui-button basic color="blue" @click.native="openBuildingModal">
-                                    新增
-                                </sui-button>
                                 <sui-grid :columns="3" relaxed="very">
                                     <sui-grid-column :width="4">
                                         <div>
@@ -259,6 +256,10 @@
                                                 </span>
                                             </vue-tree-list>
                                         </div>
+
+                                        <sui-button basic color="blue" @click.native="openBuildingModal" size="tiny">
+                                            新增
+                                        </sui-button>
                                     </sui-grid-column>
                                     <sui-grid-column :width="8" :key="canvasKey">
                                         <sui-statistic horizontal size="small">
@@ -272,7 +273,7 @@
                                             </sui-statistic-value>
                                         </sui-statistic>
                                         <img :src="assignList.selectedFloor.url" ref="backImage" v-show="false" />
-                                        <canvas ref="canvas" id="myCanvas" width="500" height="350" />
+                                        <canvas ref="canvas1" id="myCanvas1" width="500" height="350" />
                                         <div v-show="selectedRoomInFloor.type">
                                             <sui-grid>
                                                 <sui-grid-row>
@@ -534,7 +535,7 @@ export default {
 
     methods: {
         tabChange() {
-            this.context = this.$refs.canvas;
+            this.context = this.$refs.canvas1;
             if (this.activeIndex == 4) {
                 if (this.context == undefined) {
                     setTimeout(this.tabChange, 1000)
@@ -675,7 +676,7 @@ export default {
         },
         drawRect(info) {
             if (this.context == null || this.context == undefined) {
-                this.context = this.$refs.canvas.getContext("2d");
+                this.context = this.$refs.canvas1.getContext("2d");
             }
             var tmpSum = {
                 bangong: 0,
@@ -855,9 +856,9 @@ export default {
             // this.context.strokeStyle = "#FF0000";
             // this.context.strokeText("201", 10, 20);
             // this.context.strokeRect(0, 0, 60, 100);
-            var canvas = this.$refs.canvas;
+            var canvas = this.$refs.canvas1;
             var contextThis = this;
-            this.$refs.canvas.addEventListener('click', function (event) {
+            this.$refs.canvas1.addEventListener('click', function (event) {
                 var rect = canvas.getBoundingClientRect();
                 //2
                 var x = event.clientX - rect.left * (500 / rect.width);
@@ -1062,7 +1063,7 @@ export default {
                 this.roomAssignmentTotal = [];
 
                 if (this.context == null || this.context == undefined) {
-                    this.context = this.$refs.canvas.getContext("2d");
+                    this.context = this.$refs.canvas1.getContext("2d");
                     this.context.clearRect(0, 0, 500, 350);
                 } else {
                     this.context.clearRect(0, 0, 500, 350);
@@ -1145,7 +1146,7 @@ export default {
 
             }
             if (this.context == null || this.context == undefined) {
-                this.context = this.$refs.canvas.getContext("2d");
+                this.context = this.$refs.canvas1.getContext("2d");
             }
             var contextF = this;
             if (!data.space) {
