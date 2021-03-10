@@ -13,12 +13,12 @@ export default [
     {
       name: "memo",
       title: '备注',
-      width: "15%"
+      width: "30%"
     },
     {
       name: "action",
       title: '操作',
-      width: "150px"
+      width: "80px"
     },
   ];
   

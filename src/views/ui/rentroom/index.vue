@@ -13,15 +13,15 @@
                     <sui-grid-column :width="12">
                         <sui-form>
                             <sui-form-fields inline>
-                                <label> 产证面积</label>
+                                <label> 房屋名字</label>
                                 <sui-form-field>
-                                    <sui-input type="text" placeholder="请选择" v-model="filterString.hezhunyongtu" />
+                                    <sui-input type="text" placeholder="请选择" v-model="filterString.name" />
                                 </sui-form-field>
-                                <label> 至</label>
+                                <label> 房屋性质</label>
                                 <sui-form-field>
                                     <input type="text" placeholder="请选择" v-model="filterString.shijiyongtu" />
                                 </sui-form-field>
-                                <sui-button basic color="blue" content="搜索" v-on:click="submit" />
+                                <sui-button basic color="blue" content="搜索" v-on:click="onSearch" />
                             </sui-form-fields>
                         </sui-form>
                     </sui-grid-column>
@@ -93,9 +93,6 @@
                                     <sui-message-item v-show="buildingImage.notification">
                                         上传后会覆盖原有图层并清除所有信息
                                     </sui-message-item>
-                                    <sui-message-item>
-                                        上传尺寸应为 500 X 350px
-                                    </sui-message-item>
                                 </sui-message-list>
                             </sui-message>
                         </div>
@@ -136,7 +133,7 @@
             <sui-modal class="modal2" v-model="assignList.open">
                 <sui-modal-content scrolling class="modalStep">
                     <div>
-                        <sui-tab :menu="{ attached: false }" :active-index.sync="defaultTab">
+                        <sui-tab :menu="{ attached: false }" :active-index.sync="defaultTab" @change="tabChange">
                             <sui-tab-pane title="基本信息" :attached="false">
                                 <div>
                                     <rentroom-form :clickDingWei="clickDingWei" :singleRoom="selectedRoom"></rentroom-form>
@@ -263,7 +260,7 @@
                                             </vue-tree-list>
                                         </div>
                                     </sui-grid-column>
-                                    <sui-grid-column :width="8">
+                                    <sui-grid-column :width="8" :key="canvasKey">
                                         <sui-statistic horizontal size="small">
                                             <sui-statistic-value>
                                                 {{assignList.selectedBuilding.name}}
@@ -322,14 +319,18 @@
                             <sui-tab-pane title="房屋面积" :attached="false" style="max-height:600px;overflow-y: auto;">
                                 <mianji-form ref='mianjiForm' :singleRoom="selectedRoom"></mianji-form>
                             </sui-tab-pane>
+                            <sui-tab-pane title="房间列表" :attached="false">
+                                <vuetable ref="vuetable" :api-mode="false" :data="unitRoomData" :fields="fieldsUnit" data-path="data" :key="componentAssignListkey">
+                                </vuetable>
+                            </sui-tab-pane>
                         </sui-tab>
                     </div>
                 </sui-modal-content>
                 <sui-modal-actions>
-                    <sui-button basic color="red" @click.native="closeModal">
+                    <sui-button basic color="red" @click.prevent="closeModal">
                         取消
                     </sui-button>
-                    <sui-button basic color="blue" @click.native="toggle">
+                    <sui-button basic color="blue" @click.prevent="toggle">
                         提交
                     </sui-button>
                 </sui-modal-actions>
@@ -362,6 +363,8 @@ import {
     //getRentRoomContractListApi
 } from "@/api/utilApi";
 import global from "@/global/index";
+import FieldsUnit from "./FieldsUnit.js";
+
 import {
     localGet
 } from "@/util/storage"; // 导入存储函数
@@ -394,7 +397,8 @@ import {
     createBuildingFloorApi,
     createBuildingApi,
     getBuildingListApi,
-    getBuildingFloorApi
+    getBuildingFloorApi,
+    getroomunitinfo
 } from "@/api/roomDataAPI";
 import {
     notifySomething,
@@ -417,6 +421,9 @@ export default {
     },
     data() {
         return {
+            canvasKey: 1,
+            unitRoomData: [],
+            fieldsUnit: FieldsUnit,
             imgeComponentKey: 1,
             singleBuilding: {},
             buildingImage: {
@@ -439,7 +446,7 @@ export default {
             editMode: false,
             open: false,
             filterString: {
-                jiadi: "",
+                name: "",
                 diji: "",
             },
             newXuncha: {
@@ -526,6 +533,98 @@ export default {
     },
 
     methods: {
+        tabChange() {
+            this.context = this.$refs.canvas;
+            if (this.activeIndex == 4) {
+                if (this.context == undefined) {
+                    setTimeout(this.tabChange, 1000)
+                } else {
+                    this.context = this.context.getContext("2d");
+                    this.drawRect(null);
+                }
+            }
+        },
+        onSearch() {
+            this.refreshRooms({
+                name: this.filterString.name,
+                page: 1,
+            })
+
+        },
+        getroomunitinfo(data) {
+            var context = this;
+            getroomunitinfo(data).then((result) => {
+                if (result.data.code == 0) {
+                    console.log(result.data.data);
+                    this.unitRoomData = [];
+                    var resultSet = result.data.data;
+                    resultSet.map((one) => {
+
+                        if (one.room_info != null) {
+                            one.room_info.map((infoData) => {
+                                var dataOne = {
+                                    name: one.unit_name,
+                                    roomNumber: one.roomnumber,
+                                    roomName: one.roomName,
+                                    keyuan: 0,
+                                    chuji: 0,
+                                    fuchuji: 0,
+                                    qita: 0,
+                                    keji: 0,
+                                    fukeji: 0,
+                                    juji: 0,
+                                    fujuji: 0,
+                                    space: 0
+                                }
+                                var parsedData = JSON.parse(infoData[0]);
+
+                                if (parsedData.hasOwnProperty("roomname")) {
+                                    dataOne.roomName = parsedData.roomname;
+                                }
+                                if (parsedData.hasOwnProperty("roomnumber")) {
+                                    dataOne.roomNumber = parsedData.roomnumber;
+                                }
+                                if (parsedData.hasOwnProperty("chuji")) {
+                                    dataOne.chuji += parsedData.chuji;
+                                }
+                                if (parsedData.hasOwnProperty("fuchuji")) {
+                                    dataOne.fuchuji += parsedData.fuchuji;
+                                }
+                                if (parsedData.hasOwnProperty("keji")) {
+                                    dataOne.keji += parsedData.keji;
+                                }
+                                if (parsedData.hasOwnProperty("fukeji")) {
+                                    dataOne.fukeji += parsedData.fukeji;
+                                }
+                                if (parsedData.hasOwnProperty("juji")) {
+                                    dataOne.juji += parsedData.juji;
+                                }
+                                if (parsedData.hasOwnProperty("fujuji")) {
+                                    dataOne.fujuji += parsedData.fujuji;
+                                }
+                                if (parsedData.hasOwnProperty("qita")) {
+                                    dataOne.qita += parsedData.qita;
+                                }
+                                if (parsedData.hasOwnProperty("keyuan")) {
+                                    dataOne.keyuan += parsedData.keyuan;
+                                }
+
+                                dataOne.space = JSON.parse(infoData[1]);
+
+                                this.unitRoomData.push(dataOne)
+                            })
+                        }
+
+                    });
+
+                }
+            }).catch(function () {
+                context.loading = false;
+                notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
+            });
+
+        },
+
         closeImageModal() {
             this.buildingImage.open = false;
             this.assignList.open = true;
@@ -702,6 +801,7 @@ export default {
                 img.onload = () => {
                     that.context.globalAlpha = 1;
                     that.context.drawImage(img, 0, 0, 500, 350)
+                    //this.canvasKey++;
                     zuobiao.map((room, index) => {
                         // console.log(room)
                         // this.context.beginPath();
@@ -1559,6 +1659,10 @@ export default {
             this.getRoomStat({
                 unit_id: this.selectedRoom.id
             });
+            this.getroomunitinfo({
+                room_id: this.selectedRoom.id,
+                room_type: this.roomType
+            })
             this.selectedRoom.space_assign = data.space;
             listRentRoomAssignmentApi({
                 room_id: this.selectedRoom.id,
@@ -1780,10 +1884,7 @@ export default {
             this.refreshRooms({
                 page: 1,
             });
-            this.assignList.open = false;
-            this.contractForm.open = false;
             this.buildingForm.open = false;
-            this.buildingFloorForm.open = false;
             this.buildingImage.open = false;
             this.assignList.open = false;
         },
@@ -1916,5 +2017,63 @@ export default {
 
 .imageModal {
     height: 500px;
+}
+
+.yello {
+    background-color: #E6A23C;
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+}
+
+.purple {
+    background-color: purple;
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+}
+
+.redBand {
+    background-color: red;
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+}
+
+.yewuyongfang {
+    background-color: blue;
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+
+}
+
+.lvse {
+    background-color: rgb(0, 255, 200);
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+}
+
+.baise {
+    background-color: white;
+    border: 1px;
+    height: 10px;
+    display: inline-block;
+    width: 10px;
+    border-color: black;
+    border-style: solid;
+}
+
+.reversed {
+    background-color: rgb(10, 10, 10);
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+}
+
+.displayInline {
+    display: inline;
+
 }
 </style>

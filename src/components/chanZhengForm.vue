@@ -1,11 +1,19 @@
 <template lang="html">
 <div>
     <sui-form>
+
         <sui-form-fields>
+            <sui-form-field style="width:33.33333%;">
+                <label>权属证明</label>
+                <sui-dropdown placeholder="权属证明" selection :options="quanshuzhengmingOptions" v-model="singleRoom.quanshuzhengming" />
+            </sui-form-field>
+
             <sui-form-field style="width:33.33333%;">
                 <label>权证号</label>
                 <sui-input placeholder="权证号" v-model="singleRoom.certid" :disabled="disabled" />
             </sui-form-field>
+        </sui-form-fields>
+        <sui-form-fields>
             <sui-form-field style="width:33.33333%;">
                 <label>权证单位(人)</label>
                 <sui-input placeholder="权证单位(人)" v-model="singleRoom.owner" :disabled="disabled" />
@@ -45,6 +53,10 @@ export default {
     name: 'chanzheng-form',
     data() {
         return {
+            quanshuzhengmingOptions: [{
+                text: "不动产证明",
+                value: "不动产证明"
+            }, ],
             yongtuOptions: [{
                 text: "办公用房",
                 value: "1"

@@ -236,7 +236,7 @@ export default {
             var payload = {};
             getroomspaceApi(payload).then((result) => {
                 if (result.data.code == 0) {
-                    this.getroomspace = result.data.data
+                    this.getroomspace = parseFloat(result.data.data).toFixed(2)
                 }
             }).catch(() => {});
         },
