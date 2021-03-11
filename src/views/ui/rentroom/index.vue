@@ -675,6 +675,7 @@ export default {
             });
         },
         drawRect(info) {
+            this.loading=true;
             if (this.context == null || this.context == undefined) {
                 this.context = this.$refs.canvas1.getContext("2d");
             }
@@ -1054,6 +1055,7 @@ export default {
         },
 
         onClick(params) {
+            this.loading=true;
             if (params.floor_id == undefined) {
                 this.assignList.selectedBuilding = params;
                 this.assignList.selectedFloor = {

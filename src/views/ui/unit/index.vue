@@ -137,6 +137,7 @@
                                     </div>
                                     <div slot="action" slot-scope="props">
                                         <sui-button basic color="red" content="删除" v-on:click="deleteleader(props.rowData)" size="tiny" />
+                                        <!-- <sui-button basic color="blue" content="编辑" v-on:click="editleader(props.rowData)" size="tiny" /> -->
                                     </div>
                                 </vuetable>
                             </div>
@@ -207,6 +208,24 @@
                 <sui-modal-header style="border-bottom:0; margin-bottom:-15px;">{{modelTitle}}</sui-modal-header>
                 <sui-modal-content image>
                     <unit-form ref='formComponent'></unit-form>
+                </sui-modal-content>
+                <sui-modal-actions>
+                    <sui-button basic color="red" @click.native="closeModal">
+                        取消
+                    </sui-button>
+                    <sui-button v-if="modalMode !== 'check'" basic color="blue" @click.native="toggle">
+                        提交
+                    </sui-button>
+                </sui-modal-actions>
+            </sui-modal>
+        </div>
+
+        <div>
+            <sui-modal class="modal2" v-model="assignKeji.open">
+                <sui-modal-header style="border-bottom:0; margin-bottom:-15px;">{{modelTitle}}</sui-modal-header>
+                <sui-modal-content image>
+                    <assign-keji :index="selectedRoomInFloorIndex" :singleEntry="selectedRoomInFloor" :assignEntry="selectedRoomInFloor.assign">
+                    </assign-keji>
                 </sui-modal-content>
                 <sui-modal-actions>
                     <sui-button basic color="red" @click.native="closeModal">
@@ -291,6 +310,9 @@ export default {
     },
     data() {
         return {
+            assignKeji: {
+                open: false
+            },
             role: 0,
             source: [],
             loutree: new Tree([]),
@@ -1415,6 +1437,10 @@ export default {
             this.deleteTarget.unit_id = this.selectedRoom.id;
             this.deleteTarget.room_id = this.deleteTarget.roomid;
             this.deletetype = 'leader'
+        },
+        editLeader(data) {
+            this.assignKeji.open=true;
+            console.log(data);
         },
         refreshUnits() {
             this.loading = true;

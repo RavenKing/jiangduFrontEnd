@@ -214,6 +214,9 @@
                             <sui-tab-pane title="楼层管理" :attached="false" :disabled="selectedRoom.kind==2">
 
                                 <sui-grid :columns="3" relaxed="very">
+                                    <sui-dimmer :active="loading" inverted>
+                                        <sui-loader content="Loading..." />
+                                    </sui-dimmer>
                                     <sui-grid-column :width="4">
                                         <div>
                                             <vue-tree-list @click="onClick" @changeName="onChangeName" @delete-node="onDel" @add-node="onAddNode" :model="tree" default-tree-node-name="new node" default-leaf-node-name="new leaf" v-bind:default-expanded="false">
@@ -987,7 +990,7 @@ export default {
             };
 
             this.loading = false;
-
+        this.openAssignSec();
             this.getBuildingSection();
             // get room Stats
             this.getRoomStat({
