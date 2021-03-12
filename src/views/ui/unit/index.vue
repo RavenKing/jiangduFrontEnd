@@ -2,11 +2,9 @@
 <wl-container>
     <div>
         <div>
-
             <sui-dimmer :active="loading" inverted>
                 <sui-loader content="Loading..." />
             </sui-dimmer>
-
         </div>
         <div class="filterBiaoDan" style="padding-left:15px;margin:0;">
             <sui-grid>
@@ -137,7 +135,7 @@
                                     </div>
                                     <div slot="action" slot-scope="props">
                                         <sui-button basic color="red" content="删除" v-on:click="deleteleader(props.rowData)" size="tiny" />
-                                        <!-- <sui-button basic color="blue" content="编辑" v-on:click="editleader(props.rowData)" size="tiny" /> -->
+                                        <!-- <sui-button basic color="blue" content="编辑" v-on:click="editLeader(props.rowData)" size="tiny" /> -->
                                     </div>
                                 </vuetable>
                             </div>
@@ -153,9 +151,12 @@
         <div>
             <sui-modal class="modal2" v-model="leader.open" :componentKey="componentKey">
                 <sui-modal-content scrolling>
-
+                    <div>
+                        <sui-dimmer :active="loading" inverted>
+                            <sui-loader content="Loading..." />
+                        </sui-dimmer>
+                    </div>
                     <sui-grid :columns="2" relaxed="very">
-
                         <sui-grid-column :width="11">
                             <sui-statistic horizontal size="big">
                                 <sui-statistic-value>
@@ -169,7 +170,6 @@
                             </sui-statistic>
                             <img :src="assignList.selectedFloor.url" ref="backImage" v-show="false" />
                             <canvas ref="canvas" id="myCanvas" width="500" height="350" />
-
                         </sui-grid-column>
                         <sui-grid-column :width="4">
                             <div v-show="assignList.selectedRoom.type1 != '租赁房屋'">
@@ -189,7 +189,7 @@
                             </div>
                         </sui-grid-column>
                     </sui-grid>
-                    <assign-keji :index="selectedRoomInFloorIndex" :singleEntry="selectedRoomInFloor" :assignEntry="selectedRoomInFloor.assign">
+                    <assign-keji :singleEntry="selectedRoomInFloor" :assignEntry="selectedRoomInFloor.assign">
                     </assign-keji>
                 </sui-modal-content>
                 <sui-modal-actions>
@@ -248,7 +248,6 @@ import {
 } from "@/util/utils";
 import store from "@/store";
 import global from "@/global/index"
-
 import constants from "@/util/constants";
 import FormCreate from "@/components/unit_basic_info";
 import FormFenpei from "@/components/unit_fenpei_new";
@@ -626,6 +625,7 @@ export default {
 
         },
         drawRect(info) {
+            this.loading=true;
             var tmpSum = {
                 bangong: 0,
                 fushu: 0,
@@ -1171,23 +1171,23 @@ export default {
                         // }
                         switch (one.type) {
                             case 'bangong':
-                                one.room_type = "办公";
+                                one.type = "办公";
                                 break;
 
                             case 'fushu':
-                                one.room_type = "附属";
+                                one.type = "附属";
                                 break;
 
                             case 'leader':
-                                one.room_type = "领导";
+                                one.type = "领导办公室";
                                 break;
 
                             case 'shebei':
-                                one.room_type = "设备";
+                                one.type = "设备";
                                 break;
 
                             case 'other':
-                                one.room_type = "其他";
+                                one.type = "其他";
                                 break;
 
                         }
@@ -1439,7 +1439,9 @@ export default {
             this.deletetype = 'leader'
         },
         editLeader(data) {
-            this.assignKeji.open=true;
+            this.selectedRoomInFloor = data;
+            this.selectedRoomInFloor.assign = data;
+            this.assignKeji.open = true;
             console.log(data);
         },
         refreshUnits() {

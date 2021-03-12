@@ -35,7 +35,7 @@ export default [
     dataClass: "center aligned",
   },
     {
-    name: "room_type",
+    name: "type",
     title: '类型',
     width: "15%",
     titleClass: "center aligned",
