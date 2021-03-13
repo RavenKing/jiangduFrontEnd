@@ -53,10 +53,14 @@
                 <sui-input placeholder="建筑面积" v-model="singleRoom.space" :disabled="disabled" />
             </sui-form-field>
         </sui-form-fields>
-        <sui-form-fields>
+        <sui-form-fields v-show="singleRoom.kind==2">
             <sui-form-field style="width:25%;">
                 <label>是否机关局统一管理</label>
                 <sui-dropdown placeholder="是否机关局统一管理" selection :options="isunimanageOptions" v-model="singleRoom.isunimanage" />
+            </sui-form-field>
+            <sui-form-field style="width:25%;">
+                <label>主管单位</label>
+                <sui-dropdown placeholder="主管单位" selection :options="qudeOptions" v-model="singleRoom.zhuguandanwei" />
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields>
@@ -85,11 +89,14 @@ export default {
     data() {
         return {
             isunimanageOptions: [{
-                text: "机管局统一管理",
-                value: "机管局统一管理"
+                text: "统一管理",
+                value: "统一管理"
             }, {
-                text: "主管单位自行管理",
-                value: "主管单位自行管理"
+                text: "委托管理",
+                value: "委托管理"
+            }, {
+                text: "自行管理",
+                value: "自行管理"
             }],
             qudeOptions: [{
                     text: "自购",

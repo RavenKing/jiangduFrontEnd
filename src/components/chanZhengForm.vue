@@ -4,19 +4,19 @@
 
         <sui-form-fields>
             <sui-form-field style="width:33.33333%;">
-                <label>权属证明</label>
-                <sui-dropdown placeholder="权属证明" selection :options="quanshuzhengmingOptions" v-model="singleRoom.quanshuzhengming" />
+                <label>房产证号</label>
+                <sui-dropdown placeholder="房产证号" selection :options="quanshuzhengmingOptions" v-model="singleRoom.quanshuzhengming" />
             </sui-form-field>
 
             <sui-form-field style="width:33.33333%;">
-                <label>权证号</label>
-                <sui-input placeholder="权证号" v-model="singleRoom.certid" :disabled="disabled" />
+                <label>土地证号</label>
+                <sui-input placeholder="土地证号" v-model="singleRoom.certid" :disabled="disabled" />
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields>
             <sui-form-field style="width:33.33333%;">
-                <label>权证单位(人)</label>
-                <sui-input placeholder="权证单位(人)" v-model="singleRoom.owner" :disabled="disabled" />
+                <label>权证单位</label>
+                <sui-input placeholder="权证单位" v-model="singleRoom.owner" :disabled="disabled" />
             </sui-form-field>
             <sui-form-field style="width:33.33333%;">
                 <label>房屋用途</label>
