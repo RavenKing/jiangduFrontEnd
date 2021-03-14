@@ -60,7 +60,7 @@
             </sui-form-field>
             <sui-form-field style="width:25%;">
                 <label>主管单位</label>
-                <sui-input placeholder="主管单位"  v-model="singleRoom.zhuguandanwei" />
+                <sui-input placeholder="主管单位" v-model="singleRoom.zhuguandanwei" />
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields>

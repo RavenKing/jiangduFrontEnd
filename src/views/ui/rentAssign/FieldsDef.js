@@ -1,23 +1,33 @@
 
 export default [
   {
-    name: "unit_name",
-    title: '单位',
+    name: "address",
+    title: '房屋地址',
     width: "25%"
   },
   {
-    name: "loan_name",
-    title: '原出租单位',
+    name: "zhuguandanwei",
+    title: '主管单位',
     width: "20%",
   },
   {
-    name: "rent_name",
-    title: '承租方名称',
+    name: "inaccount",
+    title: '有无产证',
     width: "20%",
   },
   {
     name: "address",
-    title: '现实际地址',
+    title: '权属单位',
+    width: "35%",
+  },
+  {
+    name: "renter",
+    title: '承租方',
+    width: "35%",
+  },
+  {
+    name: "renter",
+    title: '联系人',
     width: "35%",
   },
   {
@@ -26,23 +36,38 @@ export default [
     width: "20%",
   },
   {
-    name: "space",
+    name: "contract_space",
     title: '合同面积(m²)',
     width: "20%",
   },
   {
-    name: "time",
+    name: "rent_time",
     title: '合同时间',
     width: "20%",
   },
   {
-    name: "amt",
-    title: '租金(元/m²)',
+    name: "rent_amt",
+    title: '应收租金(元/m²)',
     width: "15%",
   },
   {
     name: "memo",
-    title: '备注',
+    title: '税费',
+    width: "15%"
+  },
+  {
+    name: "memo",
+    title: '上缴金额',
+    width: "15%"
+  },
+  {
+    name: "baozheng_amt",
+    title: '保证金',
+    width: "15%"
+  },
+  {
+    name: "memo",
+    title: '上缴状态',
     width: "15%"
   },
   {

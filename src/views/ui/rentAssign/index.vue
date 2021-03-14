@@ -528,22 +528,29 @@ export default {
                         })
                     }
 
-                    one.ziliaoListData = JSON.parse(one.url);
-                    one.ziliaoList = [];
-                    one.ziliaoListData.map((one1) => {
-                        var newOne = {
-                            fileURL: constants.fileURL + one1
-                        }
-                        one.ziliaoList.push(newOne);
-                    })
+                    // one.ziliaoListData = JSON.parse(one.url);
+                    //one.ziliaoList = [];
+                    // one.ziliaoListData.map((one1) => {
+                    //     var newOne = {
+                    //         fileURL: constants.fileURL + one1
+                    //     }
+                    //     one.ziliaoList.push(newOne);
+                    // })
 
-                    one.starttime = fromShitFormat(one.starttime)
-                    one.endtime = fromShitFormat(one.endtime)
+                    one.starttime = one.rent_start
+                    one.endtime = one.rent_end
+                    one.rent_time = one.starttime + "-" + one.endtime;
                     getroombyid(one).then((result) => {
                         console.log(result);
                         if (result.data.code == 0) {
                             one.roomname = result.data.data.roomname;
                             one.address = result.data.data.address;
+                            one.zhuguandanwei = result.data.data.zhuguandanwei;
+                            if (result.data.data.inaccount) {
+                                one.inaccount = "有"
+                            } else {
+                                one.inaccount = "无"
+                            }
                             this.componentKey++;
                         }
                     }).catch(function () {
@@ -621,8 +628,9 @@ export default {
                             }
                         })
                     }
-                    one.starttime = fromShitFormat(one.starttime)
-                    one.endtime = fromShitFormat(one.endtime)
+                    one.starttime = fromShitFormat(one.rent_start);
+                    one.endtime = fromShitFormat(one.rent_end);
+                    one.rent_time = one.starttime + "-" + one.endtime;
                     getroombyid(one).then((result) => {
                         console.log(result);
                         if (result.data.code == 0) {
