@@ -80,7 +80,6 @@
                             <div v-show="newXuncha.open">
                                 <sui-form>
                                     <sui-form-fields inline v-show="false">
-
                                         <sui-form-field required>
                                             <model-select style="width:100%" :options="options" v-model="selectedWeixiu.room_id" :isDisabled="true">
                                             </model-select>
@@ -110,6 +109,32 @@
                                     </div>
                                 </vuetable>
                             </div>
+                        </sui-tab-pane>
+                        <sui-tab-pane title="租金收缴">
+                            <sui-form>
+                                <sui-form-fields inline>
+                                    <sui-form-field required>
+                                        <datepicker placeholder="收缴时间" style="width:100%" :value="rentOne.enter_date" v-model="rentOne.enter_date" :language="lang['zh']"></datepicker>
+                                    </sui-form-field>
+                                    <sui-form-field required>
+                                        <datepicker placeholder="租金起始年月" style="width:100%" :value="rentOne.fromtime" v-model="rentOne.fromtime" :language="lang['zh']"></datepicker>
+                                    </sui-form-field>
+                                    <sui-form-field required>
+                                        <datepicker placeholder="结束年月" style="width:100%" :value="rentOne.totime" v-model="rentOne.totime" :language="lang['zh']"></datepicker>
+                                    </sui-form-field>
+                                    <sui-form-field required>
+                                        <sui-input placeholder="金额" v-model="rentOne.amt" type="number" />
+                                    </sui-form-field>
+                                    <sui-button basic color="blue" content="添加" @click.prevent="createZujinShangjiao()" size="tiny" />
+                                </sui-form-fields>
+                            </sui-form>
+                            <vuetable ref="vuetable" :api-mode="false" :data="selectedWeixiu.rentInfo" :fields="fieldsRent" data-path="data">
+                                <div slot="action" slot-scope="props">
+                                    <sui-button basic color="red" content="删除" v-on:click="deleteRoomPatrol(props.rowData)" size="tiny" />
+                                </div>
+                            </vuetable>
+                        </sui-tab-pane>
+                        <sui-tab-pane title="国库上缴">
                         </sui-tab-pane>
                     </sui-tab>
                 </sui-modal-content>
@@ -141,8 +166,11 @@ import FieldsDef from "./FieldsDef.js";
 import constants from "@/util/constants";
 import Fields2 from "./fields2.js";
 import FieldHetong from "./fieldsHetong.js";
+import FieldsRent from "./FieldsRent.js";
 import WeiXiuForm from "@/components/rentAssignForm";
 import * as lang from "vuejs-datepicker/src/locale";
+import Datepicker from 'vuejs-datepicker';
+
 import {
     localGet
 } from "@/util/storage";
@@ -169,15 +197,17 @@ import {
 } from 'vue-search-select';
 import {
     getroombyid,
+    addrentApi,
+    listrentApi
 } from "@/api/weixiuAPI";
 export default {
     name: "MyVuetable",
     components: {
         'dialog-bar': dialogBar,
         Vuetable,
+        Datepicker,
         'weixiu-form': WeiXiuForm,
         'model-select': ModelSelect,
-
     },
     data() {
         return {
@@ -185,6 +215,7 @@ export default {
             newXuncha: {
                 open: true,
             },
+            fieldsRent: FieldsRent,
             lang: lang,
             hetongdata: [],
             hetongComponentKey: 1,
@@ -211,6 +242,7 @@ export default {
             sortOrder: [{}],
             steps: [],
             weixiuhetong: {},
+            rentOne: {},
             contractForm: {
                 open: false,
                 title: "createForm",
@@ -227,6 +259,47 @@ export default {
     },
 
     methods: {
+        //
+        createZujinShangjiao() {
+            this.rentOne.cid = this.selectedWeixiu.id;
+            this.rentOne.billing_status = 0;
+            this.rentOne.tax_amt = 0
+            this.rentOne.amt = parseInt(this.rentOne.amt);
+            this.rentOne.enter_date = toShitFormat(this.rentOne.enter_date);
+            this.rentOne.fromtime = toShitFormat(this.rentOne.fromtime);
+            this.rentOne.totime = toShitFormat(this.rentOne.totime);
+            addrentApi(this.rentOne).then((result) => {
+                if (result.data.code == 0) {
+                    this.refreshRent();
+                    //   this.newXuncha.open = false;
+                    notifySomething(
+                        constants.CREATESUCCESS,
+                        constants.CREATESUCCESS,
+                        constants.typeSuccess
+                    );
+                }
+            });
+        },
+        refreshRent() {
+            //  this.loading = true;
+            listrentApi({
+                cid: this.selectedWeixiu.id
+            }).then((result) => {
+                if (result.data.code == 0) {
+                    this.loading = false;
+                    this.selectedWeixiu.rentInfo = result.data.data;
+                    console.log(this.selectedWeixiu.rentInfo);
+                } else {
+                    this.loading = false;
+                    notifySomething(
+                        constants.GENERALERROR,
+                        constants.GENERALERROR,
+                        constants.typeError
+                    );
+                }
+            });
+        },
+
         getUnit() {
             this.unitoptions = [];
             if (store.getters.unit.unitBasic.length > 0) {
@@ -373,6 +446,7 @@ export default {
                 //this.localData = data.data.data;
                 context.getUnit();
                 context.selectedWeixiu = props;
+                context.refreshRent();
                 context.refreshPatrol();
                 context.modelTitle = "编辑";
                 context.loading = true;
@@ -392,8 +466,8 @@ export default {
         createShenbao() {
             this.loading = true;
             var context = this;
-            this.selectedWeixiu.starttime = toShitFormat(this.selectedWeixiu.starttime)
-            this.selectedWeixiu.endtime = toShitFormat(this.selectedWeixiu.endtime)
+            this.selectedWeixiu.rent_start = toShitFormat(this.selectedWeixiu.rent_start)
+            this.selectedWeixiu.rent_end = toShitFormat(this.selectedWeixiu.rent_end)
             if (this.modalMode == "create") {
                 createLoanAssignmentApi(this.selectedWeixiu).then(() => {
                     this.loading = false;
@@ -505,7 +579,9 @@ export default {
 
             } else {
                 this.modelTitle = "创建";
-                this.selectedWeixiu = {};
+                this.selectedWeixiu = {
+                    room_id: ""
+                };
                 this.modalMode = "create";
             }
             this.weixiuForm.open = true;
@@ -576,6 +652,22 @@ export default {
         }
     },
     created() {
+
+        var context = this;
+        context.options = [];
+        getRoomDataApi({
+            kind: 2,
+            extract: 1
+        }).then((data) => {
+            //this.localData = data.data.data;
+            data.data.data.map((one) => {
+                context.options.push({
+                    text: one.name,
+                    value: one.id,
+                })
+            });
+        });
+
         let uri = window.location.href.split('?');
         let getVars = {};
         if (uri.length == 2) {

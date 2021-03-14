@@ -157,6 +157,15 @@ function markStepApi(data)
 {
     return generalRequet(data,constants.editStepApi)
 }
+
+function addrentApi(data)
+{
+    return generalRequet(data,constants.addrentApi)
+}
+function listrentApi(data)
+{
+    return generalRequet(data,constants.listrentApi)
+}
 export {
     getMRApi,
     createMRApi,
@@ -170,5 +179,7 @@ export {
     approveMRApi,
     rejectMRApi,delProjectApi,delStepApi,
     markStepApi,
-    editStepApi
+    editStepApi,
+    addrentApi,
+    listrentApi
 }

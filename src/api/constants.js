@@ -69,11 +69,11 @@ const constantsJinhui = {
     markStepApi:"/markprojectdetail",
     editStepApi:"/editprojectdetail",
     editRentContractApi:"/editrentcontract",
-    listLoanAssignmentApi:"/listloanassignment",
-    deleteLoanAssignmentApi:"/delloanassignment",
+    listLoanAssignmentApi:"/listnewcr",
+    deleteLoanAssignmentApi:"/delnewcr",
     uploadZiliaoFileApi:"/upload",
-    createLoanAssignmentApi:"/createloanassignment",
-    editLoanAssignmentApi:"/editloanassignment",
+    createLoanAssignmentApi:"/createnewcr",
+    editLoanAssignmentApi:"/editnewcr",
 
     //20200801
     getroomnumApi:"/dashboard/getroomnum",	//资产数量
@@ -100,7 +100,13 @@ const constantsJinhui = {
     deletePatrolApi:"/delpatrol",
     exportroomApi:"/exportroom",
     listloanassignmentbyidr:"/listloanassignmentbyid",
-    assignRoomDetail:"/assignfloordetail"
+    assignRoomDetail:"/assignfloordetail",
+
+    //rent
+    addrentApi:"addrentinfo",
+    listrentApi:"listrentinfo",
+    editrentApi:"editrentinfo",
+    removerentApi:"delrentinfo"
     
 
 

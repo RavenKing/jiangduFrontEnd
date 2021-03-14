@@ -60,7 +60,7 @@
             </sui-form-field>
             <sui-form-field style="width:25%;">
                 <label>主管单位</label>
-                <sui-dropdown placeholder="主管单位" selection :options="qudeOptions" v-model="singleRoom.zhuguandanwei" />
+                <sui-input placeholder="主管单位"  v-model="singleRoom.zhuguandanwei" />
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields>
@@ -90,13 +90,13 @@ export default {
         return {
             isunimanageOptions: [{
                 text: "统一管理",
-                value: "统一管理"
+                value: 1
             }, {
                 text: "委托管理",
-                value: "委托管理"
+                value: 2
             }, {
                 text: "自行管理",
-                value: "自行管理"
+                value: 3
             }],
             qudeOptions: [{
                     text: "自购",

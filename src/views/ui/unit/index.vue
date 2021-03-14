@@ -765,7 +765,7 @@ export default {
                 img = new Image();
                 img.src = this.assignList.selectedFloor.url;
                 // var that =this;
-                this.loading = true;
+                    this.loading = true;
                 img.onload = () => {
                     this.loading = false;
 

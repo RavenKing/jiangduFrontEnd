@@ -3,65 +3,81 @@
     <sui-form class="marginBottom30">
         <sui-form-fields inline>
             <sui-form-field style="width:33.33333%;">
-                <label>产权单位</label>
-                <model-select style="width:100%" :options="unitoptions" v-model="singleEntry.unit_id" placeholder="产权单位" @input="changeUnit">
+                <label>地址</label>
+                <model-select style="width:100%" :options="options" v-model="singleEntry.room_id" placeholder="选择房屋">
                 </model-select>
             </sui-form-field>
-            <sui-form-field style="width:33.33333%;">
-                <label>原出租单位</label>
-                <sui-input style="width:100%" placeholder="原出租单位" v-model="singleEntry.loan_name" />
+            <sui-form-field style="width:33.33333%;" disabled>
+                <label>产权属性</label>
+                <sui-input style="width:100%" placeholder="产权属性" v-model="singleEntry.chanquanshuxing" disabled />
             </sui-form-field>
-                        <sui-form-field style="width:33.33333%;">
-                <label>房屋名称</label>
-                <model-select style="width:100%" :options="options" v-model="singleEntry.room_id" placeholder="选择房屋" @input="changeUnit">
+
+        </sui-form-fields>
+        <sui-form-fields inline>
+            <sui-form-field style="width:33.33333%;" disabled>
+                <label>主管单位</label>
+                <sui-input style="width:100%" placeholder="主管单位" v-model="singleEntry.zhuguandanwei" disabled />
+            </sui-form-field>
+            <sui-form-field style="width:33.33333%;" disabled>
+                <label>产权单位</label>
+                <model-select style="width:100%" :options="unitoptions" v-model="singleEntry.unit_id" placeholder="产权单位" disabled>
                 </model-select>
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields inline>
             <sui-form-field style="width:33.33333%;">
-                <label>承租方名称</label>
-                <sui-input style="width:100%" placeholder="承租方名称" v-model="singleEntry.rent_name" />
+                <label>承租方</label>
+                <sui-input style="width:100%" placeholder="承租方名称" v-model="singleEntry.renter" />
             </sui-form-field>
-
             <sui-form-field style="width:33.33333%;">
                 <label>联系电话</label>
                 <sui-input style="width:100%" placeholder="联系电话" v-model="singleEntry.tel" />
             </sui-form-field>
 
+        </sui-form-fields>
+        <sui-form-fields inline>
             <sui-form-field style="width:33.33333%;">
                 <label>联系人地址</label>
-                <sui-input style="width:100%" placeholder="联系人地址" v-model="singleEntry.address" />
+                <sui-input style="width:100%" placeholder="联系人地址" v-model="singleEntry.rent_address" />
+            </sui-form-field>
+            <sui-form-field style="width:33.33333%;">
+                <label>经营用途</label>
+                <sui-input style="width:100%" placeholder="经营用途" v-model="singleEntry.usage" />
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields inline>
 
             <sui-form-field style="width:33.33333%;">
                 <label>起始时间</label>
-                <datepicker style="width:100%" :value="singleEntry.appdate" v-model="singleEntry.starttime" :language="lang['zh']"></datepicker>
+                <datepicker style="width:100%" :value="singleEntry.rent_start" v-model="singleEntry.rent_start" :language="lang['zh']"></datepicker>
             </sui-form-field>
 
             <sui-form-field style="width:33.33333%;">
                 <label>结束时间</label>
-                <datepicker style="width:100%" :value="singleEntry.appdate" v-model="singleEntry.endtime" :language="lang['zh']"></datepicker>
+                <datepicker style="width:100%" :value="singleEntry.rent_end" v-model="singleEntry.rent_end" :language="lang['zh']"></datepicker>
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields inline>
 
             <sui-form-field style="width:33.33333%;">
                 <label>合同面积</label>
-                <sui-input style="width:100%" placeholder="合同面积" v-model="singleEntry.space" />
+                <sui-input style="width:100%" placeholder="合同面积" v-model="singleEntry.contract_space" />
             </sui-form-field>
 
             <sui-form-field style="width:33.33333%;">
                 <label>年租金</label>
-                <sui-input style="width:100%" placeholder="年租金" v-model="singleEntry.amt" />
+                <sui-input style="width:100%" placeholder="年租金" v-model="singleEntry.rent_amt" />
+            </sui-form-field>
+            <sui-form-field style="width:33.33333%;">
+                <label>保证金(应收)</label>
+                <sui-input style="width:100%" placeholder="保证金" v-model="singleEntry.baozheng_amt" />
             </sui-form-field>
         </sui-form-fields>
 
         <sui-form-fields>
             <sui-form-field style="width:100%">
                 <label>备注</label>
-                <textarea v-model="singleEntry.memo" rows="3"/>
+                <textarea v-model="singleEntry.memo" rows="3" />
                 </sui-form-field>
         </sui-form-fields>
         <sui-form-fields inline>               
@@ -85,8 +101,6 @@ import {
 import store from "@/store";
 import constants from "@/util/constants";
 import {
-    getBuildingListApi,
-    getBuildingFloorApi,
     getUnitApi
 } from "@/api/roomDataAPI";
 import {
@@ -99,11 +113,9 @@ export default {
         'model-select': ModelSelect,
 
     },
-    props: ['singleEntry', 'mode','options'],
+    props: ['singleEntry', 'mode', 'options'],
     data() {
         return {
-            louOptions: [],
-            floorOptions: [],
             floorLoading: false,
             louLoading: false,
             lang: lang,
@@ -153,42 +165,6 @@ export default {
                     }
                 });
             }
-        },
-        setFloor() {
-            console.log(this.singleEntry.building_id);
-            this.floorOptions = [];
-            this.floorLoading = true;
-            if (this.singleEntry.building_id != null) {
-                getBuildingFloorApi(this.singleEntry).then((result) => {
-                    var floors = result.data.data;
-                    floors.map((floor) => {
-                        this.floorOptions.push({
-                            text: floor.name,
-                            value: floor.id,
-                        })
-                    });
-                    this.floorLoading = false;
-                })
-            }
-            this.louLoading = false;
-        },
-        setFang() {
-            console.log(this.singleEntry.room_id);
-            this.louOptions = [];
-            this.louLoading = true;
-            if (this.singleEntry.room_id != null) {
-                getBuildingListApi(this.singleEntry).then((data) => {
-                    data.data.data.map((one) => {
-                        this.louOptions.push({
-                            text: one.name,
-                            value: one.id,
-                        })
-                    });
-                    this.louLoading = false;
-
-                })
-            }
-
         }
     },
     created() {
