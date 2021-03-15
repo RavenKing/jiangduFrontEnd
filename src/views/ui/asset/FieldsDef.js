@@ -82,7 +82,6 @@ export default [
     titleClass: 'v aligned',
     dataClass: 'left aligned',
     formatter (value) {
-      console.log(value);
       return parseFloat(value).toFixed(2)
     }
   },

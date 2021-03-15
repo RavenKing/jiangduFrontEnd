@@ -18,6 +18,7 @@ const constantsJinhui = {
     FEIPEICREATEFAILED:"分配单位失败错误代码：",
     STATUSNEW:1,
     typeRoomPatrol:'Patrol',
+    typeRoomRent:'Rent',
     typeRoomAssignment:2,
     typeRentRoom:2,
     typeRoom:1,

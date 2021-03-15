@@ -111,6 +111,12 @@
                             </div>
                         </sui-tab-pane>
                         <sui-tab-pane title="租金收缴">
+                            <div>
+                                <sui-dimmer :active="loading" inverted>
+                                    <sui-loader content="Loading..." />
+                                </sui-dimmer>
+                            </div>
+
                             <sui-form>
                                 <sui-form-fields inline>
                                     <sui-form-field required>
@@ -130,7 +136,7 @@
                             </sui-form>
                             <vuetable ref="vuetable" :api-mode="false" :data="selectedWeixiu.rentInfo" :fields="fieldsRent" data-path="data">
                                 <div slot="action" slot-scope="props">
-                                    <sui-button basic color="red" content="删除" v-on:click="deleteRoomPatrol(props.rowData)" size="tiny" />
+                                    <sui-button basic color="red" content="删除" v-on:click="deleteRent(props.rowData)" size="tiny" />
                                 </div>
                             </vuetable>
                         </sui-tab-pane>
@@ -198,7 +204,8 @@ import {
 import {
     getroombyid,
     addrentApi,
-    listrentApi
+    listrentApi,
+    delrentApi
 } from "@/api/weixiuAPI";
 export default {
     name: "MyVuetable",
@@ -261,6 +268,7 @@ export default {
     methods: {
         //
         createZujinShangjiao() {
+            this.loading = true;
             this.rentOne.cid = this.selectedWeixiu.id;
             this.rentOne.billing_status = 0;
             this.rentOne.tax_amt = 0
@@ -281,14 +289,15 @@ export default {
             });
         },
         refreshRent() {
-            //  this.loading = true;
+            this.loading = true;
             listrentApi({
                 cid: this.selectedWeixiu.id
             }).then((result) => {
                 if (result.data.code == 0) {
-                    this.loading = false;
+
                     this.selectedWeixiu.rentInfo = result.data.data;
-                    console.log(this.selectedWeixiu.rentInfo);
+                    this.loading = false;
+                    this.openWeiXiuForm("edit");
                 } else {
                     this.loading = false;
                     notifySomething(
@@ -315,6 +324,15 @@ export default {
                     }
                 });
             }
+        },
+        deleteRent(data) {
+            this.sendVal = true;
+            this.deleteTarget = {
+                text: "是否要删除" + data.enter_date,
+                id: data.id,
+                type: constants.typeRoomRent,
+                room_type: 1,
+            };
         },
         deleteRoomPatrol(data) {
             this.sendVal = true;
@@ -385,6 +403,8 @@ export default {
             this.sendVal = true;
         },
         clickConfirmDelete() {
+            var context = this;
+
             if (this.deleteTarget.type == constants.typeRoomPatrol) {
                 deletePatrolApi(this.deleteTarget).then((result) => {
                     if (result.data.code == 0) {
@@ -402,9 +422,31 @@ export default {
                         );
                     }
                 });
+            } else if (this.deleteTarget.type == constants.typeRoomRent) {
+                this.loading = true;
+                this.deleteTarget.reason = this.$refs.dialog.commentData;
+                delrentApi(this.deleteTarget).then((result) => {
+                    //context.loading = false;
+                    if (result.data.code == 0) {
+                        this.refreshRent();
+                        context.closeComfirmDialog();
+                        //context.closeWeiXiuForm();
+                        context.$notify({
+                            group: 'foo',
+                            title: '已经删除',
+                            text: '已经删除',
+                            type: "success"
+                        });
+                    } else {
+                        notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
+                    }
+                }).catch(function () {
+                    context.loading = false;
+                    notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
+                });
             } else {
                 this.loading = true;
-                var context = this;
+                // var context = this;
                 this.deleteTarget.reason = this.$refs.dialog.commentData;
                 deleteLoanAssignmentApi(this.deleteTarget).then((result) => {
                     context.loading = false;
@@ -446,11 +488,11 @@ export default {
                 //this.localData = data.data.data;
                 context.getUnit();
                 context.selectedWeixiu = props;
+                context.loading = true;
                 context.refreshRent();
                 context.refreshPatrol();
                 context.modelTitle = "编辑";
-                context.loading = true;
-                context.openWeiXiuForm("edit");
+                //  context.loading = true;
                 data.data.data.map((one) => {
                     context.options.push({
                         text: one.name,

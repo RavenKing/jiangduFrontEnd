@@ -27,55 +27,104 @@ export default [
     width: "40px",
     titleClass: "center aligned",
     dataClass: "center aligned",
+    formatter (value) {
+      if(value==0||value=='0')
+      {
+        return "";
+      }
+      else{return value;}
+    }
   },
   {
     name: "fujuji",
     title: '副局级',
     width: "40px",
     titleClass: "center aligned",
-    dataClass: "center aligned",
+    dataClass: "center aligned",  formatter (value) {
+      if(value==0||value=='0')
+      {
+        return "";
+      }
+      else{return value;}
+    }
   },
   {
     name: "chuji",
     title: '处级',
     width: "40px",
     titleClass: "center aligned",
-    dataClass: "center aligned",
+    dataClass: "center aligned",  formatter (value) {
+      if(value==0||value=='0')
+      {
+        return "";
+      }
+      else{return value;}
+    }
   },
   {
     name: "fuchuji",
     title: '副处级',
     width: "40px",
     titleClass: "center aligned",
-    dataClass: "center aligned",
+    dataClass: "center aligned",  formatter (value) {
+      if(value==0||value=='0')
+      {
+        return "";
+      }
+      else{return value;}
+    }
   },
   {
     name: "keji",
     title: '科级',
     width: "40px",
     titleClass: "center aligned",
-    dataClass: "center aligned",
+    dataClass: "center aligned",  formatter (value) {
+      if(value==0||value=='0')
+      {
+        return "";
+      }
+      else{return value;}
+    }
   },
   {
     name: "fukeji",
     title: '副科级',
     width: "40px",
     titleClass: "center aligned",
-    dataClass: "center aligned",
+    dataClass: "center aligned",  formatter (value) {
+      if(value==0||value=='0')
+      {
+        return "";
+      }
+      else{return value;}
+    }
   },
   {
     name: "keyuan",
     title: '科员',
     width: "40px",
     titleClass: "center aligned",
-    dataClass: "center aligned",
+    dataClass: "center aligned",  formatter (value) {
+      if(value==0||value=='0')
+      {
+        return "";
+      }
+      else{return value;}
+    }
   },
   {
     name: "qita",
     title: '其他',
     width: "40px",
     titleClass: "center aligned",
-    dataClass: "center aligned",
+    dataClass: "center aligned",  formatter (value) {
+      if(value==0||value=='0')
+      {
+        return "";
+      }
+      else{return value;}
+    }
   },
   {
     name: "space",

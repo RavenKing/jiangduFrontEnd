@@ -625,7 +625,7 @@ export default {
 
         },
         drawRect(info) {
-            this.loading=true;
+            this.loading = true;
             var tmpSum = {
                 bangong: 0,
                 fushu: 0,
@@ -765,7 +765,7 @@ export default {
                 img = new Image();
                 img.src = this.assignList.selectedFloor.url;
                 // var that =this;
-                    this.loading = true;
+                this.loading = true;
                 img.onload = () => {
                     this.loading = false;
 
@@ -885,6 +885,9 @@ export default {
                             context.selectedRoomInFloor.type = "附属"
                             break;
                         case "reserved":
+                            context.selectedRoomInFloor.type = "服务用房"
+                            break;
+                        case "reversed":
                             context.selectedRoomInFloor.type = "服务用房"
                             break;
                         case "leader":

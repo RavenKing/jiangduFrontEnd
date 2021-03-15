@@ -7,11 +7,6 @@
                 <model-select style="width:100%" :options="options" v-model="singleEntry.room_id" placeholder="选择房屋">
                 </model-select>
             </sui-form-field>
-            <sui-form-field style="width:33.33333%;" disabled>
-                <label>产权属性</label>
-                <sui-input style="width:100%" placeholder="产权属性" v-model="singleEntry.chanquanshuxing" disabled />
-            </sui-form-field>
-
         </sui-form-fields>
         <sui-form-fields inline>
             <sui-form-field style="width:33.33333%;" disabled>

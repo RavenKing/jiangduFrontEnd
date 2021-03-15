@@ -166,6 +166,10 @@ function listrentApi(data)
 {
     return generalRequet(data,constants.listrentApi)
 }
+function delrentApi(data)
+{
+    return generalRequet(data,constants.removerentApi)
+}
 export {
     getMRApi,
     createMRApi,
@@ -181,5 +185,6 @@ export {
     markStepApi,
     editStepApi,
     addrentApi,
-    listrentApi
+    listrentApi,
+    delrentApi
 }

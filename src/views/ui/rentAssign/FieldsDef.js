@@ -16,11 +16,6 @@ export default [
     width: "20%",
   },
   {
-    name: "address",
-    title: '权属单位',
-    width: "35%",
-  },
-  {
     name: "renter",
     title: '承租方',
     width: "35%",

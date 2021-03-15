@@ -12,6 +12,8 @@
                     <sui-grid-column :width="12">
                         <sui-form>
                             <sui-form-fields inline>
+                                <label> 房屋类型</label>
+                                <sui-dropdown placeholder="房屋类型" selection :options="options" v-model="filterString.kind" />
                                 <label> 房屋名字</label>
                                 <sui-form-field>
                                     <input type="text" placeholder="房屋名字" v-model="filterString.name" />
@@ -285,7 +287,7 @@
                                 </sui-grid>
 
                             </sui-tab-pane>
-                            <sui-tab-pane title="房屋面积" :attached="false" style="max-height:600px;overflow-y: auto;">
+                            <sui-tab-pane title="房屋面积" :attached="false" style="max-height:600px;overflow-y: auto;" :disabled="selectedRoom.kind==2">
                                 <mianji-form ref='mianjiForm' :singleRoom="selectedRoom"></mianji-form>
                             </sui-tab-pane>
                             <sui-tab-pane title="地图定位" :attached="false">
@@ -362,7 +364,7 @@
                                     </sui-list>
                                 </div>
                             </sui-tab-pane>
-                            <sui-tab-pane title="房间列表" :attached="false">
+                            <sui-tab-pane title="房间列表" :attached="false" :disabled="selectedRoom.kind==2">
                                 <vuetable ref="vuetable" :api-mode="false" :data="unitRoomData" :fields="fieldsUnit" data-path="data" :key="componentAssignListkey">
                                 </vuetable>
                             </sui-tab-pane>
@@ -452,6 +454,13 @@ export default {
     },
     data() {
         return {
+            options: [{
+                text: "办公性",
+                value: 1
+            }, {
+                text: "经营性",
+                value: 2
+            }],
             componentAssignListkey: 1,
             chanzhenZiLiao: [],
             tuzhiZiLiao: [],
@@ -556,11 +565,14 @@ export default {
 
     methods: {
         onSearch() {
-            this.refreshRooms({
+            var payload = {
                 name: this.filterString.name,
                 page: 1,
-            })
-
+            }
+            if (this.filterString.kind) {
+                payload.kind = this.filterString.kind
+            }
+            this.refreshRooms(payload);
         },
         getroomunitinfo(data) {
             var context = this;
@@ -872,6 +884,12 @@ export default {
             this.loading = true;
             var context = this;
             data.type = this.roomType;
+            if (!data.upper) {
+                data.upper = 0;
+            }
+            if (!data.lower) {
+                data.lower = 0;
+            }
             createBuildingFloorApi(data).then(() => {
                 context.loading = false;
                 context.$refs.formComponentBuilding.singleBuilding = {
@@ -990,7 +1008,7 @@ export default {
             };
 
             this.loading = false;
-        this.openAssignSec();
+            this.openAssignSec();
             this.getBuildingSection();
             // get room Stats
             this.getRoomStat({
