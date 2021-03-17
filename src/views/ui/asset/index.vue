@@ -475,7 +475,8 @@ export default {
             },
             filterString: {
                 jiadi: "",
-                diji: ""
+                diji: "",
+                page: 1
             },
             activeIndex: 0,
             showMap: false,
@@ -1204,7 +1205,7 @@ export default {
                 }, {
                     type: "yewuyongfang",
                     space: tmpSum.yewuyongfang,
-                    text: "业务用房"
+                    text: "业务"
                 },
                 {
                     type: "fushu",
@@ -1357,7 +1358,7 @@ export default {
                     });
                     switch (room.type) {
                         case "yewuyongfang":
-                            context.selectedRoomInFloor.type = "业务用房"
+                            context.selectedRoomInFloor.type = "业务"
                             break;
                         case "qita":
                             context.selectedRoomInFloor.type = "其他"
@@ -1749,10 +1750,14 @@ export default {
                 page =
                     this.$refs.vuetable.currentPage - 1
             }
-
-            this.refreshRooms({
-                page: page
-            });
+            var payload = {
+                name: this.filterString.name,
+                page: page,
+            }
+            if (this.filterString.kind) {
+                payload.kind = this.filterString.kind
+            }
+            this.refreshRooms(payload);
             this.$refs.vuetable.changePage(page);
         },
         closeModal: function () {

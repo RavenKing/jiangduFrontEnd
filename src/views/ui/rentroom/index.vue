@@ -761,7 +761,7 @@ export default {
                 }, {
                     type: "yewuyongfang",
                     space: tmpSum.yewuyongfang,
-                    text: "业务用房"
+                    text: "业务"
                 },
                 {
                     type: "fushu",
@@ -920,7 +920,7 @@ export default {
                     });
                     switch (room.type) {
                         case "yewuyongfang":
-                            context.selectedRoomInFloor.type = "业务用房"
+                            context.selectedRoomInFloor.type = "业务"
                             break;
                         case "qita":
                             context.selectedRoomInFloor.type = "其他"
