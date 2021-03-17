@@ -679,6 +679,9 @@ function deleteFloorApi(data)
 function getroomunitinfo(data)
 {    return generalRequet(data,constants.getroomunitinfo)
 
+}
+function renamefloorApi(data)
+{    return generalRequet(data,constants.renameFloorApi)
 
 }
 export {
@@ -754,5 +757,6 @@ export {
     deletePatrolApi,
     listloanassignmentbyidr,
     getRoomStatApi,
-    getroomunitinfo
+    getroomunitinfo,
+    renamefloorApi
 }
