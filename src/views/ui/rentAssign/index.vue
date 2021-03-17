@@ -483,7 +483,7 @@ export default {
             context.options = [];
             getRoomDataApi({
                 kind: 2,
-                extract: 1
+             //   extract: 1
             }).then((data) => {
                 //this.localData = data.data.data;
                 context.getUnit();
@@ -495,7 +495,7 @@ export default {
                 //  context.loading = true;
                 data.data.data.map((one) => {
                     context.options.push({
-                        text: one.name,
+                        text: one.address,
                         value: one.id,
                     })
                 });
@@ -707,12 +707,12 @@ export default {
         context.options = [];
         getRoomDataApi({
             kind: 2,
-            extract: 1
+           // extract: 1
         }).then((data) => {
             //this.localData = data.data.data;
             data.data.data.map((one) => {
                 context.options.push({
-                    text: one.name,
+                    text: one.address,
                     value: one.id,
                 })
             });
