@@ -1,14 +1,11 @@
 <template lang="html">
 <div>
     <sui-form class="marginBottom30">
-        <sui-form-fields inline>
+        <sui-form-fields>
             <sui-form-field style="width:33.33333%;">
                 <label>地址</label>
-                <model-select style="width:100%" :options="options" v-model="singleEntry.room_id" placeholder="选择房屋">
-                </model-select>
+                <sui-dropdown placeholder="选择房屋" selection :options="options" v-model="singleEntry.room_id" @input="getOtherData" />
             </sui-form-field>
-        </sui-form-fields>
-        <sui-form-fields inline>
             <sui-form-field style="width:33.33333%;" disabled>
                 <label>主管单位</label>
                 <sui-input style="width:100%" placeholder="主管单位" v-model="singleEntry.zhuguandanwei" disabled />
@@ -75,11 +72,6 @@
                 <textarea v-model="singleEntry.memo" rows="3" />
                 </sui-form-field>
         </sui-form-fields>
-        <sui-form-fields inline>               
-             <label>资料上传</label>
-   <el-upload ref="upload" class="upload-demo" :on-change="uploadZiliaoFile" :file-list="fileList">
-                                    <el-button size="small" type="primary">点击上传</el-button>                                </el-upload>
-        </sui-form-fields>
     </sui-form>
 </div>
 </template>
@@ -95,6 +87,9 @@ import {
 } from 'vue-search-select';
 import store from "@/store";
 import constants from "@/util/constants";
+import {
+    getroombyid
+} from "@/api/weixiuAPI";
 import {
     getUnitApi
 } from "@/api/roomDataAPI";
@@ -117,10 +112,32 @@ export default {
             disabled: false,
             unitoptions: [],
             uploadCount: 0,
-            fileList: []
+            fileList: [],
+            loading: false
         };
     },
     methods: {
+        getOtherData(data) {
+            console.log("111");
+            var context = this;
+            getroombyid({
+                room_id: data
+            }).then((result) => {
+                console.log(result);
+                if (result.data.code == 0) {
+                    context.singleEntry.roomname = result.data.data.roomname;
+                    context.singleEntry.address = result.data.data.address;
+                    context.singleEntry.zhuguandanwei = result.data.data.zhuguandanwei;
+                    if (result.data.data.inaccount) {
+                        context.singleEntry.inaccount = "有"
+                    } else {
+                        context.singleEntry.inaccount = "无"
+                    }
+                }
+            }).catch(function () {
+                notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
+            });
+        },
         uploadZiliaoFile(e, fileList) {
             if (this.uploadCount == 1) {
                 this.uploadCount = 0;

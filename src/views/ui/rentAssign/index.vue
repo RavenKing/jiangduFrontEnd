@@ -47,8 +47,7 @@
                 <sui-modal-header style="border-bottom:0;">
                     <div style="float:left;">{{modelTitle}}</div>
                 </sui-modal-header>
-
-                <sui-modal-content scrolling>
+                <sui-modal-content scrolling style="height:600px!important">
                     <div>
                         <sui-dimmer :active="loading" inverted>
                             <sui-loader content="Loading..." />
@@ -59,19 +58,6 @@
                             <sui-segment>
                                 <weixiu-form :singleEntry="selectedWeixiu" ref="weixiuForm" :options="options" :mode="modalMode"> </weixiu-form>
                             </sui-segment>
-                            <div is="sui-divider" horizontal>
-                                <h4 is="sui-header">
-                                    <i class="tag icon"></i>
-                                    已上传文档
-                                </h4>
-                            </div>
-                            <div>
-                                <sui-list key="213123">
-                                    <sui-list-item v-for="(link,index) in selectedWeixiu.ziliaoList" :key="link[0]">
-                                        <a type="primary" :href="link.fileURL" target="_blank">文件{{index+1}}</a>
-                                    </sui-list-item>
-                                </sui-list>
-                            </div>
                         </sui-tab-pane>
                         <sui-tab-pane title="巡查记录">
                             <sui-dimmer :active="loading" inverted>
@@ -143,6 +129,26 @@
                         </sui-tab-pane>
                         <sui-tab-pane title="国库上缴">
                         </sui-tab-pane>
+                        <sui-tab-pane title="资料上传">
+                            <sui-form-fields inline>
+                                <el-upload ref="upload" class="upload-demo" :on-change="uploadZiliaoFile" :file-list="fileList">
+                                    <el-button size="small" type="primary">点击上传</el-button>
+                                </el-upload>
+                            </sui-form-fields>
+                            <div is="sui-divider" horizontal>
+                                <h4 is="sui-header">
+                                    <i class="tag icon"></i>
+                                    已上传文档
+                                </h4>
+                            </div>
+                            <div>
+                                <sui-list key="213123">
+                                    <sui-list-item v-for="(link,index) in selectedWeixiu.ziliaoList" :key="link[0]">
+                                        <a type="primary" :href="link.fileURL" target="_blank">文件{{index+1}}</a>
+                                    </sui-list-item>
+                                </sui-list>
+                            </div>
+                        </sui-tab-pane>
                     </sui-tab>
                 </sui-modal-content>
 
@@ -162,7 +168,7 @@
             <sui-modal class="modal2" v-model="kaipiao.open">
                 <sui-modal-header style="border-bottom:0; margin-bottom:-15px;">开票</sui-modal-header>
                 <sui-modal-content image>
-                  
+
                 </sui-modal-content>
                 <sui-modal-actions>
                     <sui-button basic color="red" @click.native="closeModal">
@@ -289,8 +295,8 @@ export default {
         openKaipiao(data) {
             console.log(data)
             this.kaipiao.open = true;
-            this.kaipiao.id=data.id;
-           // this.kaipiao
+            this.kaipiao.id = data.id;
+            // this.kaipiao
         },
         //
         createZujinShangjiao() {
@@ -322,6 +328,11 @@ export default {
                 if (result.data.code == 0) {
 
                     this.selectedWeixiu.rentInfo = result.data.data;
+                    this.selectedWeixiu.rentInfo.map((one) => {
+                        one.fromtime = fromShitFormat(one.fromtime);
+                        one.totime = fromShitFormat(one.totime);
+                        one.enter_date = fromShitFormat(one.enter_date);
+                    })
                     this.loading = false;
                     this.openWeiXiuForm("edit");
                 } else {
@@ -409,7 +420,6 @@ export default {
                 if (result.data.code == 0) {
                     this.loading = false;
                     this.selectedWeixiu.patrol = result.data.data;
-                    console.log(this.selectedWeixiu.patrol);
                 } else {
                     this.loading = false;
                     notifySomething(
@@ -804,6 +814,10 @@ export default {
     text-transform: none;
     border-bottom: 1px solid rgba(34, 36, 38, .1);
     border-left: none;
+}
+
+.modal2 {
+    height: 600px;
 }
 
 .ui.blue.table {
