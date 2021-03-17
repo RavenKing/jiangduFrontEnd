@@ -5,7 +5,7 @@
         <sui-form-fields>
             <sui-form-field style="width:33.33333%;">
                 <label>房产证号</label>
-                <sui-dropdown placeholder="房产证号" selection :options="quanshuzhengmingOptions" v-model="singleRoom.quanshuzhengming" />
+                <sui-input placeholder="房产证号"   v-model="singleRoom.quanshuzhengming" />
             </sui-form-field>
 
             <sui-form-field style="width:33.33333%;">

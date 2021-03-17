@@ -136,6 +136,7 @@
                             </sui-form>
                             <vuetable ref="vuetable" :api-mode="false" :data="selectedWeixiu.rentInfo" :fields="fieldsRent" data-path="data">
                                 <div slot="action" slot-scope="props">
+                                    <sui-button basic color="blue" content="开票" v-on:click="openKaipiao(props.rowData)" size="tiny" />
                                     <sui-button basic color="red" content="删除" v-on:click="deleteRent(props.rowData)" size="tiny" />
                                 </div>
                             </vuetable>
@@ -154,6 +155,22 @@
                     </sui-button>
                     <!-- <sui-button v-show="role==1&&modalMode=='edit'" color="green" v-on:click="approveContract(selectedWeixiu)">同意</sui-button>
                     <sui-button v-show="role==1&&modalMode=='edit'" basic color="red" v-on:click="rejectContract(selectedWeixiu)">拒绝</sui-button> -->
+                </sui-modal-actions>
+            </sui-modal>
+        </div>
+        <div>
+            <sui-modal class="modal2" v-model="kaipiao.open">
+                <sui-modal-header style="border-bottom:0; margin-bottom:-15px;">开票</sui-modal-header>
+                <sui-modal-content image>
+                  
+                </sui-modal-content>
+                <sui-modal-actions>
+                    <sui-button basic color="red" @click.native="closeModal">
+                        取消
+                    </sui-button>
+                    <sui-button v-if="modalMode !== 'check'" basic color="blue" @click.native="toggle">
+                        提交
+                    </sui-button>
                 </sui-modal-actions>
             </sui-modal>
         </div>
@@ -250,6 +267,9 @@ export default {
             steps: [],
             weixiuhetong: {},
             rentOne: {},
+            kaipiao: {
+                open: false
+            },
             contractForm: {
                 open: false,
                 title: "createForm",
@@ -266,6 +286,12 @@ export default {
     },
 
     methods: {
+        openKaipiao(data) {
+            console.log(data)
+            this.kaipiao.open = true;
+            this.kaipiao.id=data.id;
+           // this.kaipiao
+        },
         //
         createZujinShangjiao() {
             this.loading = true;
@@ -483,7 +509,7 @@ export default {
             context.options = [];
             getRoomDataApi({
                 kind: 2,
-                extract: 1
+                //   extract: 1
             }).then((data) => {
                 //this.localData = data.data.data;
                 context.getUnit();
@@ -495,7 +521,7 @@ export default {
                 //  context.loading = true;
                 data.data.data.map((one) => {
                     context.options.push({
-                        text: one.name,
+                        text: one.address,
                         value: one.id,
                     })
                 });
@@ -707,12 +733,12 @@ export default {
         context.options = [];
         getRoomDataApi({
             kind: 2,
-            extract: 1
+            // extract: 1
         }).then((data) => {
             //this.localData = data.data.data;
             data.data.data.map((one) => {
                 context.options.push({
-                    text: one.name,
+                    text: one.address,
                     value: one.id,
                 })
             });

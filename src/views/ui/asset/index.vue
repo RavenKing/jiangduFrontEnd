@@ -221,7 +221,7 @@
                                     </sui-dimmer>
                                     <sui-grid-column :width="4">
                                         <div>
-                                            <vue-tree-list @click="onClick" @changeName="onChangeName" @delete-node="onDel" @add-node="onAddNode" :model="tree" default-tree-node-name="new node" default-leaf-node-name="new leaf" v-bind:default-expanded="false">
+                                            <vue-tree-list @click="onClick" @change-name="onChangeName" @delete-node="onDel" @add-node="onAddNode" :model="tree" default-tree-node-name="new node" default-leaf-node-name="new leaf" v-bind:default-expanded="false">
                                                 <span class="icon" slot="leafNodeIcon">
                                                 </span>
                                                 <span class="icon" slot="treeNodeIcon">
@@ -434,7 +434,8 @@ import {
     getFloorById,
     getRoomStatApi,
     deleteFloorApi,
-    getroomunitinfo
+    getroomunitinfo,
+    renamefloorApi
 } from "@/api/roomDataAPI";
 export default {
     name: "MyVuetable",
@@ -733,6 +734,18 @@ export default {
 
         onChangeName(params) {
             console.log(params)
+            var payoad = {
+                id: params.id,
+                name: params.newName
+            }
+            renamefloorApi(payoad).then((result) => {
+
+                if (result.data.code == 0) {
+                    //  notifySomething("改名成功", "改名成功", constants.typeSuccess);
+
+                }
+            })
+
         },
 
         onAddNode(params) {

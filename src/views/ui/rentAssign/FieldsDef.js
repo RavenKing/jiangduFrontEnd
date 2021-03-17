@@ -46,12 +46,12 @@ export default [
     width: "15%",
   },
   {
-    name: "memo",
+    name: "tax_info",
     title: '税费',
     width: "15%"
   },
   {
-    name: "memo",
+    name: "rent_info",
     title: '上缴金额',
     width: "15%"
   },
@@ -61,7 +61,7 @@ export default [
     width: "15%"
   },
   {
-    name: "memo",
+    name: "status",
     title: '上缴状态',
     width: "15%"
   },
