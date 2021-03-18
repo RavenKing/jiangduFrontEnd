@@ -13,15 +13,11 @@
                     <sui-grid-column :width="12">
                         <sui-form>
                             <sui-form-fields inline>
-                                <label> 房屋名字</label>
+
                                 <sui-form-field>
-                                    <sui-input type="text" placeholder="请选择" v-model="filterString.name" />
+                                    <input type="text" placeholder="房屋名字" v-model="filterString.name" />
                                 </sui-form-field>
-                                <label> 房屋性质</label>
-                                <sui-form-field>
-                                    <input type="text" placeholder="请选择" v-model="filterString.shijiyongtu" />
-                                </sui-form-field>
-                                <sui-button basic color="blue" content="搜索" v-on:click="onSearch" />
+                                <sui-button basic color="blue" content="搜索" @click.prevent="onSearch" />
                             </sui-form-fields>
                         </sui-form>
                     </sui-grid-column>
@@ -675,7 +671,7 @@ export default {
             });
         },
         drawRect(info) {
-            this.loading=true;
+            this.loading = true;
             if (this.context == null || this.context == undefined) {
                 this.context = this.$refs.canvas1.getContext("2d");
             }
@@ -1055,7 +1051,7 @@ export default {
         },
 
         onClick(params) {
-            this.loading=true;
+            this.loading = true;
             if (params.floor_id == undefined) {
                 this.assignList.selectedBuilding = params;
                 this.assignList.selectedFloor = {
@@ -1878,9 +1874,20 @@ export default {
             this.$refs.paginationInfo.setPaginationData(paginationData);
         },
         onChangePage(page) {
-            this.refreshRooms({
+            this.loading = true;
+            if (page == "next") {
+                page =
+                    1 + this.$refs.vuetable.currentPage
+            }
+            if (page == "prev") {
+                page =
+                    this.$refs.vuetable.currentPage - 1
+            }
+            var payload = {
+                name: this.filterString.name,
                 page: page,
-            });
+            }
+            this.refreshRooms(payload);
             this.$refs.vuetable.changePage(page);
         },
         closeModal: function () {

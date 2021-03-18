@@ -12,18 +12,13 @@
                     <sui-grid-column :width="12">
                         <sui-form>
                             <sui-form-fields inline>
-                                <label> 房屋类型</label>
-                                <sui-dropdown placeholder="房屋类型" selection :options="options" v-model="filterString.kind" />
-                                <label> 房屋名字</label>
+                                <sui-form-field>
+                                    <sui-dropdown placeholder="房屋类型" selection :options="options" v-model="filterString.kind" />
+                                </sui-form-field>
                                 <sui-form-field>
                                     <input type="text" placeholder="房屋名字" v-model="filterString.name" />
                                 </sui-form-field>
-                                <label> 房屋性质</label>
-                                <sui-form-field>
-                                    <input type="text" placeholder="房屋性质" v-model="filterString.shijiyongtu" />
-                                </sui-form-field>
                                 <sui-button basic color="blue" content="查询" @click.prevent="onSearch" />
-                                <sui-button content="重置" />
                             </sui-form-fields>
                         </sui-form>
                     </sui-grid-column>
