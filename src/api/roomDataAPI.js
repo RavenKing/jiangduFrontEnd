@@ -684,7 +684,10 @@ function renamefloorApi(data)
 {    return generalRequet(data,constants.renameFloorApi)
 
 }
-export {
+function renameBuildingApi(data)
+{   
+     return generalRequet(data,"/renamebuilding")}
+    export {
     deleteFloorApi,
     getCurrentAssignApi,
     assignRoomDetailApi,
@@ -758,5 +761,6 @@ export {
     listloanassignmentbyidr,
     getRoomStatApi,
     getroomunitinfo,
-    renamefloorApi
+    renamefloorApi,
+    renameBuildingApi
 }

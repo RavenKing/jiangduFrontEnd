@@ -590,11 +590,17 @@ export default {
             this.selectedWeixiu.rent_start = toShitFormat(this.selectedWeixiu.rent_start)
             this.selectedWeixiu.rent_end = toShitFormat(this.selectedWeixiu.rent_end)
             if (this.modalMode == "create") {
-                createLoanAssignmentApi(this.selectedWeixiu).then(() => {
-                    this.loading = false;
-                    this.closeWeiXiuForm();
-                    this.refresh();
-                    notifySomething(constants.CREATESUCCESS, constants.CREATESUCCESS, constants.typeSuccess);
+                createLoanAssignmentApi(this.selectedWeixiu).then((result) => {
+                    if (result.data.code == 0) {
+                        this.loading = false;
+                        this.closeWeiXiuForm();
+                        this.refresh();
+                        notifySomething(constants.CREATESUCCESS, constants.CREATESUCCESS, constants.typeSuccess);
+                    } else if (result.data.code == 3) {
+                        this.loading = false;
+                        notifySomething(constants.GENERALERROR, "该房屋这段时间已出租", constants.typeError);
+
+                    }
                 }).catch(function () {
                     context.loading = false;
                     notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);

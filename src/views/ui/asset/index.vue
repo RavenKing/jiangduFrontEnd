@@ -430,7 +430,8 @@ import {
     getRoomStatApi,
     deleteFloorApi,
     getroomunitinfo,
-    renamefloorApi
+    renamefloorApi,
+    renameBuildingApi
 } from "@/api/roomDataAPI";
 export default {
     name: "MyVuetable",
@@ -733,18 +734,20 @@ export default {
 
         onChangeName(params) {
             console.log(params)
-            var payoad = {
+            var payload = {
                 id: params.id,
                 name: params.newName
             }
-            renamefloorApi(payoad).then((result) => {
-
+            renamefloorApi(payload).then((result) => {
                 if (result.data.code == 0) {
                     //  notifySomething("改名成功", "改名成功", constants.typeSuccess);
-
                 }
             })
-
+            renameBuildingApi(payload).then((result) => {
+                if (result.data.code == 0) {
+                    //  notifySomething("改名成功", "改名成功", constants.typeSuccess);
+                }
+            })
         },
 
         onAddNode(params) {
@@ -1075,7 +1078,7 @@ export default {
                     building.addLeafNodeDisabled = true;
                     // building.editLeafNodeDisabled = false;
                     // building.delLeafNodeDisabled = false;
-                    building.editNodeDisabled = true;
+                    building.editNodeDisabled = false;
                     building.delNodeDisabled = false;
                     building.children = [];
                     root.push(building);

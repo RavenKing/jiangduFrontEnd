@@ -4,7 +4,7 @@
         <sui-form-fields>
             <sui-form-field style="width:33.33333%;">
                 <label>地址</label>
-                <sui-dropdown placeholder="选择房屋" selection :options="options" v-model="singleEntry.room_id" @input="getOtherData" />
+                <sui-dropdown placeholder="选择房屋" selection :options="options" v-model="singleEntry.room_id" @input="getOtherData" :loading="loading"/>
             </sui-form-field>
             <sui-form-field style="width:33.33333%;" disabled>
                 <label>主管单位</label>
@@ -119,12 +119,12 @@ export default {
     },
     methods: {
         getOtherData(data) {
-            console.log("111");
+            this.loading=true;
             var context = this;
             getroombyid({
                 room_id: data
             }).then((result) => {
-                console.log(result);
+              this.loading=false;
                 if (result.data.code == 0) {
                     context.singleEntry.roomname = result.data.data.roomname;
                     context.singleEntry.address = result.data.data.address;

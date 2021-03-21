@@ -1,5 +1,6 @@
 const hostname= "";
 const constantsJinhui = {
+    renameBuildingApi:"/renamebuilding",
     getroomunitinfo:"/getroomunitinfo",
     deleteFloorApi:"/removebuildingfloor",
     getCurrentAssignApi:"/getcurrentassign",
