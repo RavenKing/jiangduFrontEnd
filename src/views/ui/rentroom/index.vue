@@ -115,7 +115,7 @@
                     <building-form ref='formComponentBuilding'></building-form>
                 </sui-modal-content>
                 <sui-modal-actions>
-                    <sui-button basic color="red" @click.native="closeModal">
+                    <sui-button basic color="red" @click.native="closeBuildingModal">
                         取消
                     </sui-button>
                     <sui-button basic color="blue" @click.native="createBuilding">
@@ -135,7 +135,7 @@
                                     <rentroom-form :clickDingWei="clickDingWei" :singleRoom="selectedRoom"></rentroom-form>
                                 </div>
                             </sui-tab-pane>
-                            <sui-tab-pane title="合同信息" :attached="false">
+                            <sui-tab-pane title="合同信息" :attached="false" :disabled="!editMode">
                                 <sui-dimmer :active="loading" inverted>
                                     <sui-loader content="Loading..." />
                                 </sui-dimmer>
@@ -192,7 +192,7 @@
                                     <vuetable ref="vuetable" :api-mode="false" :data="selectedRoom.assignList" :fields="fieldsAssign" data-path="data" :key="componentAssignListkey">
                                         <div slot="action" slot-scope="props">
                                             <!-- <sui-button basic color="blue"  content="查看" v-on:click="viewSomeThing(props.rowData,'check')" /> -->
-                                            <!-- <sui-button basic color="red" content="删除" v-on:click="deleteRoomAssign(props.rowData)" />
+                            <!-- <sui-button basic color="red" content="删除" v-on:click="deleteRoomAssign(props.rowData)" />
                                             <sui-button basic color="blue" content="巡查" v-on:click="showPatrol(props.rowData)" />
                                         </div>
                                     </vuetable>
@@ -238,14 +238,14 @@
                                     <bm-local-search :keyword="keyword" :auto-viewport="true" location="上海" @markersset="setFirstPoint"></bm-local-search>
                                 </baidu-map>
                             </sui-tab-pane>
-                            <sui-tab-pane title="楼层管理" :attached="false" :disabled="selectedRoom.kind==2">
+                            <sui-tab-pane title="楼层管理" :attached="false" :disabled="!editMode">
                                 <sui-dimmer :active="loading" inverted>
                                     <sui-loader content="Loading..." />
                                 </sui-dimmer>
                                 <sui-grid :columns="3" relaxed="very">
                                     <sui-grid-column :width="4">
                                         <div>
-                                            <vue-tree-list @click="onClick" @changeName="onChangeName" @delete-node="onDel" @add-node="onAddNode" :model="tree" default-tree-node-name="new node" default-leaf-node-name="new leaf" v-bind:default-expanded="false">
+                                            <vue-tree-list @click="onClick" @change-name="onChangeName" @delete-node="onDel" @add-node="onAddNode" :model="tree" default-tree-node-name="new node" default-leaf-node-name="new leaf" v-bind:default-expanded="false">
                                                 <span class="icon" slot="leafNodeIcon">
                                                 </span>
                                                 <span class="icon" slot="treeNodeIcon">
@@ -313,10 +313,10 @@
                                 </sui-grid>
 
                             </sui-tab-pane>
-                            <sui-tab-pane title="房屋面积" :attached="false" style="max-height:600px;overflow-y: auto;">
+                            <sui-tab-pane title="房屋面积" :attached="false" style="max-height:600px;overflow-y: auto;" :disabled="!editMode">
                                 <mianji-form ref='mianjiForm' :singleRoom="selectedRoom"></mianji-form>
                             </sui-tab-pane>
-                            <sui-tab-pane title="房间列表" :attached="false">
+                            <sui-tab-pane title="房间列表" :attached="false" :disabled="!editMode">
                                 <vuetable ref="vuetable" :api-mode="false" :data="unitRoomData" :fields="fieldsUnit" data-path="data" :key="componentAssignListkey">
                                 </vuetable>
                             </sui-tab-pane>
@@ -349,9 +349,6 @@ import FieldsPatrol from "./FieldsPatrol.js";
 import BuildingForm from "@/components/buildingForm";
 import AssignForm from "@/components/assignForm";
 import rentHeTongForm from "@/components/rentHeTongForm";
-import {
-    ModelSelect
-} from "vue-search-select";
 import constants from "@/util/constants";
 import {
     uploadZiliaoFileApi,
@@ -395,7 +392,9 @@ import {
     createBuildingApi,
     getBuildingListApi,
     getBuildingFloorApi,
-    getroomunitinfo
+    getroomunitinfo,
+    renamefloorApi,
+    renameBuildingApi
 } from "@/api/roomDataAPI";
 import {
     notifySomething,
@@ -405,8 +404,6 @@ export default {
     name: "MyVuetable",
     components: {
         VueTreeList,
-
-        "model-select": ModelSelect,
         "dialog-bar": dialogBar,
         Vuetable,
         VuetablePagination,
@@ -530,6 +527,10 @@ export default {
     },
 
     methods: {
+        closeBuildingModal() {
+            this.assignList.open = true;
+            this.buildingForm.open = false;
+        },
         tabChange() {
             this.context = this.$refs.canvas1;
             if (this.activeIndex == 4) {
@@ -1024,7 +1025,7 @@ export default {
             var context = this;
             this.$refs.formComponentBuilding.singleBuilding.type = this.roomType;
             createBuildingApi(this.$refs.formComponentBuilding.singleBuilding).then((result) => {
-                this.buildingForm.open = false;
+                this.closeBuildingModal();
                 this.getBuildingSection();
                 this.$refs.formComponentBuilding.singleBuilding.building_id = result.data.data;
                 this.createBuildingFloor(this.$refs.formComponentBuilding.singleBuilding);
@@ -1044,6 +1045,20 @@ export default {
 
         onChangeName(params) {
             console.log(params)
+            var payload = {
+                id: params.id,
+                name: params.newName
+            }
+            renamefloorApi(payload).then((result) => {
+                if (result.data.code == 0) {
+                    //  notifySomething("改名成功", "改名成功", constants.typeSuccess);
+                }
+            })
+            renameBuildingApi(payload).then((result) => {
+                if (result.data.code == 0) {
+                    //  notifySomething("改名成功", "改名成功", constants.typeSuccess);
+                }
+            })
         },
 
         onAddNode(params) {

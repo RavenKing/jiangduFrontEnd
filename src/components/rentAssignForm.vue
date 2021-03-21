@@ -4,7 +4,7 @@
         <sui-form-fields>
             <sui-form-field style="width:33.33333%;">
                 <label>地址</label>
-                <sui-dropdown placeholder="选择房屋" selection :options="options" v-model="singleEntry.room_id" @input="getOtherData" :loading="loading"/>
+                <sui-dropdown placeholder="选择房屋" selection :options="options" v-model="singleEntry.room_id" @input="getOtherData" :loading="loading" />
             </sui-form-field>
             <sui-form-field style="width:33.33333%;" disabled>
                 <label>主管单位</label>
@@ -15,6 +15,17 @@
                 <model-select style="width:100%" :options="unitoptions" v-model="singleEntry.unit_id" placeholder="产权单位" disabled>
                 </model-select>
             </sui-form-field>
+        </sui-form-fields>
+        <sui-form-fields inline>
+            <sui-form-field style="width:33.33333%; ">
+                <label>房产证</label>
+                <sui-input style="width:100%" placeholder="房产证" v-model="singleEntry.quanshuzhengming" disabled />
+            </sui-form-field>
+            <sui-form-field style="width:33.33333%;">
+                <label>土地证</label>
+                <sui-input style="width:100%" placeholder="土地证" v-model="singleEntry.certid" disabled />
+            </sui-form-field>
+
         </sui-form-fields>
         <sui-form-fields inline>
             <sui-form-field style="width:33.33333%;">
@@ -119,12 +130,12 @@ export default {
     },
     methods: {
         getOtherData(data) {
-            this.loading=true;
+            this.loading = true;
             var context = this;
             getroombyid({
                 room_id: data
             }).then((result) => {
-              this.loading=false;
+                this.loading = false;
                 if (result.data.code == 0) {
                     context.singleEntry.roomname = result.data.data.roomname;
                     context.singleEntry.address = result.data.data.address;

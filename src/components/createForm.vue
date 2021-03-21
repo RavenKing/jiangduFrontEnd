@@ -56,11 +56,11 @@
         <sui-form-fields v-show="singleRoom.kind==2">
             <sui-form-field style="width:25%;">
                 <label>是否机关局统一管理</label>
-                <sui-dropdown placeholder="是否机关局统一管理" selection :options="isunimanageOptions" v-model="singleRoom.isunimanage" />
+                <sui-dropdown placeholder="是否机关局统一管理" selection :options="isunimanageOptions" v-model="singleRoom.isunimanage" @input="changeZhuguan" />
             </sui-form-field>
-            <sui-form-field style="width:25%;">
+            <sui-form-field style="width:25%;" :disabled="checkZhuguan">
                 <label>主管单位</label>
-                <sui-input placeholder="主管单位" v-model="singleRoom.zhuguandanwei" />
+                <sui-dropdown placeholder="主管单位" selection :options="unitOptions" v-model="singleRoom.zhuguandanwei" :disabled="checkZhuguan" />
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields>
@@ -79,6 +79,9 @@
 </template>
 
 <script>
+import {
+    getUnitApi,
+} from "@/api/roomDataAPI";
 import * as lang from "vuejs-datepicker/src/locale";
 export default {
     props: ['singleRoom', 'clickDingWei', 'clickToHeTong'],
@@ -88,6 +91,8 @@ export default {
     },
     data() {
         return {
+            checkZhuguan: false,
+            unitOptions: [],
             isunimanageOptions: [{
                 text: "统一管理",
                 value: 1
@@ -180,8 +185,36 @@ export default {
             }]
         };
     },
-    methods: {},
+    methods: {
+        changeZhuguan() {
+            console.log("change")
+            if (this.singleRoom.isunimanage == 1) {
+                this.checkZhuguan = true;
+                this.singleRoom.zhuguandanwei = 2;
+            } else {
+                this.checkZhuguan = false;
+            }
+        },
+        getUnit() {
+            this.unitoptions = [];
+
+            console.log(this.unitOptions);
+            getUnitApi().then((data) => {
+                var res_data = data.data.data
+                for (var i = res_data.length - 1; i >= 0; i--) {
+                    this.unitOptions.push({
+                        'text': res_data[i]['name'],
+                        'value': res_data[i]['id']
+                    })
+                }
+                console.log(this.unitOptions);
+
+            });
+        }
+
+    },
     created() {
+        this.getUnit();
 
         this.testDate = Date.now();
         if (this.singleRoom.roomname == undefined) {

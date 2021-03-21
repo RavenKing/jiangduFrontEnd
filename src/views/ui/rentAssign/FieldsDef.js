@@ -18,7 +18,7 @@ export default [
   {
     name: "renter",
     title: '承租方',
-    width: "35%",
+    width: "20%",
   },
   {
     name: "contract_space",

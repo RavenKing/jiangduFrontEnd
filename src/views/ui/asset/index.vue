@@ -72,7 +72,7 @@
                 <sui-modal-header style="border-bottom:0; margin-bottom:-15px;">{{modelTitle}}</sui-modal-header>
                 <sui-modal-content>
                     <sui-segment>
-                        <form-create ref='formComponent' :singleRoom="selectedRoom" :clickToHeTong="changeToChuZuHeTong"></form-create>
+                        <form-create ref='formComponent' :singleRoom="selectedRoom" :clickToHeTong="changeToChuZuHeTong" ></form-create>
                         <chanzheng-form ref='chanZhengForm' :singleRoom="selectedRoom" v-show="selectedRoom.hasproperty"></chanzheng-form>
                     </sui-segment>
                 </sui-modal-content>
@@ -400,6 +400,7 @@ import global from "@/global/index"
 import {
     localGet
 } from "@/util/storage"; // 导入存储函数
+
 import {
     VueTreeList,
     Tree,
@@ -431,7 +432,7 @@ import {
     deleteFloorApi,
     getroomunitinfo,
     renamefloorApi,
-    renameBuildingApi
+    renameBuildingApi,
 } from "@/api/roomDataAPI";
 export default {
     name: "MyVuetable",

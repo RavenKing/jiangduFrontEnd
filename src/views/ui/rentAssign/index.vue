@@ -612,8 +612,10 @@ export default {
                         this.closeWeiXiuForm();
                         this.refresh();
                         notifySomething("编辑成功", "编辑成功", constants.typeSuccess);
-                    } else {
-                        notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
+                    } else if (result.data.code == 3) {
+                        this.loading = false;
+                        notifySomething(constants.GENERALERROR, "该房屋这段时间已出租", constants.typeError);
+
                     }
                 }).catch(function () {
                     context.loading = false;
