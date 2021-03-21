@@ -170,6 +170,9 @@ function delrentApi(data)
 {
     return generalRequet(data,constants.removerentApi)
 }
+function createKaipiaoApi(data)
+{    return generalRequet(data,constants.createKaipiaoApi)
+}
 export {
     getMRApi,
     createMRApi,
@@ -186,5 +189,6 @@ export {
     editStepApi,
     addrentApi,
     listrentApi,
-    delrentApi
+    delrentApi,
+    createKaipiaoApi
 }

@@ -1176,13 +1176,19 @@ export default {
                             case 'bangong':
                                 one.type = "办公";
                                 break;
+                            case 'yewuyongfang':
+                                one.type = "业务";
+                                break;
+                            case 'reversed':
+                                one.type = "服务";
+                                break;
 
                             case 'fushu':
                                 one.type = "附属";
                                 break;
 
                             case 'leader':
-                                one.type = "领导办公室";
+                                one.type = "办公";
                                 break;
 
                             case 'shebei':

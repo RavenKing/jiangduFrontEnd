@@ -14,7 +14,7 @@
                     </sui-grid-column>
                     <sui-grid-column :width="4" style="padding-right:0">
                         <div style="float:right;">
-                            <sui-button basic color="blue" content="新建" @click.native="openWeiXiuForm" icon="add blue" />
+                            <sui-button basic color="blue" content="新建" @click.native="createChuju" icon="add blue" />
                             <!-- <sui-button content="修改" icon="edit yellow" />
                  <sui-button content="删除" icon="delete red" /> -->
                         </div>
@@ -53,13 +53,13 @@
                             <sui-loader content="Loading..." />
                         </sui-dimmer>
                     </div>
-                    <sui-tab :menu="{ attached: false }">
+                    <sui-tab :menu="{ attached: false }" :active-index.sync="activeIndex">
                         <sui-tab-pane title="基本信息">
                             <sui-segment>
                                 <weixiu-form :singleEntry="selectedWeixiu" ref="weixiuForm" :options="options" :mode="modalMode"> </weixiu-form>
                             </sui-segment>
                         </sui-tab-pane>
-                        <sui-tab-pane title="巡查记录">
+                        <sui-tab-pane title="巡查记录" :disabled="modalMode=='create'">
                             <sui-dimmer :active="loading" inverted>
                                 <sui-loader content="Loading..." />
                             </sui-dimmer>
@@ -96,7 +96,7 @@
                                 </vuetable>
                             </div>
                         </sui-tab-pane>
-                        <sui-tab-pane title="租金收缴">
+                        <sui-tab-pane title="租金收缴" :disabled="modalMode=='create'">
                             <div>
                                 <sui-dimmer :active="loading" inverted>
                                     <sui-loader content="Loading..." />
@@ -121,15 +121,22 @@
                                 </sui-form-fields>
                             </sui-form>
                             <vuetable ref="vuetable" :api-mode="false" :data="selectedWeixiu.rentInfo" :fields="fieldsRent" data-path="data">
+                                <div slot="billing_status" slot-scope="props">
+                                    <sui-label color="green" v-show=" props.rowData.billing_status == '1'">
+                                        已开票
+                                    </sui-label>
+                                    <sui-label color="red" v-show=" props.rowData.billing_status == '0'">
+                                        未开票
+                                    </sui-label>
+
+                                </div>
                                 <div slot="action" slot-scope="props">
                                     <sui-button basic color="blue" content="开票" v-on:click="openKaipiao(props.rowData)" size="tiny" />
                                     <sui-button basic color="red" content="删除" v-on:click="deleteRent(props.rowData)" size="tiny" />
                                 </div>
                             </vuetable>
                         </sui-tab-pane>
-                        <sui-tab-pane title="国库上缴">
-                        </sui-tab-pane>
-                        <sui-tab-pane title="资料上传">
+                        <sui-tab-pane title="资料上传" :disabled="modalMode=='create'">
                             <sui-form-fields inline>
                                 <el-upload ref="upload" class="upload-demo" :on-change="uploadZiliaoFile" :file-list="fileList">
                                     <el-button size="small" type="primary">点击上传</el-button>
@@ -167,15 +174,24 @@
         <div>
             <sui-modal class="modal2" v-model="kaipiao.open">
                 <sui-modal-header style="border-bottom:0; margin-bottom:-15px;">开票</sui-modal-header>
-                <sui-modal-content image>
-
+                <sui-modal-content image style="min-height: 400px !important;">
+                    <sui-form>
+                        <sui-form-fields inline>
+                            <sui-form-field required>
+                                <datepicker placeholder="开票时间" style="width:100%" :value="kaipiao.billing_date" v-model="kaipiao.billing_date" :language="lang['zh']"></datepicker>
+                            </sui-form-field>
+                            <sui-form-field required>
+                                <sui-input placeholder="税费金额" v-model="kaipiao.tax_amt" type="number" />
+                            </sui-form-field>
+                        </sui-form-fields>
+                    </sui-form>
                 </sui-modal-content>
                 <sui-modal-actions>
-                    <sui-button basic color="red" @click.native="closeModal">
+                    <sui-button basic color="red" @click.native="closeKaipiao">
                         取消
                     </sui-button>
-                    <sui-button v-if="modalMode !== 'check'" basic color="blue" @click.native="toggle">
-                        提交
+                    <sui-button v-if="modalMode !== 'check'" basic color="blue" @click.native="createKaipiao">
+                        开票
                     </sui-button>
                 </sui-modal-actions>
             </sui-modal>
@@ -228,7 +244,8 @@ import {
     getroombyid,
     addrentApi,
     listrentApi,
-    delrentApi
+    delrentApi,
+    createKaipiaoApi
 } from "@/api/weixiuAPI";
 export default {
     name: "MyVuetable",
@@ -245,6 +262,7 @@ export default {
             newXuncha: {
                 open: true,
             },
+            activeIndex: 1,
             fieldsRent: FieldsRent,
             lang: lang,
             hetongdata: [],
@@ -292,6 +310,31 @@ export default {
     },
 
     methods: {
+        createKaipiao() {
+            this.kaipiao.billing_date = toShitFormat(this.kaipiao.billing_date)
+            createKaipiaoApi(this.kaipiao).then((result) => {
+                this.closeKaipiao();
+                if (result.data.code == 0) {
+                    this.refreshRent();
+                    notifySomething(
+                        constants.CREATESUCCESS,
+                        constants.CREATESUCCESS,
+                        constants.typeSuccess
+                    );
+                } else {
+                    notifySomething(
+                        constants.GENERALERROR,
+                        constants.GENERALERROR,
+                        constants.typeError
+                    );
+                }
+            })
+
+        },
+
+        closeKaipiao() {
+            this.kaipiao.open = false;
+        },
         openKaipiao(data) {
             console.log(data)
             this.kaipiao.open = true;
@@ -656,8 +699,29 @@ export default {
                 notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
             });
         },
-        openWeiXiuForm(mode) {
 
+        createChuju() {
+            var context = this;
+            this.loading = true;
+            getRoomDataApi({
+                kind: 2,
+                //   extract: 1
+            }).then((data) => {
+                //this.localData = data.data.data;
+                data.data.data.map((one) => {
+                    context.options.push({
+                        text: one.address,
+                        value: one.id,
+                    })
+                });
+
+                context.loading = false;
+                context.openWeiXiuForm("create");
+            });
+
+        },
+        openWeiXiuForm(mode) {
+            this.activeIndex = 0;
             if (mode == "edit") {
                 this.modelTitle = "编辑";
                 this.modalMode = "edit";
@@ -665,7 +729,7 @@ export default {
             } else {
                 this.modelTitle = "创建";
                 this.selectedWeixiu = {
-                    room_id: ""
+                    room_id: "1"
                 };
                 this.modalMode = "create";
             }

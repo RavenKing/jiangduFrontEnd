@@ -65,7 +65,6 @@
                 <sui-input style="width:100%" placeholder="保证金" v-model="singleEntry.baozheng_amt" />
             </sui-form-field>
         </sui-form-fields>
-
         <sui-form-fields>
             <sui-form-field style="width:100%">
                 <label>备注</label>
@@ -91,7 +90,8 @@ import {
     getroombyid
 } from "@/api/weixiuAPI";
 import {
-    getUnitApi
+    getUnitApi,
+    getRoomDataApi
 } from "@/api/roomDataAPI";
 import {
     notifySomething,
@@ -103,7 +103,7 @@ export default {
         'model-select': ModelSelect,
 
     },
-    props: ['singleEntry', 'mode', 'options'],
+    props: ['singleEntry', 'mode'],
     data() {
         return {
             floorLoading: false,
@@ -113,7 +113,8 @@ export default {
             unitoptions: [],
             uploadCount: 0,
             fileList: [],
-            loading: false
+            loading: false,
+            options: []
         };
     },
     methods: {
@@ -162,6 +163,24 @@ export default {
                 });
             }
         },
+        getRoom() {
+            var context = this;
+            getRoomDataApi({
+                kind: 2,
+                //   extract: 1
+            }).then((data) => {
+                //this.localData = data.data.data;
+                data.data.data.map((one) => {
+                    context.options.push({
+                        text: one.address,
+                        value: one.id,
+                    })
+                });
+
+                context.loading = false;
+                context.openWeiXiuForm("create");
+            });
+        },
         getUnit() {
             this.unitoptions = [];
             if (store.getters.unit.unitBasic.length > 0) {
@@ -181,6 +200,7 @@ export default {
     },
     created() {
         this.getUnit();
+        this.getRoom();
     }
 };
 </script>

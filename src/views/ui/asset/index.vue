@@ -92,7 +92,7 @@
                     <building-form ref='formComponentBuilding'></building-form>
                 </sui-modal-content>
                 <sui-modal-actions>
-                    <sui-button basic color="red" @click.native="closeModal">
+                    <sui-button basic color="red" @click.native="closeBuildingModal">
                         取消
                     </sui-button>
                     <sui-button basic color="blue" @click.native="createBuilding">
@@ -561,6 +561,10 @@ export default {
     // roomnumber: data.assign.roomnumber
 
     methods: {
+        closeBuildingModal() {
+            this.assignList.open = true;
+            this.buildingForm.open = false;
+        },
         onSearch() {
             var payload = {
                 name: this.filterString.name,
@@ -1510,8 +1514,9 @@ export default {
             this.loading = true;
             this.$refs.formComponentBuilding.singleBuilding.type = this.roomType;
             createBuildingApi(this.$refs.formComponentBuilding.singleBuilding).then((result) => {
-                this.buildingForm.open = false;
+
                 this.getBuildingSection();
+                this.closeBuildingModal();
                 this.$refs.formComponentBuilding.singleBuilding.building_id = result.data.data;
                 this.createBuildingFloor(this.$refs.formComponentBuilding.singleBuilding);
             }).catch(function () {
@@ -1775,9 +1780,14 @@ export default {
             this.buildingFloorForm.open = false;
             this.buildingImage.open = false;
             this.assignList.open = false;
-            this.refreshRooms({
-                page: 1
-            });
+            var payload = {
+                name: this.filterString.name,
+                page: 1,
+            }
+            if (this.filterString.kind) {
+                payload.kind = this.filterString.kind
+            }
+            this.refreshRooms(payload);
         },
         uploadFile: function (e) {
             let formData = new FormData();

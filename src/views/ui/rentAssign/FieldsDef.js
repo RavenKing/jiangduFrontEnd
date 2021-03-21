@@ -21,16 +21,6 @@ export default [
     width: "35%",
   },
   {
-    name: "renter",
-    title: '联系人',
-    width: "35%",
-  },
-  {
-    name: "tel",
-    title: '联系电话',
-    width: "20%",
-  },
-  {
     name: "contract_space",
     title: '合同面积(m²)',
     width: "20%",

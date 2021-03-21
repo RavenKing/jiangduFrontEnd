@@ -23,7 +23,14 @@ export default [
     {
       name: "billing_status",
       title: '开票状态',
-      width: "10%"
+      width: "10%",
+      formatter (value) {
+        if(value==0||value=='0')
+        {
+          return "未开票";
+        }
+        else{return "已开票";}
+      }
     },
     {
       name: "tax_amt",

@@ -151,7 +151,7 @@
                                     </div>
                                 </div>
                             </sui-tab-pane>
-                            <sui-tab-pane title="使用单位" :attached="false" :disabled="!editMode" :key="componentFenpeikey">
+                            <!-- <sui-tab-pane title="使用单位" :attached="false" :disabled="!editMode" :key="componentFenpeikey">
                                 <sui-dimmer :active="loading" inverted>
                                     <sui-loader content="Loading..." />
                                 </sui-dimmer>
@@ -192,12 +192,12 @@
                                     <vuetable ref="vuetable" :api-mode="false" :data="selectedRoom.assignList" :fields="fieldsAssign" data-path="data" :key="componentAssignListkey">
                                         <div slot="action" slot-scope="props">
                                             <!-- <sui-button basic color="blue"  content="查看" v-on:click="viewSomeThing(props.rowData,'check')" /> -->
-                                            <sui-button basic color="red" content="删除" v-on:click="deleteRoomAssign(props.rowData)" />
+                                            <!-- <sui-button basic color="red" content="删除" v-on:click="deleteRoomAssign(props.rowData)" />
                                             <sui-button basic color="blue" content="巡查" v-on:click="showPatrol(props.rowData)" />
                                         </div>
                                     </vuetable>
                                 </div>
-                            </sui-tab-pane>
+                            </sui-tab-pane> -->
                             <!-- <sui-tab-pane title="巡查记录" v-show="false">
                                 <sui-dimmer :active="loading" inverted>
                                     <sui-loader content="Loading..." />

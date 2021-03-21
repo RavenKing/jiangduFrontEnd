@@ -46,29 +46,23 @@ function registerRouteGuard() {
                   url: "/ui/unit",
                   icon:"calendar check icon"
                 },
-                {
-                id: "3-28",
-                title: "维修申请",
-                url: "/ui/weixiu",
-                icon:"address book icon"
-              }
               );
 
             }
             else{
               
-              _menu[0].children.push( {
-                id: "3-28",
-                title: "维修申请审批",
-                url: "/ui/weixiu",
-                icon:"calendar check icon"
-              });
-              _menu[0].children.push( {
-                id: "3-29",
-                title: "项目管理",
-                url: "/ui/weixiuhetong",
-                icon:"address book icon"
-              });
+              // _menu[0].children.push( {
+              //   id: "3-28",
+              //   title: "维修申请审批",
+              //   url: "/ui/weixiu",
+              //   icon:"calendar check icon"
+              // });
+              // _menu[0].children.push( {
+              //   id: "3-29",
+              //   title: "项目管理",
+              //   url: "/ui/weixiuhetong",
+              //   icon:"address book icon"
+              // });
 
             }
             
