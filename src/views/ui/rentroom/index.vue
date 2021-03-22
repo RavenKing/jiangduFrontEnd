@@ -13,7 +13,9 @@
                     <sui-grid-column :width="12">
                         <sui-form>
                             <sui-form-fields inline>
-
+                                <sui-form-field>
+                                    <sui-dropdown placeholder="出租方性质" selection :options="options" v-model="filterString.owner" />
+                                </sui-form-field>
                                 <sui-form-field>
                                     <input type="text" placeholder="房屋名字" v-model="filterString.name" />
                                 </sui-form-field>
@@ -387,6 +389,19 @@ export default {
             newXuncha: {
                 open: false,
             },
+            options: [{
+                text: "国企",
+                value: "国企"
+            }, {
+                text: "国企控股",
+                value: "国企控股"
+            }, {
+                text: "村委会",
+                value: "村委会"
+            }, {
+                text: "私企",
+                value: "私企"
+            }],
             unitoptions: [],
             listContract: [],
             componentAssignListkey: 1,
@@ -486,6 +501,7 @@ export default {
         onSearch() {
             this.refreshRooms({
                 name: this.filterString.name,
+                owner: this.filterString.owner,
                 page: 1,
             })
 
@@ -1781,6 +1797,8 @@ export default {
                 createRentRoomApi(this.selectedRoom).then((result) => {
                     console.log(result);
                     this.refreshRooms({
+                        name: this.filterString.name,
+                        owner: this.filterString.owner,
                         page: 1,
                     });
                     this.loading = false;
@@ -1802,6 +1820,8 @@ export default {
             } else if (this.editMode) {
                 updateRentRoomApi(this.selectedRoom).then((result) => {
                     this.refreshRooms({
+                        name: this.filterString.name,
+                        owner: this.filterString.owner,
                         page: 1,
                     });
                     this.loading = false;
@@ -1850,6 +1870,8 @@ export default {
         },
         closeModal: function () {
             this.refreshRooms({
+                name: this.filterString.name,
+                owner: this.filterString.owner,
                 page: 1,
             });
             this.buildingForm.open = false;

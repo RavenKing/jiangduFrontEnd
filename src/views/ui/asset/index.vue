@@ -139,7 +139,7 @@
             <sui-modal v-model="exportData.open" class="modal2">
                 <sui-modal-header style="border-bottom:0;">导出选择</sui-modal-header>
                 <sui-modal-content scrolling>
-                    <export-form :singleRoom="filterString" ref='FormExport'></export-form>
+                    <export-form :filterString="filterString" :singleRoom="filterString" ref='FormExport'></export-form>
                 </sui-modal-content>
                 <sui-modal-actions>
                     <sui-button basic color="red" @click.native="closeModalExport">
@@ -463,6 +463,7 @@ export default {
             filterString: {
                 jiadi: "",
                 diji: "",
+                kind: 1,
                 page: 1
             },
             activeIndex: 0,
@@ -1523,8 +1524,8 @@ export default {
         openExportUrl() {
             let local_auth = localGet(global.project_key, true);
             console.log(local_auth);
-            var idlist = this.$refs.FormExport.toData.toString();
-            window.open(constants.exportroom + "?token=" + local_auth + "&kind=" + this.$refs.FormExport.filter.kind + "&idlist=" + "[" + idlist + "]");
+            var idlist = this.$refs.FormExport.toDataList.toString();
+            window.open(constants.exportroom + "?token=" + local_auth + "&kind=" + this.$refs.FormExport.filterString.kind + "&idlist=" + "[" + idlist + "]");
             this.exportData.open = false;
         },
         closeModalExport() {
