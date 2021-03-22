@@ -687,6 +687,7 @@ function renamefloorApi(data)
 function renameBuildingApi(data)
 {   
      return generalRequet(data,"/renamebuilding")}
+
     export {
     deleteFloorApi,
     getCurrentAssignApi,

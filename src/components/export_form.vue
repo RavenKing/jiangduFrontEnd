@@ -3,19 +3,29 @@
     <sui-segment>
         <sui-form>
             <sui-form-fields inline>
+                <label for="roomtype">请选择房屋用途</label>
+            </sui-form-fields>
+            <sui-form-fields>
                 <sui-form-field>
-                    <sui-dropdown placeholder="房屋类型" selection :options="options" v-model="filterString.kind" />
+                    <sui-checkbox radio label="办公性" value="1" v-model="filter.kind" />
                 </sui-form-field>
                 <sui-form-field>
-                    <input type="text" placeholder="房屋名字" v-model="filterString.name" />
+                    <sui-checkbox radio label="经营性" value="2" v-model="filter.kind" />
                 </sui-form-field>
-                <sui-button basic color="blue" content="查询" @click.prevent="onSearch" />
+            </sui-form-fields>
+            <sui-form-fields inline>
+                <label for="roomtype">房屋名字</label>
+            </sui-form-fields>
+            <sui-form-fields>
+                <sui-form-field>
+                    <sui-input placeholder="房屋名字" v-model="filter.name" @input="searchit" />
+                </sui-form-field>
             </sui-form-fields>
         </sui-form>
     </sui-segment>
     <div class="transfet-box">
         <wl-tree-transfer :key="transferKey" ref="wl-tree-transfer" filter high-light default-transfer :mode="mode" :title="title" :to_data="toData" :from_data="fromData" :filterNode="filterNode" :defaultProps="defaultProps" :defaultCheckedKeys="defaultCheckedKeys" :defaultExpandedKeys="[2,3]" @right-check-change="rightCheckChange" @left-check-change="leftCheckChange" @removeBtn="remove" @addBtn="add" height="400px" node_key="id">
-            <span slot="title-right" class="my-title-right" @click="handleTitleRight">楼</span>
+            <span slot="title-right" class="my-title-right" @click="handleTitleRight">房屋</span>
         </wl-tree-transfer>
     </div>
     <!-- <sui-form-fields v-if="checked_node == true && singleRoom.roomtype == '1'" >
@@ -32,20 +42,25 @@
 </template>
 
 <script>
-// import {
-//     ModelSelect
-// } from 'vue-search-select'
+import constants from "@/util/constants";
+import {
+    notifySomething,
+} from "@/util/utils";
 import {
     getBuildingListApi,
-    getBuildingFloorApi
+    getBuildingFloorApi,
+    getRoomDataApi
 } from "@/api/roomDataAPI";
 export default {
     props: ['singleRoom'],
     name: 'form-fenpei',
-    components: {
-    },
+
     data() {
         return {
+            filter: {
+                kind: 1,
+                name: ''
+            },
             disabled: false,
             zoomlevel: 14,
             item: "",
@@ -78,6 +93,32 @@ export default {
         };
     },
     methods: {
+        searchit() {
+            console.log("shit");
+            getRoomDataApi(this.filter).then((data) => {
+                this.fromData = [];
+                //this.localData = data.data.data;
+                if (data.data.code == 0) {
+                    this.loading = false;
+                    data.data.data.map((one) => {
+                        var newOne = {
+                            id: one.id,
+                            pid: one.id,
+                            name: one.roomname,
+                            children: []
+                        }
+                        this.fromData.push(newOne);
+                    })
+
+                } else if (data.data.code == 2) {
+                    notifySomething("重复登陆 请重新登陆", constants.GENERALERROR, constants.typeError);
+                }
+            }).catch(function () {
+                this.loading = false;
+                notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
+            });
+
+        },
         handleOnInputRent(props) {
             this.singleRoom.room_id = props;
             this.setFang();
@@ -87,6 +128,24 @@ export default {
             console.log(this.singleRoom);
             this.singleRoom.room_id = props;
             this.setFang();
+        },
+        setFloor() {
+            console.log(this.singleRoom.building_id);
+            this.floorOptions = [];
+            this.floorLoading = true;
+            if (this.singleRoom.building_id != null) {
+                getBuildingFloorApi(this.singleRoom).then((result) => {
+                    var floors = result.data.data;
+                    floors.map((floor) => {
+                        this.floorOptions.push({
+                            text: floor.name,
+                            value: floor.id,
+                        })
+                    });
+                    this.floorLoading = false;
+                })
+            }
+            this.louLoading = false;
         },
         setFang() {
             console.log(this.singleRoom.room_id);
@@ -193,42 +252,17 @@ export default {
             console.log('clicked')
             treeObj.checkedNodes
             var fenpei_data = []
-            var building_id, children_list, floor_id;
             for (var i = treeObj.checkedNodes.length - 1; i >= 0; i--) {
-                if (treeObj.checkedNodes[i].children) {
-                    building_id = treeObj.checkedNodes[i].id
-                    children_list = treeObj.checkedNodes[i].children
-                    for (i = children_list.length - 1; i >= 0; i--) {
-                        floor_id = children_list[i].id
-                        fenpei_data.push({
-                            'building_id': building_id,
-                            'floor_id': floor_id,
-                            'name': children_list[i].name,
-                            'space': ''
-                        })
-                    }
+                if (treeObj.checkedNodes[i].id) {
+                    fenpei_data.push(treeObj.checkedNodes[i].id)
                 }
             }
             for (i = treeObj.halfCheckedNodes.length - 1; i >= 0; i--) {
-                if (treeObj.halfCheckedNodes[i].children) {
-                    building_id = treeObj.halfCheckedNodes[i].id
-                    children_list = treeObj.halfCheckedNodes[i].children
-                    for (var j = children_list.length - 1; j >= 0; j--) {
-                        floor_id = children_list[j].id
-                        for (var k = treeObj.checkedNodes.length - 1; k >= 0; k--) {
-                            if (children_list[j].id == treeObj.checkedNodes[k].id) {
-                                fenpei_data.push({
-                                    'building_id': building_id,
-                                    'floor_id': floor_id,
-                                    'name': children_list[j].name,
-                                    'space': ''
-                                })
-                            }
-                        }
-                    }
+                if (treeObj.checkedNodes[i].id) {
+                    fenpei_data.push(treeObj.checkedNodes[i].id)
                 }
             }
-            this.fenpei_data = fenpei_data
+            this.toData = fenpei_data
             this.checked_node = true
         },
         // 自定义节点 仅树形结构支持
@@ -238,9 +272,7 @@ export default {
         }
     },
     created() {
-        if (this.singleRoom.roomname == undefined) {
-            this.singleRoom.roomname = ""
-        }
+        console.log("shitform")
     }
 };
 </script>

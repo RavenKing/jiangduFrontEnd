@@ -151,66 +151,7 @@
                                     </div>
                                 </div>
                             </sui-tab-pane>
-                            <!-- <sui-tab-pane title="使用单位" :attached="false" :disabled="!editMode" :key="componentFenpeikey">
-                                <sui-dimmer :active="loading" inverted>
-                                    <sui-loader content="Loading..." />
-                                </sui-dimmer>
-                                <sui-form :warning="validationCheck.status=='warning'">
-                                    <sui-message warning>
-                                        <sui-message-header>{{validationCheck.header}}</sui-message-header>
-                                        <p>
-                                            {{validationCheck.text}}
-                                        </p>
-                                    </sui-message>
-                                    <sui-form-fields inline>
-                                        <sui-form-field required :error="validationCheck.unit_id" class="width300">
-                                            <model-select :options="unitoptions" v-model="selectedRoom.unit_id" placeholder="选择单位" @input="changeUnit">
-                                            </model-select>
-                                        </sui-form-field>
-                                        <sui-form-field required :error="validationCheck.space">
-                                            <sui-input placeholder="输入面积" v-model="selectedRoom.space_assign" type="number" />
-                                        </sui-form-field>
-                                        <sui-button basic color="blue" icon="add" content="添加单位" @click.prevent="assignRentRoom()" />
-                                    </sui-form-fields>
-                                </sui-form>
-                                <div v-show="newXuncha.open">
-                                    <sui-form>
-                                        <sui-form-fields inline>
-                                            <label>巡查人</label>
-                                            <sui-form-field required>
-                                                <sui-input placeholder="巡查人" v-model="newXuncha.name" />
-                                            </sui-form-field>
-                                            <label>备注</label>
-                                            <sui-form-field required>
-                                                <sui-input placeholder="备注" v-model="newXuncha.memo" />
-                                            </sui-form-field>
-                                            <sui-button basic color="blue" icon="add" content="添加" @click.prevent="createPatrol()" />
-                                        </sui-form-fields>
-                                    </sui-form>
-                                </div>
-                                <div class="vue2Table">
-                                    <vuetable ref="vuetable" :api-mode="false" :data="selectedRoom.assignList" :fields="fieldsAssign" data-path="data" :key="componentAssignListkey">
-                                        <div slot="action" slot-scope="props">
-                                            <!-- <sui-button basic color="blue"  content="查看" v-on:click="viewSomeThing(props.rowData,'check')" /> -->
-                            <!-- <sui-button basic color="red" content="删除" v-on:click="deleteRoomAssign(props.rowData)" />
-                                            <sui-button basic color="blue" content="巡查" v-on:click="showPatrol(props.rowData)" />
-                                        </div>
-                                    </vuetable>
-                                </div>
-                            </sui-tab-pane> -->
-                            <!-- <sui-tab-pane title="巡查记录" v-show="false">
-                                <sui-dimmer :active="loading" inverted>
-                                    <sui-loader content="Loading..." />
-                                </sui-dimmer>
-                                <div class="vue2Table">
-                                    <vuetable ref="vuetable" :api-mode="false" :data="selectedRoom.patrol" :fields="fieldsPatrol" data-path="data" :key="componentAssignListkey">
-                                        <div slot="action" slot-scope="props">
-                                            <sui-button basic color="blue"  content="查看" v-on:click="viewSomeThing(props.rowData,'check')" />
-                                            <sui-button basic color="red" content="删除" v-on:click="deleteRoomPatrol(props.rowData)" />
-                                        </div>
-                                    </vuetable>
-                                </div>
-                            </sui-tab-pane> -->
+
                             <sui-tab-pane title="地图定位" :attached="false" :disabled="!editMode">
                                 <div class="imageForm">
                                     <sui-form>
@@ -574,41 +515,41 @@ export default {
                                     fujuji: 0,
                                     space: 0
                                 }
-                                var parsedData = JSON.parse(infoData[0]);
+                                // var parsedData = JSON.parse(infoData[0]);
 
-                                if (parsedData.hasOwnProperty("roomname")) {
-                                    dataOne.roomName = parsedData.roomname;
-                                }
-                                if (parsedData.hasOwnProperty("roomnumber")) {
-                                    dataOne.roomNumber = parsedData.roomnumber;
-                                }
-                                if (parsedData.hasOwnProperty("chuji")) {
-                                    dataOne.chuji += parsedData.chuji;
-                                }
-                                if (parsedData.hasOwnProperty("fuchuji")) {
-                                    dataOne.fuchuji += parsedData.fuchuji;
-                                }
-                                if (parsedData.hasOwnProperty("keji")) {
-                                    dataOne.keji += parsedData.keji;
-                                }
-                                if (parsedData.hasOwnProperty("fukeji")) {
-                                    dataOne.fukeji += parsedData.fukeji;
-                                }
-                                if (parsedData.hasOwnProperty("juji")) {
-                                    dataOne.juji += parsedData.juji;
-                                }
-                                if (parsedData.hasOwnProperty("fujuji")) {
-                                    dataOne.fujuji += parsedData.fujuji;
-                                }
-                                if (parsedData.hasOwnProperty("qita")) {
-                                    dataOne.qita += parsedData.qita;
-                                }
-                                if (parsedData.hasOwnProperty("keyuan")) {
-                                    dataOne.keyuan += parsedData.keyuan;
-                                }
+                                // if (parsedData.hasOwnProperty("roomname")) {
+                                //     dataOne.roomName = parsedData.roomname;
+                                // }
+                                // if (parsedData.hasOwnProperty("roomnumber")) {
+                                //     dataOne.roomNumber = parsedData.roomnumber;
+                                // }
+                                // if (parsedData.hasOwnProperty("chuji")) {
+                                //     dataOne.chuji += parsedData.chuji;
+                                // }
+                                // if (parsedData.hasOwnProperty("fuchuji")) {
+                                //     dataOne.fuchuji += parsedData.fuchuji;
+                                // }
+                                // if (parsedData.hasOwnProperty("keji")) {
+                                //     dataOne.keji += parsedData.keji;
+                                // }
+                                // if (parsedData.hasOwnProperty("fukeji")) {
+                                //     dataOne.fukeji += parsedData.fukeji;
+                                // }
+                                // if (parsedData.hasOwnProperty("juji")) {
+                                //     dataOne.juji += parsedData.juji;
+                                // }
+                                // if (parsedData.hasOwnProperty("fujuji")) {
+                                //     dataOne.fujuji += parsedData.fujuji;
+                                // }
+                                // if (parsedData.hasOwnProperty("qita")) {
+                                //     dataOne.qita += parsedData.qita;
+                                // }
+                                // if (parsedData.hasOwnProperty("keyuan")) {
+                                //     dataOne.keyuan += parsedData.keyuan;
+                                // }
 
-                                dataOne.space = JSON.parse(infoData[1]);
-
+                                // dataOne.space = JSON.parse(infoData[1]);
+                                console.log(infoData);
                                 this.unitRoomData.push(dataOne)
                             })
                         }
@@ -848,7 +789,7 @@ export default {
                 }
 
             } else {
-                that.loading=false; 
+                that.loading = false;
                 that.context.clearRect(0, 0, 500, 350);
             }
 
@@ -1069,7 +1010,7 @@ export default {
         onClick(params) {
             this.loading = true;
             if (params.floor_id == undefined) {
-                this.loading=false;
+                this.loading = false;
                 this.assignList.selectedBuilding = params;
                 this.assignList.selectedFloor = {
                     url: ""
