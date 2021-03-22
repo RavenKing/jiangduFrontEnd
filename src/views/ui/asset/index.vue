@@ -72,7 +72,7 @@
                 <sui-modal-header style="border-bottom:0; margin-bottom:-15px;">{{modelTitle}}</sui-modal-header>
                 <sui-modal-content>
                     <sui-segment>
-                        <form-create ref='formComponent' :singleRoom="selectedRoom" :clickToHeTong="changeToChuZuHeTong" ></form-create>
+                        <form-create ref='formComponent' :singleRoom="selectedRoom" :clickToHeTong="changeToChuZuHeTong"></form-create>
                         <chanzheng-form ref='chanZhengForm' :singleRoom="selectedRoom" v-show="selectedRoom.hasproperty"></chanzheng-form>
                     </sui-segment>
                 </sui-modal-content>
@@ -1730,11 +1730,12 @@ export default {
                             text: '更新自有房屋成功',
                             type: "success"
                         });
+                    } else if (result.data.code == 3) {
+                        notifySomething("更新自有房屋失败", "该房屋已有分配房间，无法更改房屋性质", "error");
+
                     } else {
                         notifySomething("更新自有房屋失败", "更新自有房屋失败", "error");
-                        this.refreshRooms({
-                            page: 1
-                        });
+
                     }
                     this.loading = false;
                 }).catch(function () {

@@ -848,6 +848,7 @@ export default {
                 }
 
             } else {
+                that.loading=false; 
                 that.context.clearRect(0, 0, 500, 350);
             }
 
@@ -1068,6 +1069,7 @@ export default {
         onClick(params) {
             this.loading = true;
             if (params.floor_id == undefined) {
+                this.loading=false;
                 this.assignList.selectedBuilding = params;
                 this.assignList.selectedFloor = {
                     url: ""
