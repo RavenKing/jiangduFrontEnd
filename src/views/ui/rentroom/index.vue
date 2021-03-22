@@ -794,6 +794,7 @@ export default {
                 var img = this.$refs.backImage;
                 img = new Image();
                 img.src = this.assignList.selectedFloor.url;
+
                 // var that =this;
                 var that = this;
                 this.loading = true;
@@ -848,8 +849,8 @@ export default {
                 }
 
             } else {
-                that.loading=false; 
-                that.context.clearRect(0, 0, 500, 350);
+                this.loading = false;
+                this.context.clearRect(0, 0, 500, 350);
             }
 
             // this.context.strokeStyle = "#FF0000";
@@ -1069,7 +1070,7 @@ export default {
         onClick(params) {
             this.loading = true;
             if (params.floor_id == undefined) {
-                this.loading=false;
+                this.loading = false;
                 this.assignList.selectedBuilding = params;
                 this.assignList.selectedFloor = {
                     url: ""
