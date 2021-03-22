@@ -684,6 +684,10 @@ function renamefloorApi(data)
 {    return generalRequet(data,constants.renameFloorApi)
 
 }
+function searchunitApi(data)
+{    return generalRequet(data,constants.searchunit)
+
+}
 function renameBuildingApi(data)
 {   
      return generalRequet(data,"/renamebuilding")}
@@ -763,5 +767,6 @@ function renameBuildingApi(data)
     getRoomStatApi,
     getroomunitinfo,
     renamefloorApi,
-    renameBuildingApi
+    renameBuildingApi,
+    searchunitApi
 }

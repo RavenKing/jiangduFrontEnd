@@ -1,4 +1,4 @@
-<template lang="html">
+x   <template lang="html">
 <wl-container>
     <div>
         <div>
@@ -139,7 +139,7 @@
             <sui-modal v-model="exportData.open" class="modal2">
                 <sui-modal-header style="border-bottom:0;">导出选择</sui-modal-header>
                 <sui-modal-content scrolling>
-                    <export-form :filterString="filterString" :singleRoom="filterString" ref='FormExport'></export-form>
+                    <export-form :filterString="filterString" :singleRoom="filterString" ref='FormExport' mode1="room"></export-form>
                 </sui-modal-content>
                 <sui-modal-actions>
                     <sui-button basic color="red" @click.native="closeModalExport">
@@ -592,40 +592,49 @@ export default {
                                     fujuji: 0,
                                     space: 0
                                 }
-                                // var parsedData = JSON.parse(infoData[0]);
+                                var parsedData = JSON.parse(infoData[0]);
+                                // eslint-disable-next-line no-prototype-builtins
+                                if (parsedData.hasOwnProperty("roomname")) {
+                                    dataOne.roomName = parsedData.roomname;
+                                }
+                                // eslint-disable-next-line no-prototype-builtins
+                                if (parsedData.hasOwnProperty("roomnumber")) {
+                                    dataOne.roomNumber = parsedData.roomnumber;
+                                }
+                                // eslint-disable-next-line no-prototype-builtins
+                                if (parsedData.hasOwnProperty("chuji")) {
+                                    dataOne.chuji += parsedData.chuji;
+                                }
+                                // eslint-disable-next-line no-prototype-builtins
+                                if (parsedData.hasOwnProperty("fuchuji")) {
+                                    dataOne.fuchuji += parsedData.fuchuji;
+                                }
+                                // eslint-disable-next-line no-prototype-builtins
+                                if (parsedData.hasOwnProperty("keji")) {
+                                    dataOne.keji += parsedData.keji;
+                                }
+                                // eslint-disable-next-line no-prototype-builtins
+                                if (parsedData.hasOwnProperty("fukeji")) {
+                                    dataOne.fukeji += parsedData.fukeji;
+                                }
+                                // eslint-disable-next-line no-prototype-builtins
+                                if (parsedData.hasOwnProperty("juji")) {
+                                    dataOne.juji += parsedData.juji;
+                                }
+                                // eslint-disable-next-line no-prototype-builtins
+                                if (parsedData.hasOwnProperty("fujuji")) {
+                                    dataOne.fujuji += parsedData.fujuji;
+                                }
+                                // eslint-disable-next-line no-prototype-builtins
+                                if (parsedData.hasOwnProperty("qita")) {
+                                    dataOne.qita += parsedData.qita;
+                                }
+                                // eslint-disable-next-line no-prototype-builtins
+                                if (parsedData.hasOwnProperty("keyuan")) {
+                                    dataOne.keyuan += parsedData.keyuan;
+                                }
 
-                                // if (parsedData.hasOwnProperty("roomname")) {
-                                //     dataOne.roomName = parsedData.roomname;
-                                // }
-                                // if (parsedData.hasOwnProperty("roomnumber")) {
-                                //     dataOne.roomNumber = parsedData.roomnumber;
-                                // }
-                                // if (parsedData.hasOwnProperty("chuji")) {
-                                //     dataOne.chuji += parsedData.chuji;
-                                // }
-                                // if (parsedData.hasOwnProperty("fuchuji")) {
-                                //     dataOne.fuchuji += parsedData.fuchuji;
-                                // }
-                                // if (parsedData.hasOwnProperty("keji")) {
-                                //     dataOne.keji += parsedData.keji;
-                                // }
-                                // if (parsedData.hasOwnProperty("fukeji")) {
-                                //     dataOne.fukeji += parsedData.fukeji;
-                                // }
-                                // if (parsedData.hasOwnProperty("juji")) {
-                                //     dataOne.juji += parsedData.juji;
-                                // }
-                                // if (parsedData.hasOwnProperty("fujuji")) {
-                                //     dataOne.fujuji += parsedData.fujuji;
-                                // }
-                                // if (parsedData.hasOwnProperty("qita")) {
-                                //     dataOne.qita += parsedData.qita;
-                                // }
-                                // if (parsedData.hasOwnProperty("keyuan")) {
-                                //     dataOne.keyuan += parsedData.keyuan;
-                                // }
-
-                                // dataOne.space = JSON.parse(infoData[1]);
+                                dataOne.space = JSON.parse(infoData[1]);
                                 console.log(infoData);
                                 this.unitRoomData.push(dataOne)
                             })

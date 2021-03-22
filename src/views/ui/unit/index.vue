@@ -21,7 +21,22 @@
                 </sui-grid-row>
             </sui-grid>
         </div>
-
+        <div>
+            <sui-modal v-model="exportData.open" class="modal2">
+                <sui-modal-header style="border-bottom:0;">导出选择</sui-modal-header>
+                <sui-modal-content image>
+                    <export-form :filterString="filterString" :singleRoom="filterString" ref='FormExport' mode1="unit"></export-form>
+                </sui-modal-content>
+                <sui-modal-actions>
+                    <sui-button basic color="red" @click.native="closeModalExport">
+                        取消
+                    </sui-button>
+                    <sui-button basic color="blue" @click.native="openExportUrl">
+                        提交
+                    </sui-button>
+                </sui-modal-actions>
+            </sui-modal>
+        </div>
         <sui-grid class="margin20">
             <sui-grid-row>
                 <sui-grid-column :width="3" v-show="role==1">
@@ -290,7 +305,7 @@ import {
     //getlistleaderroomApi,
     assignRoomDetailApi
 } from "@/api/roomDataAPI";
-
+import ExportForm from "@/components/export_form";
 import {
     createMRApi
 } from "@/api/weixiuAPI";
@@ -304,12 +319,15 @@ export default {
         FormFenpei,
         FormCreate,
         FormWeixiu,
-        'assign-keji': AssignKejiForm
-
+        'assign-keji': AssignKejiForm,
+        'export-form': ExportForm
     },
     data() {
         return {
             assignKeji: {
+                open: false
+            },
+            exportData: {
                 open: false
             },
             role: 0,
@@ -1201,43 +1219,43 @@ export default {
 
                         }
                     })
-                    // for (var i = res_data.length - 1; i >= 0; i--) {
-                    //     // var out_room_name = res_data[i]['room_name']
-                    //     // var room_assign = res_data[i]['room_assign']
-                    //     // var building_name = res_data[i]['building_name']
-                    //     // var floor_name = res_data[i]['floor_name']
-                    //     // var room_details = res_data[i]['room_detail']
-                    //     // for (var j = room_assign.length - 1; j >= 0; j--) {
-                    //     //     room_assign[j]['building_name'] = building_name
-                    //     //     room_assign[j]['floor_name'] = floor_name
+                    for (var i = res_data.length - 1; i >= 0; i--) {
+                        var out_room_name = res_data[i]['room_name']
+                        var room_assign = res_data[i]['room_assign']
+                        var building_name = res_data[i]['building_name']
+                        var floor_name = res_data[i]['floor_name']
+                        var room_details = res_data[i]['room_detail']
+                        for (var j = room_assign.length - 1; j >= 0; j--) {
+                            room_assign[j]['building_name'] = building_name
+                            room_assign[j]['floor_name'] = floor_name
 
-                    //     //     var room_id = room_assign[j]['id']
-                    //     //     var room_type = ''
-                    //     //     for (var k = room_details.length - 1; k >= 0; k--) {
-                    //     //         // eslint-disable-next-line no-prototype-builtins
-                    //     //         if (room_details[k].hasOwnProperty(room_id)) {
-                    //     //             room_type = room_details[k]['type']
-                    //     //         }
-                    //     //     }
-                    //     //     if (room_type == 'yewu') {
-                    //     //         room_type = '业务'
-                    //     //     }
-                    //     //     if (room_type == 'bangong') {
-                    //     //         room_type = '办公'
-                    //     //     }
-                    //     //     if (room_type == 'shebei') {
-                    //     //         room_type = '设备'
-                    //     //     }
-                    //     //     if (room_type == 'fushu') {
-                    //     //         room_type = '附属'
-                    //     //     }
-                    //     //     room_assign[j]['room_type'] = room_type
-                    //     //     room_assign[j]['out_room_name'] = out_room_name
-                    //     //     lingdao_list.push(room_assign[j])
+                            var room_id = room_assign[j]['id']
+                            var room_type = ''
+                            for (var k = room_details.length - 1; k >= 0; k--) {
+                                // eslint-disable-next-line no-prototype-builtins
+                                if (room_details[k].hasOwnProperty(room_id)) {
+                                    room_type = room_details[k]['type']
+                                }
+                            }
+                            if (room_type == 'yewu') {
+                                room_type = '业务'
+                            }
+                            if (room_type == 'bangong') {
+                                room_type = '办公'
+                            }
+                            if (room_type == 'shebei') {
+                                room_type = '设备'
+                            }
+                            if (room_type == 'fushu') {
+                                room_type = '附属'
+                            }
+                            room_assign[j]['room_type'] = room_type
+                            room_assign[j]['out_room_name'] = out_room_name
+                            lingdao_list.push(room_assign[j])
 
-                    //     // }
+                        }
 
-                    // }
+                    }
                     console.log(lingdao_list)
                     this.lingdaoData = {
                         data: lingdao_list
@@ -1400,24 +1418,38 @@ export default {
             }
         },
         exportToExcel() {
+            this.exportData.open = true;
+        },
+        // exportToExcel() {
+        //     let local_auth = localGet(global.project_key, true);
+        //     // if (this.exportData.kind != "0") {
+        //     //     window.open(constants.exportunit + "?token=" + local_auth + "&kind=" + this.exportData.kind);
+        //     // } else {
+        //     window.open(constants.exportunit + "?token=" + local_auth);
+        //     // }
+        //     // this.exportData.open = false;
+
+        //     // let headers = ['id', 'name', 'enumber', 'level', 'level_num'];
+        //     // const filtedData = this.formatJson(headers, this.localData.data);
+        //     // export_json_to_excel({
+        //     //     header: headers,
+        //     //     data: filtedData,
+        //     //     filename: 'excel-list', //Optional
+        //     //     autoWidth: true, //Optional
+        //     //     bookType: 'xlsx' //Optional
+        //     // });
+
+        // },
+        openExportUrl() {
             let local_auth = localGet(global.project_key, true);
-            // if (this.exportData.kind != "0") {
-            //     window.open(constants.exportunit + "?token=" + local_auth + "&kind=" + this.exportData.kind);
-            // } else {
-            window.open(constants.exportunit + "?token=" + local_auth);
-            // }
-            // this.exportData.open = false;
-
-            // let headers = ['id', 'name', 'enumber', 'level', 'level_num'];
-            // const filtedData = this.formatJson(headers, this.localData.data);
-            // export_json_to_excel({
-            //     header: headers,
-            //     data: filtedData,
-            //     filename: 'excel-list', //Optional
-            //     autoWidth: true, //Optional
-            //     bookType: 'xlsx' //Optional
-            // });
-
+            console.log(local_auth);
+            var idlist = this.$refs.FormExport.toDataList;
+            if (idlist.length > 0) {
+                window.open(constants.exportunit + "?token=" + local_auth + "&idlist=" + "[" + idlist.toString() + "]");
+            } else {
+                window.open(constants.exportunit + "?token=" + local_auth);
+            }
+            this.exportData.open = false;
         },
         deleteRoom(data) {
             this.sendVal = true;

@@ -109,8 +109,8 @@ const constantsJinhui = {
     listrentApi:"listrentinfo",
     editrentApi:"editrentinfo",
     removerentApi:"delrentinfo",
-    createKaipiaoApi:"addtaxinfo"
-
+    createKaipiaoApi:"addtaxinfo",
+    searchunit:"/searchunit"
 
 }
 export default constantsJinhui;

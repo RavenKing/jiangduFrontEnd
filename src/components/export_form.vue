@@ -1,7 +1,7 @@
 <template lang="html">
 <div>
-    <sui-segment>
-        <sui-form>
+    <sui-segment style="width:800px">
+        <sui-form v-if="mode1=='room'">
             <sui-form-fields inline>
                 <label for="roomtype">请选择房屋用途</label>
             </sui-form-fields>
@@ -15,10 +15,31 @@
                 <sui-button basic color="blue" content="查询" @click.prevent="searchit" />
             </sui-form-fields>
         </sui-form>
+        <sui-form v-if="mode1=='rentroom'">
+            <sui-form-fields inline>
+                <sui-form-field>
+                    <sui-dropdown placeholder="出租方性质" selection :options="ownerOptions" v-model="filterString.owner" />
+                </sui-form-field>
+                <sui-form-field>
+                    <input type="text" placeholder="房屋名字" v-model="filterString.name" />
+                </sui-form-field>
+                <sui-button basic color="blue" content="搜索" @click.prevent="searchit" />
+            </sui-form-fields>
+        </sui-form>
+        <sui-form v-if="mode1=='unit'">
+            <sui-form-fields inline>
+                <sui-form-field>
+                    <input type="text" placeholder="单位名字" v-model="filterString.name" />
+                </sui-form-field>
+                <sui-button basic color="blue" content="搜索" @click.prevent="searchit" />
+            </sui-form-fields>
+        </sui-form>
     </sui-segment>
     <div class="transfet-box">
         <wl-tree-transfer :key="transferKey" ref="wl-tree-transfer" filter high-light default-transfer :mode="mode" :title="title" :to_data="toData" :from_data="fromData" :filterNode="filterNode" :defaultProps="defaultProps" :defaultCheckedKeys="defaultCheckedKeys" :defaultExpandedKeys="[2,3]" @right-check-change="rightCheckChange" @left-check-change="leftCheckChange" @removeBtn="remove" @addBtn="add" height="400px" node_key="id">
-            <span slot="title-right" class="my-title-right" @click="handleTitleRight">房屋</span>
+            <span slot="title-right" class="my-title-right" @click="handleTitleRight" v-if="mode1!='unit'">房屋</span>
+            <span slot="title-right" class="my-title-right" @click="handleTitleRight" v-if="mode1=='unit'">单位</span>
+
         </wl-tree-transfer>
     </div>
     <!-- <sui-form-fields v-if="checked_node == true && singleRoom.roomtype == '1'" >
@@ -40,14 +61,29 @@ import {
     notifySomething,
 } from "@/util/utils";
 import {
-    getRoomDataApi
+    getRoomDataApi,
+    getRentRoomDataApi,
+    searchunitApi
 } from "@/api/roomDataAPI";
 export default {
-    props: ['singleRoom', 'filterString'],
+    props: ['singleRoom', 'filterString', 'mode1'],
     name: 'form-fenpei',
 
     data() {
         return {
+            ownerOptions: [{
+                text: "国企",
+                value: "国企"
+            }, {
+                text: "国企控股",
+                value: "国企控股"
+            }, {
+                text: "村委会",
+                value: "村委会"
+            }, {
+                text: "私企",
+                value: "私企"
+            }],
             loading: false,
             toDataList: [],
             fangwuoptions: [{
@@ -73,33 +109,89 @@ export default {
     methods: {
         searchit() {
             var that = this;
-            var payload = {
-                name: this.filterString.name,
-                kind: this.filterString.kind
-            }
+            var payload = {};
             this.fromData = [];
-            getRoomDataApi(payload).then((data) => {
-                this.fromData = [];
-                //this.localData = data.data.data;
-                if (data.data.code == 0) {
-                    that.loading = false;
-                    data.data.data.map((one) => {
-                        var newOne = {
-                            id: one.id,
-                            pid: one.id,
-                            name: one.roomname,
-                            children: []
-                        }
-                        that.fromData.push(newOne);
-                    })
-
-                } else if (data.data.code == 2) {
-                    notifySomething("重复登陆 请重新登陆", constants.GENERALERROR, constants.typeError);
+            if (this.mode1 == "room") {
+                payload = {
+                    name: this.filterString.name,
+                    kind: this.filterString.kind
                 }
-            }).catch(function () {
-                that.loading = false;
-                notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
-            });
+                getRoomDataApi(payload).then((data) => {
+                    this.fromData = [];
+                    //this.localData = data.data.data;
+                    if (data.data.code == 0) {
+                        that.loading = false;
+                        data.data.data.map((one) => {
+                            var newOne = {
+                                id: one.id,
+                                pid: one.id,
+                                name: one.roomname,
+                                children: []
+                            }
+                            that.fromData.push(newOne);
+                        })
+
+                    } else if (data.data.code == 2) {
+                        notifySomething("重复登陆 请重新登陆", constants.GENERALERROR, constants.typeError);
+                    }
+                }).catch(function () {
+                    that.loading = false;
+                    notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
+                });
+            } else if (this.mode1 == "rentroom") {
+                payload = {
+                    owner: this.filterString.owner,
+                    name: this.filterString.name
+                }
+                getRentRoomDataApi(payload).then((data) => {
+                    this.fromData = [];
+                    //this.localData = data.data.data;
+                    if (data.data.code == 0) {
+                        that.loading = false;
+                        data.data.data.map((one) => {
+                            var newOne = {
+                                id: one.id,
+                                pid: one.id,
+                                name: one.roomname,
+                                children: []
+                            }
+                            that.fromData.push(newOne);
+                        })
+
+                    } else if (data.data.code == 2) {
+                        notifySomething("重复登陆 请重新登陆", constants.GENERALERROR, constants.typeError);
+                    }
+                }).catch(function () {
+                    that.loading = false;
+                    notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
+                });
+            } else if (this.mode1 == "unit") {
+                payload = {
+                    name: this.filterString.name
+                }
+                searchunitApi(payload).then((data) => {
+                    this.fromData = [];
+                    //this.localData = data.data.data;
+                    if (data.data.code == 0) {
+                        that.loading = false;
+                        data.data.data.map((one) => {
+                            var newOne = {
+                                id: one.id,
+                                pid: one.id,
+                                name: one.name,
+                                children: []
+                            }
+                            that.fromData.push(newOne);
+                        })
+
+                    } else if (data.data.code == 2) {
+                        notifySomething("重复登陆 请重新登陆", constants.GENERALERROR, constants.typeError);
+                    }
+                }).catch(function () {
+                    that.loading = false;
+                    notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
+                });
+            }
 
         },
         // 清除选中
