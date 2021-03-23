@@ -3,13 +3,29 @@
     <sui-segment>
         <sui-form>
             <sui-form-fields inline>
+                <label for="roomtype">请选择房屋类型</label>
+            </sui-form-fields>
+            <sui-form-fields>
                 <sui-form-field>
-                    <sui-dropdown placeholder="房屋类型" selection :options="options" v-model="filterString.kind" />
+                    <sui-checkbox radio name="type" label="自有房屋" value="1" v-model="singleRoom.roomtype" />
                 </sui-form-field>
                 <sui-form-field>
-                    <input type="text" placeholder="房屋名字" v-model="filterString.name" />
+                    <sui-checkbox radio name="type" label="租赁房屋" value="2" v-model="singleRoom.roomtype" />
                 </sui-form-field>
-                <sui-button basic color="blue" content="查询" @click.prevent="onSearch" />
+            </sui-form-fields>
+            <sui-form-fields v-if="singleRoom.roomtype == '1'">
+                <sui-form-field class="width300">
+                    <label>选择房屋</label>
+                    <model-select :options="singleRoom.ziyousource" v-model="item" placeholder="" width="300px" @input="handleOnInput">
+                    </model-select>
+                </sui-form-field>
+            </sui-form-fields>
+            <sui-form-fields v-if="singleRoom.roomtype == '2'">
+                <sui-form-field class="width300">
+                    <label>选择租赁房屋</label>
+                    <model-select :options="singleRoom.rentroomoptions" v-model="item" placeholder="" width="300px" @input="handleOnInputRent">
+                    </model-select>
+                </sui-form-field>
             </sui-form-fields>
         </sui-form>
     </sui-segment>
@@ -32,9 +48,9 @@
 </template>
 
 <script>
-// import {
-//     ModelSelect
-// } from 'vue-search-select'
+import {
+    ModelSelect
+} from 'vue-search-select'
 import {
     getBuildingListApi,
     getBuildingFloorApi
@@ -43,6 +59,7 @@ export default {
     props: ['singleRoom'],
     name: 'form-fenpei',
     components: {
+        'model-select': ModelSelect
     },
     data() {
         return {
@@ -87,6 +104,24 @@ export default {
             console.log(this.singleRoom);
             this.singleRoom.room_id = props;
             this.setFang();
+        },
+        setFloor() {
+            console.log(this.singleRoom.building_id);
+            this.floorOptions = [];
+            this.floorLoading = true;
+            if (this.singleRoom.building_id != null) {
+                getBuildingFloorApi(this.singleRoom).then((result) => {
+                    var floors = result.data.data;
+                    floors.map((floor) => {
+                        this.floorOptions.push({
+                            text: floor.name,
+                            value: floor.id,
+                        })
+                    });
+                    this.floorLoading = false;
+                })
+            }
+            this.louLoading = false;
         },
         setFang() {
             console.log(this.singleRoom.room_id);
