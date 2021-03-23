@@ -1681,12 +1681,12 @@ export default {
             let local_auth = localGet(global.project_key, true);
             console.log(local_auth);
             window.open(constants.exportroomr + "?token=" + local_auth);
-            // var idlist = this.$refs.FormExport.toDataList.toString();
-            // if (this.$refs.FormExport.filterString.owner == undefined) {
-            //     window.open(constants.exportroomr + "?token=" + local_auth + "&idlist=" + "[" + idlist + "]");
-            // } else {
-            //     window.open(constants.exportroomr + "?token=" + local_auth + "&owner=" + this.$refs.FormExport.filterString.owner + "&idlist=" + "[" + idlist + "]");
-            // }
+            var idlist = this.$refs.FormExport.toDataList.toString();
+            if (this.$refs.FormExport.filterString.owner == undefined) {
+                window.open(constants.exportroomr + "?token=" + local_auth + "&idlist=" + "[" + idlist + "]");
+            } else {
+                window.open(constants.exportroomr + "?token=" + local_auth + "&owner=" + this.$refs.FormExport.filterString.owner + "&idlist=" + "[" + idlist + "]");
+            }
             this.exportData.open = false;
         },
         closeModalExport() {
