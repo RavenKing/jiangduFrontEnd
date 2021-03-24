@@ -1,4 +1,4 @@
-<template lang="html">
+x   <template lang="html">
 <wl-container>
     <div>
         <div>
@@ -138,21 +138,8 @@
         <div>
             <sui-modal v-model="exportData.open" class="modal2">
                 <sui-modal-header style="border-bottom:0;">导出选择</sui-modal-header>
-                <sui-modal-content scrolling image>
-                    <sui-form>
-                        <sui-form-fields grouped>
-                            <label>选择导出</label>
-                            <sui-form-field>
-                                <sui-checkbox label="办公" radio value="1" v-model="exportData.kind" />
-                            </sui-form-field>
-                            <sui-form-field>
-                                <sui-checkbox label="经营" radio value="2" v-model="exportData.kind" />
-                            </sui-form-field>
-                            <sui-form-field>
-                                <sui-checkbox label="全部" radio value="0" v-model="exportData.kind" />
-                            </sui-form-field>
-                        </sui-form-fields>
-                    </sui-form>
+                <sui-modal-content scrolling>
+                    <export-form :filterString="filterString" :singleRoom="filterString" ref='FormExport' mode1="room"></export-form>
                 </sui-modal-content>
                 <sui-modal-actions>
                     <sui-button basic color="red" @click.native="closeModalExport">
@@ -390,6 +377,7 @@ import FieldsDef from "./FieldsDef.js";
 import FieldsDefList from "./FieldsDefList.js";
 import FieldsUnit from "./FieldsUnit.js";
 import BuildingForm from "@/components/buildingForm";
+import ExportForm from "@/components/export_form";
 import AssignForm from "@/components/assignForm";
 import chanZhengForm from "@/components/chanZhengForm";
 import ziChanForm from "@/components/ziChanForm";
@@ -448,7 +436,8 @@ export default {
         'chanzheng-form': chanZhengForm,
         'building-form': BuildingForm,
         'assign-form': AssignForm,
-        'mianji-form': mianjiForm
+        'mianji-form': mianjiForm,
+        'export-form': ExportForm
     },
     data() {
         return {
@@ -474,6 +463,7 @@ export default {
             filterString: {
                 jiadi: "",
                 diji: "",
+                kind: 1,
                 page: 1
             },
             activeIndex: 0,
@@ -603,40 +593,49 @@ export default {
                                     space: 0
                                 }
                                 var parsedData = JSON.parse(infoData[0]);
-
+                                // eslint-disable-next-line no-prototype-builtins
                                 if (parsedData.hasOwnProperty("roomname")) {
                                     dataOne.roomName = parsedData.roomname;
                                 }
+                                // eslint-disable-next-line no-prototype-builtins
                                 if (parsedData.hasOwnProperty("roomnumber")) {
                                     dataOne.roomNumber = parsedData.roomnumber;
                                 }
+                                // eslint-disable-next-line no-prototype-builtins
                                 if (parsedData.hasOwnProperty("chuji")) {
                                     dataOne.chuji += parsedData.chuji;
                                 }
+                                // eslint-disable-next-line no-prototype-builtins
                                 if (parsedData.hasOwnProperty("fuchuji")) {
                                     dataOne.fuchuji += parsedData.fuchuji;
                                 }
+                                // eslint-disable-next-line no-prototype-builtins
                                 if (parsedData.hasOwnProperty("keji")) {
                                     dataOne.keji += parsedData.keji;
                                 }
+                                // eslint-disable-next-line no-prototype-builtins
                                 if (parsedData.hasOwnProperty("fukeji")) {
                                     dataOne.fukeji += parsedData.fukeji;
                                 }
+                                // eslint-disable-next-line no-prototype-builtins
                                 if (parsedData.hasOwnProperty("juji")) {
                                     dataOne.juji += parsedData.juji;
                                 }
+                                // eslint-disable-next-line no-prototype-builtins
                                 if (parsedData.hasOwnProperty("fujuji")) {
                                     dataOne.fujuji += parsedData.fujuji;
                                 }
+                                // eslint-disable-next-line no-prototype-builtins
                                 if (parsedData.hasOwnProperty("qita")) {
                                     dataOne.qita += parsedData.qita;
                                 }
+                                // eslint-disable-next-line no-prototype-builtins
                                 if (parsedData.hasOwnProperty("keyuan")) {
                                     dataOne.keyuan += parsedData.keyuan;
                                 }
 
                                 dataOne.space = JSON.parse(infoData[1]);
-
+                                console.log(infoData);
                                 this.unitRoomData.push(dataOne)
                             })
                         }
@@ -1533,11 +1532,9 @@ export default {
         },
         openExportUrl() {
             let local_auth = localGet(global.project_key, true);
-            if (this.exportData.kind != "0") {
-                window.open(constants.exportroom + "?token=" + local_auth + "&kind=" + this.exportData.kind);
-            } else {
-                window.open(constants.exportroom + "?token=" + local_auth);
-            }
+            console.log(local_auth);
+            var idlist = this.$refs.FormExport.toDataList.toString();
+            window.open(constants.exportroom + "?token=" + local_auth + "&kind=" + this.$refs.FormExport.filterString.kind + "&idlist=" + "[" + idlist + "]");
             this.exportData.open = false;
         },
         closeModalExport() {

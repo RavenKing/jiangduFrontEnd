@@ -13,7 +13,9 @@
                     <sui-grid-column :width="12">
                         <sui-form>
                             <sui-form-fields inline>
-
+                                <sui-form-field>
+                                    <sui-dropdown placeholder="出租方性质" selection :options="options" v-model="filterString.owner" />
+                                </sui-form-field>
                                 <sui-form-field>
                                     <input type="text" placeholder="房屋名字" v-model="filterString.name" />
                                 </sui-form-field>
@@ -52,20 +54,7 @@
             <sui-modal v-model="exportData.open" class="modal2">
                 <sui-modal-header style="border-bottom:0;">导出选择</sui-modal-header>
                 <sui-modal-content image>
-                    <sui-form>
-                        <sui-form-fields grouped>
-                            <label>选择导出</label>
-                            <sui-form-field>
-                                <sui-checkbox label="办公" radio value="1" v-model="exportData.kind" />
-                            </sui-form-field>
-                            <sui-form-field>
-                                <sui-checkbox label="经营" radio value="2" v-model="exportData.kind" />
-                            </sui-form-field>
-                            <sui-form-field>
-                                <sui-checkbox label="全部" radio value="0" v-model="exportData.kind" />
-                            </sui-form-field>
-                        </sui-form-fields>
-                    </sui-form>
+                    <export-form :filterString="filterString" :singleRoom="filterString" ref='FormExport' mode1="rentroom"></export-form>
                 </sui-modal-content>
                 <sui-modal-actions>
                     <sui-button basic color="red" @click.native="closeModalExport">
@@ -151,66 +140,7 @@
                                     </div>
                                 </div>
                             </sui-tab-pane>
-                            <!-- <sui-tab-pane title="使用单位" :attached="false" :disabled="!editMode" :key="componentFenpeikey">
-                                <sui-dimmer :active="loading" inverted>
-                                    <sui-loader content="Loading..." />
-                                </sui-dimmer>
-                                <sui-form :warning="validationCheck.status=='warning'">
-                                    <sui-message warning>
-                                        <sui-message-header>{{validationCheck.header}}</sui-message-header>
-                                        <p>
-                                            {{validationCheck.text}}
-                                        </p>
-                                    </sui-message>
-                                    <sui-form-fields inline>
-                                        <sui-form-field required :error="validationCheck.unit_id" class="width300">
-                                            <model-select :options="unitoptions" v-model="selectedRoom.unit_id" placeholder="选择单位" @input="changeUnit">
-                                            </model-select>
-                                        </sui-form-field>
-                                        <sui-form-field required :error="validationCheck.space">
-                                            <sui-input placeholder="输入面积" v-model="selectedRoom.space_assign" type="number" />
-                                        </sui-form-field>
-                                        <sui-button basic color="blue" icon="add" content="添加单位" @click.prevent="assignRentRoom()" />
-                                    </sui-form-fields>
-                                </sui-form>
-                                <div v-show="newXuncha.open">
-                                    <sui-form>
-                                        <sui-form-fields inline>
-                                            <label>巡查人</label>
-                                            <sui-form-field required>
-                                                <sui-input placeholder="巡查人" v-model="newXuncha.name" />
-                                            </sui-form-field>
-                                            <label>备注</label>
-                                            <sui-form-field required>
-                                                <sui-input placeholder="备注" v-model="newXuncha.memo" />
-                                            </sui-form-field>
-                                            <sui-button basic color="blue" icon="add" content="添加" @click.prevent="createPatrol()" />
-                                        </sui-form-fields>
-                                    </sui-form>
-                                </div>
-                                <div class="vue2Table">
-                                    <vuetable ref="vuetable" :api-mode="false" :data="selectedRoom.assignList" :fields="fieldsAssign" data-path="data" :key="componentAssignListkey">
-                                        <div slot="action" slot-scope="props">
-                                            <!-- <sui-button basic color="blue"  content="查看" v-on:click="viewSomeThing(props.rowData,'check')" /> -->
-                            <!-- <sui-button basic color="red" content="删除" v-on:click="deleteRoomAssign(props.rowData)" />
-                                            <sui-button basic color="blue" content="巡查" v-on:click="showPatrol(props.rowData)" />
-                                        </div>
-                                    </vuetable>
-                                </div>
-                            </sui-tab-pane> -->
-                            <!-- <sui-tab-pane title="巡查记录" v-show="false">
-                                <sui-dimmer :active="loading" inverted>
-                                    <sui-loader content="Loading..." />
-                                </sui-dimmer>
-                                <div class="vue2Table">
-                                    <vuetable ref="vuetable" :api-mode="false" :data="selectedRoom.patrol" :fields="fieldsPatrol" data-path="data" :key="componentAssignListkey">
-                                        <div slot="action" slot-scope="props">
-                                            <sui-button basic color="blue"  content="查看" v-on:click="viewSomeThing(props.rowData,'check')" />
-                                            <sui-button basic color="red" content="删除" v-on:click="deleteRoomPatrol(props.rowData)" />
-                                        </div>
-                                    </vuetable>
-                                </div>
-                            </sui-tab-pane> -->
+
                             <sui-tab-pane title="地图定位" :attached="false" :disabled="!editMode">
                                 <div class="imageForm">
                                     <sui-form>
@@ -396,6 +326,8 @@ import {
     renamefloorApi,
     renameBuildingApi
 } from "@/api/roomDataAPI";
+import ExportForm from "@/components/export_form";
+
 import {
     notifySomething,
     goToLogin
@@ -411,7 +343,9 @@ export default {
         "contract-form": rentHeTongForm,
         'building-form': BuildingForm,
         'assign-form': AssignForm,
-        'mianji-form': mianjiForm
+        'mianji-form': mianjiForm,
+        'export-form': ExportForm
+
     },
     data() {
         return {
@@ -446,6 +380,19 @@ export default {
             newXuncha: {
                 open: false,
             },
+            options: [{
+                text: "国企",
+                value: "国企"
+            }, {
+                text: "国企控股",
+                value: "国企控股"
+            }, {
+                text: "村委会",
+                value: "村委会"
+            }, {
+                text: "私企",
+                value: "私企"
+            }],
             unitoptions: [],
             listContract: [],
             componentAssignListkey: 1,
@@ -545,6 +492,7 @@ export default {
         onSearch() {
             this.refreshRooms({
                 name: this.filterString.name,
+                owner: this.filterString.owner,
                 page: 1,
             })
 
@@ -576,39 +524,49 @@ export default {
                                 }
                                 var parsedData = JSON.parse(infoData[0]);
 
+                                // eslint-disable-next-line no-prototype-builtins
                                 if (parsedData.hasOwnProperty("roomname")) {
                                     dataOne.roomName = parsedData.roomname;
                                 }
+                                // eslint-disable-next-line no-prototype-builtins
                                 if (parsedData.hasOwnProperty("roomnumber")) {
                                     dataOne.roomNumber = parsedData.roomnumber;
                                 }
+                                // eslint-disable-next-line no-prototype-builtins
                                 if (parsedData.hasOwnProperty("chuji")) {
                                     dataOne.chuji += parsedData.chuji;
                                 }
+                                // eslint-disable-next-line no-prototype-builtins
                                 if (parsedData.hasOwnProperty("fuchuji")) {
                                     dataOne.fuchuji += parsedData.fuchuji;
                                 }
+                                // eslint-disable-next-line no-prototype-builtins
                                 if (parsedData.hasOwnProperty("keji")) {
                                     dataOne.keji += parsedData.keji;
                                 }
+                                // eslint-disable-next-line no-prototype-builtins
                                 if (parsedData.hasOwnProperty("fukeji")) {
                                     dataOne.fukeji += parsedData.fukeji;
                                 }
+                                // eslint-disable-next-line no-prototype-builtins
                                 if (parsedData.hasOwnProperty("juji")) {
                                     dataOne.juji += parsedData.juji;
                                 }
+                                // eslint-disable-next-line no-prototype-builtins
                                 if (parsedData.hasOwnProperty("fujuji")) {
                                     dataOne.fujuji += parsedData.fujuji;
                                 }
+                                // eslint-disable-next-line no-prototype-builtins
                                 if (parsedData.hasOwnProperty("qita")) {
                                     dataOne.qita += parsedData.qita;
                                 }
+                                // eslint-disable-next-line no-prototype-builtins
                                 if (parsedData.hasOwnProperty("keyuan")) {
                                     dataOne.keyuan += parsedData.keyuan;
                                 }
 
                                 dataOne.space = JSON.parse(infoData[1]);
-
+                                console.log(infoData);
                                 this.unitRoomData.push(dataOne)
                             })
                         }
@@ -1722,10 +1680,13 @@ export default {
         },
         openExportUrl() {
             let local_auth = localGet(global.project_key, true);
-            if (this.exportData.kind != "0") {
-                window.open(constants.exportroomr + "?token=" + local_auth + "&kind=" + this.exportData.kind);
+            console.log(local_auth);
+            window.open(constants.exportroomr + "?token=" + local_auth);
+            var idlist = this.$refs.FormExport.toDataList.toString();
+            if (this.$refs.FormExport.filterString.owner == undefined) {
+                window.open(constants.exportroomr + "?token=" + local_auth + "&idlist=" + "[" + idlist + "]");
             } else {
-                window.open(constants.exportroomr + "?token=" + local_auth);
+                window.open(constants.exportroomr + "?token=" + local_auth + "&owner=" + this.$refs.FormExport.filterString.owner + "&idlist=" + "[" + idlist + "]");
             }
             this.exportData.open = false;
         },
@@ -1841,6 +1802,8 @@ export default {
                 createRentRoomApi(this.selectedRoom).then((result) => {
                     console.log(result);
                     this.refreshRooms({
+                        name: this.filterString.name,
+                        owner: this.filterString.owner,
                         page: 1,
                     });
                     this.loading = false;
@@ -1862,6 +1825,8 @@ export default {
             } else if (this.editMode) {
                 updateRentRoomApi(this.selectedRoom).then((result) => {
                     this.refreshRooms({
+                        name: this.filterString.name,
+                        owner: this.filterString.owner,
                         page: 1,
                     });
                     this.loading = false;
@@ -1910,6 +1875,8 @@ export default {
         },
         closeModal: function () {
             this.refreshRooms({
+                name: this.filterString.name,
+                owner: this.filterString.owner,
                 page: 1,
             });
             this.buildingForm.open = false;
