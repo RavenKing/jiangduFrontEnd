@@ -830,6 +830,7 @@ export default {
                 }
 
             } else {
+                this.loading=false;
                 this.context.clearRect(0, 0, 500, 350);
             }
 
@@ -1602,6 +1603,7 @@ export default {
             this.selectedfenpei.room = '';
             this.selectedfenpei.roomtype = '';
             this.selectedfenpei.roomname = '';
+            this.$refs.FormFenpei.fromData=[];
             //     unit: '',
             //     room: '',
             //     roomtype: '',
