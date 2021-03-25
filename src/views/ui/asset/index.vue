@@ -463,7 +463,7 @@ export default {
             filterString: {
                 jiadi: "",
                 diji: "",
-                kind: 1,
+                kind: 0,
                 page: 1
             },
             activeIndex: 0,

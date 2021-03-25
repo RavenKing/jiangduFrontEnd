@@ -17,11 +17,11 @@
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields inline>
-            <sui-form-field style="width:33.33333%; ">
+            <sui-form-field style="width:33.33333%; " disabled>
                 <label>房产证</label>
                 <sui-input style="width:100%" placeholder="房产证" v-model="singleEntry.quanshuzhengming" disabled />
             </sui-form-field>
-            <sui-form-field style="width:33.33333%;">
+            <sui-form-field style="width:33.33333%;" disabled>
                 <label>土地证</label>
                 <sui-input style="width:100%" placeholder="土地证" v-model="singleEntry.certid" disabled />
             </sui-form-field>
@@ -38,7 +38,7 @@
             </sui-form-field>
 
         </sui-form-fields>
-        <sui-form-fields inline>
+        <sui-form-fields>
             <sui-form-field style="width:33.33333%;">
                 <label>联系人地址</label>
                 <sui-input style="width:100%" placeholder="联系人地址" v-model="singleEntry.rent_address" />
@@ -46,6 +46,10 @@
             <sui-form-field style="width:33.33333%;">
                 <label>经营用途</label>
                 <sui-input style="width:100%" placeholder="经营用途" v-model="singleEntry.usage" />
+            </sui-form-field>
+            <sui-form-field style="width:33.33333%;">
+                <label>出租/出借</label>
+                <sui-dropdown placeholder="出租/出借" selection :options="borrowoptions" v-model="singleEntry.isborrow" />
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields inline>
@@ -58,6 +62,10 @@
             <sui-form-field style="width:33.33333%;">
                 <label>结束时间</label>
                 <datepicker style="width:100%" :value="singleEntry.rent_end" v-model="singleEntry.rent_end" :language="lang['zh']"></datepicker>
+            </sui-form-field>
+            <sui-form-field style="width:33.33333%;">
+                <label>出租区域</label>
+                <sui-input style="width:100%" placeholder="经营用途" v-model="singleEntry.area" />
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields inline>
@@ -125,7 +133,14 @@ export default {
             uploadCount: 0,
             fileList: [],
             loading: false,
-            options: []
+            options: [],
+            borrowoptions: [{
+                text: "出租",
+                value: 0
+            }, {
+                text: "出借",
+                value: 1
+            }]
         };
     },
     methods: {
@@ -140,6 +155,9 @@ export default {
                     context.singleEntry.roomname = result.data.data.roomname;
                     context.singleEntry.address = result.data.data.address;
                     context.singleEntry.zhuguandanwei = result.data.data.zhuguandanwei;
+                    context.singleEntry.quanshuzhengming = result.data.data.quanshuzhengming;
+                    context.singleEntry.certid = result.data.data.certid;
+
                     if (result.data.data.inaccount) {
                         context.singleEntry.inaccount = "有"
                     } else {
