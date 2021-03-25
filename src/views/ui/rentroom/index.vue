@@ -962,7 +962,7 @@ export default {
                     building.addLeafNodeDisabled = true;
                     // building.editLeafNodeDisabled = false;
                     // building.delLeafNodeDisabled = false;
-                    building.editNodeDisabled = true;
+                    building.editNodeDisabled = false;
                     building.delNodeDisabled = false;
                     building.children = [];
                     root.push(building);
@@ -1784,7 +1784,7 @@ export default {
             this.modelTitle = "创建租赁房屋";
             this.editMode = false;
             this.assignList.open = true;
-
+            this.defaultTab = 0;
             this.selectedRoom = {
                 area: "奉贤区",
             };
