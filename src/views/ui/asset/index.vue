@@ -658,14 +658,15 @@ export default {
         },
         tabChange() {
             this.context = this.$refs.canvas;
-            if (this.activeIndex == 4) {
-                if (this.context == undefined) {
-                    setTimeout(this.tabChange, 1000)
-                } else {
-                    this.context = this.context.getContext("2d");
-                    this.drawRect(null);
-                }
-            }
+            this.roomAssignmentTotal = [];
+            // if (this.activeIndex == 3) {
+            //     if (this.context == undefined) {
+            //         setTimeout(this.tabChange, 1000)
+            //     } else {
+            //         this.context = this.context.getContext("2d");
+            //         this.drawRect(null);
+            //     }
+            // }
         },
         uploadZiliaoFileTuzhi(e, fileList) {
             this.uploadZiliaoFile(e, fileList, 'tuzhi');
@@ -962,6 +963,7 @@ export default {
             // this.default
             this.activeIndex = 0;
             this.selectedRoom.qitaziliaoList = [];
+            this.roomAssignmentTotal = [];
 
             if (this.selectedRoom.qitaziliao != "") {
                 try {
@@ -1135,6 +1137,7 @@ export default {
             });
         },
         drawRect(info) {
+            this.loading = true;
             if (this.context == null || this.context == undefined) {
                 this.context = this.$refs.canvas.getContext("2d");
             }
@@ -1255,10 +1258,11 @@ export default {
                 var img = this.$refs.backImage;
                 img = new Image();
                 img.src = this.assignList.selectedFloor.url;
+                var that = this;
                 // var that =this;
                 img.onload = () => {
-                    this.context.globalAlpha = 1;
-                    this.context.drawImage(img, 0, 0, 500, 350)
+                    that.context.globalAlpha = 1;
+                    that.context.drawImage(img, 0, 0, 500, 350)
                     zuobiao.map((room, index) => {
                         // console.log(room)
                         // this.context.beginPath();
@@ -1275,26 +1279,27 @@ export default {
                         room["room" + roomindex][2] = room["room" + roomindex][2] / changIndex;
                         room["room" + roomindex][3] = room["room" + roomindex][3] / gaoIndex;
 
-                        if (this.roomAssignment.length != null) {
-                            this.roomAssignment.map((one) => {
+                        if (that.roomAssignment.length != null) {
+                            that.roomAssignment.map((one) => {
                                 if (one.id == "room" + roomindex) {
-                                    this.context.globalAlpha = 1;
+                                    that.context.globalAlpha = 1;
                                     if (one.space && one.space != 0) {
-                                        this.context.strokeText(one.space + "m²", room["room" + roomindex][0] + (room["room" + roomindex][2] / 3), room["room" + roomindex][1] + (room["room" + roomindex][3] / 2));
+                                        that.context.strokeText(one.space + "m²", room["room" + roomindex][0] + (room["room" + roomindex][2] / 3), room["room" + roomindex][1] + (room["room" + roomindex][3] / 2));
                                         textDraw = false;
                                     }
                                 }
                             })
                         }
                         if (textDraw) {
-                            this.context.globalAlpha = 1;
+                            that.context.globalAlpha = 1;
                             try {
-                                this.context.strokeText("房间" + roomindex, room["room" + roomindex][0] + (room["room" + roomindex][2] / 2), room["room" + roomindex][1] + (room["room" + roomindex][3] / 2));
+                                that.context.strokeText("房间" + roomindex, room["room" + roomindex][0] + (room["room" + roomindex][2] / 2), room["room" + roomindex][1] + (room["room" + roomindex][3] / 2));
                             } catch (error) {
                                 console.log("parse error")
                             }
                         }
-                        this.context.globalAlpha = 0;
+                        that.loading = false;
+                        that.context.globalAlpha = 0;
                         try {
                             this.context.strokeRect(room["room" + roomindex][0], room["room" + roomindex][1], room["room" + roomindex][2], room["room" + roomindex][3])
                         } catch (error) {
@@ -1304,6 +1309,7 @@ export default {
                 }
 
             } else {
+                this.loading = false;
                 this.context.clearRect(0, 0, 500, 350);
             }
 
@@ -1533,9 +1539,13 @@ export default {
         openExportUrl() {
             let local_auth = localGet(global.project_key, true);
             console.log(local_auth);
-            var idlist = this.$refs.FormExport.toDataList.toString();
-            window.open(constants.exportroom + "?token=" + local_auth + "&kind=" + this.$refs.FormExport.filterString.kind + "&idlist=" + "[" + idlist + "]");
-            this.exportData.open = false;
+            if (this.$refs.FormExport.toDataList.length == 0) {
+                window.open(constants.exportroom + "?token=" + local_auth + "&kind=" + this.$refs.FormExport.filterString.kind);
+            } else {
+                var idlist = this.$refs.FormExport.toDataList.toString();
+                window.open(constants.exportroom + "?token=" + local_auth + "&kind=" + this.$refs.FormExport.filterString.kind + "&idlist=" + "[" + idlist + "]");
+                this.exportData.open = false;
+            }
         },
         closeModalExport() {
             this.exportData.open = false;

@@ -1683,7 +1683,9 @@ export default {
             console.log(local_auth);
             window.open(constants.exportroomr + "?token=" + local_auth);
             var idlist = this.$refs.FormExport.toDataList.toString();
-            if (this.$refs.FormExport.filterString.owner == undefined) {
+            if (this.$refs.FormExport.toDataList.length == 0) {
+                window.open(constants.exportroomr + "?token=" + local_auth + "&owner=" + this.$refs.FormExport.filterString.owner);
+            } else if (this.$refs.FormExport.filterString.owner == undefined) {
                 window.open(constants.exportroomr + "?token=" + local_auth + "&idlist=" + "[" + idlist + "]");
             } else {
                 window.open(constants.exportroomr + "?token=" + local_auth + "&owner=" + this.$refs.FormExport.filterString.owner + "&idlist=" + "[" + idlist + "]");
