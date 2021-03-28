@@ -62,6 +62,12 @@
                 <label>主管单位</label>
                 <sui-dropdown placeholder="主管单位" selection :options="unitOptions" v-model="singleRoom.zhuguandanwei" :disabled="checkZhuguan" />
             </sui-form-field>
+            
+            <sui-form-field style="width:33.33333%;" v-show="singleRoom.isunimanage==2">
+                <label>委托单位</label>
+                <model-select style="width:100%" :options="unitOptions" v-model="singleRoom.weituodanwei" placeholder="委托单位">
+                </model-select>
+            </sui-form-field>
         </sui-form-fields>
         <sui-form-fields>
 
@@ -83,11 +89,15 @@ import {
     getUnitApi,
 } from "@/api/roomDataAPI";
 import * as lang from "vuejs-datepicker/src/locale";
+
+import {
+    ModelSelect
+} from 'vue-search-select';
 export default {
     props: ['singleRoom', 'clickDingWei', 'clickToHeTong'],
     name: 'form-create',
     components: {
-
+        'model-select': ModelSelect,
     },
     data() {
         return {

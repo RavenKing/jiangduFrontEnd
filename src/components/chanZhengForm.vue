@@ -5,7 +5,7 @@
         <sui-form-fields>
             <sui-form-field style="width:33.33333%;">
                 <label>房产证号</label>
-                <sui-input placeholder="房产证号"   v-model="singleRoom.quanshuzhengming" />
+                <sui-input placeholder="房产证号" v-model="singleRoom.quanshuzhengming" />
             </sui-form-field>
 
             <sui-form-field style="width:33.33333%;">
@@ -14,13 +14,10 @@
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields>
-            <sui-form-field style="width:33.33333%;">
+            <sui-form-field style="width:33.33333%;" >
                 <label>权证单位</label>
-                <sui-input placeholder="权证单位" v-model="singleRoom.owner" :disabled="disabled" />
-            </sui-form-field>
-            <sui-form-field style="width:33.33333%;">
-                <label>房屋用途</label>
-                <sui-dropdown placeholder="房屋用途" selection :options="yongtuOptions" v-model="singleRoom.usage1" />
+                <model-select style="width:100%" :options="unitoptions" v-model="singleRoom.owner" placeholder="权证单位" disabled>
+                </model-select>
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields>
@@ -48,7 +45,19 @@
 </template>
 
 <script>
+import {
+    getUnitApi
+} from "@/api/roomDataAPI";
+import {
+    ModelSelect
+} from 'vue-search-select';
+import store from "@/store";
+
 export default {
+    components: {
+        'model-select': ModelSelect,
+
+    },
     props: ['singleRoom'],
     name: 'chanzheng-form',
     data() {
@@ -71,11 +80,31 @@ export default {
                 value: "4"
             }],
             disabled: false,
-            zoomlevel: 14
+            zoomlevel: 14,
+            unitoptions: []
         };
     },
-    methods: {},
+    methods: {
+        getUnit() {
+            this.unitoptions = [];
+            if (store.getters.unit.unitBasic.length > 0) {
+                this.unitoptions = store.getters.unit.unitBasic;
+            } else {
+                getUnitApi().then((data) => {
+                    var res_data = data.data.data
+                    for (var i = res_data.length - 1; i >= 0; i--) {
+                        this.unitoptions.push({
+                            'text': res_data[i]['name'],
+                            'value': res_data[i]['id']
+                        })
+                    }
+                });
+            }
+        }
+
+    },
     created() {
+        this.getUnit();
         if (this.singleRoom.roomname == undefined) {
             this.singleRoom.roomname = ""
         }
