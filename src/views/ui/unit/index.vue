@@ -371,7 +371,9 @@ export default {
             // copied
             filterString: {
                 jiadi: "",
-                diji: ""
+                diji: "",
+                level: null,
+                kind: null
             },
             showMap: false,
             point: {
@@ -427,12 +429,25 @@ export default {
             search: '',
             treeData: [],
             selectedRoomInFloor: {},
-            roomAssignmentTotal: []
+            roomAssignmentTotal: [],
+            leaderLevel: [{
+                text: "机关单位",
+                value: "1"
+            }, {
+                text: "事业单位",
+                value: "2"
+            }, {
+                text: "参公单位",
+                value: "3"
+            }],
 
         };
     },
 
     methods: {
+        closeModalExport() {
+            this.exportData.open = false;
+        },
 
         // assignfloordetail
         assignFloorDetail() {

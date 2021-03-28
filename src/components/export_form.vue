@@ -31,6 +31,12 @@
                 <sui-form-field>
                     <input type="text" placeholder="单位名字" v-model="filterString.name" />
                 </sui-form-field>
+                <sui-form-field>
+                    <sui-dropdown  placeholder="单位类别" selection :options="leaderLevel" v-model="filterString.kind" />
+                </sui-form-field>
+                <sui-form-field>
+                    <sui-dropdown  placeholder="单位级别" selection :options="leveloptions" v-model="filterString.level" />
+                </sui-form-field>
                 <sui-button basic color="blue" content="搜索" @click.prevent="searchit" />
             </sui-form-fields>
         </sui-form>
@@ -71,6 +77,37 @@ export default {
 
     data() {
         return {
+            leaderLevel: [{
+                text: "机关单位",
+                value: "1"
+            }, {
+                text: "事业单位",
+                value: "2"
+            }, {
+                text: "参公单位",
+                value: "3"
+            }],
+            leveloptions: [{
+                    'text': '局级',
+                    'value': '局级'
+                },
+                {
+                    'text': '副局级',
+                    'value': '副局级'
+                },
+                {
+                    'text': '处级',
+                    'value': '处级'
+                },
+                {
+                    'text': '副处级',
+                    'value': '副处级'
+                },
+                {
+                    'text': '科级',
+                    'value': '科级'
+                }
+            ],
             ownerOptions: [{
                 text: "国企",
                 value: "国企"
@@ -167,7 +204,9 @@ export default {
                 });
             } else if (this.mode1 == "unit") {
                 payload = {
-                    name: this.filterString.name
+                    name: this.filterString.name,
+                    kind:this.filterString.kind,
+                    level:this.filterString.level
                 }
                 searchunitApi(payload).then((data) => {
                     this.fromData = [];

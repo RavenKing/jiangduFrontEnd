@@ -199,7 +199,7 @@
                                             </sui-statistic-value>
                                         </sui-statistic>
                                         <img :src="assignList.selectedFloor.url" ref="backImage" v-show="false" />
-                                        <canvas ref="canvas1" id="myCanvas1" width="500" height="350" />
+                                        <canvas ref="canvas1" id="myCanvas1" width="500" height="500" />
                                         <div v-show="selectedRoomInFloor.type">
                                             <sui-grid>
                                                 <sui-grid-row>
@@ -216,9 +216,13 @@
                                             </sui-grid>
                                         </div>
                                         <div v-show="assignList.selectedBuilding">
-                                            <sui-button v-show="assignList.selectedFloor.name!==undefined" @click.native="openImageModal()">
+                                            <sui-item>
+                                                <input type="file" id="files" class="hiddenUpload" style="display:none;" @change="uploadFile" />
+                                                <label for="files" class="hiddenUpload">点击上传</label>
+                                            </sui-item>
+                                            <!-- <sui-button v-show="assignList.selectedFloor.name!==undefined" @click.native="openImageModal()">
                                                 楼层图
-                                            </sui-button>
+                                            </sui-button> -->
                                         </div>
                                     </sui-grid-column>
                                     <sui-grid-column :width="3">
@@ -606,7 +610,7 @@ export default {
         },
         updateFloorInfo(result, file) {
             this.assignList.selectedFloor.cadfile = result.data.data;
-            this.loading = false;
+            this.loading = true;
             var context = this;
             var formData = new FormData();
             formData.append("png", file)
@@ -616,6 +620,16 @@ export default {
             updateFloorInfoApi(formData).then((data) => {
                 context.loading = false;
                 if (data.data.code == 0) {
+                    var params =
+                        context.assignList.selectedFloor;
+                    getFloorById({
+                        floor_id: params.id
+                    }).then((result) => {
+                        if (result.data.code == 0) {
+                            context.assignList.selectedFloor.url = constants.fileURL + this.assignList.selectedFloor.cadfile;
+                            context.drawRect(result.data.data);
+                        }
+                    })
                     context.$notify({
                         group: 'foo',
                         title: '成功上传',
@@ -758,7 +772,7 @@ export default {
                 this.loading = true;
                 img.onload = () => {
                     that.context.globalAlpha = 1;
-                    that.context.drawImage(img, 0, 0, 500, 350)
+                    that.context.drawImage(img, 0, 0, 500, 500)
                     //this.canvasKey++;
                     zuobiao.map((room, index) => {
                         // console.log(room)
@@ -770,7 +784,7 @@ export default {
                         var roomindex = index + 1;
 
                         var changIndex = room.origin_width / 500;
-                        var gaoIndex = room.origin_height / 350;
+                        var gaoIndex = room.origin_height / 500;
                         room["room" + roomindex][0] = room["room" + roomindex][0] / changIndex;
                         room["room" + roomindex][1] = room["room" + roomindex][1] / gaoIndex;
                         room["room" + roomindex][2] = room["room" + roomindex][2] / changIndex;
@@ -808,7 +822,7 @@ export default {
 
             } else {
                 this.loading = false;
-                this.context.clearRect(0, 0, 500, 350);
+                this.context.clearRect(0, 0, 500, 500);
             }
 
             // this.context.strokeStyle = "#FF0000";
@@ -820,7 +834,7 @@ export default {
                 var rect = canvas.getBoundingClientRect();
                 //2
                 var x = event.clientX - rect.left * (500 / rect.width);
-                var y = event.clientY - rect.top * (350 / rect.height);
+                var y = event.clientY - rect.top * (500 / rect.height);
 
                 var withinOrNot = contextThis.whereIsTheRoom(x, y, contextThis)
                 console.log("within or Not " + withinOrNot);
@@ -831,7 +845,7 @@ export default {
                         space: tmpSum.qita
                     }
                 }
-                //contextThis.context.clearRect(0, 0, 500, 350);
+                //contextThis.context.clearRect(0, 0, 500, 500);
                 contextThis.openAssignModalNew(contextThis.assignList.selectedBuilding, contextThis.assignList.selectedFloor, contextThis)
             }, false);
 
@@ -1038,9 +1052,9 @@ export default {
 
                 if (this.context == null || this.context == undefined) {
                     this.context = this.$refs.canvas1.getContext("2d");
-                    this.context.clearRect(0, 0, 500, 350);
+                    this.context.clearRect(0, 0, 500, 500);
                 } else {
-                    this.context.clearRect(0, 0, 500, 350);
+                    this.context.clearRect(0, 0, 500, 500);
 
                 }
             } else {
@@ -1133,7 +1147,7 @@ export default {
             }).then((result) => {
                 this.loading = false;
                 if (result.data.code == 0) {
-                    this.context.clearRect(0, 0, 500, 350);
+                    this.context.clearRect(0, 0, 500, 500);
                     this.roomAssignment = [];
                     this.roomAssignmentTotal = [];
                     // this.getBuildingSection();
@@ -1176,7 +1190,7 @@ export default {
                 if (result.data.code == 0) {
                     this.assignList.selectedFloor.url = constants.fileURL + result.data.data.cadfile;
                     if (this.context) {
-                        this.context.clearRect(0, 0, 500, 350);
+                        this.context.clearRect(0, 0, 500, 500);
                     }
                     this.drawRect(result.data.data);
                 }
@@ -2072,5 +2086,27 @@ export default {
 .displayInline {
     display: inline;
 
+}
+
+.hiddenUpload {
+    box-shadow: 0 0 0 1px #1678c2 inset !important;
+    color: #1678c2 !important;
+    cursor: pointer;
+    display: inline-block;
+    min-height: 1em;
+    outline: 0;
+    border: none;
+    vertical-align: baseline;
+    background: #e0e1e2 none;
+    font-family: Lato, 'Helvetica Neue', Arial, Helvetica, sans-serif;
+    margin: 0 .25em 0 0;
+    padding: .78571429em 1.5em .78571429em;
+    text-transform: none;
+    text-shadow: none;
+    font-weight: 700;
+    line-height: 1em;
+    font-style: normal;
+    text-align: center;
+    text-decoration: none;
 }
 </style>
