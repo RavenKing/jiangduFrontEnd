@@ -49,7 +49,7 @@
             </sui-form-field>
             <sui-form-field style="width:33.33333%;">
                 <label>出租/出借</label>
-                <sui-dropdown placeholder="出租/出借" selection :options="borrowoptions" v-model="singleEntry.isborrow" />
+                <sui-dropdown placeholder="出租/出借" selection :options="borrowoptions" v-model="singleEntry.isborrow" @input="changeRent" />
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields inline>
@@ -63,9 +63,9 @@
                 <label>结束时间</label>
                 <datepicker style="width:100%" :value="singleEntry.rent_end" v-model="singleEntry.rent_end" :language="lang['zh']"></datepicker>
             </sui-form-field>
-            <sui-form-field style="width:33.33333%;">
+            <sui-form-field style="width:33.33333%;" v-show="singleEntry.isborrow==1">
                 <label>出租区域</label>
-                <sui-input style="width:100%" placeholder="经营用途" v-model="singleEntry.area" />
+                <sui-input style="width:100%" placeholder="出租区域" v-model="singleEntry.area" />
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields inline>
@@ -75,11 +75,11 @@
                 <sui-input style="width:100%" placeholder="合同面积" v-model="singleEntry.contract_space" />
             </sui-form-field>
 
-            <sui-form-field style="width:33.33333%;">
+            <sui-form-field style="width:33.33333%;" :disabled="singleEntry.isborrow==1">
                 <label>年租金</label>
                 <sui-input style="width:100%" placeholder="年租金" v-model="singleEntry.rent_amt" />
             </sui-form-field>
-            <sui-form-field style="width:33.33333%;">
+            <sui-form-field style="width:33.33333%;" :disabled="singleEntry.isborrow==1">
                 <label>保证金(应收)</label>
                 <sui-input style="width:100%" placeholder="保证金" v-model="singleEntry.baozheng_amt" />
             </sui-form-field>
@@ -144,6 +144,12 @@ export default {
         };
     },
     methods: {
+        changeRent(value) {
+            if (value == 1) {
+                this.singleEntry.rent_amt = 0;
+                this.singleEntry.baozheng_amt = 0;
+            }
+        },
         getOtherData(data) {
             this.loading = true;
             var context = this;
