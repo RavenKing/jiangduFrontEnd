@@ -182,16 +182,16 @@ export default {
             var base = this.singleEntry.priceinfo;
             this.singleEntry.rent_amt = 0;
             if (this.singleEntry.space2 != "1" && this.singleEntry.price1 > 0) {
-                this.singleEntry.rent_amt = this.singleEntry.spaceJianzhu * this.singleEntry.price1*12;
-               this.wuyefei = this.singleEntry.spaceJianzhu * this.singleEntry.price1*12;
+                this.singleEntry.rent_amt = this.singleEntry.spaceJianzhu * this.singleEntry.price1 * 12;
+                this.wuyefei = parseFloat(this.singleEntry.spaceJianzhu * this.singleEntry.price1 * 12).toFixed(2);
             }
             console.log(this.singleEntry.rent_amt);
             if (base.length > 0) {
                 base.map((one) => {
                     if (one.pricename == "停车位") {
-                        this.singleEntry.rent_amt += one.price * one.space * 12;
+                        this.singleEntry.rent_amt += parseFloat(one.price * one.space * 12).toFixed(2);
                     } else {
-                        this.singleEntry.rent_amt += one.price * one.space * 365;
+                        this.singleEntry.rent_amt += parseFloat(one.price * one.space * 365).toFixed(2);
                     }
                 });
             }
@@ -261,7 +261,7 @@ export default {
             }, ];
         }
         if (this.singleEntry.space2 != "1" && this.singleEntry.price1 > 0) {
-            this.wuyefei = this.singleEntry.spaceJianzhu * this.singleEntry.price1*12;
+            this.wuyefei = parseFloat(this.singleEntry.spaceJianzhu * this.singleEntry.price1 * 12).toFixed(2);
         }
         this.total = 0;
         this.totalPrice = 0;

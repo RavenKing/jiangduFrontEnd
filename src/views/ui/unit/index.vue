@@ -959,13 +959,13 @@ export default {
                 if (one.assign) {
                     if (one.kind == "2") {
                         assignedSpace = one.assign.keji * 18 + one.assign.fukeji * 12 + one.assign.keyuan * 9;
-                        if (assignedSpace > one.space - 9) {
+                        if (assignedSpace > parseInt(one.space) - 9) {
                             one.status = true;
                             one.statusText = "面积不够"
                         }
                     } else if (one.kind == "1") {
                         assignedSpace = one.assign.keji * 9 + one.assign.fukeji * 9 + one.assign.keyuan * 9;
-                        if (assignedSpace > one.space - 9) {
+                        if (assignedSpace > parseInt(one.space) - 9) {
                             one.status = true;
                             one.statusText = "面积不够"
                         }
@@ -990,6 +990,10 @@ export default {
                         }
                     }
                 }
+            }
+            if (one.statusText == "面积不够") {
+                one.status = false;
+                one.statusShow = true;
             }
         },
         withinZuobiao(checkZuoBiao, leftCornor, rightCornor, leftDown, rightDown) {

@@ -2,7 +2,7 @@
 <div>
     <sui-form>
         <div :key="componentKey">
-            <sui-message v-show="singleEntry.status">
+            <sui-message v-show="singleEntry.statusShow">
                 <sui-message-header>注意</sui-message-header>
                 <sui-message-list>
                     <sui-message-item v-if="singleEntry.statusText">
@@ -84,9 +84,12 @@ export default {
     },
     methods: {
         caluculateTotal() {
-            console.log("test")
+            // this.loading = true;
+            console.log("calculate")
             var one = this.singleEntry;
             var assignedSpace = 0;
+            one.statusText = "";
+            one.statusShow = false;
             if (one.space == 0) {
                 one.statusText = "面积为0！请先分配面积";
             }
@@ -101,17 +104,16 @@ export default {
                 if (!this.assignEntry.keyuan) {
                     this.assignEntry.keyuan = 0
                 }
-                one.statusText = "面积不够"
                 if (one.assign) {
                     if (one.kind == "2") {
                         assignedSpace = one.assign.keji * 18 + one.assign.fukeji * 12 + one.assign.keyuan * 9;
-                        if (assignedSpace > one.space - 9) {
+                        if (assignedSpace > parseInt(one.space) - 9) {
                             one.status = true;
                             one.statusText = "面积不够"
                         }
                     } else if (one.kind == "1") {
                         assignedSpace = one.assign.keji * 9 + one.assign.fukeji * 9 + one.assign.keyuan * 9;
-                        if (assignedSpace > one.space - 9) {
+                        if (assignedSpace > parseInt(one.space) - 9) {
                             one.status = true;
                             one.statusText = "面积不够"
                         }
@@ -120,8 +122,6 @@ export default {
             }
             if (one.type == "领导办公室") {
                 //  one.status = ;
-                one.statusText = "面积不够"
-
                 if (!this.assignEntry.juji) {
                     this.assignEntry.juji = 0
                 }
@@ -160,8 +160,13 @@ export default {
                     }
                 }
             }
+            if (one.statusText == "面积不够") {
+                one.status = false;
+                one.statusShow = true;
+            }
             console.log(this.singleEntry.status);
             this.componentKey++;
+            //this.componentKey1++;
         }
     },
     created() {}
