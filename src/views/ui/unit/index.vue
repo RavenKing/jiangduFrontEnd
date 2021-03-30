@@ -1234,44 +1234,46 @@ export default {
                                 break;
 
                         }
+
+                        lingdao_list.push(one);
                     })
-                    for (var i = res_data.length - 1; i >= 0; i--) {
-                        var out_room_name = res_data[i]['room_name']
-                        var room_assign = res_data[i]['room_assign']
-                        var building_name = res_data[i]['building_name']
-                        var floor_name = res_data[i]['floor_name']
-                        var room_details = res_data[i]['room_detail']
-                        for (var j = room_assign.length - 1; j >= 0; j--) {
-                            room_assign[j]['building_name'] = building_name
-                            room_assign[j]['floor_name'] = floor_name
+                    // for (var i = res_data.length - 1; i >= 0; i--) {
+                    //     var out_room_name = res_data[i]['room_name']
+                    //     var room_assign = res_data[i]['room_assign']
+                    //     var building_name = res_data[i]['building_name']
+                    //     var floor_name = res_data[i]['floor_name']
+                    //     var room_details = res_data[i]['room_detail']
+                    //     for (var j = room_assign.length - 1; j >= 0; j--) {
+                    //         room_assign[j]['building_name'] = building_name
+                    //         room_assign[j]['floor_name'] = floor_name
 
-                            var room_id = room_assign[j]['id']
-                            var room_type = ''
-                            for (var k = room_details.length - 1; k >= 0; k--) {
-                                // eslint-disable-next-line no-prototype-builtins
-                                if (room_details[k].hasOwnProperty(room_id)) {
-                                    room_type = room_details[k]['type']
-                                }
-                            }
-                            if (room_type == 'yewu') {
-                                room_type = '业务'
-                            }
-                            if (room_type == 'bangong') {
-                                room_type = '办公'
-                            }
-                            if (room_type == 'shebei') {
-                                room_type = '设备'
-                            }
-                            if (room_type == 'fushu') {
-                                room_type = '附属'
-                            }
-                            room_assign[j]['room_type'] = room_type
-                            room_assign[j]['out_room_name'] = out_room_name
-                            lingdao_list.push(room_assign[j])
+                    //         var room_id = room_assign[j]['id']
+                    //         var room_type = ''
+                    //         for (var k = room_details.length - 1; k >= 0; k--) {
+                    //             // eslint-disable-next-line no-prototype-builtins
+                    //             if (room_details[k].hasOwnProperty(room_id)) {
+                    //                 room_type = room_details[k]['type']
+                    //             }
+                    //         }
+                    //         if (room_type == 'yewu') {
+                    //             room_type = '业务'
+                    //         }
+                    //         if (room_type == 'bangong') {
+                    //             room_type = '办公'
+                    //         }
+                    //         if (room_type == 'shebei') {
+                    //             room_type = '设备'
+                    //         }
+                    //         if (room_type == 'fushu') {
+                    //             room_type = '附属'
+                    //         }
+                    //         room_assign[j]['room_type'] = room_type
+                    //         room_assign[j]['out_room_name'] = out_room_name
+                    //         lingdao_list.push(room_assign[j])
 
-                        }
+                    //     }
 
-                    }
+                    // }
                     console.log(lingdao_list)
                     this.lingdaoData = {
                         data: lingdao_list
@@ -1466,6 +1468,14 @@ export default {
                 window.open(constants.exportunit + "?token=" + local_auth);
             }
             this.exportData.open = false;
+            this.$refs.FormExport.toData = [];
+            this.$refs.FormExport.fromData = [];
+            this.filterString = {
+                jiadi: "",
+                diji: "",
+                level: null,
+                kind: null
+            };
         },
         deleteRoom(data) {
             this.sendVal = true;

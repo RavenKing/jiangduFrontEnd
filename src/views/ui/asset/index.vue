@@ -1549,8 +1549,8 @@ export default {
             } else {
                 var idlist = this.$refs.FormExport.toDataList.toString();
                 window.open(constants.exportroom + "?token=" + local_auth + "&kind=" + this.$refs.FormExport.filterString.kind + "&idlist=" + "[" + idlist + "]");
-                this.exportData.open = false;
             }
+            this.closeModalExport();
         },
         closeModalExport() {
             this.exportData.open = false;
@@ -1558,7 +1558,7 @@ export default {
         deleteRoom(data) {
             this.sendVal = true;
             this.deleteTarget = {
-                text: "是否要删除" + data.roomname+"?",
+                text: "是否要删除" + data.roomname + "?",
                 id: data.id,
                 type: "Room"
             };
