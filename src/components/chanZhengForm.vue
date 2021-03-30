@@ -12,9 +12,13 @@
                 <label>土地证号</label>
                 <sui-input placeholder="土地证号" v-model="singleRoom.certid" :disabled="disabled" />
             </sui-form-field>
+            <sui-form-field style="width:33.33333%;">\
+                 <label> </label>
+                <sui-checkbox label="是否统计" toggle v-model="singleRoom.ignorestat " />
+            </sui-form-field>
         </sui-form-fields>
         <sui-form-fields>
-            <sui-form-field style="width:33.33333%;" >
+            <sui-form-field style="width:33.33333%;">
                 <label>权证单位</label>
                 <model-select style="width:100%" :options="unitoptions" v-model="singleRoom.owner" placeholder="权证单位" disabled>
                 </model-select>
