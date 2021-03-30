@@ -1730,7 +1730,7 @@ export default {
         deleteRoom(data) {
             this.sendVal = true;
             this.deleteTarget = {
-                text: "是否要删除" + data.room_id + "(" + data.roomname + ")?",
+                text: "是否要删除" +data.roomname +"?",
                 id: data.id,
                 room_type: "rentRoom",
             };

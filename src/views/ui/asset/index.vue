@@ -1558,7 +1558,7 @@ export default {
         deleteRoom(data) {
             this.sendVal = true;
             this.deleteTarget = {
-                text: "是否要删除" + data.roomname?",
+                text: "是否要删除" + data.roomname+"?",
                 id: data.id,
                 type: "Room"
             };
