@@ -675,6 +675,8 @@ export default {
                             one.roomname = result.data.data.roomname;
                             one.address = result.data.data.address;
                             one.zhuguandanwei = result.data.data.zhuguandanwei;
+                            one.quanshuzhengming = result.data.data.quanshuzhengming;
+                            one.certid = result.data.data.certid;
                             if (result.data.data.inaccount) {
                                 one.inaccount = "有"
                             } else {
