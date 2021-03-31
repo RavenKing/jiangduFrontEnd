@@ -40,7 +40,10 @@
 
         </sui-form-fields>
         <sui-form-fields>
-
+            <sui-form-field style="width:25%;">
+                <label>房屋用途</label>
+                <sui-dropdown placeholder="房屋用途" selection :options="kindOptions" v-model="singleRoom.kind" />
+            </sui-form-field>
             <sui-form-field style="width:25%;">
                 <label>土地面积</label>
                 <sui-input placeholder="土地面积" v-model="singleRoom.rawspace" :disabled="disabled" />

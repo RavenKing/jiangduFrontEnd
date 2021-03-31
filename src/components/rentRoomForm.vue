@@ -21,10 +21,10 @@
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields>
-            <!-- <sui-form-field>
+            <sui-form-field>
                 <label>房屋用途</label>
                 <sui-dropdown placeholder="房屋用途" selection :options="yongtuOptions" v-model="singleRoom.usage1" />
-            </sui-form-field> -->
+            </sui-form-field>
             <sui-form-field>
                 <label>建筑面积</label>
                 <sui-input placeholder="建筑面积" v-model="singleRoom.space" type="number" />
