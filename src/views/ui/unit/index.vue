@@ -955,7 +955,7 @@ export default {
             }
             if (one.type == "bangong") {
                 //  one.status = ;
-                one.statusText = "面积不够"
+                one.statusText = ""
                 if (one.assign) {
                     if (one.kind == "2") {
                         assignedSpace = one.assign.keji * 18 + one.assign.fukeji * 12 + one.assign.keyuan * 9;
@@ -974,7 +974,7 @@ export default {
             }
             if (one.type == "leader") {
                 //  one.status = ;
-                one.statusText = "面积不够"
+                one.statusText = ""
                 if (one.assign) {
                     if (one.kind == "2") {
                         assignedSpace = one.assign.chuji * 30 + one.assign.fuchuji * 35 + one.assign.keji * 18 + one.assign.fukeji * 12 + one.assign.keyuan * 9;
