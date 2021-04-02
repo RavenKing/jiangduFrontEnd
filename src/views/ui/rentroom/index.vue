@@ -1704,9 +1704,12 @@ export default {
             } else {
                 window.open(constants.exportroomr + "?token=" + local_auth + "&owner=" + this.$refs.FormExport.filterString.owner + "&idlist=" + "[" + idlist + "]");
             }
-            this.exportData.open = false;
+            this.closeModalExport();
         },
         closeModalExport() {
+
+            this.$refs.FormExport.toData = [];
+            this.$refs.FormExport.fromData = [];
             this.exportData.open = false;
         },
         deleteRoomPatrol(data) {
@@ -1730,7 +1733,7 @@ export default {
         deleteRoom(data) {
             this.sendVal = true;
             this.deleteTarget = {
-                text: "是否要删除" +data.roomname +"?",
+                text: "是否要删除" + data.roomname + "?",
                 id: data.id,
                 room_type: "rentRoom",
             };

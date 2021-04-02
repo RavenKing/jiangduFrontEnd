@@ -1551,8 +1551,12 @@ export default {
                 window.open(constants.exportroom + "?token=" + local_auth + "&kind=" + this.$refs.FormExport.filterString.kind + "&idlist=" + "[" + idlist + "]");
             }
             this.closeModalExport();
+
         },
         closeModalExport() {
+
+            this.$refs.FormExport.toData = [];
+            this.$refs.FormExport.fromData = [];
             this.exportData.open = false;
         },
         deleteRoom(data) {
