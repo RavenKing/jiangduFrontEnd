@@ -1289,7 +1289,7 @@ export default {
             });
         },
         clickDingWei() {
-            this.defaultTab = 3;
+            this.defaultTab = 2;
             // this.keyword = this.selectedRoom.address;
         },
         emptyRentContract() {
