@@ -65,7 +65,7 @@
 
             <sui-form-field style="width:33.33333%;" v-show="singleRoom.isunimanage==2">
                 <label>委托单位</label>
-                <sui-input placeholder="建筑面积" v-model="singleRoom.weituodanwei" :disabled="disabled" />
+                <sui-input placeholder="委托单位" v-model="singleRoom.weituodanwei" :disabled="disabled" />
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields>

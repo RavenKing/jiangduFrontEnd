@@ -47,19 +47,19 @@
                 <label>经营用途</label>
                 <sui-input style="width:100%" placeholder="经营用途" v-model="singleEntry.usage" />
             </sui-form-field>
-            <sui-form-field style="width:33.33333%;">
+            <sui-form-field style="width:33.33333%;" required>
                 <label>出租/出借</label>
                 <sui-dropdown placeholder="出租/出借" selection :options="borrowoptions" v-model="singleEntry.isborrow" @input="changeRent" />
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields inline>
 
-            <sui-form-field style="width:33.33333%;">
+            <sui-form-field style="width:33.33333%;" required>
                 <label>起始时间</label>
                 <datepicker style="width:100%" :value="singleEntry.rent_start" v-model="singleEntry.rent_start" :language="lang['zh']"></datepicker>
             </sui-form-field>
 
-            <sui-form-field style="width:33.33333%;">
+            <sui-form-field style="width:33.33333%;" required>
                 <label>结束时间</label>
                 <datepicker style="width:100%" :value="singleEntry.rent_end" v-model="singleEntry.rent_end" :language="lang['zh']"></datepicker>
             </sui-form-field>

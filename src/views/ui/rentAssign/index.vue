@@ -585,8 +585,13 @@ export default {
             this.open = false;
         },
         createShenbao() {
-            this.loading = true;
             var context = this;
+            if (this.selectedWeixiu.rent_start == "NaNNaNNaN" || this.selectedWeixiu.rent_end == "NaNNaNNaN" || this.selectedWeixiu.isborrow == null) {
+
+                return;
+            }
+            this.loading = true;
+
             this.selectedWeixiu.rent_start = toShitFormat(this.selectedWeixiu.rent_start)
             this.selectedWeixiu.rent_end = toShitFormat(this.selectedWeixiu.rent_end)
             if (this.modalMode == "create") {

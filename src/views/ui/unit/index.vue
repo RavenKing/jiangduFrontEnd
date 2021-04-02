@@ -1582,10 +1582,10 @@ export default {
 
         updateUnit() {
             let formdata = this.$refs.FormCreate.singleRoom;
-            console.log(this.$refs.FormCreate.singleRoom)
             delete formdata.parent
             delete formdata.building_info
             delete formdata.pid
+            delete formdata.parent_id;
             var short_name = formdata['name']
             formdata['name'] = formdata['realname']
 

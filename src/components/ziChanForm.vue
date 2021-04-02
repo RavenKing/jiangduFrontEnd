@@ -23,12 +23,12 @@
             </sui-form-field>
             <sui-form-field style="width:33.33333%">
                 <label>入账时间</label>
-                <datepicker :value="singleRoom.accounttime" :language="lang['zh']"></datepicker>
+                <datepicker :value="singleRoom.accounttime" v-model="singleRoom.accounttime" :language="lang['zh']"></datepicker>
 
             </sui-form-field>
             <sui-form-field style="width:33.33333%">
                 <label>取得时间</label>
-                <datepicker :value="singleRoom.aquiretime" :language="lang['zh']"></datepicker>
+                <datepicker :value="singleRoom.aquiretime" v-model="singleRoom.aquiretime" :language="lang['zh']"></datepicker>
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields>
