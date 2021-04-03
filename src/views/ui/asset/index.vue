@@ -227,7 +227,7 @@ x   <template lang="html">
                                         </sui-statistic>
                                         <img :src="assignList.selectedFloor.url" ref="backImage" v-show="false" />
                                         <canvas ref="canvas" id="myCanvas" width="500" height="500" />
-                                        <div v-show="selectedRoomInFloor.type">
+                                        <div v-show="assignList.selectedFloor.url!='http://118.190.204.202:9003/getoss?key='">
                                             <sui-grid>
                                                 <sui-grid-row>
                                                     <sui-grid-column :width="12">
@@ -1323,24 +1323,26 @@ export default {
             // this.context.strokeRect(0, 0, 60, 100);
             var canvas = this.$refs.canvas;
             var contextThis = this;
-            this.$refs.canvas.addEventListener('click', function (event) {
-                var rect = canvas.getBoundingClientRect();
-                //2
-                var x = event.clientX - rect.left * (500 / rect.width);
-                var y = event.clientY - rect.top * (500 / rect.height);
+            if (zuobiao != null) {
+                this.$refs.canvas.addEventListener('click', function (event) {
+                    var rect = canvas.getBoundingClientRect();
+                    //2
+                    var x = event.clientX - rect.left * (500 / rect.width);
+                    var y = event.clientY - rect.top * (500 / rect.height);
 
-                var withinOrNot = contextThis.whereIsTheRoom(x, y, contextThis)
-                console.log("within or Not " + withinOrNot);
-                if (!withinOrNot) {
-                    contextThis.selectedRoomInFloorIndex = "roomother";
-                    contextThis.selectedRoomInFloor = {
-                        type: "其他",
-                        space: tmpSum.qita
+                    var withinOrNot = contextThis.whereIsTheRoom(x, y, contextThis)
+                    console.log("within or Not " + withinOrNot);
+                    if (!withinOrNot) {
+                        contextThis.selectedRoomInFloorIndex = "roomother";
+                        contextThis.selectedRoomInFloor = {
+                            type: "其他",
+                            space: tmpSum.qita
+                        }
                     }
-                }
-                //contextThis.context.clearRect(0, 0, 500, 500);
-                contextThis.openAssignModalNew(contextThis.assignList.selectedBuilding, contextThis.assignList.selectedFloor, contextThis)
-            }, false);
+                    //contextThis.context.clearRect(0, 0, 500, 500);
+                    contextThis.openAssignModalNew(contextThis.assignList.selectedBuilding, contextThis.assignList.selectedFloor, contextThis)
+                }, false);
+            }
 
         },
         whereIsTheRoom(x, y, context) {
