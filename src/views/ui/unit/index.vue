@@ -1781,8 +1781,9 @@ export default {
                 this.selectedRoom.memberinfo = JSON.parse(this.selectedRoom.memberinfo);
                 this.selectedRoom['realname'] = this.selectedRoom['name']
                 this.selectedRoom['edit'] = false
+                //zhengju 42 fuju30  zhengchu 24 fuchu 18 zhengke 9 fuke 9 keyuan 9 kinde =1 
                 this.selectedRoom['bianzhi_num'] = parseInt(this.selectedRoom['zhengju']) + parseInt(this.selectedRoom['fuju']) + parseInt(this.selectedRoom['zhengchu']) + parseInt(this.selectedRoom['fuchu']) +
-                    parseInt(this.selectedRoom['zhengke']) + parseInt(this.selectedRoom['fuke']) + parseInt(this.selectedRoom['other'])
+                    parseInt(this.selectedRoom['zhengke']) + parseInt(this.selectedRoom['fuke']) + parseInt(this.selectedRoom['other'] + parseInt(this.selectedRoom.keyuan))
                 this.selectedRoom['shiji_num'] = parseInt(this.selectedRoom['zhengju_r']) + parseInt(this.selectedRoom['fuju_r']) + parseInt(this.selectedRoom['zhengchu_r']) + parseInt(this.selectedRoom['fuchu_r']) +
                     parseInt(this.selectedRoom['zhengke_r']) + parseInt(this.selectedRoom['fuke_r']) + parseInt(this.selectedRoom['other_r'])
                 var res_data = data.data.data['building_info']
@@ -1831,6 +1832,12 @@ export default {
                     }
                     if (parseInt(res_data[i]['fuke'])) {
                         res_data[i]['bianzhi_num'] = res_data[i]['bianzhi_num'] + parseInt(res_data[i]['fuke'])
+                    }
+                    if (parseInt(res_data[i]['keyuan'])) {
+                        res_data[i]['bianzhi_num'] = res_data[i]['bianzhi_num'] + parseInt(res_data[i]['keyuan'])
+                    }
+                    if (parseInt(res_data[i]['keji'])) {
+                        res_data[i]['bianzhi_num'] = res_data[i]['bianzhi_num'] + parseInt(res_data[i]['keji'])
                     }
                     if (parseInt(res_data[i]['zhengju_r'])) {
                         res_data[i]['shiji_num'] = res_data[i]['shiji_num'] + parseInt(res_data[i]['zhengju_r'])

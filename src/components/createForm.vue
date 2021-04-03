@@ -37,7 +37,10 @@
                 <label>取得方式:</label>
                 <sui-dropdown placeholder="取得方式" selection :options="qudeOptions" v-model="singleRoom.aquiretype" />
             </sui-form-field>
-
+            <sui-form-field style="width:25%;">
+                <label>使用状态</label>
+                <sui-dropdown placeholder="使用状态" selection :options="yongtuOptions" v-model="singleRoom.rent_status" @input="changeZhuguan" />
+            </sui-form-field>
         </sui-form-fields>
         <sui-form-fields>
             <sui-form-field style="width:25%;">
@@ -156,17 +159,14 @@ export default {
                 value: "、其他形式住宅"
             }],
             yongtuOptions: [{
-                text: "办公用房",
+                text: "出租",
                 value: "1"
             }, {
-                text: "服务用房",
+                text: "出借",
                 value: "2"
             }, {
-                text: "设备用房",
+                text: "闲置",
                 value: "3"
-            }, {
-                text: "附属用房",
-                value: "4"
             }],
             jiegouoptions: [{
                 text: "砖混结构",

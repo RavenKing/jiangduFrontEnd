@@ -32,10 +32,10 @@
                     <input type="text" placeholder="单位名字" v-model="filterString.name" />
                 </sui-form-field>
                 <sui-form-field>
-                    <sui-dropdown  placeholder="单位类别" selection :options="leaderLevel" v-model="filterString.kind" />
+                    <sui-dropdown placeholder="单位类别" selection :options="leaderLevel" v-model="filterString.kind" />
                 </sui-form-field>
                 <sui-form-field>
-                    <sui-dropdown  placeholder="单位级别" selection :options="leveloptions" v-model="filterString.level" />
+                    <sui-dropdown placeholder="单位级别" selection :options="leveloptions" v-model="filterString.level" />
                 </sui-form-field>
                 <sui-button basic color="blue" content="搜索" @click.prevent="searchit" />
             </sui-form-fields>
@@ -205,8 +205,14 @@ export default {
             } else if (this.mode1 == "unit") {
                 payload = {
                     name: this.filterString.name,
-                    kind:this.filterString.kind,
-                    level:this.filterString.level
+                    kind: this.filterString.kind,
+                    level: this.filterString.level
+                }
+                if (payload.kind == null) {
+                    delete payload.kind;
+                }
+                if (payload.level == null) {
+                    delete payload.level;
                 }
                 searchunitApi(payload).then((data) => {
                     this.fromData = [];

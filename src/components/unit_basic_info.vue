@@ -73,7 +73,7 @@
 
             <sui-form-field style="width:25%;" inline>
                 <label>正科</label>
-                <sui-input :class="singleRoom.edit?'':'ui disabled'" placeholder="正科" v-model="singleRoom.memberinfozhengke" :disabled="disabled" type="number" v-on:change="bianzhisum()" />
+                <sui-input :class="singleRoom.edit?'':'ui disabled'" placeholder="正科" v-model="singleRoom.zhengke" :disabled="disabled" type="number" v-on:change="bianzhisum()" />
             </sui-form-field>
             <sui-form-field style="width:25%;" inline>
                 <label>副科</label>
