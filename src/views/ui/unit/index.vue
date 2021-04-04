@@ -1239,7 +1239,7 @@ export default {
 
                         }
 
-                        lingdao_list.push(one);
+                      //  lingdao_list.push(one);
                     })
                     // for (var i = res_data.length - 1; i >= 0; i--) {
                     //     var out_room_name = res_data[i]['room_name']

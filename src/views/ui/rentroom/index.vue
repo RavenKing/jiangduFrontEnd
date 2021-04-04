@@ -1759,8 +1759,12 @@ export default {
                         this.localData = data.data.data;
                         this.localData.data.map((one) => {
                             one.status = "normal";
+ //                           one.wuyefei = parseFloat(one.spaceJianzhu * one.price1 * 12);
+
                             if (one.contract_info != null) {
                                 if (one.contract_info.starttime) {
+                                    one.wuyefei = parseFloat(one.space * one.contract_info.price1 * 12);
+
                                     one.qishinianxian =
                                         this.formatTime(one.contract_info.starttime) +
                                         "到" +

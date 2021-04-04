@@ -37,10 +37,6 @@
                 <label>取得方式:</label>
                 <sui-dropdown placeholder="取得方式" selection :options="qudeOptions" v-model="singleRoom.aquiretype" />
             </sui-form-field>
-            <sui-form-field style="width:25%;">
-                <label>使用状态</label>
-                <sui-dropdown placeholder="使用状态" selection :options="yongtuOptions" v-model="singleRoom.rent_status" @input="changeZhuguan" />
-            </sui-form-field>
         </sui-form-fields>
         <sui-form-fields>
             <sui-form-field style="width:25%;">

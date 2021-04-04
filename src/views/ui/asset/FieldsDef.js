@@ -85,6 +85,14 @@ export default [
       return parseFloat(value).toFixed(2)
     }
   },
+  
+  {
+    name: "rent_status",
+    title: '使用状态',
+    width: "15%",
+    titleClass: 'v aligned',
+    dataClass: 'left aligned',
+  },
   {
     name: "action",
     title: '操作',
