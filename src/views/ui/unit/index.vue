@@ -1142,7 +1142,7 @@ export default {
                     this.selectedRoom = params;
                     context.selectedRoom.memberinfo = data.data.data.memberinfo;
                     for (var i = res_data.length - 1; i >= 0; i--) {
-                        if (res_data[i]['type1'] == 'self')
+                        if (res_data[i]['type1'] == 'self'||res_data[i]['type1'] =='comm')
                             res_data[i]['type1'] = '自有房屋'
                         else
                             res_data[i]['type1'] = '租赁房屋'
@@ -1322,7 +1322,7 @@ export default {
             getUnitApiByid(id).then((data) => {
                 var res_data = data.data.data['building_info']
                 for (var i = res_data.length - 1; i >= 0; i--) {
-                    if (res_data[i]['type1'] == 'self')
+                    if (res_data[i]['type1'] == 'self'||res_data[i]['type1'] =='comm')
                         res_data[i]['type1'] = '自有房屋'
                     else
                         res_data[i]['type1'] = '租赁房屋'
@@ -1385,7 +1385,7 @@ export default {
                     getUnitApiByid(this.selectedRoom.id).then((data) => {
                         var res_data = data.data.data['building_info']
                         for (var i = res_data.length - 1; i >= 0; i--) {
-                            if (res_data[i]['type1'] == 'self')
+                            if (res_data[i]['type1'] == 'self'||res_data[i]['type1'] == 'comm')
                                 res_data[i]['type1'] = '自有房屋'
                             else
                                 res_data[i]['type1'] = '租赁房屋'
@@ -1788,7 +1788,7 @@ export default {
                     parseInt(this.selectedRoom['zhengke_r']) + parseInt(this.selectedRoom['fuke_r']) + parseInt(this.selectedRoom['other_r'])
                 var res_data = data.data.data['building_info']
                 for (var i = res_data.length - 1; i >= 0; i--) {
-                    if (res_data[i]['type1'] == 'self')
+                    if (res_data[i]['type1'] == 'self'||res_data[i]['type1'] =='comm')
                         res_data[i]['type1'] = '自有房屋'
                     else
                         res_data[i]['type1'] = '租赁房屋'
