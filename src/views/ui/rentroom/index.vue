@@ -200,8 +200,8 @@
                                         </sui-statistic>
                                         <img :src="assignList.selectedFloor.url" ref="backImage" v-show="false" />
                                         <canvas ref="canvas1" id="myCanvas1" width="500" height="500" />
-                                    <div v-show="assignList.selectedFloor.url!='http://118.190.204.202:9003/getoss?key='">
-                                               <sui-grid>
+                                        <div v-show="assignList.selectedFloor.url!='http://118.190.204.202:9003/getoss?key='">
+                                            <sui-grid>
                                                 <sui-grid-row>
                                                     <sui-grid-column :width="12">
                                                         <assign-form ref='formComponentAssign' :index="selectedRoomInFloorIndex" :singleEntry="selectedRoomInFloor">
@@ -727,42 +727,39 @@ export default {
             }
             this.roomAssignmentTotal = [{
                     type: "bangong",
-                    space: tmpSum.bangong,
+                    space: tmpSum.bangong.toFixed(2),
                     text: "办公"
                 }, {
                     type: "yewuyongfang",
-                    space: tmpSum.yewuyongfang,
+                    space: tmpSum.yewuyongfang.toFixed(2),
                     text: "业务"
                 },
                 {
                     type: "fushu",
-                    space: tmpSum.fushu,
+                    space: tmpSum.fushu.toFixed(2),
                     text: "附属"
                 },
                 {
                     type: "leader",
-                    space: tmpSum.leader,
+                    space: tmpSum.leader.toFixed(2),
                     text: "领导"
                 },
                 {
                     type: "shebei",
-                    space: tmpSum.shebei,
+                    space: tmpSum.shebei.toFixed(2),
                     text: "设备"
                 },
                 {
                     type: "other",
-                    space: tmpSum.qita,
+                    space: tmpSum.qita.toFixed(2),
                     text: "其他"
                 },
-
                 {
                     type: "reversed",
-                    space: tmpSum.reversed,
+                    space: tmpSum.reversed.toFixed(2),
                     text: "服务"
                 }
-
             ]
-
             this.context.strokeStyle = "#FFFFFF";
             if (zuobiao != null) {
                 var img = this.$refs.backImage;
@@ -1815,7 +1812,7 @@ export default {
                             if (one.contract_info != null) {
                                 if (one.contract_info.starttime) {
                                     one.wuyefei = parseFloat(one.space * one.contract_info.price1 * 12);
-
+                                    one.rizujin = parseFloat(one.contract_info.rent_amt / 365 / one.space);
                                     one.qishinianxian =
                                         this.formatTime(one.contract_info.starttime) +
                                         "到" +

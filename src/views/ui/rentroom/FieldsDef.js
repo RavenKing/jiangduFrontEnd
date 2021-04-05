@@ -41,15 +41,11 @@ export default [
     width: "15%"
   },
   {
-    name: "contract_info.rent_amt",
+    name: "rizujin",
     title: '日租金(元/m²)',
     width: "15%",
     formatter (value) {
-      if(value==null||value==undefined)
-      {
-        return ""
-      }
-      return parseInt(value/365).toString();
+      return value.toFixed(2);
     }
   },
   {

@@ -1142,7 +1142,7 @@ export default {
                     this.selectedRoom = params;
                     context.selectedRoom.memberinfo = data.data.data.memberinfo;
                     for (var i = res_data.length - 1; i >= 0; i--) {
-                        if (res_data[i]['type1'] == 'self'||res_data[i]['type1'] =='comm')
+                        if (res_data[i]['type1'] == 'self' || res_data[i]['type1'] == 'comm')
                             res_data[i]['type1'] = '自有房屋'
                         else
                             res_data[i]['type1'] = '租赁房屋'
@@ -1239,7 +1239,7 @@ export default {
 
                         }
 
-                      //  lingdao_list.push(one);
+                        //  lingdao_list.push(one);
                     })
                     // for (var i = res_data.length - 1; i >= 0; i--) {
                     //     var out_room_name = res_data[i]['room_name']
@@ -1322,7 +1322,7 @@ export default {
             getUnitApiByid(id).then((data) => {
                 var res_data = data.data.data['building_info']
                 for (var i = res_data.length - 1; i >= 0; i--) {
-                    if (res_data[i]['type1'] == 'self'||res_data[i]['type1'] =='comm')
+                    if (res_data[i]['type1'] == 'self' || res_data[i]['type1'] == 'comm')
                         res_data[i]['type1'] = '自有房屋'
                     else
                         res_data[i]['type1'] = '租赁房屋'
@@ -1385,7 +1385,7 @@ export default {
                     getUnitApiByid(this.selectedRoom.id).then((data) => {
                         var res_data = data.data.data['building_info']
                         for (var i = res_data.length - 1; i >= 0; i--) {
-                            if (res_data[i]['type1'] == 'self'||res_data[i]['type1'] == 'comm')
+                            if (res_data[i]['type1'] == 'self' || res_data[i]['type1'] == 'comm')
                                 res_data[i]['type1'] = '自有房屋'
                             else
                                 res_data[i]['type1'] = '租赁房屋'
@@ -1591,7 +1591,7 @@ export default {
 
             updateUnitApi(formdata).then((result) => {
                 if (result.data.code == 0) {
-                    formdata.bianzhi_num=formdata.zhengju+formdata.fuju+formdata.zhengchu+formdata.fuchu+formdata.keji+formdata.zhengke+formdata.fuke
+                    formdata.bianzhi_num = formdata.zhengju + formdata.fuju + formdata.zhengchu + formdata.fuchu + formdata.keji + formdata.zhengke + formdata.fuke
                     notifySomething("保存成功", "基本信息保存成功", "success");
                     formdata['name'] = short_name
 
@@ -1634,6 +1634,7 @@ export default {
             this.selectedfenpei.roomtype = '';
             this.selectedfenpei.roomname = '';
             this.$refs.FormFenpei.fromData = [];
+            this.$refs.FormFenpei.fenpei_data = [];
             //     unit: '',
             //     room: '',
             //     roomtype: '',
@@ -1747,7 +1748,9 @@ export default {
         })
 
         var ziyou_source = []
-        getRoomDataApi({}).then((data) => {
+        getRoomDataApi({
+            kind: 1
+        }).then((data) => {
             var res_data = data.data.data
             for (var i = res_data.length - 1; i >= 0; i--) {
                 // rent_options.push({
@@ -1789,7 +1792,7 @@ export default {
                     parseInt(this.selectedRoom['zhengke_r']) + parseInt(this.selectedRoom['fuke_r']) + parseInt(this.selectedRoom['other_r'])
                 var res_data = data.data.data['building_info']
                 for (var i = res_data.length - 1; i >= 0; i--) {
-                    if (res_data[i]['type1'] == 'self'||res_data[i]['type1'] =='comm')
+                    if (res_data[i]['type1'] == 'self' || res_data[i]['type1'] == 'comm')
                         res_data[i]['type1'] = '自有房屋'
                     else
                         res_data[i]['type1'] = '租赁房屋'

@@ -63,7 +63,7 @@
                 <label>结束时间</label>
                 <datepicker style="width:100%" :value="singleEntry.rent_end" v-model="singleEntry.rent_end" :language="lang['zh']"></datepicker>
             </sui-form-field>
-            <sui-form-field style="width:33.33333%;" v-show="singleEntry.isborrow==1">
+            <sui-form-field style="width:33.33333%;">
                 <label>出租区域</label>
                 <sui-input style="width:100%" placeholder="出租区域" v-model="singleEntry.area" />
             </sui-form-field>
