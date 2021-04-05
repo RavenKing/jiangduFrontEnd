@@ -1591,6 +1591,7 @@ export default {
 
             updateUnitApi(formdata).then((result) => {
                 if (result.data.code == 0) {
+                    formdata.bianzhi_num=formdata.zhengju+formdata.fuju+formdata.zhengchu+formdata.fuchu+formdata.keji+formdata.zhengke+formdata.fuke
                     notifySomething("保存成功", "基本信息保存成功", "success");
                     formdata['name'] = short_name
 
