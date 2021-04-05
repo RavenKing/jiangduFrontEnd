@@ -186,7 +186,7 @@ export default {
     },
     methods: {
         bianzhisum() {
-            this.singleRoom.bianzhi_num = this.singleRoom.zhengju + this.singleRoom.fuju + this.singleRoom.zhengchu + this.singleRoom.fuchu + this.singleRoom.zhengke + this.singleRoom.fuke
+            this.singleRoom.bianzhi_num = this.singleRoom.zhengju + this.singleRoom.fuju + this.singleRoom.zhengchu + this.singleRoom.fuchu + this.singleRoom.zhengke + this.singleRoom.fuke +this.singleRoom.keji
         },
 
         shijisum() {
