@@ -200,8 +200,8 @@
                                         </sui-statistic>
                                         <img :src="assignList.selectedFloor.url" ref="backImage" v-show="false" />
                                         <canvas ref="canvas1" id="myCanvas1" width="500" height="500" />
-                                        <div v-show="selectedRoomInFloor.type">
-                                            <sui-grid>
+                                    <div v-show="assignList.selectedFloor.url!='http://118.190.204.202:9003/getoss?key='">
+                                               <sui-grid>
                                                 <sui-grid-row>
                                                     <sui-grid-column :width="12">
                                                         <assign-form ref='formComponentAssign' :index="selectedRoomInFloorIndex" :singleEntry="selectedRoomInFloor">
@@ -328,6 +328,8 @@ import {
     getBuildingFloorApi,
     getroomunitinfo,
     renamefloorApi,
+    deleteFloorApi,
+    deleteBuildingApi,
     renameBuildingApi
 } from "@/api/roomDataAPI";
 import ExportForm from "@/components/export_form";
@@ -1016,6 +1018,17 @@ export default {
             console.log(node)
             this.deleteBuilding(node);
         },
+        deleteBuilding(building) {
+            this.sendVal = true;
+            this.deleteTarget = {
+                text: "是否要删除" + building.name + "(" + building.id + ")?",
+                id: building.id,
+                room_type: "Building"
+            };
+            if (building.isLeaf) {
+                this.deleteTarget.room_type = "Floor"
+            }
+        },
 
         onChangeName(params) {
             console.log(params)
@@ -1222,6 +1235,12 @@ export default {
             this.loading = true;
             var context = this;
             data.type = this.roomType;
+            if (!data.upper) {
+                data.upper = 0;
+            }
+            if (!data.lower) {
+                data.lower = 0;
+            }
             createBuildingFloorApi(data).then(() => {
                 context.loading = false;
                 context.$refs.formComponentBuilding.singleBuilding = {
@@ -1475,6 +1494,38 @@ export default {
                     }
 
                     console.log(result);
+                });
+            } else if (this.deleteTarget.room_type == "Floor") {
+                deleteFloorApi(this.deleteTarget).then((result) => {
+                    this.getBuildingSection();
+                    if (result.data.code == 0) {
+                        this.$notify({
+                            group: 'foo',
+                            title: '删除楼层成功',
+                            text: '删除楼层成功'
+                        });
+                    } else if (result.data.code == 3) {
+                        notifySomething(constants.GENERALERROR, "楼层被占用", constants.typeError);
+                    }
+                }).catch(function () {
+                    this.loading = false;
+                    notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
+                });
+            } else if (this.deleteTarget.room_type == "Building") {
+                deleteBuildingApi(this.deleteTarget).then((result) => {
+                    this.getBuildingSection();
+                    if (result.data.code == 0) {
+                        this.$notify({
+                            group: 'foo',
+                            title: '删除房成功',
+                            text: '删除房成功'
+                        });
+                    } else if (result.data.code == 3) {
+                        notifySomething(constants.GENERALERROR, "楼房被占用", constants.typeError);
+                    }
+                }).catch(function () {
+                    this.loading = false;
+                    notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                 });
             } else {
                 deleteRentRoomApi(this.deleteTarget).then((result) => {
@@ -1759,7 +1810,7 @@ export default {
                         this.localData = data.data.data;
                         this.localData.data.map((one) => {
                             one.status = "normal";
- //                           one.wuyefei = parseFloat(one.spaceJianzhu * one.price1 * 12);
+                            //                           one.wuyefei = parseFloat(one.spaceJianzhu * one.price1 * 12);
 
                             if (one.contract_info != null) {
                                 if (one.contract_info.starttime) {
