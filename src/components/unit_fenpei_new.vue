@@ -233,36 +233,36 @@ export default {
                 if (treeObj.checkedNodes[i].children) {
                     building_id = treeObj.checkedNodes[i].id
                     children_list = treeObj.checkedNodes[i].children
-                    for (i = children_list.length - 1; i >= 0; i--) {
-                        floor_id = children_list[i].id
+                    for (var j = children_list.length - 1; j >= 0; j--) {
+                        floor_id = children_list[j].id
                         fenpei_data.push({
                             'building_id': building_id,
                             'floor_id': floor_id,
-                            'name': children_list[i].name,
+                            'name': children_list[j].name,
                             'space': ''
                         })
                     }
                 }
             }
-            for (i = treeObj.halfCheckedNodes.length - 1; i >= 0; i--) {
-                if (treeObj.halfCheckedNodes[i].children) {
-                    building_id = treeObj.halfCheckedNodes[i].id
-                    children_list = treeObj.halfCheckedNodes[i].children
-                    for (var j = children_list.length - 1; j >= 0; j--) {
-                        floor_id = children_list[j].id
-                        for (var k = treeObj.checkedNodes.length - 1; k >= 0; k--) {
-                            if (children_list[j].id == treeObj.checkedNodes[k].id) {
-                                fenpei_data.push({
-                                    'building_id': building_id,
-                                    'floor_id': floor_id,
-                                    'name': children_list[j].name,
-                                    'space': ''
-                                })
-                            }
-                        }
-                    }
-                }
-            }
+            // for (i = treeObj.halfCheckedNodes.length - 1; i >= 0; i--) {
+            //     if (treeObj.halfCheckedNodes[i].children) {
+            //         building_id = treeObj.halfCheckedNodes[i].id
+            //         children_list = treeObj.halfCheckedNodes[i].children
+            //         for (var j = children_list.length - 1; j >= 0; j--) {
+            //             floor_id = children_list[j].id
+            //             for (var k = treeObj.checkedNodes.length - 1; k >= 0; k--) {
+            //                 if (children_list[j].id == treeObj.checkedNodes[k].id) {
+            //                     fenpei_data.push({
+            //                         'building_id': building_id,
+            //                         'floor_id': floor_id,
+            //                         'name': children_list[j].name,
+            //                         'space': ''
+            //                     })
+            //                 }
+            //             }
+            //         }
+            //     }
+            // }
             this.fenpei_data = fenpei_data
             this.checked_node = true
         },
