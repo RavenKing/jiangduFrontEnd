@@ -1226,36 +1226,36 @@ export default {
             }
             this.roomAssignmentTotal = [{
                     type: "bangong",
-                    space: tmpSum.bangong.toFixed(2),
+                    space: parseFloat(tmpSum.bangong).toFixed(2),
                     text: "办公"
                 }, {
                     type: "yewuyongfang",
-                    space: tmpSum.yewuyongfang.toFixed(2),
+                    space:parseFloat(tmpSum.yewuyongfang).toFixed(2),
                     text: "业务"
                 },
                 {
                     type: "fushu",
-                    space: tmpSum.fushu.toFixed(2),
+                    space: parseFloat(tmpSum.fushu).toFixed(2),
                     text: "附属"
                 },
                 {
                     type: "leader",
-                    space: tmpSum.leader.toFixed(2),
+                    space: parseFloat(tmpSum.leader).toFixed(2),
                     text: "领导"
                 },
                 {
                     type: "shebei",
-                    space: tmpSum.shebei.toFixed(2),
+                    space: parseFloat(tmpSum.shebei).toFixed(2),
                     text: "设备"
                 },
                 {
                     type: "other",
-                    space: tmpSum.qita,
+                    space: parseFloat(tmpSum.qita).toFixed(2),
                     text: "其他"
                 },
                 {
                     type: "reversed",
-                    space: tmpSum.reversed.toFixed(2),
+                    space: parseFloat(tmpSum.reversed).toFixed(2),
                     text: "服务"
                 }
 
