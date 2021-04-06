@@ -1250,7 +1250,7 @@ export default {
                 },
                 {
                     type: "other",
-                    space: tmpSum.qita.toFixed(2),
+                    space: tmpSum.qita,
                     text: "其他"
                 },
                 {
@@ -1659,7 +1659,7 @@ export default {
                 cur_status: "",
                 area: "奉贤区",
                 usage1: "1",
-                rawspace:0
+                rawspace: 0
             };
         },
         toggle() {
