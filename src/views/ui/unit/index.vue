@@ -1635,6 +1635,8 @@ export default {
             this.selectedfenpei.roomname = '';
             this.$refs.FormFenpei.fromData = [];
             this.$refs.FormFenpei.fenpei_data = [];
+            this.$refs.FormFenpei.toData = [];
+
             //     unit: '',
             //     room: '',
             //     roomtype: '',
@@ -1664,6 +1666,7 @@ export default {
                 }
                 assignroomApi(payload).then((data) => {
                     if (data.data.code == 0) {
+                        this.resetAndCloseFenpei();
                         notifySomething("分配成功", "创建领导分配成功", "success");
                         this.refreshFenpei(this.selectedRoom.id);
                         this.resetAndCloseFenpei();
