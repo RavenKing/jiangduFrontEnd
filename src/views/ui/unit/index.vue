@@ -184,7 +184,7 @@
                                 </sui-statistic-value>
                             </sui-statistic>
                             <img :src="assignList.selectedFloor.url" ref="backImage" v-show="false" />
-                            <canvas ref="canvas" id="myCanvas" width="500" height="350" />
+                            <canvas ref="canvas" id="myCanvas" width="500" height="500" />
                         </sui-grid-column>
                         <sui-grid-column :width="4">
                             <div v-show="assignList.selectedRoom.type1 != '租赁房屋'">
@@ -594,7 +594,7 @@ export default {
                         if (result.data.code == 0) {
                             this.assignList.selectedFloor.url = constants.fileURL + result.data.data.cadfile;
                             if (this.context) {
-                                this.context.clearRect(0, 0, 500, 350);
+                                this.context.clearRect(0, 0, 500, 500);
                             }
                             this.drawRect(result.data.data);
                         }
@@ -610,7 +610,7 @@ export default {
             };
             this.roomAssignment = [];
             if (this.context) {
-                this.context.clearRect(0, 0, 500, 350);
+                this.context.clearRect(0, 0, 500, 500);
             }
         },
         onClickLou(params) {
@@ -803,11 +803,11 @@ export default {
                     this.loading = false;
 
                     this.context.globalAlpha = 1;
-                    this.context.drawImage(img, 0, 0, 500, 350)
+                    this.context.drawImage(img, 0, 0, 500, 500)
                     zuobiao.map((room, index) => {
                         var roomindex = index + 1;
                         var changIndex = room.origin_width / 500;
-                        var gaoIndex = room.origin_height / 350;
+                        var gaoIndex = room.origin_height / 500;
                         room["room" + roomindex][0] = room["room" + roomindex][0] / changIndex;
                         room["room" + roomindex][1] = room["room" + roomindex][1] / gaoIndex;
                         room["room" + roomindex][2] = room["room" + roomindex][2] / changIndex;
@@ -846,7 +846,7 @@ export default {
 
             } else {
                 this.loading = false;
-                this.context.clearRect(0, 0, 500, 350);
+                this.context.clearRect(0, 0, 500, 500);
             }
 
             var canvas = this.$refs.canvas;
@@ -854,12 +854,12 @@ export default {
             this.$refs.canvas.addEventListener('click', function (event) {
                 var rect = canvas.getBoundingClientRect();
                 //2
-                //contextThis.context.drawImage(contextThis.$refs.backImage, 0, 0, 500, 350)
+                //contextThis.context.drawImage(contextThis.$refs.backImage, 0, 0, 500, 500)
                 var x = event.clientX - rect.left * (500 / rect.width);
-                var y = event.clientY - rect.top * (350 / rect.height);
+                var y = event.clientY - rect.top * (500 / rect.height);
                 console.log("x:" + x + ",y:" + y);
                 contextThis.whereIsTheRoom(x, y, contextThis)
-                // contextThis.context.clearRect(0, 0, 500, 350);
+                // contextThis.context.clearRect(0, 0, 500, 500);
 
                 contextThis.openAssignModalNew(contextThis.assignList.selectedBuilding, contextThis.assignList.selectedFloor, contextThis)
             }, false);
@@ -1035,7 +1035,7 @@ export default {
         },
         closeLeaderModal() {
             if (this.context) {
-                // this.context.clearRect(0, 0, 500, 350);
+                // this.context.clearRect(0, 0, 500, 500);
             }
             this.leader.open = false;
         },

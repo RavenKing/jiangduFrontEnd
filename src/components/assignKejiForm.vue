@@ -2,14 +2,13 @@
 <div>
     <sui-form>
         <div :key="componentKey">
-            <sui-message v-show="singleEntry.statusShow">
+            <!-- <sui-message v-show="singleEntry.statusShow">
                 <sui-message-header>注意</sui-message-header>
                 <sui-message-list>
                     <sui-message-item v-if="singleEntry.statusText">
-                        {{singleEntry.statusText}}
                     </sui-message-item>
                 </sui-message-list>
-            </sui-message>
+            </sui-message> -->
         </div>
         <sui-form-fields>
             <sui-form-field>

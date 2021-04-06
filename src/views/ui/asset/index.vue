@@ -597,6 +597,9 @@ export default {
                                     fujuji: 0,
                                     space: 0
                                 }
+                                if (infoData[0] == null) {
+                                    return;
+                                }
                                 var parsedData = JSON.parse(infoData[0]);
                                 // eslint-disable-next-line no-prototype-builtins
                                 if (parsedData.hasOwnProperty("roomname")) {
@@ -1643,7 +1646,7 @@ export default {
                 address: "",
                 roomname: "",
                 usage: "",
-                space: "",
+                space: "0",
                 optional: "",
                 age: "2000",
                 built_date: "",
@@ -1655,7 +1658,8 @@ export default {
                 internal_info: "",
                 cur_status: "",
                 area: "奉贤区",
-                usage1: "1"
+                usage1: "1",
+                rawspace:0
             };
         },
         toggle() {
