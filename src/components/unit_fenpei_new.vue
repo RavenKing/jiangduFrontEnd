@@ -224,26 +224,43 @@ export default {
         },
         // 右侧目标数据选中事件
         rightCheckChange(nodeObj, treeObj) {
-            console.log(nodeObj);
-            console.log(treeObj);
-            console.log('clicked')
-            treeObj.checkedNodes
             var fenpei_data = []
-            var building_id, children_list, floor_id;
-            for (var i = treeObj.checkedNodes.length - 1; i >= 0; i--) {
-                if (treeObj.checkedNodes[i].children) {
-                    building_id = treeObj.checkedNodes[i].id
-                    children_list = treeObj.checkedNodes[i].children
-                    for (var j = children_list.length - 1; j >= 0; j--) {
-                        floor_id = children_list[j].id
-                        fenpei_data.push({
-                            'building_id': building_id,
-                            'floor_id': floor_id,
-                            'name': children_list[j].name,
-                            'space': ''
-                        })
+
+            if (nodeObj == null) {
+                if (this.fenpei_data.length == 0) {
+                    for (var i1 = 0; i1 < this.toData.length; i1++) {
+                        for (var j1 = 0; j1 < this.toData[i1].children.length; j1++) {
+                            fenpei_data.push({
+                                'building_id': this.toData[i1].id,
+                                'floor_id': this.toData[i1].children[j1].id,
+                                'name': this.toData[i1].children[j1].name,
+                                'space': ''
+                            })
+
+                        }
+                    }
+                } else {
+                    fenpei_data = [];
+                }
+
+            } else {
+                var building_id, children_list, floor_id;
+                for (var i = treeObj.checkedNodes.length - 1; i >= 0; i--) {
+                    if (treeObj.checkedNodes[i].children) {
+                        building_id = treeObj.checkedNodes[i].id
+                        children_list = treeObj.checkedNodes[i].children
+                        for (var j = children_list.length - 1; j >= 0; j--) {
+                            floor_id = children_list[j].id
+                            fenpei_data.push({
+                                'building_id': building_id,
+                                'floor_id': floor_id,
+                                'name': children_list[j].name,
+                                'space': ''
+                            })
+                        }
                     }
                 }
+
             }
             // for (i = treeObj.halfCheckedNodes.length - 1; i >= 0; i--) {
             //     if (treeObj.halfCheckedNodes[i].children) {
