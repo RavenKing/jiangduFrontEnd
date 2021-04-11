@@ -23,9 +23,9 @@ const constantsJinhui = {
     typeRentRoom:2,
     typeRoom:1,
     fileURL:"http://101.132.180.18:9003/getoss?key=",
-    exportroom:"http://118.190.204.202:9002/exportroom",
-    exportunit:"http://118.190.204.202:9002/exportunit",
-    exportroomr:"http://118.190.204.202:9002/exportrentroom"
+    exportroom:"http://101.132.180.18:9002/exportroom",
+    exportunit:"http://101.132.180.18:9002/exportunit",
+    exportroomr:"http://101.132.180.18:9002/exportrentroom"
 
 }
 export default constantsJinhui;

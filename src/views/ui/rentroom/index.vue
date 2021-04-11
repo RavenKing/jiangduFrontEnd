@@ -200,7 +200,7 @@
                                         </sui-statistic>
                                         <img :src="assignList.selectedFloor.url" ref="backImage" v-show="false" />
                                         <canvas ref="canvas1" id="myCanvas1" width="500" height="500" />
-                                        <div v-show="assignList.selectedFloor.url!='http://118.190.204.202:9003/getoss?key='">
+                                        <div v-show="assignList.selectedFloor.url!='http://101.132.180.18:9003/getoss?key='">
                                             <sui-grid>
                                                 <sui-grid-row>
                                                     <sui-grid-column :width="12">
