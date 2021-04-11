@@ -65,7 +65,7 @@ module.exports = {
       // detail: https://cli.vuejs.org/config/#devserver-proxy
       "/api": {
         // target: `http://127.0.0.1:${port}/mock`,
-        target: 'http://118.190.204.202:9002',
+        target: 'http://101.132.180.18:9002',
         // target: 'https://corp-support.cn',
         changeOrigin: true,
         secure: false,
@@ -74,8 +74,8 @@ module.exports = {
         }
       },
       "/load": {
-        // target: 'http://118.190.204.202:8010',
-        target: 'http://118.190.204.202:9003',
+        // target: 'http://101.132.180.18:8010',
+        target: 'http://101.132.180.18:9003',
         // target: 'https://corp-support.cn',
         changeOrigin: true,
         secure: false,
