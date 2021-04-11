@@ -7,14 +7,21 @@ const menus = [{
       url: "/ui/unit",
       icon:"home icon"
     },
-      {
-        id: "3-2",
-        title: "办公用房信息",
-        name: "办公用房信息",
-        url: "/ui/asset",
-        icon:"keyboard icon",
-        params:{kind:1}
-      },
+    {
+      id: "3-2",
+      title: "办公用房信息",
+      name: "办公用房信息",
+      url: "/ui/asset",
+      icon:"keyboard icon",
+      params:{kind:1}
+    },{
+      id: "4-2",
+      title: "经营性用房",
+      name: "经营性用房",
+      url: "/ui/asset2",
+      icon:"keyboard icon",
+      params:{kind:2}
+    },
       {
         id: "3-8",
         title: "租赁房屋",

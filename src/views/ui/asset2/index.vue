@@ -42,6 +42,7 @@ x   <template lang="html">
                             <th colspan="5" class="thTextcenter">基本信息</th>
                             <th colspan="2" class="thTextcenter">有产证</th>
                             <th colspan="2" class="thTextcenter">无产证</th>
+                            <th colspan="1" class="thTextcenter">使用状态</th>
                             <th colspan="1" class="thTextcenter">操作</th>
                         </tr>
                     </template>
@@ -468,7 +469,7 @@ export default {
             filterString: {
                 jiadi: "",
                 diji: "",
-                kind: 1,
+                kind: 2,
                 page: 1
             },
             activeIndex: 0,
@@ -1436,8 +1437,8 @@ export default {
                 deleteRoomApi(this.deleteTarget).then((result) => {
                     if (result.data.code == 0) {
                         this.refreshRooms({
-                            page: 1,
-                            kind:1
+                            kind: 2,
+                            page: 1
                         });
                         this.$notify({
                             group: 'foo',
@@ -1892,7 +1893,7 @@ export default {
     created() {
         this.refreshRooms({
             page: 1,
-            kind: 1
+            kind: 2
         })
     }
 };
