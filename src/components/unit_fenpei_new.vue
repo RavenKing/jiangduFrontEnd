@@ -31,7 +31,7 @@
     </sui-segment>
     <div class="transfet-box">
         <wl-tree-transfer :key="transferKey" ref="wl-tree-transfer" filter high-light default-transfer :mode="mode" :title="title" :to_data="toData" :from_data="fromData" :filterNode="filterNode" :defaultProps="defaultProps" :defaultCheckedKeys="defaultCheckedKeys" :defaultExpandedKeys="[2,3]" @right-check-change="rightCheckChange" @left-check-change="leftCheckChange" @removeBtn="remove" @addBtn="add" height="400px" node_key="id">
-            <span slot="title-right" class="my-title-right" @click="handleTitleRight">楼</span>
+            <span slot="title-right" class="my-title-right">楼</span>
         </wl-tree-transfer>
     </div>
     <!-- <sui-form-fields v-if="checked_node == true && singleRoom.roomtype == '1'" >
@@ -205,6 +205,7 @@ export default {
             // 通讯录模式addressList时，返回参数为右侧收件人列表、右侧抄送人列表、右侧密送人列表
             console.log("fromData:", fromData);
             console.log("toData:", toData);
+            this.toData = toData;
             console.log("obj:", obj);
         },
         // 移除按钮

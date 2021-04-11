@@ -11,13 +11,13 @@
             </sui-message> -->
         </div>
         <sui-form-fields>
-            <sui-form-field>
+            <sui-form-field required>
                 <label>房间号</label>
-                <sui-input placeholder="房间号" v-model="assignEntry.roomnumber" :disabled="singleEntry.status" />
+                <sui-input placeholder="房间号" v-model="assignEntry.roomnumber" :disabled="singleEntry.status"  required/>
             </sui-form-field>
-            <sui-form-field>
+            <sui-form-field required>
                 <label>房间名字</label>
-                <sui-input placeholder="房间名字" v-model="assignEntry.roomname" :disabled="singleEntry.status" />
+                <sui-input placeholder="房间名字" v-model="assignEntry.roomname" :disabled="singleEntry.status" required/>
             </sui-form-field>
             <sui-form-field>
                 <label>备注</label>

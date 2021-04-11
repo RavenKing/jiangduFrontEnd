@@ -447,11 +447,16 @@ export default {
     methods: {
         closeModalExport() {
             this.exportData.open = false;
-        },
+        },  
 
         // assignfloordetail
         assignFloorDetail() {
             this.loading = true;
+            if (this.selectedRoomInFloor.assign.roomname == '' || this.selectedRoomInFloor.assign.roomnumber == '' || Object.keys(this.selectedRoomInFloor.assign).length == 0) {
+                notifySomething(constants.GENERALERROR, "请输入房间名和号码", constants.typeError);
+                this.loading=false;
+                return
+            }
             let data = this.selectedRoomInFloor;
             data.room_id = this.selectedRoomInFloor.id;
             data.building_id = this.assignForm.building_id;
