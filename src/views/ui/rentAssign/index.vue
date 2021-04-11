@@ -337,6 +337,8 @@ export default {
         },
         openKaipiao(data) {
             console.log(data)
+            this.kaipiao.billing_date = fromShitFormat(data.billing_date);
+            this.kaipiao.tax_amt = data.tax_amt;
             this.kaipiao.open = true;
             this.kaipiao.id = data.id;
             // this.kaipiao

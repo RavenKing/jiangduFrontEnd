@@ -195,7 +195,7 @@ x   <template lang="html">
                                     <zichan-form ref='zichanForm' :singleRoom="selectedRoom"></zichan-form>
                                 </div>
                             </sui-tab-pane>
-                            <sui-tab-pane title="楼层管理" :attached="false" :disabled="selectedRoom.kind==2">
+                            <sui-tab-pane title="楼层管理" :attached="false">
 
                                 <sui-grid :columns="3" relaxed="very">
                                     <sui-dimmer :active="loading" inverted>
@@ -1230,7 +1230,7 @@ export default {
                     text: "办公"
                 }, {
                     type: "yewuyongfang",
-                    space:parseFloat(tmpSum.yewuyongfang).toFixed(2),
+                    space: parseFloat(tmpSum.yewuyongfang).toFixed(2),
                     text: "业务"
                 },
                 {
@@ -1550,7 +1550,11 @@ export default {
             let local_auth = localGet(global.project_key, true);
             console.log(local_auth);
             if (this.$refs.FormExport.toDataList.length == 0) {
-                window.open(constants.exportroom + "?token=" + local_auth + "&kind=" + this.$refs.FormExport.filterString.kind);
+                if (this.$refs.FormExport.filterString.kind == 0) {
+                    window.open(constants.exportroom + "?token=" + local_auth);
+                } else {
+                    window.open(constants.exportroom + "?token=" + local_auth + "&kind=" + this.$refs.FormExport.filterString.kind);
+                }
             } else {
                 var idlist = this.$refs.FormExport.toDataList.toString();
                 window.open(constants.exportroom + "?token=" + local_auth + "&kind=" + this.$refs.FormExport.filterString.kind + "&idlist=" + "[" + idlist + "]");
@@ -1606,6 +1610,8 @@ export default {
                     this.loading = false;
                     this.localData = data.data.data
                     this.localData.data.map((one) => {
+                        one.owner = parseInt(one.owner);
+                        one.zhuguandanwei = parseInt(one.zhuguandanwei);
                         switch (one.kind) {
                             case 2:
                                 one.kindText = "经营性"
