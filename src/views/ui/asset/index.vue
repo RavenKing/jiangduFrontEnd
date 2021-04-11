@@ -42,7 +42,8 @@ x   <template lang="html">
                             <th colspan="5" class="thTextcenter">基本信息</th>
                             <th colspan="2" class="thTextcenter">有产证</th>
                             <th colspan="2" class="thTextcenter">无产证</th>
-                            <th colspan="" class="thTextcenter">操作</th>
+                            <th colspan="1" class="thTextcenter">使用状态</th>
+                            <th colspan="1" class="thTextcenter">操作</th>
                         </tr>
                     </template>
                     <vuetable-row-header></vuetable-row-header>
