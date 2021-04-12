@@ -3,7 +3,7 @@
     <div>
         <div>
             <sui-dimmer :active="loading" inverted>
-                <sui-loader content="Loading..." />
+                <sui-loader content="正在加载" />
             </sui-dimmer>
         </div>
         <div class="filterBiaoDan" style="padding-left:15px;margin:0;">
@@ -168,7 +168,7 @@
                 <sui-modal-content scrolling>
                     <div>
                         <sui-dimmer :active="loading" inverted>
-                            <sui-loader content="Loading..." />
+                            <sui-loader content="正在加载" />
                         </sui-dimmer>
                     </div>
                     <sui-grid :columns="2" relaxed="very">

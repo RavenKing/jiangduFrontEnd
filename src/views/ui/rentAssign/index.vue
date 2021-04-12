@@ -3,7 +3,7 @@
     <div>
         <div>
             <sui-dimmer :active="loading" inverted>
-                <sui-loader content="Loading..." />
+                <sui-loader content="正在加载" />
             </sui-dimmer>
         </div>
 
@@ -50,7 +50,7 @@
                 <sui-modal-content scrolling style="height:600px!important">
                     <div>
                         <sui-dimmer :active="loading" inverted>
-                            <sui-loader content="Loading..." />
+                            <sui-loader content="正在加载" />
                         </sui-dimmer>
                     </div>
                     <sui-tab :menu="{ attached: false }" :active-index.sync="activeIndex">
@@ -61,7 +61,7 @@
                         </sui-tab-pane>
                         <sui-tab-pane title="巡查记录" :disabled="modalMode=='create'">
                             <sui-dimmer :active="loading" inverted>
-                                <sui-loader content="Loading..." />
+                                <sui-loader content="正在加载" />
                             </sui-dimmer>
                             <div v-show="newXuncha.open">
                                 <sui-form>
@@ -99,7 +99,7 @@
                         <sui-tab-pane title="租金收缴" :disabled="modalMode=='create'">
                             <div>
                                 <sui-dimmer :active="loading" inverted>
-                                    <sui-loader content="Loading..." />
+                                    <sui-loader content="正在加载" />
                                 </sui-dimmer>
                             </div>
 

@@ -3,7 +3,7 @@ x   <template lang="html">
     <div>
         <div>
             <sui-dimmer :active="loading" inverted>
-                <sui-loader content="Loading..." />
+                <sui-loader content="正在加载" />
             </sui-dimmer>
         </div>
         <div class="filterBiaoDan" style="padding-left:15px;margin:0;">
@@ -173,7 +173,7 @@ x   <template lang="html">
                 <sui-modal-content scrolling class="modalStep">
                     <div>
                         <sui-dimmer :active="loading" inverted>
-                            <sui-loader content="Loading..." />
+                            <sui-loader content="正在加载" />
                         </sui-dimmer>
                     </div>
                     <div>
@@ -199,7 +199,7 @@ x   <template lang="html">
 
                                 <sui-grid :columns="3" relaxed="very">
                                     <sui-dimmer :active="loading" inverted>
-                                        <sui-loader content="Loading..." />
+                                        <sui-loader content="正在加载" />
                                     </sui-dimmer>
                                     <sui-grid-column :width="4">
                                         <div>
@@ -662,7 +662,7 @@ export default {
         },
         clickDingWei() {
             this.activeIndex = 5;
-            //this.keyword = this.selectedRoom.address;
+            this.keyword = this.selectedRoom.address;
         },
         tabChange() {
             this.context = this.$refs.canvas;
@@ -1437,7 +1437,7 @@ export default {
                     if (result.data.code == 0) {
                         this.refreshRooms({
                             page: 1,
-                            kind:1
+                            kind: 1
                         });
                         this.$notify({
                             group: 'foo',

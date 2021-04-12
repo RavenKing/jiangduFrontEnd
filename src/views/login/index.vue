@@ -2,7 +2,7 @@
 <wl-container class="wlui-login" :use-scroll="false">
     <div>
         <sui-dimmer :active="loading" inverted>
-            <sui-loader content="Loading..." />
+            <sui-loader content="正在加载" />
         </sui-dimmer>
     </div>
     <div class="headerNew">

@@ -3,7 +3,7 @@
     <div>
         <div>
             <sui-dimmer :active="loading" inverted>
-                <sui-loader content="Loading..." />
+                <sui-loader content="正在加载" />
             </sui-dimmer>
         </div>
         <div class="filterBiaoDan" style="padding-left:15px;margin:0;">
@@ -94,7 +94,7 @@
                             </sui-tab-pane>
                             <sui-tab-pane title="合同信息" :attached="false">
                                 <sui-dimmer :active="loading" inverted>
-                                    <sui-loader content="Loading..." />
+                                    <sui-loader content="正在加载" />
                                 </sui-dimmer>
                                 <div>
                                     <!-- <sui-dropdown placeholder="选择合同(默认最新)" selection :options="listContract" v-model="selectedRoomContract.id" @input="changeContract" /> -->
@@ -110,7 +110,7 @@
                             </sui-tab-pane>
                             <sui-tab-pane title="使用单位" :attached="false" :disabled="!editMode" :key="componentFenpeikey">
                                 <sui-dimmer :active="loading" inverted>
-                                    <sui-loader content="Loading..." />
+                                    <sui-loader content="正在加载" />
                                 </sui-dimmer>
                                 <sui-form :warning="validationCheck.status=='warning'">
                                     <sui-message warning>
@@ -157,7 +157,7 @@
                             </sui-tab-pane>
                             <!-- <sui-tab-pane title="巡查记录" v-show="false">
                                 <sui-dimmer :active="loading" inverted>
-                                    <sui-loader content="Loading..." />
+                                    <sui-loader content="正在加载" />
                                 </sui-dimmer>
                                 <div class="vue2Table">
                                     <vuetable ref="vuetable" :api-mode="false" :data="selectedRoom.patrol" :fields="fieldsPatrol" data-path="data" :key="componentAssignListkey">

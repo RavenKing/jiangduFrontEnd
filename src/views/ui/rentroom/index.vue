@@ -3,7 +3,7 @@
     <div>
         <div>
             <sui-dimmer :active="loading" inverted>
-                <sui-loader content="Loading..." />
+                <sui-loader content="正在加载" />
             </sui-dimmer>
         </div>
         <div class="filterBiaoDan" style="padding-left:15px;margin:0;">
@@ -126,7 +126,7 @@
                             </sui-tab-pane>
                             <sui-tab-pane title="合同信息" :attached="false" :disabled="!editMode">
                                 <sui-dimmer :active="loading" inverted>
-                                    <sui-loader content="Loading..." />
+                                    <sui-loader content="正在加载" />
                                 </sui-dimmer>
                                 <div>
                                     <!-- <sui-dropdown placeholder="选择合同(默认最新)" selection :options="listContract" v-model="selectedRoomContract.id" @input="changeContract" /> -->
@@ -170,7 +170,7 @@
                             </sui-tab-pane>
                             <sui-tab-pane title="楼层管理" :attached="false" :disabled="!editMode">
                                 <sui-dimmer :active="loading" inverted>
-                                    <sui-loader content="Loading..." />
+                                    <sui-loader content="正在加载" />
                                 </sui-dimmer>
                                 <sui-grid :columns="3" relaxed="very">
                                     <sui-grid-column :width="4">
