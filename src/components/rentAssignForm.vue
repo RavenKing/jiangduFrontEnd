@@ -144,9 +144,10 @@ export default {
         };
     },
     methods: {
-        x(value) {
-            console.log(this.singleEntry.rent_start)
-            console.log(value);
+        checkDate(value) {
+            if (this.singleEntry.rent_start == null || this.singleEntry.rent_end == null) {
+                return
+            }
             if (new Date(this.singleEntry.rent_start) <= value && new Date(this.singleEntry.rent_end) >= value) {
                 console.log("good")
             } else {
