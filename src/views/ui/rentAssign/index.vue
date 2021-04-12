@@ -588,7 +588,7 @@ export default {
         },
         createShenbao() {
             var context = this;
-            if (this.selectedWeixiu.rent_start == "NaNNaNNaN" || this.selectedWeixiu.rent_end == "NaNNaNNaN" || this.selectedWeixiu.isborrow == null) {
+            if (this.selectedWeixiu.rent_start == "NaNNaNNaN" || this.selectedWeixiu.rent_end == "NaNNaNNaN" || this.selectedWeixiu.is_borrow == null) {
 
                 return;
             }

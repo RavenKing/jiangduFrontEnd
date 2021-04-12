@@ -56,12 +56,12 @@
 
             <sui-form-field style="width:33.33333%;" required>
                 <label>起始时间</label>
-                <datepicker style="width:100%" :value="singleEntry.rent_start" v-model="singleEntry.rent_start" :language="lang['zh']"></datepicker>
+                <datepicker style="width:100%" :value="singleEntry.rent_start" v-model="singleEntry.rent_start" :language="lang['zh']" @selected="checkDate"></datepicker>
             </sui-form-field>
 
             <sui-form-field style="width:33.33333%;" required>
                 <label>结束时间</label>
-                <datepicker style="width:100%" :value="singleEntry.rent_end" v-model="singleEntry.rent_end" :language="lang['zh']"></datepicker>
+                <datepicker style="width:100%" :value="singleEntry.rent_end" v-model="singleEntry.rent_end" :language="lang['zh']" @selected="checkDate"></datepicker>
             </sui-form-field>
             <sui-form-field style="width:33.33333%;">
                 <label>出租区域</label>
@@ -144,6 +144,16 @@ export default {
         };
     },
     methods: {
+        x(value) {
+            console.log(this.singleEntry.rent_start)
+            console.log(value);
+            if (new Date(this.singleEntry.rent_start) <= value && new Date(this.singleEntry.rent_end) >= value) {
+                console.log("good")
+            } else {
+                value = this.singleEntry.rent_start;
+                notifySomething(constants.GENERALERROR, "时间必须在之前的开始时间和结束时间之间", constants.typeError);
+            }
+        },
         changeRent(value) {
             if (value == 1) {
                 this.singleEntry.rent_amt = 0;
@@ -211,9 +221,7 @@ export default {
                         value: one.id,
                     })
                 });
-
                 context.loading = false;
-                context.openWeiXiuForm("create");
             });
         },
         getUnit() {
