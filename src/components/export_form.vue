@@ -283,6 +283,8 @@ export default {
             console.log("fromData:", fromData);
             console.log("toData:", toData);
             console.log("obj:", obj);
+            this.toData = toData;
+
         },
         // 移除按钮
         remove(fromData, toData, obj) {
@@ -303,15 +305,35 @@ export default {
             console.log(nodeObj);
             console.log(treeObj);
             console.log('clicked')
+
             var fenpei_data = []
-            for (var i = treeObj.checkedNodes.length - 1; i >= 0; i--) {
-                if (treeObj.checkedNodes[i].id) {
-                    fenpei_data.push(treeObj.checkedNodes[i])
+
+            if (nodeObj == null) {
+                if (this.fenpei_data.length == 0) {
+                    for (var i1 = 0; i1 < this.toData.length; i1++) {
+
+                        if (this.toData[i1].children.length == 0) {
+                            fenpei_data.push(this.toData[i1])
+                        } else {
+
+                            for (var j1 = 0; j1 < this.toData[i1].children.length; j1++) {
+                                fenpei_data.push(this.toData[i1].children[j1])
+                            }
+                        }
+                    }
+                } else {
+                    fenpei_data = [];
                 }
-            }
-            for (i = treeObj.halfCheckedNodes.length - 1; i >= 0; i--) {
-                if (treeObj.checkedNodes[i].id) {
-                    fenpei_data.push(treeObj.checkedNodes[i])
+            } else {
+                for (var i = treeObj.checkedNodes.length - 1; i >= 0; i--) {
+                    if (treeObj.checkedNodes[i].id) {
+                        fenpei_data.push(treeObj.checkedNodes[i])
+                    }
+                }
+                for (i = treeObj.halfCheckedNodes.length - 1; i >= 0; i--) {
+                    if (treeObj.checkedNodes[i].id) {
+                        fenpei_data.push(treeObj.checkedNodes[i])
+                    }
                 }
             }
             // this.toData = fenpei_data
