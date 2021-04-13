@@ -211,7 +211,7 @@ x   <template lang="html">
                                                 </span>
                                             </vue-tree-list>
                                         </div>
-                                        <sui-button basic color="blue" @click.native="openBuildingModal" v-show="selectedRoom.kind==1" size="tiny">
+                                        <sui-button basic color="blue" @click.native="openBuildingModal" size="tiny">
                                             新增
                                         </sui-button>
                                     </sui-grid-column>
@@ -228,7 +228,7 @@ x   <template lang="html">
                                         </sui-statistic>
                                         <img :src="assignList.selectedFloor.url" ref="backImage" v-show="false" />
                                         <canvas ref="canvas" id="myCanvas" width="500" height="500" />
-                                        <div v-show="assignList.selectedFloor.url!='http://101.132.180.19:9003/getoss?key='">
+                                        <div v-show="assignList.selectedFloor.url!='http://101.132.180.18:9003/getoss?key='&&assignList.selectedFloor.url!=''">
                                             <sui-grid>
                                                 <sui-grid-row>
                                                     <sui-grid-column :width="12">
@@ -249,6 +249,9 @@ x   <template lang="html">
                                             </sui-item> -->
                                             <input type="file" id="files" class="hiddenUpload" style="display:none;" @change="uploadFile" />
                                             <label for="files" class="hiddenUpload">点击上传</label>
+                                            <sui-button basic color="blue" @click.native="openImageModal" v-show="assignList.selectedFloor.url!='http://101.132.180.18:9003/getoss?key='&&assignList.selectedFloor.url!=''">
+                                                查看原图
+                                            </sui-button>
                                             <!-- <sui-button v-show="assignList.selectedFloor.name!==undefined" @click.native="openImageModal()">
                                                 楼层图
                                             </sui-button> -->

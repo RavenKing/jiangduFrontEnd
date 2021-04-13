@@ -106,23 +106,9 @@ x   <template lang="html">
                 <sui-modal-header style="border-bottom:0;"> </sui-modal-header>
                 <sui-modal-content scrolling image>
                     <sui-item-group divided>
-                        <div>
-                            <sui-message>
-                                <sui-message-header>注意</sui-message-header>
-                                <sui-message-list>
-                                    <sui-message-item v-show="buildingImage.notification">
-                                        上传后会覆盖原有图层并清除所有信息
-                                    </sui-message-item>
-                                </sui-message-list>
-                            </sui-message>
-                        </div>
                         <sui-item class="imageModal">
-
                             <sui-image :src="assignList.selectedFloor.url" style="display: inline-block; width:700px" />
                             <!-- <pdf :src="this.assignList.selectedFloor.url"  /> -->
-                        </sui-item>
-                        <sui-item>
-                            <input type="file" placeholder="上传Cad图" @change="uploadFile" />
                         </sui-item>
 
                     </sui-item-group>
@@ -227,7 +213,7 @@ x   <template lang="html">
                                         </sui-statistic>
                                         <img :src="assignList.selectedFloor.url" ref="backImage" v-show="false" />
                                         <canvas ref="canvas" id="myCanvas" width="500" height="500" />
-                                        <div v-show="assignList.selectedFloor.url!='http://101.132.180.19:9003/getoss?key='">
+                                        <div v-show="assignList.selectedFloor.url!='http://101.132.180.18:9003/getoss?key='&&assignList.selectedFloor.url!=''">
                                             <sui-grid>
                                                 <sui-grid-row>
                                                     <sui-grid-column :width="12">
@@ -248,6 +234,9 @@ x   <template lang="html">
                                             </sui-item> -->
                                             <input type="file" id="files" class="hiddenUpload" style="display:none;" @change="uploadFile" />
                                             <label for="files" class="hiddenUpload">点击上传</label>
+                                            <sui-button basic color="blue" @click.native="openImageModal" v-show="assignList.selectedFloor.url!='http://101.132.180.18:9003/getoss?key='&&assignList.selectedFloor.url!=''">
+                                                查看原图
+                                            </sui-button>
                                             <!-- <sui-button v-show="assignList.selectedFloor.name!==undefined" @click.native="openImageModal()">
                                                 楼层图
                                             </sui-button> -->
