@@ -48,11 +48,6 @@
                     <div style="float:left;">{{modelTitle}}</div>
                 </sui-modal-header>
                 <sui-modal-content scrolling style="height:600px!important">
-                    <div>
-                        <sui-dimmer :active="loading" inverted>
-                            <sui-loader content="正在加载" />
-                        </sui-dimmer>
-                    </div>
                     <sui-tab :menu="{ attached: false }" :active-index.sync="activeIndex">
                         <sui-tab-pane title="基本信息">
                             <sui-segment>
