@@ -45,7 +45,7 @@ export default [
     title: '日租金(元/m²)',
     width: "15%",
     formatter (value) {
-      return value.toFixed(2);
+      return parseFloat(value).toFixed(2);
     }
   },
   {

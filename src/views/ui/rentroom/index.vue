@@ -1804,9 +1804,9 @@ export default {
             getRentRoomDataApi(payload)
                 .then((data) => {
                     if (data.data.code == 0) {
-                        this.loading = false;
-                        this.localData = data.data.data;
-                        this.localData.data.map((one) => {
+                        context.loading = false;
+                        context.localData = data.data.data;
+                        context.localData.data.map((one) => {
                             one.status = "normal";
                             //                           one.wuyefei = parseFloat(one.spaceJianzhu * one.price1 * 12);
 
@@ -1815,9 +1815,9 @@ export default {
                                     one.wuyefei = parseFloat(one.space * one.contract_info.price1 * 12);
                                     one.rizujin = parseFloat(one.contract_info.rent_amt / 365 / one.space);
                                     one.qishinianxian =
-                                        this.formatTime(one.contract_info.starttime) +
+                                        context.formatTime(one.contract_info.starttime) +
                                         "到" +
-                                        this.formatTime(one.contract_info.endtime);
+                                        context.formatTime(one.contract_info.endtime);
                                     const nowTime = new Date();
                                     if (
                                         context.inDays(
@@ -1926,7 +1926,7 @@ export default {
         },
         onPaginationData(paginationData) {
             this.$refs.pagination.setPaginationData(paginationData);
-            this.$refs.paginationInfo.setPaginationData(paginationData);
+            //this.$refs.paginationInfo.setPaginationData(paginationData);
         },
         onChangePage(page) {
             this.loading = true;
