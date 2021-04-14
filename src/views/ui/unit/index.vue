@@ -428,7 +428,9 @@ export default {
             listField: FieldsDefList,
             search: '',
             treeData: [],
-            selectedRoomInFloor: {},
+            selectedRoomInFloor: {
+                assign: {}
+            },
             roomAssignmentTotal: [],
             leaderLevel: [{
                 text: "机关单位",
@@ -447,14 +449,14 @@ export default {
     methods: {
         closeModalExport() {
             this.exportData.open = false;
-        },  
+        },
 
         // assignfloordetail
         assignFloorDetail() {
             this.loading = true;
             if (this.selectedRoomInFloor.assign.roomname == '' || this.selectedRoomInFloor.assign.roomnumber == '' || Object.keys(this.selectedRoomInFloor.assign).length == 0) {
                 notifySomething(constants.GENERALERROR, "请输入房间名和号码", constants.typeError);
-                this.loading=false;
+                this.loading = false;
                 return
             }
             let data = this.selectedRoomInFloor;
@@ -904,7 +906,9 @@ export default {
                     y: room["room" + roomindex][1] + room["room" + roomindex][3]
                 }
                 if (context.withinZuobiao(checkZuoBiao, leftCornor, rightCornor, leftDown, rightDown)) {
-                    context.selectedRoomInFloor = {};
+                    context.selectedRoomInFloor = {
+                        assign: {}
+                    };
                     context.selectedRoomInFloorIndex = roomindex;
                     context.roomAssignment.map((one) => {
                         if (one.id == "room" + roomindex) {
@@ -1019,6 +1023,15 @@ export default {
             var filtered_tree_list = []
             console.log(this.origin_tree_list)
             this.tree = new Tree(this.origin_tree_list)
+            if (this.tree.children == null) {
+                if (store.getters.unit.unit.length > 0) {
+                    //   this.loading = false;
+
+                    this.tree = new Tree(store.getters.unit.unit);
+                    console.log("yes")
+                }
+            }
+            console.log(this.tree);
             for (var i = this.tree.children.length - 1; i >= 0; i--) {
                 var name = this.tree.children[i]['name']
                 console.log(name)
