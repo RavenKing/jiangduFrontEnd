@@ -105,24 +105,6 @@ export default {
             this.singleRoom.room_id = props;
             this.setFang();
         },
-        setFloor() {
-            console.log(this.singleRoom.building_id);
-            this.floorOptions = [];
-            this.floorLoading = true;
-            if (this.singleRoom.building_id != null) {
-                getBuildingFloorApi(this.singleRoom).then((result) => {
-                    var floors = result.data.data;
-                    floors.map((floor) => {
-                        this.floorOptions.push({
-                            text: floor.name,
-                            value: floor.id,
-                        })
-                    });
-                    this.floorLoading = false;
-                })
-            }
-            this.louLoading = false;
-        },
         setFang() {
             console.log(this.singleRoom.room_id);
             this.louOptions = [];
@@ -142,11 +124,12 @@ export default {
                         }).then((result) => {
                             var floors = result.data.data;
                             floors.map((floor) => {
-                                newFather.children.push({
-                                    id: floor.id,
-                                    pid: newFather.id,
-                                    name: floor.name
-                                });
+                                if (floor.cadfile != "")
+                                    newFather.children.push({
+                                        id: floor.id,
+                                        pid: newFather.id,
+                                        name: floor.name
+                                    });
                             });
                             this.fromData.push(newFather);
                             this.floorLoading = false;
