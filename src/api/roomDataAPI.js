@@ -373,6 +373,7 @@ function getBuildingListApi(data){
 function getBuildingFloorApi(data){
     let local_auth = localGet(global.project_key, true);
     data.token=local_auth;
+    data.showall=1;
     return request({
         url: constants.listBuildingFloorApi,
         method: 'post',
