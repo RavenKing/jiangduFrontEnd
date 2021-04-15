@@ -15,6 +15,8 @@
                     <sui-grid-column :width="4" style="padding-right:0">
                         <div style="float:right;">
                             <sui-button basic color="blue" content="新建" @click.native="createChuju" icon="add blue" />
+                            <sui-button basic color="green" content="导出" v-on:click="openExportUrl" icon="file green" />
+
                             <!-- <sui-button content="修改" icon="edit yellow" />
                  <sui-button content="删除" icon="delete red" /> -->
                         </div>
@@ -219,7 +221,7 @@ import {
     notifySomething,
 } from "@/util/utils";
 import FieldsPatrol from "./FieldsPatrol.js";
-
+import global from "@/global/index"
 import {
     listLoanAssignmentApi,
     createLoanAssignmentApi,
@@ -305,6 +307,24 @@ export default {
     },
 
     methods: {
+        openExportUrl() {
+            let local_auth = localGet(global.project_key, true);
+            console.log(constants.exportcontract);
+            // if (this.$refs.FormExport.toDataList.length == 0) {
+            //     if (this.$refs.FormExport.filterString.kind == 0) {
+            //         window.open(constants.exportroom + "?token=" + local_auth);
+            //     } else {
+            //         window.open(constants.exportroom + "?token=" + local_auth + "&kind=" + this.$refs.FormExport.filterString.kind);
+            //     }
+            // } else {
+            //     var idlist = this.$refs.FormExport.toDataList.toString();
+            var newYear = new Date().getFullYear();
+            console.log(newYear);
+            window.open(constants.exportcontract + "?token=" + local_auth + "&year=" + newYear);
+            // }
+            // this.closeModalExport();
+
+        },
         createKaipiao() {
             this.kaipiao.billing_date = toShitFormat(this.kaipiao.billing_date)
             createKaipiaoApi(this.kaipiao).then((result) => {
