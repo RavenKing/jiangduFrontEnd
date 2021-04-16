@@ -40,8 +40,18 @@
                 <sui-button basic color="blue" content="搜索" @click.prevent="searchit" />
             </sui-form-fields>
         </sui-form>
+        <sui-form v-if="mode1=='chuzu'">
+            <sui-form-fields inline>
+                <sui-form-field>
+                    <sui-dropdown placeholder="状态" selection :options="statusOptions" v-model="filterString.status" />
+                </sui-form-field>
+                <sui-form-field>
+                    <sui-dropdown placeholder="年份" selection :options="yearOptions" v-model="filterString.year" />
+                </sui-form-field>
+            </sui-form-fields>
+        </sui-form>
     </sui-segment>
-    <div class="transfet-box">
+    <div class="transfet-box" v-show="mode1!='chuzu'">
         <wl-tree-transfer :key="transferKey" ref="wl-tree-transfer" filter high-light default-transfer :mode="mode" :title="title" :to_data="toData" :from_data="fromData" :filterNode="filterNode" :defaultProps="defaultProps" :defaultCheckedKeys="defaultCheckedKeys" :defaultExpandedKeys="[2,3]" @right-check-change="rightCheckChange" @left-check-change="leftCheckChange" @removeBtn="remove" @addBtn="add" height="400px" node_key="id">
             <span slot="title-right" class="my-title-right" @click="handleTitleRight" v-if="mode1!='unit'">房屋</span>
             <span slot="title-right" class="my-title-right" @click="handleTitleRight" v-if="mode1=='unit'">单位</span>
@@ -77,6 +87,17 @@ export default {
 
     data() {
         return {
+            statusOptions: [],
+            yearOptions: [{
+                text: "2020",
+                value: 2020
+            }, {
+                text: "2021",
+                value: 2021
+            }, {
+                text: "2022",
+                value: 2022
+            }],
             leaderLevel: [{
                 text: "机关单位",
                 value: "1"

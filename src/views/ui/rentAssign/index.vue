@@ -15,7 +15,7 @@
                     <sui-grid-column :width="4" style="padding-right:0">
                         <div style="float:right;">
                             <sui-button basic color="blue" content="新建" @click.native="createChuju" icon="add blue" />
-                            <sui-button basic color="green" content="导出" v-on:click="openExportUrl" icon="file green" />
+                            <sui-button basic color="green" content="导出" v-on:click="exportToExcel" icon="file green" />
 
                             <!-- <sui-button content="修改" icon="edit yellow" />
                  <sui-button content="删除" icon="delete red" /> -->
@@ -41,7 +41,23 @@
                 </div>
             </vuetable>
         </div>
+        <div>
+            <sui-modal v-model="exportData.open" class="modal2">
+                <sui-modal-header style="border-bottom:0;">导出选择</sui-modal-header>
+                <sui-modal-content scrolling>
+                    <export-form :filterString="filterString" :singleRoom="filterString" ref='FormExport' mode1="chuzu"></export-form>
 
+                </sui-modal-content>
+                <sui-modal-actions>
+                    <sui-button basic color="red" @click.native="closeModalExport">
+                        取消
+                    </sui-button>
+                    <sui-button basic color="blue" @click.native="openExportUrl">
+                        提交
+                    </sui-button>
+                </sui-modal-actions>
+            </sui-modal>
+        </div>
         <dialog-bar ref="dialog" :singleTime="deleteTarget" v-model="sendVal" type="danger" title="确认" :content="deleteTarget.text" v-on:cancel="clickCancel()" @danger="clickConfirmDelete()" @confirm="clickConfirmDelete()" :dangerText="deleteTarget.dangerText">
         </dialog-bar>
         <div>
@@ -234,6 +250,8 @@ import {
     getRoomDataApi,
     deletePatrolApi
 } from "@/api/roomDataAPI"
+import ExportForm from "@/components/export_form";
+
 import {
     ModelSelect
 } from 'vue-search-select';
@@ -252,9 +270,14 @@ export default {
         Datepicker,
         'weixiu-form': WeiXiuForm,
         'model-select': ModelSelect,
+        'export-form': ExportForm
+
     },
     data() {
         return {
+            exportData: {
+                open: false,
+            },
             fieldsPatrol: FieldsPatrol,
             unitoptions: [],
             newXuncha: {
@@ -271,7 +294,10 @@ export default {
             modelTitle: "",
             modalMode: "create",
             open: false,
-            filterString: {},
+            filterString: {
+                year: 2021,
+                status: null
+            },
             weixiuList: [],
             value: [],
             role: 2,
@@ -308,6 +334,13 @@ export default {
     },
 
     methods: {
+        closeModalExport() {
+
+            this.exportData.open = false;
+        },
+        exportToExcel() {
+            this.exportData.open = true;
+        },
         openExportUrl() {
             let local_auth = localGet(global.project_key, true);
             console.log(constants.exportcontract);
@@ -319,11 +352,12 @@ export default {
             //     }
             // } else {
             //     var idlist = this.$refs.FormExport.toDataList.toString();
-            var newYear = new Date().getFullYear();
-            console.log(newYear);
-            window.open(constants.exportcontract + "?token=" + local_auth + "&year=" + newYear);
+            //  var newYear = new Date().getFullYear();
+            //  this.filterString.year = newYear;
+            //console.log(newYear);
+            window.open(constants.exportcontract + "?token=" + local_auth + "&year=" + this.filterString.year);
             // }
-            // this.closeModalExport();
+            this.closeModalExport();
 
         },
         createKaipiao() {
