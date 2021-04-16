@@ -256,6 +256,7 @@ export default {
     data() {
         return {
             fieldsPatrol: FieldsPatrol,
+            unitoptions: [],
             newXuncha: {
                 open: true,
             },
@@ -658,6 +659,7 @@ export default {
             listLoanAssignmentApi(params).then((data) => {
                 //this.localData = data.data.data;
                 this.loading = false;
+                var context = this;
                 this.localData = {
                     total: 16,
                     per_page: 5,
@@ -697,6 +699,14 @@ export default {
                             one.roomname = result.data.data.roomname;
                             one.address = result.data.data.address;
                             one.zhuguandanwei = result.data.data.zhuguandanwei;
+                            if (context.unitoptions.length > 0) {
+                                context.unitoptions.map((one1) => {
+                                    if (one1.value == result.data.data.zhuguandanwei) {
+                                        one.zhuguandanwei = one1.text;
+                                    }
+                                })
+                            }
+
                             one.quanshuzhengming = result.data.data.quanshuzhengming;
                             one.certid = result.data.data.certid;
                             if (result.data.data.inaccount) {
@@ -704,10 +714,10 @@ export default {
                             } else {
                                 one.inaccount = "无"
                             }
-                            this.componentKey++;
+                            context.componentKey++;
                         }
                     }).catch(function () {
-                        this.loading = false;
+                        context.loading = false;
                         notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                     });
                     switch (one.status) {
@@ -834,7 +844,9 @@ export default {
         }
     },
     created() {
-
+        if (store.getters.unit.unitBasic.length > 0) {
+            this.unitoptions = store.getters.unit.unitBasic;
+        }
         var context = this;
         context.options = [];
         getRoomDataApi({
