@@ -51,9 +51,16 @@ export default [
     width: "15%"
   },
   {
-    name: "status",
-    title: '上缴状态',
-    width: "15%"
+    name: "is_borrow",
+    title: '出借/出租',
+    width: "15%",
+    formatter (value) {
+      if(value==1||value=='1')
+      {
+        return "出借";
+      }
+      else{return "出租";}
+    }
   },
   {
     name: "action",
