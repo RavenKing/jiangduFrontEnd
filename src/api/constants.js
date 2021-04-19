@@ -110,7 +110,7 @@ const constantsJinhui = {
     editrentApi:"editrentinfo",
     removerentApi:"delrentinfo",
     createKaipiaoApi:"addtaxinfo",
-    searchunit:"/searchunit"
-
+    searchunit:"/searchunit",
+    changeRoomTypeApi:"/changeroomtype"
 }
 export default constantsJinhui;

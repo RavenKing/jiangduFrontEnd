@@ -204,7 +204,7 @@
                             </div>
                         </sui-grid-column>
                     </sui-grid>
-                    <assign-keji :singleEntry="selectedRoomInFloor" :assignEntry="selectedRoomInFloor.assign">
+                    <assign-keji :singleEntry="selectedRoomInFloor" :assignEntry="selectedRoomInFloor.assign" :floor_id="leaderfenpei.floor_id">
                     </assign-keji>
                 </sui-modal-content>
                 <sui-modal-actions>
@@ -239,7 +239,7 @@
             <sui-modal class="modal2" v-model="assignKeji.open">
                 <sui-modal-header style="border-bottom:0; margin-bottom:-15px;">{{modelTitle}}</sui-modal-header>
                 <sui-modal-content image>
-                    <assign-keji :index="selectedRoomInFloorIndex" :singleEntry="selectedRoomInFloor" :assignEntry="selectedRoomInFloor.assign">
+                    <assign-keji :singleEntry="selectedRoomInFloor" :assignEntry="selectedRoomInFloor.assign" >
                     </assign-keji>
                 </sui-modal-content>
                 <sui-modal-actions>
@@ -465,7 +465,7 @@ export default {
             data.floor_id = this.leaderfenpei.floor_id;
             data.unit_id = this.selectedRoom.id;
             var dict = {};
-            if (data.type != "领导办公室") {
+            if (data.type != "leader") {
                 if (data.assign) {
                     dict = {
                         keji: data.assign.keji,
@@ -478,7 +478,7 @@ export default {
                     }
                 }
                 data.detail = JSON.stringify(dict);
-            } else if (data.type == "领导办公室") {
+            } else if (data.type == "leader") {
                 if (data.assign) {
                     dict = {
                         juji: data.assign.juji,
@@ -919,31 +919,31 @@ export default {
                     });
                     switch (room.type) {
                         case "bangong":
-                            context.selectedRoomInFloor.type = "办公"
+                            context.selectedRoomInFloor.typeText = "办公"
                             break;
                         case "yewuyongfang":
-                            context.selectedRoomInFloor.type = "业务用房"
+                            context.selectedRoomInFloor.typeText = "业务用房"
                             break;
                         case "fushu":
-                            context.selectedRoomInFloor.type = "附属"
+                            context.selectedRoomInFloor.typeText = "附属"
                             break;
                         case "reserved":
-                            context.selectedRoomInFloor.type = "服务用房"
+                            context.selectedRoomInFloor.typeText = "服务用房"
                             break;
                         case "reversed":
-                            context.selectedRoomInFloor.type = "服务用房"
+                            context.selectedRoomInFloor.typeText = "服务用房"
                             break;
                         case "leader":
-                            context.selectedRoomInFloor.type = "领导办公室"
+                            context.selectedRoomInFloor.typeText = "领导办公室"
                             break;
                         case "shebei":
-                            context.selectedRoomInFloor.type = "设备"
+                            context.selectedRoomInFloor.typeText = "设备"
                             break;
                         case "qita":
-                            context.selectedRoomInFloor.type = "其他"
+                            context.selectedRoomInFloor.typeText = "其他"
                             break;
                         case "other":
-                            context.selectedRoomInFloor.type = "其他"
+                            context.selectedRoomInFloor.typeText = "其他"
                             break;
                         default:
                             break;
@@ -1230,29 +1230,29 @@ export default {
                         // }
                         switch (one.type) {
                             case 'bangong':
-                                one.type = "办公";
+                                one.typeText = "办公";
                                 break;
                             case 'yewuyongfang':
-                                one.type = "业务";
+                                one.typeText = "业务";
                                 break;
                             case 'reversed':
-                                one.type = "服务";
+                                one.typeText = "服务";
                                 break;
 
                             case 'fushu':
-                                one.type = "附属";
+                                one.typeText = "附属";
                                 break;
 
                             case 'leader':
-                                one.type = "办公";
+                                one.typeText = "办公";
                                 break;
 
                             case 'shebei':
-                                one.type = "设备";
+                                one.typeText = "设备";
                                 break;
 
                             case 'other':
-                                one.type = "其他";
+                                one.typeText = "其他";
                                 break;
 
                         }

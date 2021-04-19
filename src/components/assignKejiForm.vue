@@ -13,11 +13,11 @@
         <sui-form-fields>
             <sui-form-field required>
                 <label>房间号</label>
-                <sui-input placeholder="房间号" v-model="assignEntry.roomnumber" :disabled="singleEntry.status"  required/>
+                <sui-input placeholder="房间号" v-model="assignEntry.roomnumber" :disabled="singleEntry.status" required />
             </sui-form-field>
             <sui-form-field required>
                 <label>房间名字</label>
-                <sui-input placeholder="房间名字" v-model="assignEntry.roomname" :disabled="singleEntry.status" required/>
+                <sui-input placeholder="房间名字" v-model="assignEntry.roomname" :disabled="singleEntry.status" required />
             </sui-form-field>
             <sui-form-field>
                 <label>备注</label>
@@ -29,10 +29,10 @@
             </sui-form-field>
             <sui-form-field>
                 <label>房间用途</label>
-                {{singleEntry.type}}
+                <sui-dropdown placeholder="房间用途" selection :options="bangongOptions" v-model="singleEntry.type" @input="changeType" />
             </sui-form-field>
         </sui-form-fields>
-        <sui-form-fields v-show="singleEntry.type=='领导办公室'">
+        <sui-form-fields v-show="singleEntry.type=='leader'">
             <sui-form-field>
                 <label>局级</label>
                 <sui-input placeholder="局级" v-model="assignEntry.juji" type="number" :disabled="singleEntry.status" @change="caluculateTotal" default="0" />
@@ -50,7 +50,7 @@
                 <sui-input placeholder="副处级" v-model="assignEntry.fuchuji" type="number" :disabled="singleEntry.status" @change="caluculateTotal" default="0" />
             </sui-form-field>
         </sui-form-fields>
-        <sui-form-fields v-show="singleEntry.type=='领导办公室'||singleEntry.type=='办公'">
+        <sui-form-fields v-show="singleEntry.type=='leader'||singleEntry.type=='bangong'">
             <sui-form-field>
                 <label>科级</label>
                 <sui-input placeholder="科级" v-model="assignEntry.keji" type="number" :disabled="singleEntry.status" @change="caluculateTotal" />
@@ -73,15 +73,96 @@
 </template>
 
 <script>
+import {
+    notifySomething
+} from "@/util/utils";
+import constants from "@/util/constants";
+import {
+    changeRoomTypeApi
+} from "@/api/roomDataAPI";
 export default {
     name: 'assign-keji',
-    props: ["index", "singleEntry", "assignEntry"],
+    props: ["floor_id", "singleEntry", "assignEntry"],
     data() {
         return {
-            componentKey: 1
+            componentKey: 1,
+            bangongOptions: [{
+                    text: "办公",
+                    value: "bangong"
+                },
+                {
+                    text: "业务",
+                    value: "yewuyongfang"
+                },
+                {
+                    text: "附属",
+                    value: "fushu"
+                },
+                {
+                    text: "领导",
+                    value: "leader"
+                },
+                {
+                    text: "设备",
+                    value: "shebei"
+                },
+                {
+                    text: "其他",
+                    value: "other"
+                },
+                {
+                    text: "服务",
+                    value: "reversed"
+                }
+            ]
         };
     },
+    //         type: "bangong",
+    //     space: parseFloat(tmpSum.bangong).toFixed(2),
+    //     text: "办公"
+    // }, {
+    //     type: "yewuyongfang",
+    //     space: parseFloat(tmpSum.yewuyongfang).toFixed(2),
+    //     text: "业务"
+    // },
+    // {
+    //     type: "fushu",
+    //     space: parseFloat(tmpSum.fushu).toFixed(2),
+    //     text: "附属"
+    // },
+    // {
+    //     type: "leader",
+    //     space: parseFloat(tmpSum.leader).toFixed(2),
+    //     text: "领导"
+    // },
+    // {
+    //     type: "shebei",
+    //     space: parseFloat(tmpSum.shebei).toFixed(2),
+    //     text: "设备"
+    // },
+    // {
+    //     type: "other",
+    //     space: parseFloat(tmpSum.qita).toFixed(2),
+    //     text: "其他"
+    // },
+    // {
+    //     type: "reversed",
+    //     space: parseFloat(tmpSum.reversed).toFixed(2),
+    //     text: "服务"
+    // }
     methods: {
+        changeType() {
+            changeRoomTypeApi({
+                room_id: this.singleEntry.id,
+                floor_id: this.floor_id,
+                type: this.singleEntry.type
+            }).then((result) => {
+                if (result.data.code == 0) {
+                    notifySomething("成功",
+                        "修改房屋用途成功", constants.typeSuccess)
+                }
+            })
+        },
         caluculateTotal() {
             // this.loading = true;
             console.log("calculate")
@@ -92,7 +173,7 @@ export default {
             if (one.space == 0) {
                 one.statusText = "面积为0！请先分配面积";
             }
-            if (one.type == "办公") {
+            if (one.typeText == "办公") {
                 //  one.status = ;
                 if (!this.assignEntry.keji) {
                     this.assignEntry.keji = 0
@@ -119,7 +200,7 @@ export default {
                     }
                 }
             }
-            if (one.type == "领导办公室") {
+            if (one.typeText == "领导办公室") {
                 //  one.status = ;
                 if (!this.assignEntry.juji) {
                     this.assignEntry.juji = 0

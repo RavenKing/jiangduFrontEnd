@@ -465,6 +465,11 @@ function createLoanAssignmentApi(data)
 
 }
 
+function changeRoomTypeApi(data)
+{
+    return generalRequet(data,constants.changeRoomTypeApi)
+
+}
 function generalRequet(data,apiName)
 {
     let local_auth = localGet(global.project_key, true);
@@ -769,5 +774,6 @@ function renameBuildingApi(data)
     getroomunitinfo,
     renamefloorApi,
     renameBuildingApi,
-    searchunitApi
+    searchunitApi,
+    changeRoomTypeApi
 }

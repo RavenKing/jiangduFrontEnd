@@ -122,6 +122,9 @@
                                         <datepicker placeholder="收缴时间" style="width:100%" :value="rentOne.enter_date" v-model="rentOne.enter_date" :language="lang['zh']"></datepicker>
                                     </sui-form-field>
                                     <sui-form-field required>
+                                        <datepicker placeholder="预警时间" style="width:100%" :value="rentOne.next_time" v-model="rentOne.next_time" :language="lang['zh']"></datepicker>
+                                    </sui-form-field>
+                                    <sui-form-field required>
                                         <datepicker placeholder="租金起始年月" style="width:100%" :value="rentOne.fromtime" v-model="rentOne.fromtime" :language="lang['zh']"></datepicker>
                                     </sui-form-field>
                                     <sui-form-field required>
@@ -401,6 +404,7 @@ export default {
             this.rentOne.tax_amt = 0
             this.rentOne.amt = parseInt(this.rentOne.amt);
             this.rentOne.enter_date = toShitFormat(this.rentOne.enter_date);
+            this.rentOne.next_time = toShitFormat(this.rentOne.next_time);
             this.rentOne.fromtime = toShitFormat(this.rentOne.fromtime);
             this.rentOne.totime = toShitFormat(this.rentOne.totime);
             addrentApi(this.rentOne).then((result) => {
@@ -427,6 +431,7 @@ export default {
                         one.fromtime = fromShitFormat(one.fromtime);
                         one.totime = fromShitFormat(one.totime);
                         one.enter_date = fromShitFormat(one.enter_date);
+                        one.next_time = fromShitFormat(one.next_time);
                     })
                     this.loading = false;
                     this.openWeiXiuForm("edit");
@@ -684,12 +689,15 @@ export default {
         refresh() {
             this.role = localGet("role");
             this.loading = true;
-            let params = {};
-            if (this.role == 1) {
-                params = {
-                    status: constants.STATUSNEW
-                }
-            }
+            var context = this;
+            let params = {
+                year: new Date().getFullYear()
+            };
+            // if (this.role == 1) {
+            //     params = {
+            //         status: constants.STATUSNEW
+            //     }
+            // }
             listLoanAssignmentApi(params).then((data) => {
                 //this.localData = data.data.data;
                 this.loading = false;
@@ -727,6 +735,11 @@ export default {
                     one.starttime = one.rent_start
                     one.endtime = one.rent_end
                     one.rent_time = one.starttime + "-" + one.endtime;
+                    if (one.next_time == null || new Date(one.next_time) <= new Date()) {
+                        one.nextTimeStatus = "normal"
+                    } else {
+                        one.nextTimeStatus = "error"
+                    }
                     getroombyid(one).then((result) => {
                         console.log(result);
                         if (result.data.code == 0) {
@@ -771,7 +784,7 @@ export default {
                 });
 
             }).catch(function () {
-                this.loading = false;
+                context.loading = false;
                 notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
             });
         },
