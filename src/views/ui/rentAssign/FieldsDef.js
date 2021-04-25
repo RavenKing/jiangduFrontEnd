@@ -5,9 +5,9 @@ export default [
     title: '收缴状态',
     width: "25%",formatter(value){
       if(value=="normal")
-      {return "<i class='el-icon-check' style=\"font-size: 45px;color:green\"></i><span style=\"color:green\">正常</span>";
+      {return "<button role=\"button\" class=\"ui basic green button\">正常</button>";
     }else if(value=="error"){
-      return "<i class='el-icon-close' style=\"font-size: 45px;color:red;\"></i><span style=\"color:red\">逾期</span>";
+      return "<button role=\"button\" class=\"ui basic red button\">逾期</button>";
     }
     }
   },
