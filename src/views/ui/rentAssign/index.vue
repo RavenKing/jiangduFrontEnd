@@ -1012,7 +1012,7 @@ export default {
 }
 
 .modal2 {
-    height: 600px;
+    min-height: 600px !important;
 }
 
 .ui.blue.table {
