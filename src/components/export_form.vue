@@ -42,9 +42,9 @@
         </sui-form>
         <sui-form v-if="mode1=='chuzu'">
             <sui-form-fields inline>
-                <sui-form-field>
+                <!-- <sui-form-field>
                     <sui-dropdown placeholder="状态" selection :options="statusOptions" v-model="filterString.status" />
-                </sui-form-field>
+                </sui-form-field> -->
                 <sui-form-field>
                     <sui-dropdown placeholder="年份" selection :options="yearOptions" v-model="filterString.year" />
                 </sui-form-field>

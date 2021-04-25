@@ -11,6 +11,14 @@
             <sui-grid>
                 <sui-grid-row>
                     <sui-grid-column :width="12">
+                        <sui-form>
+                            <sui-form-fields inline>
+                                <sui-form-field>
+                                    <sui-dropdown placeholder="年份" selection :options="yearOptions" v-model="filterString.year" />
+                                </sui-form-field>
+                                <sui-button basic color="blue" content="搜索" @click.prevent="onSearch" />
+                            </sui-form-fields>
+                        </sui-form>
                     </sui-grid-column>
                     <sui-grid-column :width="4" style="padding-right:0">
                         <div style="float:right;">
@@ -281,6 +289,22 @@ export default {
             exportData: {
                 open: false,
             },
+            yearOptions: [{
+                text: "2020",
+                value: 2020
+            }, {
+                text: "2021",
+                value: 2021
+            }, {
+                text: "2022",
+                value: 2022
+            }, {
+                text: "2023",
+                value: 2023
+            }, {
+                text: "2024",
+                value: 2024
+            }],
             fieldsPatrol: FieldsPatrol,
             unitoptions: [],
             newXuncha: {
@@ -337,6 +361,11 @@ export default {
     },
 
     methods: {
+        onSearch() {
+            this.refresh({
+                year: this.filterString.year
+            })
+        },
         closeModalExport() {
 
             this.exportData.open = false;
@@ -686,12 +715,17 @@ export default {
             }
 
         },
-        refresh() {
+        refresh(param) {
+            if (param == undefined) {
+                param = {
+                    year: new Date().getFullYear()
+                }
+            }
             this.role = localGet("role");
             this.loading = true;
             var context = this;
             let params = {
-                year: new Date().getFullYear()
+                year: param.year
             };
             // if (this.role == 1) {
             //     params = {

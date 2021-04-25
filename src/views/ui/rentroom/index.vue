@@ -501,7 +501,6 @@ export default {
                 owner: this.filterString.owner,
                 page: 1,
             })
-
         },
         getroomunitinfo(data) {
             var context = this;

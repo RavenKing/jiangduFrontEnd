@@ -2,12 +2,12 @@
 export default [
   {
     name: "nextTimeStatus",
-    title: '房屋地址',
+    title: '收缴状态',
     width: "25%",formatter(value){
       if(value=="normal")
-      {return "<i class='el-icon-check' style=\"font-size: 45px; color: green\"></i>正常";
+      {return "<i class='el-icon-check' style=\"font-size: 45px;color:green\"></i><span style=\"color:green\">正常</span>";
     }else if(value=="error"){
-      return "<i class='el-icon-close' style=\"font-size: 45px; color: red\"></i>逾期";
+      return "<i class='el-icon-close' style=\"font-size: 45px;color:red;\"></i><span style=\"color:red\">逾期</span>";
     }
     }
   },
