@@ -1,16 +1,6 @@
 
 export default [
-  {
-    name: "nextTimeStatus",
-    title: '收缴状态',
-    width: "25%",formatter(value){
-      if(value=="normal")
-      {return "<button role=\"button\" class=\"ui basic green button\">正常</button>";
-    }else if(value=="error"){
-      return "<button role=\"button\" class=\"ui basic red button\">逾期</button>";
-    }
-    }
-  },
+
   {
     name: "address",
     title: '房屋地址',
@@ -71,6 +61,16 @@ export default [
         return "出借";
       }
       else{return "出租";}
+    }
+  },  {
+    name: "nextTimeStatus",
+    title: '收缴状态',
+    width: "25%",formatter(value){
+      if(value=="normal")
+      {return "<button role=\"button\" class=\"el-tag el-tag--success el-tag--light\">正常</button>";
+    }else if(value=="error"){
+      return "<button role=\"button\" class=\"el-tag el-tag--danger el-tag--light\">逾期</button>";
+    }
     }
   },
   {
