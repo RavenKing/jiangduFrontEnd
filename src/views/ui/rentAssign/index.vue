@@ -52,7 +52,7 @@
         <div>
             <sui-modal v-model="exportData.open" class="modal2">
                 <sui-modal-header style="border-bottom:0;">导出选择</sui-modal-header>
-                <sui-modal-content scrolling>
+                <sui-modal-content scrolling style="min-height:240px!important">
                     <export-form :filterString="filterString" :singleRoom="filterString" ref='FormExport' mode1="chuzu"></export-form>
 
                 </sui-modal-content>
