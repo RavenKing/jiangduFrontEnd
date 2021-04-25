@@ -1744,7 +1744,7 @@ export default {
         openExportUrl() {
             let local_auth = localGet(global.project_key, true);
             console.log(local_auth);
-            window.open(constants.exportroomr + "?token=" + local_auth);
+            //   window.open(constants.exportroomr + "?token=" + local_auth);
             var idlist = this.$refs.FormExport.toDataList.toString();
             if (this.$refs.FormExport.toDataList.length == 0) {
                 window.open(constants.exportroomr + "?token=" + local_auth + "&owner=" + this.$refs.FormExport.filterString.owner);
