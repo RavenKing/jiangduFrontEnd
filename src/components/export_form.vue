@@ -42,9 +42,9 @@
         </sui-form>
         <sui-form v-if="mode1=='chuzu'">
             <sui-form-fields inline>
-                <!-- <sui-form-field>
+                <sui-form-field>
                     <sui-dropdown placeholder="状态" selection :options="statusOptions" v-model="filterString.status" />
-                </sui-form-field> -->
+                </sui-form-field>
                 <sui-form-field>
                     <sui-dropdown placeholder="年份" selection :options="yearOptions" v-model="filterString.year" />
                 </sui-form-field>
@@ -87,7 +87,19 @@ export default {
 
     data() {
         return {
-            statusOptions: [],
+            statusOptions: [{
+                text: "无",
+                value: 0
+            }, {
+                text: "闲置",
+                value: 1
+            }, {
+                text: "出租",
+                value: 2
+            }, {
+                text: "出借",
+                value: 3
+            }],
             yearOptions: [{
                 text: "2020",
                 value: 2020
@@ -97,6 +109,12 @@ export default {
             }, {
                 text: "2022",
                 value: 2022
+            }, {
+                text: "2023",
+                value: 2023
+            }, {
+                text: "2024",
+                value: 2024
             }],
             leaderLevel: [{
                 text: "机关单位",

@@ -323,7 +323,7 @@ export default {
             open: false,
             filterString: {
                 year: 2021,
-                status: null
+                status: 0
             },
             weixiuList: [],
             value: [],
@@ -387,7 +387,13 @@ export default {
             //  var newYear = new Date().getFullYear();
             //  this.filterString.year = newYear;
             //console.log(newYear);
-            window.open(constants.exportcontract + "?token=" + local_auth + "&year=" + this.filterString.year);
+            if (this.filterString.status == 0) {
+                window.open(constants.exportcontract + "?token=" + local_auth + "&year=" + this.filterString.year);
+            } else {
+                window.open(constants.exportcontract + "?token=" + local_auth + "&year=" + this.filterString.year + "&status=" + this.filterString.status);
+
+            }
+
             // }
             this.closeModalExport();
 
