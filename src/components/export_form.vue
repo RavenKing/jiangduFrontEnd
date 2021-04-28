@@ -48,6 +48,9 @@
                 <sui-form-field>
                     <sui-dropdown placeholder="年份" selection :options="yearOptions" v-model="filterString.year" />
                 </sui-form-field>
+                <sui-form-field>
+                    <sui-dropdown placeholder="管理方式" selection :options="guanliOptions" v-model="filterString.manager_kind" />
+                </sui-form-field>
             </sui-form-fields>
         </sui-form>
     </sui-segment>
@@ -87,8 +90,21 @@ export default {
 
     data() {
         return {
+            guanliOptions: [{
+                text: "全部",
+                value: 0
+            }, {
+                text: "统一管理",
+                value: 1
+            }, {
+                text: "委托管理",
+                value: 2
+            }, {
+                text: "自行管理",
+                value: 3
+            }],
             statusOptions: [{
-                text: "无",
+                text: "全部",
                 value: 0
             }, {
                 text: "闲置",

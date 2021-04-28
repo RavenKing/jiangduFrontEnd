@@ -323,7 +323,8 @@ export default {
             open: false,
             filterString: {
                 year: 2021,
-                status: 0
+                status: 0,
+                manager_kind: 0
             },
             weixiuList: [],
             value: [],
@@ -376,25 +377,16 @@ export default {
         openExportUrl() {
             let local_auth = localGet(global.project_key, true);
             console.log(constants.exportcontract);
-            // if (this.$refs.FormExport.toDataList.length == 0) {
-            //     if (this.$refs.FormExport.filterString.kind == 0) {
-            //         window.open(constants.exportroom + "?token=" + local_auth);
-            //     } else {
-            //         window.open(constants.exportroom + "?token=" + local_auth + "&kind=" + this.$refs.FormExport.filterString.kind);
-            //     }
-            // } else {
-            //     var idlist = this.$refs.FormExport.toDataList.toString();
-            //  var newYear = new Date().getFullYear();
-            //  this.filterString.year = newYear;
-            //console.log(newYear);
+            let urlString = "";
             if (this.filterString.status == 0) {
-                window.open(constants.exportcontract + "?token=" + local_auth + "&year=" + this.filterString.year);
+                urlString = constants.exportcontract + "?token=" + local_auth + "&year=" + this.filterString.year;
             } else {
-                window.open(constants.exportcontract + "?token=" + local_auth + "&year=" + this.filterString.year + "&status=" + this.filterString.status);
-
+                urlString = constants.exportcontract + "?token=" + local_auth + "&year=" + this.filterString.year + "&status=" + this.filterString.status;
             }
-
+            if (this.filterString.manager_kind != 0)
+                urlString += "&manager_kind=" + this.filterString.manager_kind
             // }
+            window.open(urlString);
             this.closeModalExport();
 
         },
@@ -733,6 +725,9 @@ export default {
             let params = {
                 year: param.year
             };
+            if (param.page) {
+           //     params.page = param.page;
+            }
             // if (this.role == 1) {
             //     params = {
             //         status: constants.STATUSNEW
@@ -741,7 +736,7 @@ export default {
             listLoanAssignmentApi(params).then((data) => {
                 //this.localData = data.data.data;
                 this.loading = false;
-                var context = this;
+                //  var context = this;
                 this.localData = {
                     total: 16,
                     per_page: 5,
@@ -754,7 +749,7 @@ export default {
                     data: data.data.data
                 }
                 this.localData.data.map((one) => {
-                    var unitBasics = store.getters.unit.unitBasic
+                    let unitBasics = store.getters.unit.unitBasic
                     if (unitBasics.length > 0) {
                         unitBasics.map((unit) => {
                             if (unit.value == one.unit_id) {
@@ -775,38 +770,38 @@ export default {
                     one.starttime = one.rent_start
                     one.endtime = one.rent_end
                     one.rent_time = one.starttime + "-" + one.endtime;
-                    if (one.next_time == null || new Date(one.next_time) <= new Date()) {
+                    if (one.next_time == null || new Date(one.next_time) > new Date()) {
                         one.nextTimeStatus = "normal"
                     } else {
                         one.nextTimeStatus = "error"
                     }
-                    getroombyid(one).then((result) => {
-                        console.log(result);
-                        if (result.data.code == 0) {
-                            one.roomname = result.data.data.roomname;
-                            one.address = result.data.data.address;
-                            one.zhuguandanwei = result.data.data.zhuguandanwei;
-                            if (context.unitoptions.length > 0) {
-                                context.unitoptions.map((one1) => {
-                                    if (one1.value == result.data.data.zhuguandanwei) {
-                                        one.zhuguandanwei = one1.text;
-                                    }
-                                })
-                            }
+                    // getroombyid(one).then((result) => {
+                    //     console.log(result);
+                    //     if (result.data.code == 0) {
+                    //         one.roomname = result.data.data.roomname;
+                    //         one.address = result.data.data.address;
+                    //         one.zhuguandanwei = result.data.data.zhuguandanwei;
+                    //         if (context.unitoptions.length > 0) {
+                    //             context.unitoptions.map((one1) => {
+                    //                 if (one1.value == result.data.data.zhuguandanwei) {
+                    //                     one.zhuguandanwei = one1.text;
+                    //                 }
+                    //             })
+                    //         }
 
-                            one.quanshuzhengming = result.data.data.quanshuzhengming;
-                            one.certid = result.data.data.certid;
-                            if (result.data.data.inaccount) {
-                                one.inaccount = "有"
-                            } else {
-                                one.inaccount = "无"
-                            }
-                            context.componentKey++;
-                        }
-                    }).catch(function () {
-                        context.loading = false;
-                        notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
-                    });
+                    //         one.quanshuzhengming = result.data.data.quanshuzhengming;
+                    //         one.certid = result.data.data.certid;
+                    //         if (result.data.data.inaccount) {
+                    //             one.inaccount = "有"
+                    //         } else {
+                    //             one.inaccount = "无"
+                    //         }
+                    //         context.componentKey++;
+                    //     }
+                    // }).catch(function () {
+                    //     context.loading = false;
+                    //     notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
+                    // });
                     switch (one.status) {
                         case 1:
                             one.statusText = constants.NEW;
@@ -965,7 +960,9 @@ export default {
                 return;
             }
         } else {
-            this.refresh();
+            this.refresh({
+                page: 1
+            });
         }
     }
 };

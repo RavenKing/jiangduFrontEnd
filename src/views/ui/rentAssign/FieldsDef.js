@@ -2,17 +2,17 @@
 export default [
 
   {
-    name: "address",
+    name: "room_addr",
     title: '房屋地址',
     width: "25%"
   },
   {
-    name: "zhuguandanwei",
+    name: "main_unit_name",
     title: '主管单位',
     width: "20%",
   },
   {
-    name: "inaccount",
+    name: "has_property",
     title: '有无产证',
     width: "20%",
   },
