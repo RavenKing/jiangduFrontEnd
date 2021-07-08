@@ -34,7 +34,7 @@
         </div>
 
         <div class="vue2Table">
-            <vuetable :key="componentKey" ref="vuetable" :api-mode="false" :data="localData" :fields="fields" :sort-order="sortOrder" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
+            <vuetable :key="componentKey" ref="vuetable" :api-mode="false" :data="localData" :fields="fields" :sort-order="sortOrder" data-path="data" pagination-path="" >
                 <div slot="time" slot-scope="props">
                     {{props.rowData.starttime}} 到 {{props.rowData.endtime}}
                 </div>
@@ -162,7 +162,7 @@
                         </sui-tab-pane>
                         <sui-tab-pane title="资料上传" :disabled="modalMode=='create'">
                             <sui-form-fields inline>
-                                <el-upload ref="upload" class="upload-demo" :on-change="uploadZiliaoFile" :file-list="fileList">
+                                <el-upload ref="upload" class="upload-demo" :on-change="uploadZiliaoFileNew" :file-list="fileList">
                                     <el-button size="small" type="primary">点击上传</el-button>
                                 </el-upload>
                             </sui-form-fields>
@@ -175,7 +175,7 @@
                             <div>
                                 <sui-list key="213123">
                                     <sui-list-item v-for="(link,index) in selectedWeixiu.ziliaoList" :key="link[0]">
-                                        <a type="primary" :href="link.fileURL" target="_blank">文件{{index+1}}</a>
+                                        <a type="primary" :href="link.fileURL" target="_blank">{{index+1}}{{link.fileName}}</a>
                                     </sui-list-item>
                                 </sui-list>
                             </div>
@@ -228,8 +228,8 @@
 import {
     fromShitFormat,
     toShitFormat
-} from "@/util/time"
-import dialogBar from '@/components/MDialogNewV'
+} from "@/util/time";
+import dialogBar from "@/components/MDialogNewV";
 import Vuetable from "vuetable-2/src/components/Vuetable";
 import FieldsDef from "./FieldsDef.js";
 import constants from "@/util/constants";
@@ -238,17 +238,21 @@ import FieldHetong from "./fieldsHetong.js";
 import FieldsRent from "./FieldsRent.js";
 import WeiXiuForm from "@/components/rentAssignForm";
 import * as lang from "vuejs-datepicker/src/locale";
-import Datepicker from 'vuejs-datepicker';
+import Datepicker from "vuejs-datepicker";
 
+import {
+    uploadZiliaoFileApi, // getFileOSSApi
+    //getRentRoomContractListApi
+} from "@/api/utilApi";
 import {
     localGet
 } from "@/util/storage";
 import store from "@/store";
 import {
-    notifySomething,
+    notifySomething
 } from "@/util/utils";
 import FieldsPatrol from "./FieldsPatrol.js";
-import global from "@/global/index"
+import global from "@/global/index";
 import {
     listLoanAssignmentApi,
     createLoanAssignmentApi,
@@ -259,30 +263,29 @@ import {
     getUnitApi,
     createPatrolApi,
     getRoomDataApi,
-    deletePatrolApi
-} from "@/api/roomDataAPI"
+    deletePatrolApi,
+} from "@/api/roomDataAPI";
 import ExportForm from "@/components/export_form";
 
 import {
     ModelSelect
-} from 'vue-search-select';
+} from "vue-search-select";
 import {
     getroombyid,
     addrentApi,
     listrentApi,
     delrentApi,
-    createKaipiaoApi
+    createKaipiaoApi,
 } from "@/api/weixiuAPI";
 export default {
     name: "MyVuetable",
     components: {
-        'dialog-bar': dialogBar,
+        "dialog-bar": dialogBar,
         Vuetable,
         Datepicker,
-        'weixiu-form': WeiXiuForm,
-        'model-select': ModelSelect,
-        'export-form': ExportForm
-
+        "weixiu-form": WeiXiuForm,
+        "model-select": ModelSelect,
+        "export-form": ExportForm,
     },
     data() {
         return {
@@ -290,21 +293,26 @@ export default {
                 open: false,
             },
             yearOptions: [{
-                text: "2020",
-                value: 2020
-            }, {
-                text: "2021",
-                value: 2021
-            }, {
-                text: "2022",
-                value: 2022
-            }, {
-                text: "2023",
-                value: 2023
-            }, {
-                text: "2024",
-                value: 2024
-            }],
+                    text: "2020",
+                    value: 2020,
+                },
+                {
+                    text: "2021",
+                    value: 2021,
+                },
+                {
+                    text: "2022",
+                    value: 2022,
+                },
+                {
+                    text: "2023",
+                    value: 2023,
+                },
+                {
+                    text: "2024",
+                    value: 2024,
+                },
+            ],
             fieldsPatrol: FieldsPatrol,
             unitoptions: [],
             newXuncha: {
@@ -324,15 +332,18 @@ export default {
             filterString: {
                 year: 2021,
                 status: 0,
-                manager_kind: 0
+                manager_kind: 0,
             },
             weixiuList: [],
             value: [],
             role: 2,
             weixiuForm: {
-                open: false
+                open: false,
             },
-            selectedWeixiu: {},
+            fileList: [],
+            selectedWeixiu: {
+                ziliaoList: []
+            },
             deleteTarget: {},
             loading: true,
             localData: [],
@@ -344,8 +355,10 @@ export default {
             weixiuhetong: {},
             rentOne: {},
             kaipiao: {
-                open: false
+                open: false,
             },
+            ziliaoList: [],
+            uploadCount: 0,
             contractForm: {
                 open: false,
                 title: "createForm",
@@ -356,19 +369,69 @@ export default {
                 starttime: "",
                 endtime: "",
                 unitoptions: [],
-                options: []
+                options: [],
             },
         };
     },
 
     methods: {
+        uploadZiliaoFileNew: function (e) {
+            this.uploadZiliaoFile(e, this.fileList, "common");
+        },
+        uploadZiliaoFile(e, fileList, mode) {
+            if (this.uploadCount == 1) {
+                this.uploadCount = 0;
+                return;
+            }
+            this.uploadCount++;
+            fileList.push(e.raw);
+            let formData = new FormData();
+            this.loading = true;
+            var context = this;
+            //  this.buildingImage.open = false;
+            if (e.raw != undefined) {
+                formData.append("ossfile", e.raw);
+                uploadZiliaoFileApi(formData)
+                    .then((result) => {
+                        context.loading = false;
+                        if (result.data.code == 0) {
+                            if (mode == "common") {
+                                context.ziliaoList.push({
+                                    url: result.data.data,
+                                    fileName: e.name,
+                                    type: "图纸",
+                                });
+                            } else if (mode == "chanzheng") {
+                                context.chanzhenZiLiao.push({
+                                    url: result.data.data,
+                                    fileName: e.name,
+                                    type: "产证",
+                                });
+                            } else {
+                                context.fileList.push({
+                                    url: result.data.data,
+                                    fileName: e.name,
+                                    type: "其他",
+                                });
+                            }
+                        }
+                    })
+                    .catch(function () {
+                        context.loading = false;
+                        notifySomething(
+                            constants.GENERALERROR,
+                            constants.GENERALERROR,
+                            constants.typeError
+                        );
+                    });
+            }
+        },
         onSearch() {
             this.refresh({
-                year: this.filterString.year
-            })
+                year: this.filterString.year,
+            });
         },
         closeModalExport() {
-
             this.exportData.open = false;
         },
         exportToExcel() {
@@ -379,19 +442,30 @@ export default {
             console.log(constants.exportcontract);
             let urlString = "";
             if (this.filterString.status == 0) {
-                urlString = constants.exportcontract + "?token=" + local_auth + "&year=" + this.filterString.year;
+                urlString =
+                    constants.exportcontract +
+                    "?token=" +
+                    local_auth +
+                    "&year=" +
+                    this.filterString.year;
             } else {
-                urlString = constants.exportcontract + "?token=" + local_auth + "&year=" + this.filterString.year + "&status=" + this.filterString.status;
+                urlString =
+                    constants.exportcontract +
+                    "?token=" +
+                    local_auth +
+                    "&year=" +
+                    this.filterString.year +
+                    "&status=" +
+                    this.filterString.status;
             }
             if (this.filterString.manager_kind != 0)
-                urlString += "&manager_kind=" + this.filterString.manager_kind
+                urlString += "&manager_kind=" + this.filterString.manager_kind;
             // }
             window.open(urlString);
             this.closeModalExport();
-
         },
         createKaipiao() {
-            this.kaipiao.billing_date = toShitFormat(this.kaipiao.billing_date)
+            this.kaipiao.billing_date = toShitFormat(this.kaipiao.billing_date);
             createKaipiaoApi(this.kaipiao).then((result) => {
                 this.closeKaipiao();
                 if (result.data.code == 0) {
@@ -408,15 +482,14 @@ export default {
                         constants.typeError
                     );
                 }
-            })
-
+            });
         },
 
         closeKaipiao() {
             this.kaipiao.open = false;
         },
         openKaipiao(data) {
-            console.log(data)
+            console.log(data);
             this.kaipiao.billing_date = fromShitFormat(data.billing_date);
             this.kaipiao.tax_amt = data.tax_amt;
             this.kaipiao.open = true;
@@ -428,7 +501,7 @@ export default {
             this.loading = true;
             this.rentOne.cid = this.selectedWeixiu.id;
             this.rentOne.billing_status = 0;
-            this.rentOne.tax_amt = 0
+            this.rentOne.tax_amt = 0;
             this.rentOne.amt = parseInt(this.rentOne.amt);
             this.rentOne.enter_date = toShitFormat(this.rentOne.enter_date);
             this.rentOne.next_time = toShitFormat(this.rentOne.next_time);
@@ -449,17 +522,16 @@ export default {
         refreshRent() {
             this.loading = true;
             listrentApi({
-                cid: this.selectedWeixiu.id
+                cid: this.selectedWeixiu.id,
             }).then((result) => {
                 if (result.data.code == 0) {
-
                     this.selectedWeixiu.rentInfo = result.data.data;
                     this.selectedWeixiu.rentInfo.map((one) => {
                         one.fromtime = fromShitFormat(one.fromtime);
                         one.totime = fromShitFormat(one.totime);
                         one.enter_date = fromShitFormat(one.enter_date);
                         one.next_time = fromShitFormat(one.next_time);
-                    })
+                    });
                     this.loading = false;
                     this.openWeiXiuForm("edit");
                 } else {
@@ -479,12 +551,12 @@ export default {
                 this.unitoptions = store.getters.unit.unitBasic;
             } else {
                 getUnitApi().then((data) => {
-                    var res_data = data.data.data
+                    var res_data = data.data.data;
                     for (var i = res_data.length - 1; i >= 0; i--) {
                         this.unitoptions.push({
-                            'text': res_data[i]['name'],
-                            'value': res_data[i]['id']
-                        })
+                            text: res_data[i]["name"],
+                            value: res_data[i]["id"],
+                        });
                     }
                 });
             }
@@ -542,7 +614,7 @@ export default {
             listPatrolApi({
                 room_id: this.selectedWeixiu.room_id,
                 room_type: 2,
-                type: 2
+                type: 2,
             }).then((result) => {
                 if (result.data.code == 0) {
                     this.loading = false;
@@ -562,7 +634,7 @@ export default {
             console.log(props);
             this.deleteTarget.text = "是否要删除" + props.roomname + "?";
             this.deleteTarget.id = props.id;
-            this.deleteTarget.type = "loan"
+            this.deleteTarget.type = "loan";
             this.sendVal = true;
         },
         clickConfirmDelete() {
@@ -588,50 +660,69 @@ export default {
             } else if (this.deleteTarget.type == constants.typeRoomRent) {
                 this.loading = true;
                 this.deleteTarget.reason = this.$refs.dialog.commentData;
-                delrentApi(this.deleteTarget).then((result) => {
-                    //context.loading = false;
-                    if (result.data.code == 0) {
-                        this.refreshRent();
-                        context.closeComfirmDialog();
-                        //context.closeWeiXiuForm();
-                        context.$notify({
-                            group: 'foo',
-                            title: '已经删除',
-                            text: '已经删除',
-                            type: "success"
-                        });
-                    } else {
-                        notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
-                    }
-                }).catch(function () {
-                    context.loading = false;
-                    notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
-                });
+                delrentApi(this.deleteTarget)
+                    .then((result) => {
+                        //context.loading = false;
+                        if (result.data.code == 0) {
+                            this.refreshRent();
+                            context.closeComfirmDialog();
+                            //context.closeWeiXiuForm();
+                            context.$notify({
+                                group: "foo",
+                                title: "已经删除",
+                                text: "已经删除",
+                                type: "success",
+                            });
+                        } else {
+                            notifySomething(
+                                constants.GENERALERROR,
+                                constants.GENERALERROR,
+                                constants.typeError
+                            );
+                        }
+                    })
+                    .catch(function () {
+                        context.loading = false;
+                        notifySomething(
+                            constants.GENERALERROR,
+                            constants.GENERALERROR,
+                            constants.typeError
+                        );
+                    });
             } else {
                 this.loading = true;
                 // var context = this;
                 this.deleteTarget.reason = this.$refs.dialog.commentData;
-                deleteLoanAssignmentApi(this.deleteTarget).then((result) => {
-                    context.loading = false;
-                    if (result.data.code == 0) {
-                        this.refresh();
-                        context.closeComfirmDialog();
-                        context.closeWeiXiuForm();
-                        context.$notify({
-                            group: 'foo',
-                            title: '出租已经删除',
-                            text: '出租已经删除',
-                            type: "success"
-                        });
-                    } else {
-                        notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
-                    }
-                }).catch(function () {
-                    context.loading = false;
-                    notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
-                });
+                deleteLoanAssignmentApi(this.deleteTarget)
+                    .then((result) => {
+                        context.loading = false;
+                        if (result.data.code == 0) {
+                            this.refresh();
+                            context.closeComfirmDialog();
+                            context.closeWeiXiuForm();
+                            context.$notify({
+                                group: "foo",
+                                title: "出租已经删除",
+                                text: "出租已经删除",
+                                type: "success",
+                            });
+                        } else {
+                            notifySomething(
+                                constants.GENERALERROR,
+                                constants.GENERALERROR,
+                                constants.typeError
+                            );
+                        }
+                    })
+                    .catch(function () {
+                        context.loading = false;
+                        notifySomething(
+                            constants.GENERALERROR,
+                            constants.GENERALERROR,
+                            constants.typeError
+                        );
+                    });
             }
-
         },
         openComfirmDialog() {
             this.sendVal = true;
@@ -660,168 +751,207 @@ export default {
                     context.options.push({
                         text: one.address,
                         value: one.id,
-                    })
+                    });
                 });
             });
-
         },
         closeHetongModal() {
             this.open = false;
         },
         createShenbao() {
             var context = this;
-            if (this.selectedWeixiu.rent_start == "NaNNaNNaN" || this.selectedWeixiu.rent_end == "NaNNaNNaN" || this.selectedWeixiu.is_borrow == null) {
-
+            if (
+                this.selectedWeixiu.rent_start == "NaNNaNNaN" ||
+                this.selectedWeixiu.rent_end == "NaNNaNNaN" ||
+                this.selectedWeixiu.is_borrow == null
+            ) {
                 return;
             }
             this.loading = true;
 
-            this.selectedWeixiu.rent_start = toShitFormat(this.selectedWeixiu.rent_start)
-            this.selectedWeixiu.rent_end = toShitFormat(this.selectedWeixiu.rent_end)
+            this.selectedWeixiu.ziliaolist = JSON.stringify(this.ziliaoList);
+            this.selectedWeixiu.rent_start = toShitFormat(
+                this.selectedWeixiu.rent_start
+            );
+            this.selectedWeixiu.rent_end = toShitFormat(this.selectedWeixiu.rent_end);
             if (this.modalMode == "create") {
-                createLoanAssignmentApi(this.selectedWeixiu).then((result) => {
-                    if (result.data.code == 0) {
-                        this.loading = false;
-                        this.closeWeiXiuForm();
-                        this.refresh();
-                        notifySomething(constants.CREATESUCCESS, constants.CREATESUCCESS, constants.typeSuccess);
-                    } else if (result.data.code == 3) {
-                        this.loading = false;
-                        notifySomething(constants.GENERALERROR, "该房屋这段时间已出租", constants.typeError);
-
-                    }
-                }).catch(function () {
-                    context.loading = false;
-                    notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
-                });
+                createLoanAssignmentApi(this.selectedWeixiu)
+                    .then((result) => {
+                        if (result.data.code == 0) {
+                            this.loading = false;
+                            this.closeWeiXiuForm();
+                            this.refresh();
+                            notifySomething(
+                                constants.CREATESUCCESS,
+                                constants.CREATESUCCESS,
+                                constants.typeSuccess
+                            );
+                        } else if (result.data.code == 3) {
+                            this.loading = false;
+                            notifySomething(
+                                constants.GENERALERROR,
+                                "该房屋这段时间已出租",
+                                constants.typeError
+                            );
+                        }
+                    })
+                    .catch(function () {
+                        context.loading = false;
+                        notifySomething(
+                            constants.GENERALERROR,
+                            constants.GENERALERROR,
+                            constants.typeError
+                        );
+                    });
             } else if (this.modalMode == "edit") {
-                editLoanAssignmentApi(this.selectedWeixiu).then((result) => {
-                    if (result.data.code == 0) {
-                        this.loading = false;
-                        this.closeWeiXiuForm();
-                        this.refresh();
-                        notifySomething("编辑成功", "编辑成功", constants.typeSuccess);
-                    } else if (result.data.code == 3) {
-                        this.loading = false;
-                        notifySomething(constants.GENERALERROR, "该房屋这段时间已出租", constants.typeError);
-
-                    }
-                }).catch(function () {
-                    context.loading = false;
-                    notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
-                });
+                editLoanAssignmentApi(this.selectedWeixiu)
+                    .then((result) => {
+                        if (result.data.code == 0) {
+                            this.loading = false;
+                            this.closeWeiXiuForm();
+                            this.refresh();
+                            notifySomething("编辑成功", "编辑成功", constants.typeSuccess);
+                        } else if (result.data.code == 3) {
+                            this.loading = false;
+                            notifySomething(
+                                constants.GENERALERROR,
+                                "该房屋这段时间已出租",
+                                constants.typeError
+                            );
+                        }
+                    })
+                    .catch(function () {
+                        context.loading = false;
+                        notifySomething(
+                            constants.GENERALERROR,
+                            constants.GENERALERROR,
+                            constants.typeError
+                        );
+                    });
             }
-
         },
         refresh(param) {
             if (param == undefined) {
                 param = {
-                    year: new Date().getFullYear()
-                }
+                    year: new Date().getFullYear(),
+                };
             }
             this.role = localGet("role");
             this.loading = true;
             var context = this;
             let params = {
-                year: param.year
+                year: param.year,
             };
             if (param.page) {
-           //     params.page = param.page;
+                //     params.page = param.page;
             }
             // if (this.role == 1) {
             //     params = {
             //         status: constants.STATUSNEW
             //     }
             // }
-            listLoanAssignmentApi(params).then((data) => {
-                //this.localData = data.data.data;
-                this.loading = false;
-                //  var context = this;
-                this.localData = {
-                    total: 16,
-                    per_page: 5,
-                    current_page: 1,
-                    last_page: 4,
-                    next_page_url: "data.data.data?page=2",
-                    prev_page_url: null,
-                    from: 1,
-                    to: 5,
-                    data: data.data.data
-                }
-                this.localData.data.map((one) => {
-                    let unitBasics = store.getters.unit.unitBasic
-                    if (unitBasics.length > 0) {
-                        unitBasics.map((unit) => {
-                            if (unit.value == one.unit_id) {
-                                one.unit_name = unit.text;
-                            }
-                        })
-                    }
+            listLoanAssignmentApi(params)
+                .then((data) => {
+                    //this.localData = data.data.data;
+                    this.loading = false;
+                    //  var context = this;
+                    this.localData = {
+                        total: 16,
+                        per_page: 5,
+                        current_page: 1,
+                        last_page: 4,
+                        next_page_url: "data.data.data?page=2",
+                        prev_page_url: null,
+                        from: 1,
+                        to: 5,
+                        data: data.data.data,
+                    };
+                    this.localData.data.map((one) => {
+                        let unitBasics = store.getters.unit.unitBasic;
+                        if (unitBasics.length > 0) {
+                            unitBasics.map((unit) => {
+                                if (unit.value == one.unit_id) {
+                                    one.unit_name = unit.text;
+                                }
+                            });
+                        }
 
-                    // one.ziliaoListData = JSON.parse(one.url);
-                    //one.ziliaoList = [];
-                    // one.ziliaoListData.map((one1) => {
-                    //     var newOne = {
-                    //         fileURL: constants.fileURL + one1
-                    //     }
-                    //     one.ziliaoList.push(newOne);
-                    // })
+                        // one.ziliaoListData = JSON.parse(one.url);
+                        //one.ziliaoList = [];
+                        // one.ziliaoListData.map((one1) => {
+                        //     var newOne = {
+                        //         fileURL: constants.fileURL + one1
+                        //     }
+                        //     one.ziliaoList.push(newOne);
+                        // })
 
-                    one.starttime = one.rent_start
-                    one.endtime = one.rent_end
-                    one.rent_time = one.starttime + "-" + one.endtime;
-                    if (one.next_time == null || new Date(one.next_time) > new Date()) {
-                        one.nextTimeStatus = "normal"
-                    } else {
-                        one.nextTimeStatus = "error"
-                    }
-                    // getroombyid(one).then((result) => {
-                    //     console.log(result);
-                    //     if (result.data.code == 0) {
-                    //         one.roomname = result.data.data.roomname;
-                    //         one.address = result.data.data.address;
-                    //         one.zhuguandanwei = result.data.data.zhuguandanwei;
-                    //         if (context.unitoptions.length > 0) {
-                    //             context.unitoptions.map((one1) => {
-                    //                 if (one1.value == result.data.data.zhuguandanwei) {
-                    //                     one.zhuguandanwei = one1.text;
-                    //                 }
-                    //             })
-                    //         }
+                        one.starttime = one.rent_start;
+                        one.endtime = one.rent_end;
+                        one.rent_time = one.starttime + "-" + one.endtime;
+                        if (one.next_time == null || new Date(one.next_time) > new Date()) {
+                            one.nextTimeStatus = "normal";
+                        } else {
+                            one.nextTimeStatus = "error";
+                        }
 
-                    //         one.quanshuzhengming = result.data.data.quanshuzhengming;
-                    //         one.certid = result.data.data.certid;
-                    //         if (result.data.data.inaccount) {
-                    //             one.inaccount = "有"
-                    //         } else {
-                    //             one.inaccount = "无"
-                    //         }
-                    //         context.componentKey++;
-                    //     }
-                    // }).catch(function () {
-                    //     context.loading = false;
-                    //     notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
-                    // });
-                    switch (one.status) {
-                        case 1:
-                            one.statusText = constants.NEW;
-                            break;
-                        case 2:
-                            one.statusText = constants.PASS;
-                            break;
-                        case 3:
-                            one.statusText = constants.FAIL;
-                            break;
-                        default:
-                            break;
-                    }
+                        if (one.ziliaolist == "") {
+                            this.ziliaoList = [];
+                            one.ziliaoList = [];
+                        } else {
+                            this.ziliaoList = JSON.parse(one.ziliaolist);
+                            one.ziliaoList = this.ziliaoList;
+                            one.ziliaoList.map((one) => one.fileURL = constants.fileURL + one.url)
+                        }
+                        // getroombyid(one).then((result) => {
+                        //     console.log(result);
+                        //     if (result.data.code == 0) {
+                        //         one.roomname = result.data.data.roomname;
+                        //         one.address = result.data.data.address;
+                        //         one.zhuguandanwei = result.data.data.zhuguandanwei;
+                        //         if (context.unitoptions.length > 0) {
+                        //             context.unitoptions.map((one1) => {
+                        //                 if (one1.value == result.data.data.zhuguandanwei) {
+                        //                     one.zhuguandanwei = one1.text;
+                        //                 }
+                        //             })
+                        //         }
 
+                        //         one.quanshuzhengming = result.data.data.quanshuzhengming;
+                        //         one.certid = result.data.data.certid;
+                        //         if (result.data.data.inaccount) {
+                        //             one.inaccount = "有"
+                        //         } else {
+                        //             one.inaccount = "无"
+                        //         }
+                        //         context.componentKey++;
+                        //     }
+                        // }).catch(function () {
+                        //     context.loading = false;
+                        //     notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
+                        // });
+                        switch (one.status) {
+                            case 1:
+                                one.statusText = constants.NEW;
+                                break;
+                            case 2:
+                                one.statusText = constants.PASS;
+                                break;
+                            case 3:
+                                one.statusText = constants.FAIL;
+                                break;
+                            default:
+                                break;
+                        }
+                    });
+                })
+                .catch(function () {
+                    context.loading = false;
+                    notifySomething(
+                        constants.GENERALERROR,
+                        constants.GENERALERROR,
+                        constants.typeError
+                    );
                 });
-
-            }).catch(function () {
-                context.loading = false;
-                notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
-            });
         },
 
         createChuju() {
@@ -836,24 +966,22 @@ export default {
                     context.options.push({
                         text: one.address,
                         value: one.id,
-                    })
+                    });
                 });
 
                 context.loading = false;
                 context.openWeiXiuForm("create");
             });
-
         },
         openWeiXiuForm(mode) {
             this.activeIndex = 0;
             if (mode == "edit") {
                 this.modelTitle = "编辑";
                 this.modalMode = "edit";
-
             } else {
                 this.modelTitle = "创建";
                 this.selectedWeixiu = {
-                    room_id: "1"
+                    room_id: "1",
                 };
                 this.modalMode = "create";
             }
@@ -863,9 +991,9 @@ export default {
             this.weixiuForm.open = false;
         },
 
-        onPaginationData(paginationData) {
-            this.$refs.pagination.setPaginationData(paginationData);
-            this.$refs.paginationInfo.setPaginationData(paginationData);
+        onPaginationData() {
+            //   this.$refs.pagination.setPaginationData(paginationData);
+            //   this.$refs.paginationInfo.setPaginationData(paginationData);
         },
         onChangePage(page) {
             this.$refs.vuetable.changePage(page);
@@ -883,31 +1011,37 @@ export default {
                     prev_page_url: null,
                     from: 1,
                     to: 5,
-                    data: data.data.data
-                }
+                    data: data.data.data,
+                };
                 this.localData.data.map((one) => {
-                    var unitBasics = store.getters.unit.unitBasic
+                    var unitBasics = store.getters.unit.unitBasic;
                     if (unitBasics.length > 0) {
                         unitBasics.map((unit) => {
                             if (unit.value == one.unit_id) {
                                 one.unit_name = unit.text;
                             }
-                        })
+                        });
                     }
                     one.starttime = fromShitFormat(one.rent_start);
                     one.endtime = fromShitFormat(one.rent_end);
                     one.rent_time = one.starttime + "-" + one.endtime;
-                    getroombyid(one).then((result) => {
-                        console.log(result);
-                        if (result.data.code == 0) {
-                            one.roomname = result.data.data.roomname;
-                            one.address = result.data.data.address;
-                            this.componentKey++;
-                        }
-                    }).catch(function () {
-                        this.loading = false;
-                        notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
-                    });
+                    getroombyid(one)
+                        .then((result) => {
+                            console.log(result);
+                            if (result.data.code == 0) {
+                                one.roomname = result.data.data.roomname;
+                                one.address = result.data.data.address;
+                                this.componentKey++;
+                            }
+                        })
+                        .catch(function () {
+                            this.loading = false;
+                            notifySomething(
+                                constants.GENERALERROR,
+                                constants.GENERALERROR,
+                                constants.typeError
+                            );
+                        });
                     switch (one.status) {
                         case 1:
                             one.statusText = constants.NEW;
@@ -921,9 +1055,9 @@ export default {
                         default:
                             break;
                     }
-                })
-            })
-        }
+                });
+            });
+        },
     },
     created() {
         if (store.getters.unit.unitBasic.length > 0) {
@@ -940,19 +1074,18 @@ export default {
                 context.options.push({
                     text: one.address,
                     value: one.id,
-                })
+                });
             });
         });
 
-        let uri = window.location.href.split('?');
+        let uri = window.location.href.split("?");
         let getVars = {};
         if (uri.length == 2) {
-            let vars = uri[1].split('&');
-            let tmp = '';
+            let vars = uri[1].split("&");
+            let tmp = "";
             vars.forEach(function (v) {
-                tmp = v.split('=');
-                if (tmp.length == 2)
-                    getVars[tmp[0]] = tmp[1];
+                tmp = v.split("=");
+                if (tmp.length == 2) getVars[tmp[0]] = tmp[1];
             });
             console.log(getVars);
             if (getVars.room_id) {
@@ -961,16 +1094,16 @@ export default {
             }
         } else {
             this.refresh({
-                page: 1
+                page: 1,
             });
         }
-    }
+    },
 };
 </script>
 
 <style>
 .ui.positive.button {
-    background-color: #75ADBF !important;
+    background-color: #75adbf !important;
 }
 
 .ui.modal {
@@ -996,15 +1129,15 @@ export default {
 
 .ui.table thead th {
     cursor: auto;
-    background: #F5F7FA;
+    background: #f5f7fa;
     text-align: inherit;
-    color: rgba(0, 0, 0, .87);
-    padding: .92857143em .78571429em;
+    color: rgba(0, 0, 0, 0.87);
+    padding: 0.92857143em 0.78571429em;
     vertical-align: inherit;
     font-style: none;
     font-weight: 500;
     text-transform: none;
-    border-bottom: 1px solid rgba(34, 36, 38, .1);
+    border-bottom: 1px solid rgba(34, 36, 38, 0.1);
     border-left: none;
 }
 
@@ -1029,6 +1162,6 @@ export default {
 }
 
 .vuetable-head-wrapper table.vuetable th.sortable {
-    cursor: pointer
+    cursor: pointer;
 }
 </style>
