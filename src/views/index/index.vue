@@ -4,7 +4,7 @@
         <sui-segment>
             <i class="icon iconFl dollar sign"></i>
             <div class="padleft">
-                <div class="titleColor">资产数量</div>
+                <div class="titleColor">推送政策</div>
                 <div class="dataInt">
                     {{getroomnu ? getroomnu : 0}}
                 </div>
@@ -13,16 +13,16 @@
         <sui-segment>
             <i class="icon iconFl map outline"></i>
             <div class="padleft">
-                <div class="titleColor">资产面积</div>
+                <div class="titleColor">访问量</div>
                 <div class="dataInt">
-                    {{getroomspace ? getroomspace : 0}}
-                </div>
+365878              
+  </div>
             </div>
         </sui-segment>
         <sui-segment>
             <i class="icon iconFl building outline"></i>
             <div class="padleft">
-                <div class="titleColor">单位数量</div>
+                <div class="titleColor">入驻企业</div>
                 <div class="dataInt">
                     {{getunitnum ? getunitnum : 0}}
                 </div>
@@ -31,7 +31,7 @@
         <sui-segment>
             <i class="icon iconFl rss"></i>
             <div class="padleft">
-                <div class="titleColor">维修请求</div>
+                <div class="titleColor">转发</div>
                 <div class="dataInt">{{getmrnum ? getmrnum : 0}}</div>
             </div>
         </sui-segment>
@@ -101,14 +101,14 @@ export default {
             roomusagerate1Api(payload).then((result) => {
                 if (result.data.code == 0) {
                     this.roomusagerate1 = result.data.data
-                    var listTitle = ['使用面积', '空置面积'];
+                    var listTitle = ['手机用户', '电脑用户'];
                     var listData = [{
                             value: this.roomusagerate1['assigned'],
-                            name: '使用面积'
+                            name: '手机用户'
                         },
                         {
                             value: this.roomusagerate1['all'] - this.roomusagerate1['assigned'],
-                            name: '空置面积'
+                            name: '电脑用户'
                         }
                     ]
                     var listInfo = {
@@ -116,7 +116,7 @@ export default {
                         list: listData,
                         color: ['#008acd', '#bbbbbb']
                     }
-                    this.initChart("roomusagerate1", listInfo, "资产空置率")
+                    this.initChart("roomusagerate1", listInfo, "政策访问比")
                 }
             }).catch(() => {});
         },
@@ -125,14 +125,14 @@ export default {
             roomusagerate2Api(payload).then((result) => {
                 if (result.data.code == 0) {
                     this.roomusagerate2 = result.data.data
-                    var listTitle = ['使用面积', '空置面积'];
+                    var listTitle = ['手机用户', '电脑用户'];
                     var listData = [{
                             value: this.roomusagerate2['assigned'],
-                            name: '使用面积'
+                            name: '手机用户'
                         },
                         {
                             value: this.roomusagerate2['all'] - this.roomusagerate2['assigned'],
-                            name: '空置面积'
+                            name: '电脑用户'
                         }
                     ]
                     var listInfo = {
@@ -140,7 +140,7 @@ export default {
                         list: listData,
                         color: ['#008acd', '#bbbbbb']
                     }
-                    this.initChart("roomusagerate2", listInfo, "出租房空置率")
+                    this.initChart("roomusagerate2", listInfo, "政策资源")
                 }
             }).catch(() => {});
         },
@@ -149,14 +149,14 @@ export default {
             loanamtApi(payload).then((result) => {
                 if (result.data.code == 0) {
                     this.loanamt = result.data.data
-                    var listTitle = ['租赁金额', '出租金额'];
+                    var listTitle = ['手机用户', '电脑用户'];
                     var listData = [{
                             value: this.loanamt['loan_amt'],
-                            name: '租赁金额'
+                            name: '手机用户'
                         },
                         {
                             value: this.loanamt['rent_amt'],
-                            name: '出租金额'
+                            name: '电脑用户'
                         }
                     ]
                     var listInfo = {
@@ -164,7 +164,7 @@ export default {
                         list: listData,
                         color: ['#008acd', '#bbbbbb']
                     }
-                    this.initChart("loanamt", listInfo, "收入支出占比")
+                    this.initChart("loanamt", listInfo, "金融惠企")
                 }
             }).catch(() => {});
         },
@@ -173,14 +173,14 @@ export default {
             roomspagcerate1Api(payload).then((result) => {
                 if (result.data.code == 0) {
                     this.roomspagcerate1 = result.data.data
-                    var listTitle = ['有证土地', '无证土地'];
+                    var listTitle = ['手机用户', '电脑用户'];
                     var listData = [{
                             value: this.roomspagcerate1['youzheng'],
-                            name: '有证土地'
+                            name: '手机用户'
                         },
                         {
                             value: this.roomspagcerate1['all'] - this.roomspagcerate1['youzheng'],
-                            name: '无证土地'
+                            name: '电脑用户'
                         }
                     ]
                     var listInfo = {
@@ -188,7 +188,7 @@ export default {
                         list: listData,
                         color: ['#008acd', '#bbbbbb']
                     }
-                    this.initChart("roomspagcerate1", listInfo, "土地面积（有证/无证）")
+                    this.initChart("roomspagcerate1", listInfo, "人才数量")
                 }
             }).catch(() => {});
         },
@@ -197,14 +197,14 @@ export default {
             roomspagcerate2Api(payload).then((result) => {
                 if (result.data.code == 0) {
                     this.roomspagcerate2 = result.data.data;
-                    var listTitle = ['有证建筑', '无证建筑'];
+                    var listTitle = ['手机用户', '电脑用户'];
                     var listData = [{
                             value: this.roomspagcerate2['youzheng'],
-                            name: '有证建筑'
+                            name: '手机用户'
                         },
                         {
                             value: this.roomspagcerate2['all'] - this.roomspagcerate2['youzheng'],
-                            name: '无证建筑'
+                            name: '电脑用户'
                         }
                     ]
                     var listInfo = {
@@ -212,7 +212,7 @@ export default {
                         list: listData,
                         color: ['#008acd', '#bbbbbb']
                     }
-                    this.initChart("roomspagcerate2", listInfo, "建筑面积（有证/无证）")
+                    this.initChart("roomspagcerate2", listInfo, "资产数量")
                 }
             }).catch(() => {});
         },

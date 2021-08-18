@@ -3,36 +3,36 @@ const menus = [{
     title: '',
     children: [{
       id: "3-6",
-      title: "单位信息",
+      title: "企业管理",
       url: "/ui/unit",
       icon:"home icon"
     },
     {
       id: "3-2",
-      title: "办公用房信息",
-      name: "办公用房信息",
+      title: "政策管理",
+      name: "政策管理",
       url: "/ui/asset",
       icon:"keyboard icon",
       params:{kind:1}
     },{
       id: "4-2",
-      title: "经营性用房",
-      name: "经营性用房",
+      title: "科技管理",
+      name: "科技管理",
       url: "/ui/asset2",
       icon:"keyboard icon",
       params:{kind:2}
     },
       {
         id: "3-8",
-        title: "租赁房屋",
-        name: "租赁房屋",
+        title: "人才管理",
+        name: "人才管理",
         url: "/ui/rentroom",
         icon:"building icon"
       },
       {
         id: "3-9",
-        title: "出租管理",
-        name: "出租管理",
+        title: "金融慧企管理",
+        name: "金融慧企管理",
         url: "/ui/rentAssign",
         icon:"building icon"
       },

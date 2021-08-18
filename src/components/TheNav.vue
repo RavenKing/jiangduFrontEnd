@@ -4,7 +4,7 @@
     <!-- <div class="nav-handle-collapse">
     </div> -->
     <div class="nav-main">
-        奉贤区行政事业单位办公用房信息化平台
+        扬州市江都区企业赋能管理平台
     </div>
     <!-- 右侧操作区 -->
     <div class="nav-handle-box">

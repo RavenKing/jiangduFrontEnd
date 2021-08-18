@@ -6,7 +6,7 @@
         </sui-dimmer>
     </div>
     <div class="headerNew">
-        <div class="logoTitle">奉贤区行政事业单位办公用房信息化平台</div>
+        <div class="logoTitle">扬州市江都区企业赋能管理平台</div>
     </div>
     <b-container class="bv-example-row">
         <b-row>

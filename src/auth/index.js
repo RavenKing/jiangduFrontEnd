@@ -38,7 +38,6 @@ function registerRouteGuard() {
             if(localGet("role")==2)
             {
               _menu[0].children=[];
-
               _menu[0].children.push( 
                 {
                   id: "3-6",
@@ -47,19 +46,18 @@ function registerRouteGuard() {
                   icon:"calendar check icon"
                 },
               );
-
             }
             else{
               
               _menu[0].children.push( {
                 id: "3-28",
-                title: "维修申请审批",
+                title: "企业申请审批",
                 url: "/ui/weixiu",
                 icon:"calendar check icon"
               });
               _menu[0].children.push( {
                 id: "3-29",
-                title: "项目管理",
+                title: "政策推送管理",
                 url: "/ui/weixiuhetong",
                 icon:"address book icon"
               });
