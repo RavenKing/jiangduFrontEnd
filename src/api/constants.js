@@ -1,4 +1,5 @@
-const hostname= "";
+const hostname= "/api";
+const jiangduPre ="/test"
 const constantsJinhui = {
     renameBuildingApi:"/renamebuilding",
     getroomunitinfo:"/getroomunitinfo",
@@ -6,7 +7,9 @@ const constantsJinhui = {
     getCurrentAssignApi:"/getcurrentassign",
     //deleteRoomAssignDetail:""
     LoginURL:hostname+"/login",
-    roomGetAPI:hostname+"/listroom",
+
+    policyApi:jiangduPre+"/policys",
+    roomGetAPI:hostname+"/policys",
     roomCreateAPI:hostname+'/createroom',
     updateRoomAPI:hostname+'/editroom',
     deleteRoomAPI:hostname+'/delroom',

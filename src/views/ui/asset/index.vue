@@ -16,7 +16,7 @@ x   <template lang="html">
                                     <sui-dropdown placeholder="房屋类型" selection :options="options" v-model="filterString.kind" />
                                 </sui-form-field> -->
                                 <sui-form-field>
-                                    <input type="text" placeholder="房屋名字" v-model="filterString.name" />
+                                    <input type="text" placeholder="政策文件" v-model="filterString.name" />
                                 </sui-form-field>
                                 <sui-button basic color="blue" content="查询" @click.prevent="onSearch" />
                             </sui-form-fields>
@@ -35,35 +35,18 @@ x   <template lang="html">
         </div>
 
         <div class="vue2Table">
-            <vuetable ref="vuetable" :api-mode="false" :data="localData" :fields="fields" data-path="data" pagination-path="" @vuetable:pagination-data="onPaginationData">
-                <template slot="tableHeader">
-                    <template>
-                        <tr>
-                            <th colspan="5" class="thTextcenter">基本信息</th>
-                            <th colspan="2" class="thTextcenter">有产证</th>
-                            <th colspan="2" class="thTextcenter">无产证</th>
-                            <th colspan="1" class="thTextcenter">操作</th>
-                        </tr>
-                    </template>
-                    <vuetable-row-header></vuetable-row-header>
-                </template>
-                <div slot="wuchanTudiMianji" slot-scope="props">
-                    {{parseFloat(props.rowData.rawspace-props.rowData.tudispace).toFixed(2)}}
-                </div>
-                <div slot="wuchanJianZhuMianji" slot-scope="props">
-                    {{parseFloat(props.rowData.space-props.rowData.jianzhuspace).toFixed(2)}}
-                </div>
-                <div slot="action" slot-scope="props">
-
-                    <!-- <sui-button basic color="red"  content="查看" v-on:click="viewSomeThing(props.rowData,'check')" /> -->
-                    <sui-button basic color="blue" content="编辑" v-on:click="openAssignSection(props.rowData)" size="tiny" />
-                    <sui-button basic color="red" content="删除" v-on:click="deleteRoom(props.rowData)" size="tiny" />
-                    <!-- <sui-button content="分配房屋列表" v-on:click="openAssignList(props.rowData)" /> -->
-                </div>
-            </vuetable>
-            <div class="pagination ui basic segment grid">
-                <vuetable-pagination ref="pagination" @vuetable-pagination:change-page="onChangePage"></vuetable-pagination>
-            </div>
+            <el-table :data="localData" style="width: 100%">
+                <el-table-column prop="POLICY_ID" label="政策id" width="180">
+                </el-table-column>
+                <el-table-column prop="POLICY_TITLE" label="政策标题" width="180">
+                </el-table-column>
+                <el-table-column prop="POLICY_URL" label="政策文件">
+                </el-table-column>
+                <el-table-column prop="CREATED_AT" label="创建时间">
+                </el-table-column>
+                <el-table-column prop="UPDATED_AT" label="更新时间">
+                </el-table-column>
+            </el-table>
         </div>
         <dialog-bar v-model="sendVal" type="danger" title="是否要删除" :content="deleteTarget.text" v-on:cancel="clickCancel()" @danger="clickConfirmDelete()" @confirm="clickConfirmDelete()" dangerText="确认删除"></dialog-bar>
 
@@ -72,8 +55,7 @@ x   <template lang="html">
                 <sui-modal-header style="border-bottom:0; margin-bottom:-15px;">{{modelTitle}}</sui-modal-header>
                 <sui-modal-content>
                     <sui-segment>
-                        <form-create ref='formComponent' :singleRoom="selectedRoom" :clickToHeTong="changeToChuZuHeTong"></form-create>
-                        <chanzheng-form ref='chanZhengForm' :singleRoom="selectedRoom" v-show="selectedRoom.hasproperty"></chanzheng-form>
+                        <policy-form :singleRoom="selectedPolicy" :clickToHeTong="changeToChuZuHeTong"></policy-form>
                     </sui-segment>
                 </sui-modal-content>
                 <sui-modal-actions>
@@ -363,10 +345,8 @@ x   <template lang="html">
 </template>
 
 <script>
-import VuetableRowHeader from 'vuetable-2/src/components/VuetableRowHeader.vue'
 import dialogBar from '@/components/MDialog'
 import Vuetable from "vuetable-2/src/components/Vuetable";
-import VuetablePagination from "vuetable-2/src/components/VuetablePagination";
 import FieldsDef from "./FieldsDef.js";
 import FieldsDefList from "./FieldsDefList.js";
 import FieldsUnit from "./FieldsUnit.js";
@@ -377,6 +357,7 @@ import chanZhengForm from "@/components/chanZhengForm";
 import ziChanForm from "@/components/ziChanForm";
 import mianjiForm from "@/components/mianjiForm";
 import FormCreate from "@/components/createForm";
+import policyForm from "@/components/policyForm";
 import constants from "@/util/constants";
 import global from "@/global/index"
 import {
@@ -396,11 +377,13 @@ import {
 } from "@/api/utilApi";
 import {
     notifySomething,
-    goToLogin
+    //  goToLogin
 } from "@/util/utils"
 import {
-    getRoomDataApi,
-    createRoomApi,
+    getPolicysApi,
+    //getRoomDataApi,
+    postPolicyApi,
+    //createRoomApi,
     updateRoomApi,
     deleteRoomApi,
     createBuildingApi,
@@ -420,12 +403,11 @@ export default {
     name: "MyVuetable",
     props: ["kind"],
     components: {
-        VuetableRowHeader,
         VueTreeList,
         'dialog-bar': dialogBar,
         Vuetable,
-        VuetablePagination,
         FormCreate,
+        'policy-form':policyForm,
         'zichan-form': ziChanForm,
         'chanzheng-form': chanZhengForm,
         'building-form': BuildingForm,
@@ -1594,34 +1576,39 @@ export default {
         },
         refreshRooms(payload) {
             this.loading = true;
-            getRoomDataApi(payload).then((data) => {
+            console.log(payload)
+            payload = [];
+            getPolicysApi().then((data) => {
+                this.localData = data.data;
+                console.log(this.localData);
+                this.loading = false;
                 //this.localData = data.data.data;
-                if (data.data.code == 0) {
-                    this.loading = false;
-                    this.localData = data.data.data
-                    this.localData.data.map((one) => {
-                        one.owner = parseInt(one.owner);
-                        one.zhuguandanwei = parseInt(one.zhuguandanwei);
-                        switch (one.kind) {
-                            case 2:
-                                one.kindText = "经营性"
-                                one.kindShow = true;
-                                break;
-                            case 1:
-                                one.kindText = "办公性"
-                                one.kindShow = false;
-                                break;
+                // if (data.data.code == 0) {
+                //     this.loading = false;
+                //     this.localData = data.data.data
+                //     this.localData.data.map((one) => {
+                //         one.owner = parseInt(one.owner);
+                //         one.zhuguandanwei = parseInt(one.zhuguandanwei);
+                //         switch (one.kind) {
+                //             case 2:
+                //                 one.kindText = "经营性"
+                //                 one.kindShow = true;
+                //                 break;
+                //             case 1:
+                //                 one.kindText = "办公性"
+                //                 one.kindShow = false;
+                //                 break;
 
-                            default:
-                                break;
-                        }
+                //             default:
+                //                 break;
+                //         }
 
-                    })
-                } else if (data.data.code == 2) {
-                    notifySomething("重复登陆 请重新登陆", constants.GENERALERROR, constants.typeError);
-                    goToLogin();
-                    this.$router.push("/login");
-                }
+                //     })
+                // } else if (data.data.code == 2) {
+                //     notifySomething("重复登陆 请重新登陆", constants.GENERALERROR, constants.typeError);
+                //     goToLogin();
+                //     this.$router.push("/login");
+                // }
             }).catch(function () {
                 this.loading = false;
                 notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
@@ -1632,9 +1619,13 @@ export default {
         // },
         createRoomModel() {
             // show create Model
-            this.modelTitle = "创建房屋"
+            this.modelTitle = "上传政策";
             this.modalMode = "create";
             this.open = true;
+            this.selectedPolicy={
+                "POLICY_ID":"",
+                "POLICY_TITLE":""
+            }
             this.selectedRoom = {
                 room_id: "",
                 certid: "",
@@ -1671,7 +1662,12 @@ export default {
             //kind=1 means 自由房屋创建和编辑
             //this.selectedRoom.kind = 1;
             if (this.modalMode == "create") {
-                createRoomApi(this.selectedRoom).then((result) => {
+
+                this.selectedPolicy.CREATED_AT=new Date();
+                this.selectedPolicy.UPDATED_AT=new Date();
+                this.selectedPolicy.POLICY_URL=" ";
+                this.selectedPolicy.USER_USER_ID="2200";
+                postPolicyApi(this.selectedPolicy).then((result) => {
                     context.loading = false;
                     if (result.data.code == 0) {
                         this.closeModal();

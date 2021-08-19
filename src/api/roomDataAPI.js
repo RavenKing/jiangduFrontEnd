@@ -5,6 +5,19 @@ import {
     localGet
 } from "@/util/storage"; // 导入存储函数
 // 登录接口
+
+function getPolicysApi()
+{
+    return generalGetRequest(constants.policyApi);
+}
+function postPolicyApi(data){
+
+    data = {
+        body:data
+    }
+    return generalRequet(data,constants.policyApi);
+
+}
 function getRoomDataApi(data) {
     return generalRequet(data,constants.roomGetAPI)
 }
@@ -477,9 +490,18 @@ function generalRequet(data,apiName)
     return request({
         url: apiName,
         method: 'post',
-        data: data
+        data: data.body
     });
 }
+function generalGetRequest(apiName)
+{
+ //   let local_auth = localGet(global.project_key, true);
+    return request({
+        url: apiName,
+        method: 'get',
+    });
+}
+
 function createLeaderAssignApi(data)
 {
     return generalRequet(data,constants.createLeaderAssignApi)
@@ -775,5 +797,8 @@ function renameBuildingApi(data)
     renamefloorApi,
     renameBuildingApi,
     searchunitApi,
-    changeRoomTypeApi
+    changeRoomTypeApi,
+    //jiangdu 
+    getPolicysApi,
+    postPolicyApi
 }

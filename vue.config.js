@@ -73,6 +73,17 @@ module.exports = {
           "^/api": ''
         }
       },
+      "/test": {
+        // target: `http://127.0.0.1:${port}/mock`,
+        target: 'http://localhost:4000',
+        // target: 'https://corp-support.cn',
+        changeOrigin: true,
+        secure: false,
+        logLevel:'debug',
+        pathRewrite: {
+          "^/test": '/api'
+        }
+      },
       "/load": {
         // target: 'http://101.132.180.18:8010',
         target: 'http://101.132.180.18:9003',
