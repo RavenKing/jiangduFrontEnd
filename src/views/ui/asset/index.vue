@@ -1669,9 +1669,9 @@ export default {
                 this.selectedPolicy.USER_USER_ID="2200";
                 postPolicyApi(this.selectedPolicy).then((result) => {
                     context.loading = false;
-                    if (result.data.code == 0) {
+                    if (result.data == "OK") {
                         this.closeModal();
-                        notifySomething("创建自有房屋成功", "创建自有房屋成功", constants.typeSuccess);
+                        notifySomething("政策上传成功", "政策上传成功", constants.typeSuccess);
                     } else {
                         notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                     }

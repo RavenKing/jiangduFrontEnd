@@ -75,7 +75,7 @@ module.exports = {
       },
       "/test": {
         // target: `http://127.0.0.1:${port}/mock`,
-        target: 'http://localhost:4000',
+        target: 'https://jiangdubackend.cfapps.us10.hana.ondemand.com',
         // target: 'https://corp-support.cn',
         changeOrigin: true,
         secure: false,
