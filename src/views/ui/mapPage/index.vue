@@ -87,11 +87,9 @@ import BaiduInfoWindow from "vue-baidu-map/components/overlays/InfoWindow";
 import BaiduMarker from "vue-baidu-map/components/overlays/Marker";
 import {
   showgeolistApi,
-  showunitbyroomidApi,
   getUnitApi,
   showunitroominfo
 } from "@/api/roomDataAPI";
-import { ModelSelect } from "vue-search-select";
 
 export default {
   name: "mapPage",
@@ -101,7 +99,6 @@ export default {
     BaiduMarkerClusterer,
     BaiduInfoWindow,
     BaiduMarker,
-    "model-select": ModelSelect
   },
   data() {
     return {
@@ -236,16 +233,17 @@ export default {
         })
         .catch(() => {});
     },
-    infoWindowClose(e) {
+    infoWindowClose() {
       this.infoWindow.show = false;
     },
-    infoWindowOpen(e) {
+    infoWindowOpen() {
       this.infoWindow.show = true;
     },
     lookDetail(data, target) {
       this.activeName = data.name;
       this.infoWindow.show = true;
       this.infoWindow.info = data;
+      console.log(target)
       this.$nextTick(() => {
         var obj = document.querySelector(".bmActive");
         var scrollTop = obj.offsetTop;

@@ -34,8 +34,32 @@ x   <template lang="html">
             </sui-grid>
         </div>
 
-        <div class="vue2Table">
-            <el-table :data="localData" style="width: 100%">
+        <div>
+
+            <div>
+                <vue-good-table :columns="columns" :rows="localData" :pagination-options="paginationOptions">
+                    <template slot="table-row" slot-scope="props">
+                        <span v-if="props.column.field == 'action'">
+                            <span>
+                                <el-button @click.native.prevent="deleteRow(scope.$index, tableData)" type="text" size="small">
+                                    查看文件
+                                </el-button>
+                                <el-button @click.native.prevent="changePolicy(props.row)" type="text" size="small">
+                                    修改
+                                </el-button>
+                                <el-button @click.native.prevent="deletePolicy(props.row)" type="text" size="small">
+                                    删除
+                                </el-button>
+                            </span>
+                        </span>
+                        <span v-else>
+                            {{props.formattedRow[props.column.field]}}
+                        </span>
+                    </template>
+
+                </vue-good-table>
+            </div>
+            <!-- <el-table :data="localData" style="width: 100%">
                 <el-table-column prop="POLICY_ID" label="政策id" width="180">
                 </el-table-column>
                 <el-table-column prop="POLICY_TITLE" label="政策标题" width="180">
@@ -46,7 +70,20 @@ x   <template lang="html">
                 </el-table-column>
                 <el-table-column prop="UPDATED_AT" label="更新时间">
                 </el-table-column>
-            </el-table>
+                <el-table-column fixed="right" label="操作" width="220">
+                    <template slot-scope="scope">
+                        <el-button @click.native.prevent="deleteRow(scope.$index, tableData)" type="text" size="small">
+                            查看文件
+                        </el-button>
+                        <el-button @click.native.prevent="changePolicy(scope.row)" type="text" size="small">
+                            修改
+                        </el-button>
+                        <el-button @click.native.prevent="deletePolicy(scope.row)" type="text" size="small">
+                            删除
+                        </el-button>
+                    </template>
+                </el-table-column>
+            </el-table> -->
         </div>
         <dialog-bar v-model="sendVal" type="danger" title="是否要删除" :content="deleteTarget.text" v-on:cancel="clickCancel()" @danger="clickConfirmDelete()" @confirm="clickConfirmDelete()" dangerText="确认删除"></dialog-bar>
 
@@ -345,7 +382,14 @@ x   <template lang="html">
 </template>
 
 <script>
-import dialogBar from '@/components/MDialog'
+import 'vue-good-table/dist/vue-good-table.css'
+import {
+    VueGoodTable
+} from 'vue-good-table';
+import dialogBar from '@/components/MDialog';
+import {
+    formatDate
+} from "@/util/time";
 import Vuetable from "vuetable-2/src/components/Vuetable";
 import FieldsDef from "./FieldsDef.js";
 import FieldsDefList from "./FieldsDefList.js";
@@ -359,6 +403,8 @@ import mianjiForm from "@/components/mianjiForm";
 import FormCreate from "@/components/createForm";
 import policyForm from "@/components/policyForm";
 import constants from "@/util/constants";
+//import Pagination from 'vue-pagination-2';
+
 import global from "@/global/index"
 import {
     localGet
@@ -382,19 +428,17 @@ import {
 import {
     getPolicysApi,
     //getRoomDataApi,
+    updatePolicyApi,
     postPolicyApi,
+    deletePolicyApi,
     //createRoomApi,
     updateRoomApi,
-    deleteRoomApi,
     createBuildingApi,
-    getBuildingListApi,
     createBuildingFloorApi,
     createAssignmentApi,
-    deleteBuildingApi,
     getBuildingFloorApi,
     getFloorById,
     getRoomStatApi,
-    deleteFloorApi,
     getroomunitinfo,
     renamefloorApi,
     renameBuildingApi,
@@ -403,11 +447,13 @@ export default {
     name: "MyVuetable",
     props: ["kind"],
     components: {
+        //  Pagination,
+        VueGoodTable,
         VueTreeList,
         'dialog-bar': dialogBar,
         Vuetable,
         FormCreate,
-        'policy-form':policyForm,
+        'policy-form': policyForm,
         'zichan-form': ziChanForm,
         'chanzheng-form': chanZhengForm,
         'building-form': BuildingForm,
@@ -417,6 +463,56 @@ export default {
     },
     data() {
         return {
+            paginationOptions: {
+                enabled: true,
+                nextLabel: '下一页',
+                prevLabel: '上一页',
+                rowsPerPageLabel: '每页条目',
+                perPage:5
+
+            },
+            /**test 
+             * 
+             * 
+             * <el-table :data="localData" style="width: 100%">
+                <el-table-column prop="POLICY_ID" label="政策id" width="180">
+                </el-table-column>
+                <el-table-column prop="POLICY_TITLE" label="政策标题" width="180">
+                </el-table-column>
+                <el-table-column prop="POLICY_URL" label="政策文件">
+                </el-table-column>
+                <el-table-column prop="CREATED_AT" label="创建时间">
+                </el-table-column>
+                <el-table-column prop="UPDATED_AT" label="更新时间">
+                </el-table-column>
+             */
+
+            columns: [{
+                    label: '政策id',
+                    field: 'POLICY_ID',
+                },
+                {
+                    label: '政策标题',
+                    field: 'POLICY_TITLE',
+                },
+                {
+                    label: '创建时间',
+                    field: 'CREATED_AT',
+                    //  type: 'date',
+                },
+                {
+                    label: '更新时间',
+                    field: 'UPDATED_AT',
+                    //  type: 'percentage',
+                },
+                {
+                    label: '操作',
+                    field: 'action',
+                    //  type: 'percentage',
+                },
+            ],
+
+            page: 0,
             options: [{
                 text: "办公性",
                 value: 1
@@ -1034,47 +1130,7 @@ export default {
             })
 
         },
-        getBuildingSection() {
-            let data = {};
-            data.room_id = this.selectedRoom.id;
-            var context = this;
-            // get room
-            getBuildingListApi(data).then((result) => {
-                this.loading = false;
-                this.assignList.selectedFloor = {
-                    url: ""
-                };
-                this.assignList.selectedBuilding = {
-                    name: ""
-                };
-                //get floor
-                this.assignList.buildings = [];
-                this.assignList.buildings = result.data.data;
-                let root = [];
-                this.assignList.buildings.map((building) => {
-                    building.building_id = building.id;
-                    building.pid = 0;
-                    building.dragDisabled = true;
-                    building.addTreeNodeDisabled = true;
-                    building.addLeafNodeDisabled = true;
-                    // building.editLeafNodeDisabled = false;
-                    // building.delLeafNodeDisabled = false;
-                    building.editNodeDisabled = false;
-                    building.delNodeDisabled = false;
-                    building.children = [];
-                    root.push(building);
-                    this.getBuildingFloorSection(building);
-                })
-                if (this.assignList.buildings.length > 0) {
-                    this.selectedBuildingID = this.assignList.buildings[0].id;
-                }
-                this.treeData = root;
-                // this.ComponentKey++;
-            }).catch(function () {
-                context.loading = false;
-                notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
-            });
-        },
+
         openAssignSec() {
             this.assignList.open = true;
         },
@@ -1087,7 +1143,7 @@ export default {
                     if (this.context) {
                         this.context.clearRect(0, 0, 500, 500);
                     }
-                    this.drawRect(result.data.data);
+                    //this.drawRect(result.data.data);
                 }
             })
         },
@@ -1115,390 +1171,23 @@ export default {
                 notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
             });
         },
-        drawRect(info) {
-            this.loading = true;
-            if (this.context == null || this.context == undefined) {
-                this.context = this.$refs.canvas.getContext("2d");
-            }
-            var tmpSum = {
-                bangong: 0,
-                fushu: 0,
-                leader: 0,
-                shebei: 0,
-                qita: 0,
-                yewuyongfang: 0,
-                reversed: 0
-            }
-            this.roomAssignment = [];
-            this.roomAssignmentTotal = [];
-            if (info.room_detail != null && info.room_detail != "") {
-                var zuobiao = JSON.parse(info.room_detail);
-                this.roomInFloor = zuobiao;
-                if (info.room_detail != null) {
-                    this.roomAssignment = JSON.parse(info.room_detail);
-                    if (Object.keys(this.roomAssignment).length === 0 && this.roomAssignment.constructor === Object) {
-                        this.roomAssignment = [];
-                        this.roomAssignmentTotal = [];
-                    }
-                    var spaceObject = JSON.parse(info.room_space);
-                    var spaceArray = [];
-                    var otherObject = {};
-                    for (var name in spaceObject) {
-                        //console.log(name);
-                        if (name == "roomother") {
-                            otherObject.id = "roomother";
-                            otherObject.space = spaceObject[name];
-                            tmpSum.qita = spaceObject[name];
-                            otherObject.type = "其他";
-                        } else {
-                            spaceArray.push({
-                                room: name,
-                                space: spaceObject[name]
-                            });
-                        }
-                    }
-                    this.roomAssignment.map((one, index) => {
-                        var roomindex = index + 1;
-                        for (var i = 0; i < spaceArray.length; i++) {
-                            one.id = "room" + roomindex;
-                            if (spaceArray[i].room == "room" + roomindex) {
-                                one.space = spaceArray[i].space;
-                                switch (one.type) {
-                                    case "yewuyongfang":
-                                        tmpSum.yewuyongfang += parseFloat(one.space);
-                                        break;
-                                    case "bangong":
-                                        tmpSum.bangong += parseFloat(one.space);
-                                        break;
-                                    case "fushu":
-                                        tmpSum.fushu += parseFloat(one.space);
-                                        break;
-                                    case "leader":
-                                        tmpSum.leader += parseFloat(one.space);
-                                        break;
-                                    case "shebei":
-                                        tmpSum.shebei += parseFloat(one.space);
-                                        break;
-                                    case "qita":
-                                        tmpSum.qita += parseFloat(one.space);
-                                        break;
-                                    case "reversed":
-                                        tmpSum.reversed += parseFloat(one.space);
-                                        break;
-                                }
-                            }
-                        }
-                    });
-                    if (otherObject != {}) {
-                        this.roomAssignment.push(otherObject)
-                    }
-
-                }
-            }
-            this.roomAssignmentTotal = [{
-                    type: "bangong",
-                    space: parseFloat(tmpSum.bangong).toFixed(2),
-                    text: "办公"
-                }, {
-                    type: "yewuyongfang",
-                    space: parseFloat(tmpSum.yewuyongfang).toFixed(2),
-                    text: "业务"
-                },
-                {
-                    type: "fushu",
-                    space: parseFloat(tmpSum.fushu).toFixed(2),
-                    text: "附属"
-                },
-                {
-                    type: "leader",
-                    space: parseFloat(tmpSum.leader).toFixed(2),
-                    text: "领导"
-                },
-                {
-                    type: "shebei",
-                    space: parseFloat(tmpSum.shebei).toFixed(2),
-                    text: "设备"
-                },
-                {
-                    type: "other",
-                    space: parseFloat(tmpSum.qita).toFixed(2),
-                    text: "其他"
-                },
-                {
-                    type: "reversed",
-                    space: parseFloat(tmpSum.reversed).toFixed(2),
-                    text: "服务"
-                }
-
-            ]
-
-            this.context.strokeStyle = "#FFFFFF";
-            if (zuobiao != null) {
-                var img = this.$refs.backImage;
-                img = new Image();
-                img.src = this.assignList.selectedFloor.url;
-                var that = this;
-                // var that =this;
-                img.onload = () => {
-                    that.context.globalAlpha = 1;
-                    that.context.drawImage(img, 0, 0, 500, 500)
-                    zuobiao.map((room, index) => {
-                        // console.log(room)
-                        // this.context.beginPath();
-                        // this.context.moveTo(
-                        //     room["room" + index][0], room["room" + index][1]);
-                        // this.context.lineTo(room["room" + index][2], room["room" + index][3]);
-                        var textDraw = true;
-                        var roomindex = index + 1;
-
-                        var changIndex = room.origin_width / 500;
-                        var gaoIndex = room.origin_height / 500;
-                        room["room" + roomindex][0] = room["room" + roomindex][0] / changIndex;
-                        room["room" + roomindex][1] = room["room" + roomindex][1] / gaoIndex;
-                        room["room" + roomindex][2] = room["room" + roomindex][2] / changIndex;
-                        room["room" + roomindex][3] = room["room" + roomindex][3] / gaoIndex;
-
-                        if (that.roomAssignment.length != null) {
-                            that.roomAssignment.map((one) => {
-                                if (one.id == "room" + roomindex) {
-                                    that.context.globalAlpha = 1;
-                                    if (one.space && one.space != 0) {
-                                        that.context.strokeText(one.space + "m²", room["room" + roomindex][0] + (room["room" + roomindex][2] / 3), room["room" + roomindex][1] + (room["room" + roomindex][3] / 2));
-                                        textDraw = false;
-                                    }
-                                }
-                            })
-                        }
-                        if (textDraw) {
-                            that.context.globalAlpha = 1;
-                            try {
-                                that.context.strokeText("房间" + roomindex, room["room" + roomindex][0] + (room["room" + roomindex][2] / 2), room["room" + roomindex][1] + (room["room" + roomindex][3] / 2));
-                            } catch (error) {
-                                console.log("parse error")
-                            }
-                        }
-                        that.loading = false;
-                        that.context.globalAlpha = 0;
-                        try {
-                            this.context.strokeRect(room["room" + roomindex][0], room["room" + roomindex][1], room["room" + roomindex][2], room["room" + roomindex][3])
-                        } catch (error) {
-                            console.log("parse error")
-                        }
-                    });
-                }
-
-            } else {
-                this.loading = false;
-                this.context.clearRect(0, 0, 500, 500);
-            }
-
-            // this.context.strokeStyle = "#FF0000";
-            // this.context.strokeText("201", 10, 20);
-            // this.context.strokeRect(0, 0, 60, 100);
-            var canvas = this.$refs.canvas;
-            var contextThis = this;
-            if (zuobiao != null) {
-                this.$refs.canvas.addEventListener('click', function (event) {
-                    var rect = canvas.getBoundingClientRect();
-                    //2
-                    var x = event.clientX - rect.left * (500 / rect.width);
-                    var y = event.clientY - rect.top * (500 / rect.height);
-
-                    var withinOrNot = contextThis.whereIsTheRoom(x, y, contextThis)
-                    console.log("within or Not " + withinOrNot);
-                    if (!withinOrNot) {
-                        contextThis.selectedRoomInFloorIndex = "roomother";
-                        contextThis.selectedRoomInFloor = {
-                            type: "其他",
-                            space: tmpSum.qita
-                        }
-                    }
-                    //contextThis.context.clearRect(0, 0, 500, 500);
-                    contextThis.openAssignModalNew(contextThis.assignList.selectedBuilding, contextThis.assignList.selectedFloor, contextThis)
-                }, false);
-            }
-
-        },
-        whereIsTheRoom(x, y, context) {
-            var withinOrNot = false;
-            const checkZuoBiao = {
-                x: x,
-                y: y
-            };
-            context.roomInFloor.map((room, index) => {
-                var roomindex = 0;
-                if (room["room" + index] == null) {
-                    roomindex = index + 1;
-                } else {
-                    roomindex = index + 1;
-                }
-
-                var leftCornor = {
-                    x: room["room" + roomindex][0],
-                    y: room["room" + roomindex][1]
-                }; //左上坐标
-                var rightCornor = {
-                    x: room["room" + roomindex][0] + room["room" + roomindex][2],
-                    y: room["room" + roomindex][1]
-                };
-                var leftDown = {
-                    x: room["room" + roomindex][0],
-                    y: room["room" + roomindex][1] + room["room" + roomindex][3]
-                }
-                var rightDown = {
-                    x: room["room" + roomindex][0] + room["room" + roomindex][2],
-                    y: room["room" + roomindex][1] + room["room" + roomindex][3]
-                }
-                if (context.withinZuobiao(checkZuoBiao, leftCornor, rightCornor, leftDown, rightDown)) {
-                    withinOrNot = true;
-                    context.selectedRoomInFloorIndex = roomindex;
-                    context.selectedRoomInFloor = {};
-                    context.roomAssignment.map((one) => {
-                        if (one.id == "room" + roomindex) {
-                            context.selectedRoomInFloor = one;
-                        }
-                    });
-                    switch (room.type) {
-                        case "yewuyongfang":
-                            context.selectedRoomInFloor.type = "业务"
-                            break;
-                        case "qita":
-                            context.selectedRoomInFloor.type = "其他"
-                            break;
-                        case "shebei":
-                            context.selectedRoomInFloor.type = "设备"
-                            break;
-                        case "bangong":
-                            context.selectedRoomInFloor.type = "办公"
-                            break;
-                        case "reversed":
-                            context.selectedRoomInFloor.type = "服务"
-                            break;
-                        case "yewu":
-                            context.selectedRoomInFloor.type = "业务"
-                            break;
-                        case "fushu":
-                            context.selectedRoomInFloor.type = "附属"
-                            break;
-                        case "leader":
-                            context.selectedRoomInFloor.type = "领导办公室"
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            });
-            return withinOrNot;
-        },
-        withinZuobiao(checkZuoBiao, leftCornor, rightCornor, leftDown, rightDown) {
-
-            if (checkZuoBiao.x >= leftCornor.x && checkZuoBiao.y <= rightDown.y) {
-                if (checkZuoBiao.x <= rightCornor.x && checkZuoBiao.y >= rightCornor.y) {
-                    return true;
-                }
-                return false;
-            }
-            return false;
-        },
         clickConfirmDelete() {
             this.loading = true;
-
-            if (this.deleteTarget.type == "Room") {
-                deleteRoomApi(this.deleteTarget).then((result) => {
-                    if (result.data.code == 0) {
+            if (this.deleteTarget.type == "policy") {
+                this.deleteTarget.POLICY_ID = this.deleteTarget.id;
+                deletePolicyApi(this.deleteTarget).then((result) => {
+                    if (result.data == constants.OK) {
                         this.refreshRooms({
                             page: 1,
                             kind: 1
                         });
-                        this.$notify({
-                            group: 'foo',
-                            title: '删除自有房屋成功',
-                            text: '删除自有房屋成功'
-                        });
+                        notifySomething("删除政策成功", "删除政策成功", constants.typeSuccess)
                     } else if (result.data.code == 3) {
-                        notifySomething(constants.GENERALERROR, "房屋被占用", constants.typeError);
-
+                        notifySomething(constants.GENERALERROR, "删除政策失败", constants.typeError);
                     }
                     this.loading = false;
-
                 });
-            } else if (this.deleteTarget.type == "Floor") {
-                deleteFloorApi(this.deleteTarget).then((result) => {
-                    this.getBuildingSection();
-                    if (result.data.code == 0) {
-                        this.$notify({
-                            group: 'foo',
-                            title: '删除楼层成功',
-                            text: '删除楼层成功'
-                        });
-                    } else if (result.data.code == 3) {
-                        notifySomething(constants.GENERALERROR, "楼层被占用", constants.typeError);
-                    }
-                }).catch(function () {
-                    this.loading = false;
-                    notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
-                });
-            } else if (this.deleteTarget.type == "Building") {
-                deleteBuildingApi(this.deleteTarget).then((result) => {
-                    this.getBuildingSection();
-                    if (result.data.code == 0) {
-                        this.$notify({
-                            group: 'foo',
-                            title: '删除房成功',
-                            text: '删除房成功'
-                        });
-                    } else if (result.data.code == 3) {
-                        notifySomething(constants.GENERALERROR, "楼房被占用", constants.typeError);
-                    }
-                }).catch(function () {
-                    this.loading = false;
-                    notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
-                });
-            } else if (this.deleteTarget.type == "BuildingFloorAssignment") {
-                this.loading = true;
-                let data = this.deleteTarget;
-                console.log(JSON.stringify(data));
-                if (this.roomAssignment == null || this.roomAssignment == {}) {
-                    this.roomAssignment = [];
-                }
-                var deleteIndex = -1;
-                this.roomAssignment.map((one, index) => {
-                    if (one.id == data.id) { //已经有了的话 直接更新
-                        if (one.roomname == data.roomname) {
-                            deleteIndex = index;
-                        }
-                    }
-                })
-                if (deleteIndex != -1) {
-                    this.roomAssignment.splice(deleteIndex, 1)
-                }
-                var contextF = this;
-                if (this.context) {
-                    this.context.clearRect(0, 0, 500, 500);
-                }
-                createAssignmentApi({
-                    assignment: JSON.stringify(this.roomAssignment),
-                    id: this.assignList.selectedFloor.id
-                }).then((result) => {
-                    this.loading = false;
-                    if (result.data.code == 0) {
-                        // this.context.clearRect(0, 0, 500, 500);
-                        this.roomAssignment = [];
-                        this.roomAssignmentTotal = [];
-                        this.getBuildingSection();
-                        // this.closeAssignModal();
-                        notifySomething(constants.DELETESUCCESS, constants.DELETESUCCESS, constants.typeSuccess);
-
-                    } else {
-                        notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
-                    }
-                }).catch(function () {
-                    contextF.loading = false;
-                    notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
-                });
-
             }
-
         },
         createBuilding: function () {
             this.$refs.formComponentBuilding.singleBuilding.room_id = this.selectedRoom.id;
@@ -1548,6 +1237,15 @@ export default {
                 type: "Room"
             };
         },
+        deletePolicy(data) {
+            this.sendVal = true;
+            console.log(data);
+            this.deleteTarget = {
+                text: "是否要删除" + data.POLICY_TITLE + "(ID: " + data.POLICY_ID + ")?",
+                id: data.POLICY_ID,
+                type: "policy"
+            };
+        },
         deleteBuilding(building) {
             this.sendVal = true;
             this.deleteTarget = {
@@ -1574,6 +1272,7 @@ export default {
                 type: "BuildingFloorAssignment"
             };
         },
+
         refreshRooms(payload) {
             this.loading = true;
             console.log(payload)
@@ -1582,6 +1281,10 @@ export default {
                 this.localData = data.data;
                 console.log(this.localData);
                 this.loading = false;
+                this.localData.map((one => {
+                    one.CREATED_AT = formatDate(new Date(one.CREATED_AT));
+                    one.UPDATED_AT = formatDate(new Date(one.UPDATED_AT));
+                }))
                 //this.localData = data.data.data;
                 // if (data.data.code == 0) {
                 //     this.loading = false;
@@ -1617,14 +1320,25 @@ export default {
         // assignRentRoom(rowData){
         //     console.log(rowData);
         // },
+
+        // open emodify room
+        changePolicy(data) {
+            console.log(data);
+            this.selectedPolicy = data;
+            this.modelTitle = "修改政策";
+            this.modalMode = "edit";
+            this.open = true;
+        },
+
+        //open create 
         createRoomModel() {
             // show create Model
             this.modelTitle = "上传政策";
             this.modalMode = "create";
             this.open = true;
-            this.selectedPolicy={
-                "POLICY_ID":"",
-                "POLICY_TITLE":""
+            this.selectedPolicy = {
+                "POLICY_ID": "",
+                "POLICY_TITLE": ""
             }
             this.selectedRoom = {
                 room_id: "",
@@ -1663,13 +1377,13 @@ export default {
             //this.selectedRoom.kind = 1;
             if (this.modalMode == "create") {
 
-                this.selectedPolicy.CREATED_AT=new Date();
-                this.selectedPolicy.UPDATED_AT=new Date();
-                this.selectedPolicy.POLICY_URL=" ";
-                this.selectedPolicy.USER_USER_ID="2200";
+                this.selectedPolicy.CREATED_AT = new Date();
+                this.selectedPolicy.UPDATED_AT = new Date();
+                this.selectedPolicy.POLICY_URL = " ";
+                this.selectedPolicy.USER_USER_ID = "2200";
                 postPolicyApi(this.selectedPolicy).then((result) => {
                     context.loading = false;
-                    if (result.data == "OK") {
+                    if (result.data == constants.OK) {
                         this.closeModal();
                         notifySomething("政策上传成功", "政策上传成功", constants.typeSuccess);
                     } else {
@@ -1680,79 +1394,26 @@ export default {
                     notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                 });
             } else if (this.modalMode == "edit") {
-                // this.selectedRoom.qitaziliao = JSON.stringify([])
-                // this.selectedRoom.tuzhiziliao = JSON.stringify([])
-                // this.selectedRoom.chanzhengziliao = JSON.stringify([])
-                // 有list的时候 ，，不为空时 merge。
-                if (this.fileList.length > 0) {
-                    if (this.selectedRoom.qitaziliao != "") {
-                        this.selectedRoom.qitaziliao = this.selectedRoom.qitaziliao.concat(this.fileList);
-                        this.selectedRoom.qitaziliao = JSON.stringify(this.selectedRoom.qitaziliao);
-                    } else {
-                        // 为空时 直接等于
-                        this.selectedRoom.qitaziliao = JSON.stringify(this.fileList);
-                    }
-                    //重置
-                    this.fileList = [];
-                    //没有新添加的时候
-                } else {
-                    //如果没有值 "" 不干嘛， 有值的话 直接stringify
-                    //if (this.selectedRoom.qitaziliao != "") {
-                    if (this.selectedRoom.qitaziliao == "") {
-                        this.selectedRoom.qitaziliao = [];
-                    }
-                    this.selectedRoom.qitaziliao = JSON.stringify(this.selectedRoom.qitaziliao);
-                    //}
-                }
-                if (this.tuzhiZiLiao.length > 0) {
-                    if (this.selectedRoom.tuzhiziliao != "") {
-                        this.selectedRoom.tuzhiziliao = this.selectedRoom.tuzhiziliao.concat(this.tuzhiZiLiao);
-                        this.selectedRoom.tuzhiziliao = JSON.stringify(this.selectedRoom.tuzhiziliao);
-                    } else {
-                        this.selectedRoom.tuzhiziliao = JSON.stringify(this.tuzhiZiLiao);
-                    }
-                    this.tuzhiZiLiao = [];
-                } else {
-                    //if (this.selectedRoom.tuzhiziliao.length) {
-                    if (this.selectedRoom.tuzhiziliao == "") {
-                        this.selectedRoom.tuzhiziliao = [];
-                    }
-                    this.selectedRoom.tuzhiziliao = JSON.stringify(this.selectedRoom.tuzhiziliao)
-                    //}
-                }
-                if (this.chanzhenZiLiao.length > 0) {
-                    if (this.selectedRoom.chanzhengziliao != "") {
-                        this.selectedRoom.chanzhengziliao = this.selectedRoom.chanzhengziliao.concat(this.chanzhenZiLiao)
-                        this.selectedRoom.chanzhengziliao = JSON.stringify(this.selectedRoom.chanzhengziliao);
-                    } else {
-                        this.selectedRoom.chanzhengziliao = JSON.stringify(this.chanzhenZiLiao);
-                    }
-                    this.chanzhenZiLiao = [];
-                } else {
-                    if (this.selectedRoom.chanzhengziliao == "") {
-                        this.selectedRoom.chanzhengziliao = [];
-                        //this.selectedRoom.chanzhengziliao = JSON.stringify(this.selectedRoom.chanzhengziliao);
-                    }
-                    this.selectedRoom.chanzhengziliao = JSON.stringify(this.selectedRoom.chanzhengziliao);
-                }
-                updateRoomApi(this.selectedRoom).then((result) => {
-                    if (result.data.code == 0) {
+                //upate Policy APi
+                updatePolicyApi(this.selectedPolicy).then((result) => {
+                    if (result.data == constants.OK) {
                         this.closeModal();
                         this.$notify({
                             group: 'foo',
-                            title: '更新自有房屋成功',
-                            text: '更新自有房屋成功',
+                            title: '更新政策成功',
+                            text: '更新政策成功',
                             type: "success"
                         });
                     } else if (result.data.code == 3) {
-                        notifySomething("更新自有房屋失败", "该房屋已有分配房间，无法更改房屋性质", "error");
+                        notifySomething("更新政策失败", "该房屋已有分配房间，无法更改房屋性质", "error");
 
                     } else {
                         notifySomething("更新自有房屋失败", "更新自有房屋失败", "error");
 
                     }
                     this.loading = false;
-                }).catch(function () {
+                }).catch(function (err) {
+                    console.log(err)
                     context.loading = false;
                     notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                 });
@@ -1955,10 +1616,6 @@ export default {
 
 .filterBiaoDan {
     margin: 0 0 15px 0
-}
-
-.vue2Table {
-    /* margin: 20px; */
 }
 
 .buttonBuildingFloor {

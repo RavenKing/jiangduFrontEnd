@@ -4,7 +4,7 @@
         <sui-form-fields>
             <sui-form-field style="width:25%;">
                 <label>政策id</label>
-                <sui-input placeholder="政策id" v-model="singleRoom.POLICY_ID" />
+                <sui-input placeholder="政策id" v-model="singleRoom.POLICY_ID" disabled/>
             </sui-form-field>
             <sui-form-field style="width:50%;">
                 <label>政策标题</label>

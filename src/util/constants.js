@@ -1,6 +1,7 @@
 const constantsJinhui = {
     typeSuccess:"success",
     typeError:"error",
+    OK:"OK",
     NEW:"新建",
     PASS:"通过",
     FAIL:"拒绝",

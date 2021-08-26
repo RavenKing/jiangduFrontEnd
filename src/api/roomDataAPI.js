@@ -10,10 +10,24 @@ function getPolicysApi()
 {
     return generalGetRequest(constants.policyApi);
 }
+function updatePolicyApi(data)
+{
+    data = {
+        data:data
+    }
+    return generalPutRequest(data,constants.policyApi); 
+}
+function deletePolicyApi(data)
+{
+    data = {
+        data:data
+    }
+    return generalDeleteRequest(data,constants.policyApi); 
+}
 function postPolicyApi(data){
 
     data = {
-        body:data
+        data:data
     }
     return generalRequet(data,constants.policyApi);
 
@@ -490,9 +504,19 @@ function generalRequet(data,apiName)
     return request({
         url: apiName,
         method: 'post',
-        data: data.body
+        data: data
     });
 }
+// function generalPostRequest(data,apiName)
+// {
+//     let local_auth = localGet(global.project_key, true);
+//     data.token=local_auth;
+//     return request({
+//         url: apiName,
+//         method: 'post',
+//         data: data
+//     });
+// }
 function generalGetRequest(apiName)
 {
  //   let local_auth = localGet(global.project_key, true);
@@ -502,6 +526,26 @@ function generalGetRequest(apiName)
     });
 }
 
+function generalPutRequest(data,apiName)
+{
+ //   let local_auth = localGet(global.project_key, true);
+    return request({
+        url: apiName,
+        method: 'put',
+        data: data
+
+    });
+}
+function generalDeleteRequest(data,apiName)
+{
+ //   let local_auth = localGet(global.project_key, true);
+    return request({
+        url: apiName,
+        method: 'delete',
+        data: data
+
+    });
+}
 function createLeaderAssignApi(data)
 {
     return generalRequet(data,constants.createLeaderAssignApi)
@@ -800,5 +844,7 @@ function renameBuildingApi(data)
     changeRoomTypeApi,
     //jiangdu 
     getPolicysApi,
-    postPolicyApi
+    postPolicyApi,
+    updatePolicyApi,
+    deletePolicyApi
 }

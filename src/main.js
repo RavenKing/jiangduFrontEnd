@@ -4,12 +4,11 @@ import router from "./router";
 import store from "./store";
 import BaiduMap from 'vue-baidu-map';
 //import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
-import 'bootstrap/dist/css/bootstrap.css'
-import 'bootstrap-vue/dist/bootstrap-vue.css'
+// import 'bootstrap/dist/css/bootstrap.css'
+// import 'bootstrap-vue/dist/bootstrap-vue.css'
 import SuiVue from 'semantic-ui-vue';
 import 'semantic-ui-css/semantic.min.css';
-import Notifications from 'vue-notification'
-
+import Notifications from 'vue-notification';
 Vue.use(SuiVue);
 //Install BootstrapVue
 // Vue.use(BootstrapVue)

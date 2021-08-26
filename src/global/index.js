@@ -6,5 +6,5 @@ const global = {
     err: 300
   }
 }
-
+  
 export default global;
