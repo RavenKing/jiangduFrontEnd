@@ -468,7 +468,7 @@ export default {
                 nextLabel: '下一页',
                 prevLabel: '上一页',
                 rowsPerPageLabel: '每页条目',
-                perPage:5
+                perPage: 5
 
             },
             /**test 
@@ -488,12 +488,11 @@ export default {
              */
 
             columns: [{
-                    label: '政策id',
-                    field: 'POLICY_ID',
-                },
-                {
                     label: '政策标题',
                     field: 'POLICY_TITLE',
+                }, {
+                    label: '政策id',
+                    field: 'POLICY_ID',
                 },
                 {
                     label: '创建时间',
@@ -1324,6 +1323,10 @@ export default {
         // open emodify room
         changePolicy(data) {
             console.log(data);
+            if (data.hasOwnProperty("vgt_id") || data.hasOwnProperty("originalIndex")) {
+                delete data.vgt_id;
+                delete data.originalIndex;
+            }
             this.selectedPolicy = data;
             this.modelTitle = "修改政策";
             this.modalMode = "edit";

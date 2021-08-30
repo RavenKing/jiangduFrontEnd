@@ -5,7 +5,12 @@ import {
     localGet
 } from "@/util/storage"; // 导入存储函数
 // 登录接口
-
+function registerUserApi(data){
+    data = {
+        data:data
+    }
+    return generalRequet(data,constants.userApi);
+}
 function getPolicysApi()
 {
     return generalGetRequest(constants.policyApi);
@@ -846,5 +851,6 @@ function renameBuildingApi(data)
     getPolicysApi,
     postPolicyApi,
     updatePolicyApi,
-    deletePolicyApi
+    deletePolicyApi,
+    registerUserApi
 }

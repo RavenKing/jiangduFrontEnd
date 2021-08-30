@@ -1,5 +1,9 @@
 <template>
 <wl-container class="wlui-login" :use-scroll="false">
+    <el-drawer title="注册平台" :visible.sync="drawer" :direction="direction">
+        <span>基本信息</span>
+        <register-form :singleEntry="singleEntry" />
+    </el-drawer>
     <div>
         <sui-dimmer :active="loading" inverted>
             <sui-loader content="正在加载" />
@@ -8,44 +12,37 @@
     <div class="headerNew">
         <div class="logoTitle">扬州市江都区企业赋能管理平台</div>
     </div>
-    <b-container class="bv-example-row">
-        <b-row>
-            <b-col class="title-position">
-                <div>
-                    <h1>欢迎你！</h1>
-                    <h1>登陆党政机关</h1>
-                </div>
-            </b-col>
-            <b-col>
-                <div class="login-form">
-                    <div class="login-form-content">
-                        <h2 class="login-form-title">用户登陆</h2>
-                        <el-form :model="login_form" :rules="login_rules" class="login-box" ref="login-form" @keyup.enter.native="submitLogin('login-form')">
-                            <el-form-item prop="act">
-                                <div class="ipt-box">
-                                    <label class="item-label">
-                                        <i class="iconfont icon-yonghu1"></i>
-                                    </label>
-                                    <input class="item-ipt" type="text" v-model="login_form.act" placeholder="请输入账号" />
-                                </div>
-                            </el-form-item>
-                            <el-form-item prop="pass">
-                                <div class="ipt-box">
-                                    <label class="item-label">
-                                        <i class="iconfont icon-password1"></i>
-                                    </label>
-                                    <input class="item-ipt" type="password" v-model="login_form.pass" placeholder="请输入密码" />
-                                </div>
-                            </el-form-item>
-                            <el-form-item>
-                                <el-button type="primary" size="large" @click="submitLogin('login-form')" class="login-btn">登录</el-button>
-                            </el-form-item>
-                        </el-form>
+    <div>
+        <h1>欢迎你！</h1>
+        <h1>登陆党政机关</h1>
+    </div>
+    <div class="login-form">
+        <div class="login-form-content">
+            <h2 class="login-form-title">用户登陆</h2>
+            <el-form :model="login_form" :rules="login_rules" class="login-box" ref="login-form" @keyup.enter.native="submitLogin('login-form')">
+                <el-form-item prop="act">
+                    <div class="ipt-box">
+                        <label class="item-label">
+                            <i class="iconfont icon-yonghu1"></i>
+                        </label>
+                        <input class="item-ipt" type="text" v-model="login_form.act" placeholder="请输入账号" />
                     </div>
-                </div>
-            </b-col>
-        </b-row>
-    </b-container>
+                </el-form-item>
+                <el-form-item prop="pass">
+                    <div class="ipt-box">
+                        <label class="item-label">
+                            <i class="iconfont icon-password1"></i>
+                        </label>
+                        <input class="item-ipt" type="password" v-model="login_form.pass" placeholder="请输入密码" />
+                    </div>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" size="large" @click="submitLogin('login-form')" class="login-btn">登录</el-button>
+                    <el-button type="text" @click="drawer = true">注册</el-button>
+                </el-form-item>
+            </el-form>
+        </div>
+    </div>
 </wl-container>
 </template>
 
@@ -59,10 +56,50 @@ import {
 import {
     localSet
 } from "@/util/storage";
+import RegisterForm from "@/components/registerForm";
 
 export default {
+    components: {
+        'register-form': RegisterForm
+    },
     data() {
         return {
+            singleEntry: {
+                "CREATEDAT": " ",
+                "CREATEDBY": " ",
+                "MODIFIEDAT": " ",
+                "MODIFIEDBY": " ",
+                "USER_ID": " ",
+                "PHONE": " ",
+                "LEVEL": " ",
+                "AREA": " ",
+                "USER_NAME": " ",
+                "COMPANY_NAME": " ",
+                "COMPANY_CODE": " ",
+                "COMPANY_ADDRESS": " ",
+                "LEGAL_REPRESENTATIVE": " ",
+                "REGISTERED_CAPITAL": " ",
+                "CONTACT_PERSON": " ",
+                "CONTACT_PHONE": " ",
+                "TERM_OF_OPERATION": " ",
+                "COMPANY_TYPE": " ",
+                "REGISTER_STATUS": " ",
+                "HEZHUN_TIME": " ",
+                "REGISTER_NUMBER": " ",
+                "REGISTER_CURRENCY": " ",
+                "BUSINESS_SCOPE": " ",
+                "CERTIFICATE_URL": " ",
+                "CREATED_AT": " ",
+                "UPDATED_AT": " ",
+                "COUNTRY_CODE": " ",
+                "DENGJI_JIGUAN": " ",
+                "PASSWORD": "",
+                "TOKEN": " ",
+                "LOG_DATE": " ",
+                "VALIDATEDATE": " "
+            },
+            direction: 'rtl',
+            drawer: false,
             loading: false,
             login_form: {
                 act: "admin",
@@ -87,6 +124,7 @@ export default {
     },
     methods: {
         // 登录表单提交
+        openRegisterForm() {},
         submitLogin(formName) {
             this.loading = true;
             this.$refs[formName].validate(valid => {

@@ -8,6 +8,8 @@ const constantsJinhui = {
     //deleteRoomAssignDetail:""
     LoginURL:hostname+"/login",
 
+            // new jiangdu 
+    userApi:jiangduPre+"/users",
     policyApi:jiangduPre+"/policys",
     roomGetAPI:hostname+"/policys",
     roomCreateAPI:hostname+'/createroom',
