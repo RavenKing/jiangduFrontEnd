@@ -192,6 +192,7 @@ export default {
         {
           label: "政策标题",
           field: "POLICY_TITLE",
+          sortable: false,
         },
         {
           label: "创建时间",
@@ -201,11 +202,13 @@ export default {
         {
           label: "更新时间",
           field: "UPDATED_AT",
+          sortable: false,
           //  type: 'percentage',
         },
         {
           label: "操作",
           field: "action",
+          sortable: false,
           //  type: 'percentage',
         },
       ],
