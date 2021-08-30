@@ -11,6 +11,12 @@
                 <sui-input placeholder="政策标题" v-model="singleRoom.POLICY_TITLE" />
             </sui-form-field>
         </sui-form-fields>
+        <sui-form-fields>
+            <sui-form-field style="width:75%;">
+                <label>政策内容</label>
+                <textarea placeholder="政策内容" v-model="singleRoom.CDATA" />
+            </sui-form-field>
+        </sui-form-fields>
     </sui-form>
     <el-upload class="upload-demo" drag action="https://jsonplaceholder.typicode.com/posts/"  :file-list="fileList" multiple>
         <i class="el-icon-upload"></i>
@@ -68,5 +74,17 @@ export default {
 .map {
     width: 100%;
     height: 400px;
+}
+.el-upload-dragger {
+    background-color: #fff;
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    width: 495px;
+    height: 180px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
 }
 </style>
