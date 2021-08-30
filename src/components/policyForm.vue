@@ -12,7 +12,7 @@
             </sui-form-field>
         </sui-form-fields>
     </sui-form>
-    <el-upload class="upload-demo" drag action="https://jsonplaceholder.typicode.com/posts/" :on-preview="handlePreview" :on-remove="handleRemove" :file-list="fileList" multiple>
+    <el-upload class="upload-demo" drag action="https://jsonplaceholder.typicode.com/posts/"  :file-list="fileList" multiple>
         <i class="el-icon-upload"></i>
         <div class="el-upload__text"> <em>点击上传</em></div>
         <div class="el-upload__tip" slot="tip">jpg/png files with a size less than 500kb</div>
@@ -21,17 +21,15 @@
 </template>
 
 <script>
-import {
-    getUnitApi,
-} from "@/api/roomDataAPI";
 import * as lang from "vuejs-datepicker/src/locale";
 
 export default {
-    props: ['singleRoom', 'clickDingWei', 'clickToHeTong'],
+    props: ['singleRoom'],
     name: 'form-create',
 
     data() {
         return {
+            fileList:[],
             checkZhuguan: false,
             unitOptions: [],
             lang: lang,
@@ -50,26 +48,9 @@ export default {
                 this.checkZhuguan = false;
             }
         },
-        getUnit() {
-            this.unitoptions = [];
-
-            console.log(this.unitOptions);
-            getUnitApi().then((data) => {
-                var res_data = data.data.data
-                for (var i = res_data.length - 1; i >= 0; i--) {
-                    this.unitOptions.push({
-                        'text': res_data[i]['name'],
-                        'value': res_data[i]['id']
-                    })
-                }
-                console.log(this.unitOptions);
-
-            });
-        }
 
     },
     created() {
-        this.getUnit();
 
     }
 };

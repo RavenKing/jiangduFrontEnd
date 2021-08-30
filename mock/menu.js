@@ -45,9 +45,9 @@ const menus = [{
       // },
       {
         id: "3-11",
-        title: "地图",
-        name: "地图",
-        url: "/ui/mapPage",
+        title: "标签管理",
+        name: "标签管理",
+        url: "/ui/tags",
         icon:"globe icon"
       },
       // {
