@@ -250,10 +250,6 @@ export default {
             deleteTarget: "",
             loading: true,
             localData: [],
-            selectedRoom: {
-                roomname: "",
-                area: "奉贤区"
-            },
             ComponentKey: 1,
             listField: FieldsDefList,
             fields: FieldsDef,

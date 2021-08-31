@@ -65,10 +65,6 @@ export default {
     data() {
         return {
             singleEntry: {
-                "CREATEDAT": " ",
-                "CREATEDBY": " ",
-                "MODIFIEDAT": " ",
-                "MODIFIEDBY": " ",
                 "USER_ID": " ",
                 "PHONE": " ",
                 "LEVEL": " ",
@@ -96,7 +92,9 @@ export default {
                 "PASSWORD": "",
                 "TOKEN": " ",
                 "LOG_DATE": " ",
-                "VALIDATEDATE": " "
+                "VALIDATEDATE": " ",
+                "INDUSTRY": " ",
+                "CAP": " "
             },
             direction: 'rtl',
             drawer: false,
