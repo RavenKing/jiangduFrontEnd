@@ -37,7 +37,7 @@ x   <template lang="html">
         <div>
 
             <div>
-                <vue-good-table :columns="columns" :rows="localData" :sort-options="{enabled: true, initialSortBy: {field: 'CREATED_AT', type: 'asc'}}" :pagination-options="paginationOptions">
+                <vue-good-table :columns="columns" :rows="localData" :sort-options="{enabled: true, initialSortBy: {field: 'CREATED_AT', type: 'desc'}}" :pagination-options="paginationOptions">
                     <template slot="table-row" slot-scope="props">
                         <span v-if="props.column.field == 'action'">
                             <span>

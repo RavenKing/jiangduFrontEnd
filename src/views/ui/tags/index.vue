@@ -16,7 +16,7 @@ x   <template lang="html">
                                     <sui-dropdown placeholder="房屋类型" selection :options="options" v-model="filterString.kind" />
                                 </sui-form-field> -->
                                 <sui-form-field>
-                                    <input type="text" placeholder="政策文件" v-model="filterString.name" />
+                                    <input type="text" placeholder="标签文件" v-model="filterString.name" />
                                 </sui-form-field>
                                 <sui-button basic color="blue" content="查询" @click.prevent="onSearch" />
                             </sui-form-fields>
@@ -37,17 +37,23 @@ x   <template lang="html">
         <div>
 
             <div>
-                <vue-good-table :columns="columns" :rows="localData" :pagination-options="paginationOptions">
+                <vue-good-table :columns="columns" :rows="localData" :sort-options="{
+    enabled: true,
+    multipleColumns: true,
+    initialSortBy: [
+      {field: 'CREATED_AT', type: 'desc'},
+    ],}" 
+    :pagination-options="paginationOptions">
                     <template slot="table-row" slot-scope="props">
                         <span v-if="props.column.field == 'action'">
                             <span>
                                 <el-button @click.native.prevent="deleteRow(scope.$index, tableData)" type="text" size="small">
                                     查看文件
                                 </el-button>
-                                <el-button @click.native.prevent="changePolicy(props.row)" type="text" size="small">
+                                <el-button @click.native.prevent="changeTag(props.row)" type="text" size="small">
                                     修改
                                 </el-button>
-                                <el-button @click.native.prevent="deletePolicy(props.row)" type="text" size="small">
+                                <el-button @click.native.prevent="deleteTag(props.row)" type="text" size="small">
                                     删除
                                 </el-button>
                             </span>
@@ -59,31 +65,6 @@ x   <template lang="html">
 
                 </vue-good-table>
             </div>
-            <!-- <el-table :data="localData" style="width: 100%">
-                <el-table-column prop="POLICY_ID" label="政策id" width="180">
-                </el-table-column>
-                <el-table-column prop="POLICY_TITLE" label="政策标题" width="180">
-                </el-table-column>
-                <el-table-column prop="POLICY_URL" label="政策文件">
-                </el-table-column>
-                <el-table-column prop="CREATED_AT" label="创建时间">
-                </el-table-column>
-                <el-table-column prop="UPDATED_AT" label="更新时间">
-                </el-table-column>
-                <el-table-column fixed="right" label="操作" width="220">
-                    <template slot-scope="scope">
-                        <el-button @click.native.prevent="deleteRow(scope.$index, tableData)" type="text" size="small">
-                            查看文件
-                        </el-button>
-                        <el-button @click.native.prevent="changePolicy(scope.row)" type="text" size="small">
-                            修改
-                        </el-button>
-                        <el-button @click.native.prevent="deletePolicy(scope.row)" type="text" size="small">
-                            删除
-                        </el-button>
-                    </template>
-                </el-table-column>
-            </el-table> -->
         </div>
         <dialog-bar v-model="sendVal" type="danger" title="是否要删除" :content="deleteTarget.text" v-on:cancel="clickCancel()" @danger="clickConfirmDelete()" @confirm="clickConfirmDelete()" dangerText="确认删除"></dialog-bar>
 
@@ -92,7 +73,7 @@ x   <template lang="html">
                 <sui-modal-header style="border-bottom:0; margin-bottom:-15px;">{{modelTitle}}</sui-modal-header>
                 <sui-modal-content>
                     <sui-segment>
-                        <policy-form :singleRoom="selectedPolicy" ></policy-form>
+                        <tag-form :singleRoom="selectedTag" ></tag-form>
                     </sui-segment>
                 </sui-modal-content>
                 <sui-modal-actions>
@@ -138,7 +119,7 @@ import FieldsDef from "./FieldsDef.js";
 import FieldsDefList from "./FieldsDefList.js";
 import FieldsUnit from "./FieldsUnit.js";
 import ExportForm from "@/components/export_form";
-import policyForm from "@/components/policyForm";
+import tagForm from "@/components/tagForm";
 import constants from "@/util/constants";
 //import Pagination from 'vue-pagination-2';
 
@@ -152,12 +133,10 @@ import {
     //  goToLogin
 } from "@/util/utils"
 import {
-    getPolicysApi,
-    //getRoomDataApi,
-    updatePolicyApi,
-    postPolicyApi,
-    deletePolicyApi,
-    //createRoomApi,
+    getTagsApi,
+    updateTagsApi,
+    postTagsApi,
+    deleteTagsApi,
 } from "@/api/roomDataAPI";
 export default {
     name: "MyVuetable",
@@ -166,7 +145,7 @@ export default {
         //  Pagination,
         VueGoodTable,
         'dialog-bar': dialogBar,
-        'policy-form': policyForm,
+        'tag-form': tagForm,
         'export-form': ExportForm
     },
     data() {
@@ -176,31 +155,18 @@ export default {
                 nextLabel: '下一页',
                 prevLabel: '上一页',
                 rowsPerPageLabel: '每页条目',
-                perPage: 5
+                perPage: 10
 
             },
-            /**test 
-             * 
-             * 
-             * <el-table :data="localData" style="width: 100%">
-                <el-table-column prop="POLICY_ID" label="政策id" width="180">
-                </el-table-column>
-                <el-table-column prop="POLICY_TITLE" label="政策标题" width="180">
-                </el-table-column>
-                <el-table-column prop="POLICY_URL" label="政策文件">
-                </el-table-column>
-                <el-table-column prop="CREATED_AT" label="创建时间">
-                </el-table-column>
-                <el-table-column prop="UPDATED_AT" label="更新时间">
-                </el-table-column>
-             */
 
             columns: [{
-                    label: '政策标题',
-                    field: 'POLICY_TITLE',
+                    label: '标签名',
+                    field: 'TAG_NAME',
+                    sortable: false,
                 }, {
-                    label: '政策id',
-                    field: 'POLICY_ID',
+                    label: '标签值',
+                    field: 'TAG_VALUE',
+                    sortable: false,
                 },
                 {
                     label: '创建时间',
@@ -208,13 +174,15 @@ export default {
                     //  type: 'date',
                 },
                 {
-                    label: '更新时间',
-                    field: 'UPDATED_AT',
+                    label: '描述',
+                    field: 'DESCRIPTION',
+                    sortable: false,
                     //  type: 'percentage',
                 },
                 {
-                    label: '操作',
-                    field: 'action',
+                    label: '标签种类',
+                    field: 'TAG_CATEGORY',
+                    sortable: false,
                     //  type: 'percentage',
                 },
             ],
@@ -242,7 +210,7 @@ export default {
                 kind: 1,
                 page: 1
             },
-            selectedPolicy:{},
+            selectedTag:{},
             buildingImage: {
                 open: false,
                 notification: ""
@@ -292,17 +260,17 @@ export default {
 
         clickConfirmDelete() {
             this.loading = true;
-            if (this.deleteTarget.type == "policy") {
-                this.deleteTarget.POLICY_ID = this.deleteTarget.id;
-                deletePolicyApi(this.deleteTarget).then((result) => {
+            if (this.deleteTarget.type == "tag") {
+                this.deleteTarget.TAG_ID = this.deleteTarget.id;
+                deleteTagsApi(this.deleteTarget).then((result) => {
                     if (result.data == constants.OK) {
                         this.refreshRooms({
                             page: 1,
                             kind: 1
                         });
-                        notifySomething("删除政策成功", "删除政策成功", constants.typeSuccess)
+                        notifySomething("删除标签成功", "删除标签成功", constants.typeSuccess)
                     } else if (result.data.code == 3) {
-                        notifySomething(constants.GENERALERROR, "删除政策失败", constants.typeError);
+                        notifySomething(constants.GENERALERROR, "删除标签失败", constants.typeError);
                     }
                     this.loading = false;
                 });
@@ -333,20 +301,20 @@ export default {
             this.$refs.FormExport.fromData = [];
             this.exportData.open = false;
         },
-        deletePolicy(data) {
+        deleteTag(data) {
             this.sendVal = true;
             console.log(data);
             this.deleteTarget = {
-                text: "是否要删除" + data.POLICY_TITLE + "(ID: " + data.POLICY_ID + ")?",
-                id: data.POLICY_ID,
-                type: "policy"
+                text: "是否要删除" + data.TAG_NAME + "(ID: " + data.TAG_ID + ")?",
+                id: data.TAG_ID,
+                type: "tag"
             };
         },
         refreshRooms(payload) {
             this.loading = true;
             console.log(payload)
             payload = [];
-            getPolicysApi().then((data) => {
+            getTagsApi().then((data) => {
                 this.localData = data.data;
                 console.log(this.localData);
                 this.loading = false;
@@ -391,15 +359,15 @@ export default {
         // },
 
         // open emodify room
-        changePolicy(data) {
+        changeTag(data) {
             console.log(data);
             // eslint-disable-next-line no-prototype-builtins
             if (data.hasOwnProperty("vgt_id") || data.hasOwnProperty("originalIndex")) {
                 delete data.vgt_id;
                 delete data.originalIndex;
             }
-            this.selectedPolicy = data;
-            this.modelTitle = "修改政策";
+            this.selectedTag = data;
+            this.modelTitle = "修改标签";
             this.modalMode = "edit";
             this.open = true;
         },
@@ -407,12 +375,16 @@ export default {
         //open create 
         createRoomModel() {
             // show create Model
-            this.modelTitle = "上传政策";
+            this.modelTitle = "上传标签";
             this.modalMode = "create";
             this.open = true;
-            this.selectedPolicy = {
-                "POLICY_ID": "",
-                "POLICY_TITLE": ""
+            this.selectedTag = {
+                "TAG_ID": "",
+                "TAG_NAME": "",
+                "TAG_VALUE": "",
+                "TYPE": "",
+                "DESCRIPTION": "",
+                "TAG_CATEGORY": "",
             }
             this.selectedRoom = {
                 room_id: "",
@@ -451,15 +423,15 @@ export default {
             //this.selectedRoom.kind = 1;
             if (this.modalMode == "create") {
 
-                this.selectedPolicy.CREATED_AT = new Date();
-                this.selectedPolicy.UPDATED_AT = new Date();
-                this.selectedPolicy.POLICY_URL = " ";
-                this.selectedPolicy.USER_USER_ID = "2200";
-                postPolicyApi(this.selectedPolicy).then((result) => {
+                this.selectedTag.CREATED_AT = new Date();
+                this.selectedTag.UPDATED_AT = new Date();
+                // this.selectedTag.TAG_URL = " ";
+                this.selectedTag.USER_ID_USER_ID = "2200";
+                postTagsApi(this.selectedTag).then((result) => {
                     context.loading = false;
                     if (result.data == constants.OK) {
                         this.closeModal();
-                        notifySomething("政策上传成功", "政策上传成功", constants.typeSuccess);
+                        notifySomething("标签上传成功", "标签上传成功", constants.typeSuccess);
                     } else {
                         notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                     }
@@ -468,18 +440,18 @@ export default {
                     notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
                 });
             } else if (this.modalMode == "edit") {
-                //upate Policy APi
-                updatePolicyApi(this.selectedPolicy).then((result) => {
+
+                updateTagsApi(this.selectedTag).then((result) => {
                     if (result.data == constants.OK) {
                         this.closeModal();
                         this.$notify({
                             group: 'foo',
-                            title: '更新政策成功',
-                            text: '更新政策成功',
+                            title: '更新标签成功',
+                            text: '更新标签成功',
                             type: "success"
                         });
                     } else if (result.data.code == 3) {
-                        notifySomething("更新政策失败", "该房屋已有分配房间，无法更改房屋性质", "error");
+                        notifySomething("更新标签失败", "该房屋已有分配房间，无法更改房屋性质", "error");
 
                     } else {
                         notifySomething("更新自有房屋失败", "更新自有房屋失败", "error");
