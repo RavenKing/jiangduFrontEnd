@@ -1,106 +1,158 @@
-x   <template lang="html">
-<wl-container>
+x
+<template lang="html">
+  <wl-container>
     <div>
-        <div>
-            <sui-dimmer :active="loading" inverted>
-                <sui-loader content="正在加载" />
-            </sui-dimmer>
-        </div>
-        <div class="filterBiaoDan" style="padding-left:15px;margin:0;">
-            <sui-grid>
-                <sui-grid-row>
-                    <sui-grid-column :width="12">
-                        <sui-form>
-                            <sui-form-fields inline>
-                                <!-- <sui-form-field>
+      <div>
+        <sui-dimmer :active="loading" inverted>
+          <sui-loader content="正在加载" />
+        </sui-dimmer>
+      </div>
+      <div class="filterBiaoDan" style="padding-left:15px;margin:0;">
+        <sui-grid>
+          <sui-grid-row>
+            <sui-grid-column :width="12">
+              <sui-form>
+                <sui-form-fields inline>
+                  <!-- <sui-form-field>
                                     <sui-dropdown placeholder="房屋类型" selection :options="options" v-model="filterString.kind" />
                                 </sui-form-field> -->
-                                <sui-form-field>
-                                    <input type="text" placeholder="标签文件" v-model="filterString.name" />
-                                </sui-form-field>
-                                <sui-button basic color="blue" content="查询" @click.prevent="onSearch" />
-                            </sui-form-fields>
-                        </sui-form>
-                    </sui-grid-column>
-                    <sui-grid-column :width="4" style="padding-right:0">
-                        <div style="float:right;">
-                            <sui-button basic color="blue" content="新建" @click.native="createRoomModel" icon="add blue" />
-                            <!-- <sui-button content="修改" icon="edit yellow" />
+                  <sui-form-field>
+                    <input
+                      type="text"
+                      placeholder="标签文件"
+                      v-model="filterString.name"
+                    />
+                  </sui-form-field>
+                  <sui-button
+                    basic
+                    color="blue"
+                    content="查询"
+                    @click.prevent="onSearch"
+                  />
+                </sui-form-fields>
+              </sui-form>
+            </sui-grid-column>
+            <sui-grid-column :width="4" style="padding-right:0">
+              <div style="float:right;">
+                <sui-button
+                  basic
+                  color="blue"
+                  content="新建"
+                  @click.native="createRoomModel"
+                  icon="add blue"
+                />
+                <!-- <sui-button content="修改" icon="edit yellow" />
                  <sui-button content="删除" icon="delete red" /> -->
-                            <sui-button basic color="green" content="导出" v-on:click="exportToExcel" icon="file green" />
-                        </div>
-                    </sui-grid-column>
-                </sui-grid-row>
-            </sui-grid>
-        </div>
+                <sui-button
+                  basic
+                  color="green"
+                  content="导出"
+                  v-on:click="exportToExcel"
+                  icon="file green"
+                />
+              </div>
+            </sui-grid-column>
+          </sui-grid-row>
+        </sui-grid>
+      </div>
 
+      <div>
         <div>
-
-            <div>
-                <vue-good-table :columns="columns" :rows="localData" :sort-options="{
-    enabled: true,
-    multipleColumns: true,
-    initialSortBy: [
-      {field: 'CREATED_AT', type: 'desc'},
-    ],}" 
-    :pagination-options="paginationOptions">
-                    <template slot="table-row" slot-scope="props">
-                        <span v-if="props.column.field == 'action'">
-                            <span>
-                                <el-button @click.native.prevent="changeTag(props.row)" type="text" size="small">
-                                    修改
-                                </el-button>
-                                <el-button @click.native.prevent="deleteTag(props.row)" type="text" size="small">
-                                    删除
-                                </el-button>
-                            </span>
-                        </span>
-                        <span v-else>
-                            {{props.formattedRow[props.column.field]}}
-                        </span>
-                    </template>
-
-                </vue-good-table>
-            </div>
+          <vue-good-table
+            :columns="columns"
+            :rows="localData"
+            :sort-options="{
+              enabled: true,
+              multipleColumns: true,
+              initialSortBy: [{ field: 'CREATED_AT', type: 'desc' }],
+            }"
+            :pagination-options="paginationOptions"
+          >
+            <template slot="table-row" slot-scope="props">
+              <span v-if="props.column.field == 'action'">
+                <span>
+                  <el-button
+                    @click.native.prevent="changeTag(props.row)"
+                    type="text"
+                    size="small"
+                  >
+                    修改
+                  </el-button>
+                  <el-button
+                    @click.native.prevent="deleteTag(props.row)"
+                    type="text"
+                    size="small"
+                  >
+                    删除
+                  </el-button>
+                </span>
+              </span>
+              <span v-else>
+                {{ props.formattedRow[props.column.field] }}
+              </span>
+            </template>
+          </vue-good-table>
         </div>
-        <dialog-bar v-model="sendVal" type="danger" title="是否要删除" :content="deleteTarget.text" v-on:cancel="clickCancel()" @danger="clickConfirmDelete()" @confirm="clickConfirmDelete()" dangerText="确认删除"></dialog-bar>
+      </div>
+      <dialog-bar
+        v-model="sendVal"
+        type="danger"
+        title="是否要删除"
+        :content="deleteTarget.text"
+        v-on:cancel="clickCancel()"
+        @danger="clickConfirmDelete()"
+        @confirm="clickConfirmDelete()"
+        dangerText="确认删除"
+      ></dialog-bar>
 
-        <div>
-            <sui-modal class="modal2" v-model="open">
-                <sui-modal-header style="border-bottom:0; margin-bottom:-15px;">{{modelTitle}}</sui-modal-header>
-                <sui-modal-content>
-                    <sui-segment>
-                        <tag-form :singleRoom="selectedTag" ></tag-form>
-                    </sui-segment>
-                </sui-modal-content>
-                <sui-modal-actions>
-                    <sui-button basic color="red" @click.native="closeModal">
-                        取消
-                    </sui-button>
-                    <sui-button v-if="modalMode !== 'check'" basic color="blue" @click.native="toggle">
-                        提交
-                    </sui-button>
-                </sui-modal-actions>
-            </sui-modal>
-        </div>
-        <div>
-            <sui-modal v-model="exportData.open" class="modal2">
-                <sui-modal-header style="border-bottom:0;">导出选择</sui-modal-header>
-                <sui-modal-content scrolling>
-                    <export-form :filterString="filterString" :singleRoom="filterString" ref='FormExport' mode1="room"></export-form>
-                </sui-modal-content>
-                <sui-modal-actions>
-                    <sui-button basic color="red" @click.native="closeModalExport">
-                        取消
-                    </sui-button>
-                    <sui-button basic color="blue" @click.native="openExportUrl">
-                        提交
-                    </sui-button>
-                </sui-modal-actions>
-            </sui-modal>
-        </div>
+      <div>
+        <sui-modal class="modal2" v-model="open">
+          <sui-modal-header style="border-bottom:0; margin-bottom:-15px;">{{
+            modelTitle
+          }}</sui-modal-header>
+          <sui-modal-content>
+            <sui-segment>
+              <tag-form :singleRoom="selectedTag"></tag-form>
+            </sui-segment>
+          </sui-modal-content>
+          <sui-modal-actions>
+            <sui-button basic color="red" @click.native="closeModal">
+              取消
+            </sui-button>
+            <sui-button
+              v-if="modalMode !== 'check'"
+              basic
+              color="blue"
+              @click.native="toggle"
+            >
+              提交
+            </sui-button>
+          </sui-modal-actions>
+        </sui-modal>
+      </div>
+      <div>
+        <sui-modal v-model="exportData.open" class="modal2">
+          <sui-modal-header style="border-bottom:0;">导出选择</sui-modal-header>
+          <sui-modal-content scrolling>
+            <export-form
+              :filterString="filterString"
+              :singleRoom="filterString"
+              ref="FormExport"
+              mode1="room"
+            ></export-form>
+          </sui-modal-content>
+          <sui-modal-actions>
+            <sui-button basic color="red" @click.native="closeModalExport">
+              取消
+            </sui-button>
+            <sui-button basic color="blue" @click.native="openExportUrl">
+              提交
+            </sui-button>
+          </sui-modal-actions>
+        </sui-modal>
+      </div>
     </div>
-</wl-container>
+  </wl-container>
 </template>
 
 <script>
@@ -373,7 +425,7 @@ export default {
           //     this.$router.push("/login");
           // }
         })
-        .catch(function () {
+        .catch(function() {
           this.loading = false;
           notifySomething(
             constants.GENERALERROR,
@@ -475,7 +527,7 @@ export default {
               );
             }
           })
-          .catch(function () {
+          .catch(function() {
             context.loading = false;
             notifySomething(
               constants.GENERALERROR,
@@ -505,7 +557,7 @@ export default {
             }
             this.loading = false;
           })
-          .catch(function (err) {
+          .catch(function(err) {
             console.log(err);
             context.loading = false;
             notifySomething(
@@ -517,7 +569,7 @@ export default {
       }
     },
 
-    closeModal: function () {
+    closeModal: function() {
       this.open = false;
       // /this.assignForm.open = false;
       //this.buildingForm.open = false;
