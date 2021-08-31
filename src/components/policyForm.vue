@@ -2,7 +2,7 @@
 <div>
     <sui-form>
         <sui-form-fields>
-            <sui-form-field style="width:25%;">
+            <sui-form-field style="width:50%;">
                 <label>政策id</label>
                 <sui-input placeholder="政策id" v-model="singleRoom.POLICY_ID" disabled/>
             </sui-form-field>
@@ -12,7 +12,7 @@
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields>
-            <sui-form-field style="width:75%;">
+            <sui-form-field style="width:100%;">
                 <label>政策内容</label>
                 <textarea placeholder="政策内容" v-model="singleRoom.CDATA" />
             </sui-form-field>
@@ -81,7 +81,7 @@ export default {
     border-radius: 6px;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
-    width: 495px;
+    width: 840px;
     height: 180px;
     text-align: center;
     position: relative;

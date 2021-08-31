@@ -10,6 +10,7 @@ const constantsJinhui = {
 
             // new jiangdu 
     userApi:jiangduPre+"/users",
+    tagsApi:jiangduPre+"/tags",
     policyApi:jiangduPre+"/policys",
     tagsApi:jiangduPre+"/tags",
     roomGetAPI:hostname+"/policys",

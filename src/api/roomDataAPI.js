@@ -11,6 +11,32 @@ function registerUserApi(data){
     }
     return generalRequet(data,constants.userApi);
 }
+function getTagsApi()
+{
+    return generalGetRequest(constants.tagsApi);
+}
+function updateTagsApi(data)
+{
+    data = {
+        data:data
+    }
+    return generalPutRequest(data,constants.tagsApi); 
+}
+function deleteTagsApi(data)
+{
+    data = {
+        data:data
+    }
+    return generalDeleteRequest(data,constants.tagsApi); 
+}
+function postTagsApi(data){
+
+    data = {
+        data:data
+    }
+    return generalRequet(data,constants.tagsApi);
+
+}
 function getPolicysApi()
 {
     return generalGetRequest(constants.policyApi);
@@ -852,5 +878,9 @@ function renameBuildingApi(data)
     postPolicyApi,
     updatePolicyApi,
     deletePolicyApi,
+    getTagsApi,
+    postTagsApi,
+    updateTagsApi,
+    deleteTagsApi,
     registerUserApi
 }
