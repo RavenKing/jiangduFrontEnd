@@ -1,4 +1,3 @@
-x
 <template lang="html">
 <wl-container>
     <div>
@@ -60,11 +59,9 @@ x
                         </span>
                         <span v-if="props.column.field == 'TAGS'">
                             <div class="tag-group">
-
                                 <el-tag class="tag" v-for="item in props.row.tags" :key="item.TAG_NAME" :type="warning" effect="dark">
                                     {{ item.TAG_NAME }}
                                 </el-tag>
-
                             </div>
                         </span>
                         <span v-else>
@@ -100,41 +97,23 @@ x
             </el-table> -->
         </div>
 
-        <el-dialog title="标签" :visible.sync="tagDialogVisible" width="90%" :before-close="handleClose">
-
-            <el-steps :active="active" finish-status="success">
-                <el-step title="步骤 1"></el-step>
-                <el-step title="步骤 2"></el-step>
-                <el-step title="步骤 3"></el-step>
+        <el-dialog title="标签" :visible.sync="tagDialogVisible" width="90%">
+            <el-steps :active="active" :finish-status="success">
+                <el-step title="industry"></el-step>
+                <el-step title="cap"></el-step>
+                <el-step title="其他"></el-step>
             </el-steps>
 
             <el-button style="margin-top: 12px; margin-bottom: 12px" @click="next">下一步</el-button>
 
-            <!-- <el-container style="height: 120px; border: 1px solid #eee"> -->
             <div class="tag-group">
                 <span class="tag-group__title" style="font-size: 25px;">标签列表</span>
                 <div style>
-                    <el-tag class="tableTag" v-for="item in items" :key="item.label" :type="tagType" effect="dark">
-                        {{ item.label }}
+                    <el-tag class="tableTag" v-for="item in showItems" :key="item.TAG_ID" :type="tagType" effect="dark">
+                        {{ item.TAG_NAME }}
                     </el-tag>
                 </div>
-
             </div>
-            <!-- </el-container > -->
-            <el-container style="height: 500px; border: 1px solid #eee">
-
-                <el-main>
-                    <el-table :data="tableData">
-                        <el-table-column prop="date" label="Date" width="140">
-                        </el-table-column>
-                        <el-table-column prop="name" label="Name" width="120">
-                        </el-table-column>
-                        <el-table-column prop="address" label="Address">
-                        </el-table-column>
-                    </el-table>
-                </el-main>
-            </el-container>
-            </el-container>
 
             <span slot="footer" class="dialog-footer">
                 <el-button @click="tagDialogVisible = false">Cancel</el-button>
@@ -191,6 +170,9 @@ import {
 } from "vue-good-table";
 import dialogBar from "@/components/MDialog";
 import {
+    tagFilter
+} from "@/util/utils";
+import {
     formatDate
 } from "@/util/time";
 import FieldsDef from "./FieldsDef.js";
@@ -212,6 +194,7 @@ import {
 } from "@/util/utils";
 import {
     getPolicysApi,
+    queryTagsApi,
     //getRoomDataApi,
     updatePolicyApi,
     postPolicyApi,
@@ -229,96 +212,12 @@ export default {
         "export-form": ExportForm,
     },
     data() {
-        const item = {
-            date: "2016-05-02",
-            name: "Tom",
-            address: "No. 189, Grove St, Los Angeles",
-        };
         return {
-            items: [{
-                    type: "",
-                    label: "标签一"
-                },
-                {
-                    type: "success",
-                    label: "标签二"
-                },
-                {
-                    type: "info",
-                    label: "标签三"
-                },
-                {
-                    type: "danger",
-                    label: "标签四"
-                },
-                {
-                    type: "warning",
-                    label: "标签五"
-                },
-                {
-                    type: "",
-                    label: "标签一"
-                },
-                {
-                    type: "success",
-                    label: "标签二"
-                },
-                {
-                    type: "info",
-                    label: "标签三"
-                },
-                {
-                    type: "danger",
-                    label: "标签四"
-                },
-                {
-                    type: "warning",
-                    label: "标签五"
-                },
-                {
-                    type: "",
-                    label: "标签一"
-                },
-                {
-                    type: "success",
-                    label: "标签二"
-                },
-                {
-                    type: "info",
-                    label: "标签三"
-                },
-                {
-                    type: "danger",
-                    label: "标签四"
-                },
-                {
-                    type: "warning",
-                    label: "标签五"
-                },
-                {
-                    type: "",
-                    label: "标签一"
-                },
-                {
-                    type: "success",
-                    label: "标签二"
-                },
-                {
-                    type: "info",
-                    label: "标签三"
-                },
-                {
-                    type: "danger",
-                    label: "标签四"
-                },
-                {
-                    type: "warning",
-                    label: "标签五"
-                },
-            ],
+            tagItems: [],
+            showItems: [],
             tagType: "success",
-            active: 0,
-            tableData: Array(20).fill(item),
+            active: 1,
+
             tagDialogVisible: true,
             paginationOptions: {
                 enabled: true,
@@ -327,21 +226,21 @@ export default {
                 rowsPerPageLabel: "每页条目",
                 perPage: 10,
             },
-            /**test 
-                               * 
-                               * 
-                               * <el-table :data="localData" style="width: 100%">
-                                  <el-table-column prop="POLICY_ID" label="政策id" width="180">
-                                  </el-table-column>
-                                  <el-table-column prop="POLICY_TITLE" label="政策标题" width="180">
-                                  </el-table-column>
-                                  <el-table-column prop="POLICY_URL" label="政策文件">
-                                  </el-table-column>
-                                  <el-table-column prop="CREATED_AT" label="创建时间">
-                                  </el-table-column>
-                                  <el-table-column prop="UPDATED_AT" label="更新时间">
-                                  </el-table-column>
-                               */
+            /**test
+                                     *
+                                     *
+                                     * <el-table :data="localData" style="width: 100%">
+                                        <el-table-column prop="POLICY_ID" label="政策id" width="180">
+                                        </el-table-column>
+                                        <el-table-column prop="POLICY_TITLE" label="政策标题" width="180">
+                                        </el-table-column>
+                                        <el-table-column prop="POLICY_URL" label="政策文件">
+                                        </el-table-column>
+                                        <el-table-column prop="CREATED_AT" label="创建时间">
+                                        </el-table-column>
+                                        <el-table-column prop="UPDATED_AT" label="更新时间">
+                                        </el-table-column>
+                                     */
 
             columns: [{
                     label: "政策标题",
@@ -422,16 +321,35 @@ export default {
     // roomnumber: data.assign.roomnumber
 
     methods: {
+
         next() {
-            if (this.active++ > 2) this.active = 0;
+            if (this.active++ > 2) this.active = 1;
             switch (this.active) {
-                case 0:
-                    this.tagType = "successs";
-                    break;
                 case 1:
-                    this.tagType = "warning";
+                    this.showItems = [];
+                    this.tagItems.forEach(element => {
+                        if (element["TAG_CATEGORY"] == "industry") {
+                            this.showItems.push(element);
+                        }
+                    })
+                    // this.showItems = this.tagItems.filter(tagFilter("industry"))
                     break;
                 case 2:
+                    this.showItems = [];
+                    this.tagItems.forEach(element => {
+                        if (element["TAG_CATEGORY"] == "cap") {
+                            this.showItems.push(element);
+                        }
+                    })
+                    this.tagType = "warning";
+                    break;
+                case 3:
+                    this.showItems = [];
+                    this.tagItems.forEach(element => {
+                        if (element["TAG_CATEGORY"] != "industry" && element["TAG_CATEGORY"] != "cap") {
+                            this.showItems.push(element);
+                        }
+                    })
                     this.tagType = "danger";
                     break;
             }
@@ -583,7 +501,9 @@ export default {
             if (
                 // eslint-disable-next-line no-prototype-builtins
                 data.hasOwnProperty("vgt_id") ||
+                // eslint-disable-next-line no-prototype-builtins
                 data.hasOwnProperty("originalIndex")
+
             ) {
                 delete data.vgt_id;
                 delete data.originalIndex;
@@ -693,8 +613,19 @@ export default {
             this.refreshRooms(payload);
         },
     },
-
     created() {
+        queryTagsApi(["TYPE=PO"]).then((data) => {
+            this.tagItems = data.data;
+            console.log(this.tagItems)
+        });
+
+        this.showItems = [];
+        this.tagItems.forEach(element => {
+            if (element["TAG_CATEGORY"] == "industry") {
+                this.showItems.push(element);
+            }
+        })
+
         this.refreshRooms({
             page: 1,
             kind: 1,
@@ -709,6 +640,7 @@ export default {
     margin-bottom: 1%;
     border-radius: 10px;
 }
+
 .tag {
     margin-left: 5px;
     margin-bottom: 1%;
