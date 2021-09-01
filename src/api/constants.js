@@ -7,12 +7,37 @@ const constantsJinhui = {
     getCurrentAssignApi:"/getcurrentassign",
     //deleteRoomAssignDetail:""
     LoginURL:hostname+"/login",
-
+    deletePolicyTageApi:jiangduPre+"/policys/deleteTags",
+    addTageApi:jiangduPre+"/policys/policyTags",
             // new jiangdu 
     userApi:jiangduPre+"/users",
     tagsApi:jiangduPre+"/tags",
     policyApi:jiangduPre+"/policys",
     roomGetAPI:hostname+"/policys",
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     roomCreateAPI:hostname+'/createroom',
     updateRoomAPI:hostname+'/editroom',
     deleteRoomAPI:hostname+'/delroom',

@@ -12,9 +12,6 @@
                     <sui-grid-column :width="12">
                         <sui-form>
                             <sui-form-fields inline>
-                                <!-- <sui-form-field>
-                                    <sui-dropdown placeholder="房屋类型" selection :options="options" v-model="filterString.kind" />
-                                </sui-form-field> -->
                                 <sui-form-field>
                                     <input type="text" placeholder="政策文件" v-model="filterString.name" />
                                 </sui-form-field>
@@ -46,7 +43,7 @@
                                 <el-button @click.native.prevent="deleteRow(scope.$index, tableData)" type="text" size="small">
                                     查看文件
                                 </el-button>
-                                <el-button @click.native.prevent="tagDialogVisible = true" type="text" size="small">
+                                <el-button @click.native.prevent="openTagDialog(props.row)" type="text" size="small">
                                     标签
                                 </el-button>
                                 <el-button @click.native.prevent="changePolicy(props.row)" type="text" size="small">
@@ -58,8 +55,11 @@
                             </span>
                         </span>
                         <span v-if="props.column.field == 'TAGS'">
-                            <el-tag>Tag 1</el-tag>
-                            <el-tag>Tag 1</el-tag>
+                            <div class="tag-group">
+                                <el-tag class="tag" v-for="item in props.row.tags" :key="item.TAG_NAME" :type="warning" effect="dark">
+                                    {{ item.TAG_NAME }}
+                                </el-tag>
+                            </div>
                         </span>
                         <span v-else>
                             {{ props.formattedRow[props.column.field] }}
@@ -93,40 +93,34 @@
                 </el-table-column>
             </el-table> -->
         </div>
-        <el-dialog title="标签" :visible.sync="tagDialogVisible" width="90%" :before-close="handleClose">
-            <el-steps :active="active" finish-status="success">
-                <el-step title="步骤 1"></el-step>
-                <el-step title="步骤 2"></el-step>
-                <el-step title="步骤 3"></el-step>
+
+        <el-dialog title="标签" :visible.sync="tagDialogVisible" width="90%">
+            <el-steps :active="active" :finish-status="success">
+                <el-step title="大行业"></el-step>
+                <el-step title="小行业"></el-step>
+                <el-step title="其他"></el-step>
             </el-steps>
             <el-button style="margin-top: 12px; margin-bottom: 12px" @click="next">下一步</el-button>
-            <!-- <el-container style="height: 120px; border: 1px solid #eee"> -->
+            <div class="tag-group">
+                <span class="tag-group__title" style="font-size: 25px;">已打标签</span>
+                <div style>
+                    <el-tag class="tableTag" v-for="(item,index) in selectedPolicy.tags" :key="item.TAG_ID" :type="tagType" effect="dark" closable @close="deleteTag(item,index)">
+                        {{ item.TAG_NAME }}
+                    </el-tag>
+                </div>
+            </div>
             <div class="tag-group">
                 <span class="tag-group__title" style="font-size: 25px;">标签列表</span>
                 <div style>
-                    <el-tag class="tag" v-for="item in items" :key="item.label" :type="tagType" effect="dark">
-                        {{ item.label }}
+                    <el-tag class="tableTag" v-for="(item,index) in showItems" :key="item.TAG_ID" :type="tagType" effect="dark" @click="addTag(item,index)">
+                        {{ item.TAG_NAME }}
                     </el-tag>
                 </div>
-
             </div>
-            <!-- </el-container > -->
-            <el-container style="height: 500px; border: 1px solid #eee">
 
-                <el-main>
-                    <el-table :data="tableData">
-                        <el-table-column prop="date" label="Date" width="140">
-                        </el-table-column>
-                        <el-table-column prop="name" label="Name" width="120">
-                        </el-table-column>
-                        <el-table-column prop="address" label="Address">
-                        </el-table-column>
-                    </el-table>
-                </el-main>
-            </el-container>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="tagDialogVisible = false">Cancel</el-button>
-                <el-button type="primary" @click="tagDialogVisible = false">Confirm</el-button>
+                <el-button @click="tagDialogVisible = false">取消</el-button>
+                <el-button type="primary" @click="tagDialogVisible = false">保存</el-button>
             </span>
         </el-dialog>
 
@@ -181,9 +175,6 @@ import dialogBar from "@/components/MDialog";
 import {
     formatDate
 } from "@/util/time";
-import FieldsDef from "./FieldsDef.js";
-import FieldsDefList from "./FieldsDefList.js";
-import FieldsUnit from "./FieldsUnit.js";
 import ExportForm from "@/components/export_form";
 import policyForm from "@/components/policyForm";
 import constants from "@/util/constants";
@@ -200,10 +191,13 @@ import {
 } from "@/util/utils";
 import {
     getPolicysApi,
+    queryTagsApi,
     //getRoomDataApi,
+    deletePolicyTagApi,
     updatePolicyApi,
     postPolicyApi,
     deletePolicyApi,
+    addPolicyTagApi
     //createRoomApi,
 } from "@/api/roomDataAPI";
 export default {
@@ -217,96 +211,12 @@ export default {
         "export-form": ExportForm,
     },
     data() {
-        const item = {
-            date: "2016-05-02",
-            name: "Tom",
-            address: "No. 189, Grove St, Los Angeles",
-        };
         return {
-            items: [{
-                    type: "",
-                    label: "标签一"
-                },
-                {
-                    type: "success",
-                    label: "标签二"
-                },
-                {
-                    type: "info",
-                    label: "标签三"
-                },
-                {
-                    type: "danger",
-                    label: "标签四"
-                },
-                {
-                    type: "warning",
-                    label: "标签五"
-                },
-                {
-                    type: "",
-                    label: "标签一"
-                },
-                {
-                    type: "success",
-                    label: "标签二"
-                },
-                {
-                    type: "info",
-                    label: "标签三"
-                },
-                {
-                    type: "danger",
-                    label: "标签四"
-                },
-                {
-                    type: "warning",
-                    label: "标签五"
-                },
-                {
-                    type: "",
-                    label: "标签一"
-                },
-                {
-                    type: "success",
-                    label: "标签二"
-                },
-                {
-                    type: "info",
-                    label: "标签三"
-                },
-                {
-                    type: "danger",
-                    label: "标签四"
-                },
-                {
-                    type: "warning",
-                    label: "标签五"
-                },
-                {
-                    type: "",
-                    label: "标签一"
-                },
-                {
-                    type: "success",
-                    label: "标签二"
-                },
-                {
-                    type: "info",
-                    label: "标签三"
-                },
-                {
-                    type: "danger",
-                    label: "标签四"
-                },
-                {
-                    type: "warning",
-                    label: "标签五"
-                },
-            ],
+            tagItems: [],
+            showItems: [],
             tagType: "success",
-            active: 0,
-            tableData: Array(20).fill(item),
+            active: 1,
+
             tagDialogVisible: true,
             paginationOptions: {
                 enabled: true,
@@ -315,22 +225,6 @@ export default {
                 rowsPerPageLabel: "每页条目",
                 perPage: 10,
             },
-            /**test 
-                               * 
-                               * 
-                               * <el-table :data="localData" style="width: 100%">
-                                  <el-table-column prop="POLICY_ID" label="政策id" width="180">
-                                  </el-table-column>
-                                  <el-table-column prop="POLICY_TITLE" label="政策标题" width="180">
-                                  </el-table-column>
-                                  <el-table-column prop="POLICY_URL" label="政策文件">
-                                  </el-table-column>
-                                  <el-table-column prop="CREATED_AT" label="创建时间">
-                                  </el-table-column>
-                                  <el-table-column prop="UPDATED_AT" label="更新时间">
-                                  </el-table-column>
-                               */
-
             columns: [{
                     label: "政策标题",
                     field: "POLICY_TITLE",
@@ -377,7 +271,9 @@ export default {
                 kind: 1,
                 page: 1,
             },
-            selectedPolicy: {},
+            selectedPolicy: {
+                tags: []
+            },
             buildingImage: {
                 open: false,
                 notification: "",
@@ -386,39 +282,77 @@ export default {
             loading: true,
             localData: [],
             ComponentKey: 1,
-            listField: FieldsDefList,
-            fields: FieldsDef,
-            fieldsUnit: FieldsUnit,
-            imgeComponentKey: 1,
             buildingForm: {
                 open: false,
             },
         };
     },
-
-    //     juji: data.assign.juji,
-    // fujuji: data.assign.fujuji,
-    // chuji: data.assign.chuji,
-    // fuchuji: data.assign.fuchuji,
-    // keji: data.assign.keji,
-    // fukeji: data.assign.fukeji,
-    // keyuan: data.assign.keyuan,
-    // qita: data.assign.qita,
-    // roomname: data.assign.roomname,
-    // beizhu: data.assign.beizhu,
-    // roomnumber: data.assign.roomnumber
-
     methods: {
+
+        addTag(data, index) {
+            const payload = {
+                POLICY_ID_POLICY_ID: this.selectedPolicy.POLICY_ID,
+                TAG_ID_TAG_ID: data.TAG_ID
+            }
+            var context = this;
+            addPolicyTagApi(payload).then((result) => {
+                console.log(result);
+                if (result.data == constants.OK) {
+                    context.showItems.splice(index, 1);
+                    context.selectedPolicy.tags.push(data);
+                }
+            });
+        },
+        deleteTag(data, index) {
+            console.log(data);
+            //delete tag 
+            const payload = {
+                POLICY_ID_POLICY_ID: this.selectedPolicy.POLICY_ID,
+                TAG_ID_TAG_ID: data.TAG_ID
+            }
+            var context = this;
+            deletePolicyTagApi(payload).then((result) => {
+                console.log(result)
+                if (result.data == constants.OK) {
+                    context.selectedPolicy.tags.splice(index, 1);
+                }
+            })
+            // delete the item in tags.
+        },
+        // open tag dialog
+        openTagDialog(data) {
+            this.tagDialogVisible = true;
+            this.selectedPolicy = data;
+        },
+
         next() {
-            if (this.active++ > 2) this.active = 0;
+            if (this.active++ > 2) this.active = 1;
             switch (this.active) {
-                case 0:
-                    this.tagType = "successs";
-                    break;
                 case 1:
-                    this.tagType = "warning";
+                    this.showItems = [];
+                    this.tagItems.forEach(element => {
+                        if (element["TAG_CATEGORY"] == "industry") {
+                            this.showItems.push(element);
+                        }
+                    })
+                    // this.showItems = this.tagItems.filter(tagFilter("industry"))
                     break;
                 case 2:
+                    this.showItems = [];
+                    this.tagItems.forEach(element => {
+                        if (element["TAG_CATEGORY"] == "cap") {
+                            this.showItems.push(element);
+                        }
+                    })
+                    this.tagType = "warning";
+                    break;
+                case 3:
+                    this.showItems = [];
+                    this.tagItems.forEach(element => {
+                        if (element["TAG_CATEGORY"] != "industry" && element["TAG_CATEGORY"] != "cap") {
+                            this.showItems.push(element);
+                        }
+                    })
                     this.tagType = "danger";
                     break;
             }
@@ -569,7 +503,10 @@ export default {
             // eslint-disable-next-line no-prototype-builtins
             if (
                 // eslint-disable-next-line no-prototype-builtins
-                data.hasOwnProperty("vgt_id") || data.hasOwnProperty("originalIndex")
+                data.hasOwnProperty("vgt_id") ||
+                // eslint-disable-next-line no-prototype-builtins
+                data.hasOwnProperty("originalIndex")
+
             ) {
                 delete data.vgt_id;
                 delete data.originalIndex;
@@ -679,8 +616,19 @@ export default {
             this.refreshRooms(payload);
         },
     },
-
     created() {
+
+        queryTagsApi(["TYPE=PO"]).then((data) => {
+            this.tagItems = data.data;
+            console.log(this.tagItems)
+            this.showItems = [];
+            this.tagItems.forEach(element => {
+                if (element["TAG_CATEGORY"] == "industry") {
+                    this.showItems.push(element);
+                }
+            })
+        });
+
         this.refreshRooms({
             page: 1,
             kind: 1,
@@ -690,8 +638,14 @@ export default {
 </script>
 
 <style>
+.tableTag {
+    margin-left: 5px;
+    margin-bottom: 1%;
+    border-radius: 10px;
+}
+
 .tag {
-    margin-left: 1%;
+    margin-left: 5px;
     margin-bottom: 1%;
     border-radius: 10px;
 }
