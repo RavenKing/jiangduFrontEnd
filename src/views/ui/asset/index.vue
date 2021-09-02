@@ -104,7 +104,7 @@
             <div class="tag-group">
                 <span class="tag-group__title" style="font-size: 25px;">已打标签</span>
                 <div style>
-                    <el-tag class="tableTag" v-for="(item,index) in selectedPolicy.tags" :key="item.TAG_ID" :type="tagType" effect="dark" closable @close="deleteTag(item,index)">
+                    <el-tag class="tableTag" v-for="(item,index) in showItems1" :key="item.TAG_ID" :type="tagType" effect="dark" closable @close="deleteTag(item,index)">
                         {{ item.TAG_NAME }}
                     </el-tag>
                 </div>
@@ -112,7 +112,7 @@
             <div class="tag-group">
                 <span class="tag-group__title" style="font-size: 25px;">标签列表</span>
                 <div style>
-                    <el-tag class="tableTag" v-for="(item,index) in showItems" :key="item.TAG_ID" :type="tagType" effect="dark" @click="addTag(item,index)">
+                    <el-tag class="tableTag" v-for="(item,index) in showItems2" :key="item.TAG_ID" :type="tagType" effect="dark" @click="addTag(item,index)">
                         {{ item.TAG_NAME }}
                     </el-tag>
                 </div>
@@ -212,8 +212,12 @@ export default {
     },
     data() {
         return {
+            //全部的tag
             tagItems: [],
-            showItems: [],
+            // 展示某种类型的selected tag
+            showItems1: [],
+            // 展示某种类型的unselected tag
+            showItems2: [],
             tagType: "success",
             active: 1,
 
@@ -298,8 +302,9 @@ export default {
             addPolicyTagApi(payload).then((result) => {
                 console.log(result);
                 if (result.data == constants.OK) {
-                    context.showItems.splice(index, 1);
+                    context.showItems2.splice(index, 1);
                     context.selectedPolicy.tags.push(data);
+                    context.showItems1.push(data);
                 }
             });
         },
@@ -315,6 +320,7 @@ export default {
                 console.log(result)
                 if (result.data == constants.OK) {
                     context.selectedPolicy.tags.splice(index, 1);
+                    context.showItems1.splice(index, 1);
                 }
             })
             // delete the item in tags.
@@ -323,36 +329,95 @@ export default {
         openTagDialog(data) {
             this.tagDialogVisible = true;
             this.selectedPolicy = data;
+            let selectedTags = this.selectedPolicy.tags;
+            let unselectedTags = [];
+            for (let i = 0; i < this.tagItems.length; i++) {
+                let isSelected = false;
+                for (let j = 0; j < selectedTags.length; j++) {
+                    if (this.tagItems[i].TAG_NAME == selectedTags[j].TAG_NAME) {
+                        isSelected = true;
+                        break;
+                    }
+                }
+                if (!isSelected)
+                    unselectedTags.push(this.tagItems[i]);
+            }
+            this.showItems1 = [];
+            selectedTags.forEach(element => {
+                if (element["TAG_CATEGORY"] == "industry") {
+                    this.showItems1.push(element);
+                }
+            });
+            this.showItems2 = [];
+            unselectedTags.forEach(element => {
+                if (element["TAG_CATEGORY"] == "industry") {
+                    this.showItems2.push(element);
+                }
+            });
         },
 
         next() {
             if (this.active++ > 2) this.active = 1;
+
+            let selectedTags = this.selectedPolicy.tags;
+            let unselectedTags = [];
+            for (let i = 0; i < this.tagItems.length; i++) {
+                let isSelected = false;
+                for (let j = 0; j < selectedTags.length; j++) {
+                    if (this.tagItems[i].TAG_NAME == selectedTags[j].TAG_NAME) {
+                        isSelected = true;
+                        break;
+                    }
+                }
+                if (!isSelected)
+                    unselectedTags.push(this.tagItems[i]);
+            }
+
             switch (this.active) {
                 case 1:
-                    this.showItems = [];
-                    this.tagItems.forEach(element => {
+                    this.showItems1 = [];
+                    selectedTags.forEach(element => {
                         if (element["TAG_CATEGORY"] == "industry") {
-                            this.showItems.push(element);
+                            this.showItems1.push(element);
                         }
-                    })
+                    });
+                    this.showItems2 = [];
+                    unselectedTags.forEach(element => {
+                        if (element["TAG_CATEGORY"] == "industry") {
+                            this.showItems2.push(element);
+                        }
+                    });
+                    this.tagType = "success";
                     // this.showItems = this.tagItems.filter(tagFilter("industry"))
                     break;
                 case 2:
-                    this.showItems = [];
-                    this.tagItems.forEach(element => {
+                    this.showItems1 = [];
+                    selectedTags.forEach(element => {
                         if (element["TAG_CATEGORY"] == "cap") {
-                            this.showItems.push(element);
+                            this.showItems1.push(element);
                         }
-                    })
+                    });
+                    this.showItems2 = [];
+                    unselectedTags.forEach(element => {
+                        if (element["TAG_CATEGORY"] == "cap") {
+                            this.showItems2.push(element);
+                        }
+                    });
                     this.tagType = "warning";
                     break;
                 case 3:
-                    this.showItems = [];
-                    this.tagItems.forEach(element => {
+                    this.showItems1 = [];
+                    selectedTags.forEach(element => {
                         if (element["TAG_CATEGORY"] != "industry" && element["TAG_CATEGORY"] != "cap") {
-                            this.showItems.push(element);
+                            this.showItems1.push(element);
                         }
-                    })
+                    });
+                    this.showItems2 = [];
+                    unselectedTags.forEach(element => {
+                        if (element["TAG_CATEGORY"] != "industry" && element["TAG_CATEGORY"] != "cap") {
+                            this.showItems2.push(element);
+                        }
+                    });
                     this.tagType = "danger";
                     break;
             }
