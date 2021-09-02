@@ -107,58 +107,62 @@
             </span>
         </el-dialog>
 
-        <el-dialog title="标签" :visible.sync="tagDialogVisible" width="90%">
+        <<<<<<< HEAD <el-dialog title="标签" :visible.sync="tagDialogVisible" width="90%">
             <el-steps :active="active">
-                <el-step title="大行业"></el-step>
-                <el-step title="小行业"></el-step>
-                <el-step title="其他"></el-step>
-            </el-steps>
-            <el-button style="margin-top: 12px; margin-bottom: 12px" @click="next">下一步</el-button>
-            <div class="tag-group">
-                <span class="tag-group__title" style="font-size: 25px;">已打标签</span>
-                <div style>
-                    <el-tag class="tableTag" v-for="(item,index) in selectedPolicy.tags" :key="item.TAG_ID" :type="tagType" effect="dark" closable @close="deleteTag(item,index)">
-                        {{ item.TAG_NAME }}
-                    </el-tag>
-                </div>
-            </div>
-            <div class="tag-group">
-                <span class="tag-group__title" style="font-size: 25px;">标签列表</span>
-                <div style>
-                    <el-tag class="tableTag" v-for="(item,index) in showItems" :key="item.TAG_ID" :type="tagType" effect="dark" @click="addTag(item,index)">
-                        {{ item.TAG_NAME }}
-                    </el-tag>
-                </div>
-            </div>
+                =======
+                <el-dialog title="标签" :visible.sync="tagDialogVisible" width="90%" :before-close="refreshRooms">
+                    <el-steps :active="active" :finish-status="success">
+                        >>>>>>> 12bf6d3a5a2d40fe582f3c5e537f50b50f0c7797
+                        <el-step title="大行业"></el-step>
+                        <el-step title="小行业"></el-step>
+                        <el-step title="其他"></el-step>
+                    </el-steps>
+                    <el-button style="margin-top: 12px; margin-bottom: 12px" @click="next">下一步</el-button>
+                    <div class="tag-group">
+                        <span class="tag-group__title" style="font-size: 25px;">已打标签</span>
+                        <div style>
+                            <el-tag class="tableTag" v-for="(item,index) in showItems1" :key="item.TAG_ID" :type="tagType" effect="dark" closable @close="deleteTag(item,index)">
+                                {{ item.TAG_NAME }}
+                            </el-tag>
+                        </div>
+                    </div>
+                    <div class="tag-group">
+                        <span class="tag-group__title" style="font-size: 25px;">标签列表</span>
+                        <div style>
+                            <el-tag class="tableTag" v-for="(item,index) in showItems2" :key="item.TAG_ID" :type="tagType" effect="dark" @click="addTag(item,index)">
+                                {{ item.TAG_NAME }}
+                            </el-tag>
+                        </div>
+                    </div>
 
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="tagDialogVisible = false">取消</el-button>
-                <el-button type="primary" @click="tagDialogVisible = false">保存</el-button>
-            </span>
-        </el-dialog>
+                    <span slot="footer" class="dialog-footer">
+                        <el-button @click="tagDialogVisible = false">取消</el-button>
+                        <el-button type="primary" @click="tagDialogVisible = false">保存</el-button>
+                    </span>
+                </el-dialog>
 
-        <dialog-bar v-model="sendVal" type="danger" title="是否要删除" :content="deleteTarget.text" v-on:cancel="clickCancel()" @danger="clickConfirmDelete()" @confirm="clickConfirmDelete()" dangerText="确认删除"></dialog-bar>
+                <dialog-bar v-model="sendVal" type="danger" title="是否要删除" :content="deleteTarget.text" v-on:cancel="clickCancel()" @danger="clickConfirmDelete()" @confirm="clickConfirmDelete()" dangerText="确认删除"></dialog-bar>
 
-        <div>
-            <sui-modal class="modal2" v-model="open">
-                <sui-modal-header style="border-bottom:0; margin-bottom:-15px;">{{
+                <div>
+                    <sui-modal class="modal2" v-model="open">
+                        <sui-modal-header style="border-bottom:0; margin-bottom:-15px;">{{
             modelTitle
           }}</sui-modal-header>
-                <sui-modal-content>
-                    <sui-segment>
-                        <policy-form :singleRoom="selectedPolicy"></policy-form>
-                    </sui-segment>
-                </sui-modal-content>
-                <sui-modal-actions>
-                    <sui-button basic color="red" @click.native="closeModal">
-                        取消
-                    </sui-button>
-                    <sui-button v-if="modalMode !== 'check'" basic color="blue" @click.native="toggle">
-                        提交
-                    </sui-button>
-                </sui-modal-actions>
-            </sui-modal>
-        </div>
+                        <sui-modal-content>
+                            <sui-segment>
+                                <policy-form :singleRoom="selectedPolicy"></policy-form>
+                            </sui-segment>
+                        </sui-modal-content>
+                        <sui-modal-actions>
+                            <sui-button basic color="red" @click.native="closeModal">
+                                取消
+                            </sui-button>
+                            <sui-button v-if="modalMode !== 'check'" basic color="blue" @click.native="toggle">
+                                提交
+                            </sui-button>
+                        </sui-modal-actions>
+                    </sui-modal>
+                </div>
     </div>
 </wl-container>
 </template>
@@ -213,7 +217,10 @@ export default {
         return {
             recommendDataList: [],
             tagItems: [],
-            showItems: [],
+            // 展示某种类型的selected tag
+            showItems1: [],
+            // 展示某种类型的unselected tag
+            showItems2: [],
             tagType: "success",
             active: 1,
             tagDialogVisible: false,
@@ -355,8 +362,9 @@ export default {
             addPolicyTagApi(payload).then((result) => {
                 //(result);
                 if (result.data == constants.OK) {
-                    context.showItems.splice(index, 1);
+                    context.showItems2.splice(index, 1);
                     context.selectedPolicy.tags.push(data);
+                    context.showItems1.push(data);
                 }
             });
         },
@@ -371,7 +379,13 @@ export default {
             deletePolicyTagApi(payload).then((result) => {
                 console.log(result)
                 if (result.data == constants.OK) {
-                    context.selectedPolicy.tags.splice(index, 1);
+                    let name = this.showItems1[index].TAG_NAME;
+                    context.showItems1.splice(index, 1);
+                    for (let i = 0; i < context.selectedPolicy.tags.length; i++) {
+                        if (context.selectedPolicy.tags[i].TAG_NAME == name)
+                            context.selectedPolicy.tags.splice(i, 1);
+                    }
+                    context.showItems2.push(data);
                 }
             })
             // delete the item in tags.
@@ -380,36 +394,95 @@ export default {
         openTagDialog(data) {
             this.tagDialogVisible = true;
             this.selectedPolicy = data;
+            let selectedTags = this.selectedPolicy.tags;
+            let unselectedTags = [];
+            for (let i = 0; i < this.tagItems.length; i++) {
+                let isSelected = false;
+                for (let j = 0; j < selectedTags.length; j++) {
+                    if (this.tagItems[i].TAG_NAME == selectedTags[j].TAG_NAME) {
+                        isSelected = true;
+                        break;
+                    }
+                }
+                if (!isSelected)
+                    unselectedTags.push(this.tagItems[i]);
+            }
+            this.showItems1 = [];
+            selectedTags.forEach(element => {
+                if (element["TAG_CATEGORY"] == "industry") {
+                    this.showItems1.push(element);
+                }
+            });
+            this.showItems2 = [];
+            unselectedTags.forEach(element => {
+                if (element["TAG_CATEGORY"] == "industry") {
+                    this.showItems2.push(element);
+                }
+            });
         },
 
         next() {
             if (this.active++ > 2) this.active = 1;
+
+            let selectedTags = this.selectedPolicy.tags;
+            let unselectedTags = [];
+            for (let i = 0; i < this.tagItems.length; i++) {
+                let isSelected = false;
+                for (let j = 0; j < selectedTags.length; j++) {
+                    if (this.tagItems[i].TAG_NAME == selectedTags[j].TAG_NAME) {
+                        isSelected = true;
+                        break;
+                    }
+                }
+                if (!isSelected)
+                    unselectedTags.push(this.tagItems[i]);
+            }
+
             switch (this.active) {
                 case 1:
-                    this.showItems = [];
-                    this.tagItems.forEach(element => {
+                    this.showItems1 = [];
+                    selectedTags.forEach(element => {
                         if (element["TAG_CATEGORY"] == "industry") {
-                            this.showItems.push(element);
+                            this.showItems1.push(element);
                         }
-                    })
+                    });
+                    this.showItems2 = [];
+                    unselectedTags.forEach(element => {
+                        if (element["TAG_CATEGORY"] == "industry") {
+                            this.showItems2.push(element);
+                        }
+                    });
+                    this.tagType = "success";
                     // this.showItems = this.tagItems.filter(tagFilter("industry"))
                     break;
                 case 2:
-                    this.showItems = [];
-                    this.tagItems.forEach(element => {
+                    this.showItems1 = [];
+                    selectedTags.forEach(element => {
                         if (element["TAG_CATEGORY"] == "cap") {
-                            this.showItems.push(element);
+                            this.showItems1.push(element);
                         }
-                    })
+                    });
+                    this.showItems2 = [];
+                    unselectedTags.forEach(element => {
+                        if (element["TAG_CATEGORY"] == "cap") {
+                            this.showItems2.push(element);
+                        }
+                    });
                     this.tagType = "warning";
                     break;
                 case 3:
-                    this.showItems = [];
-                    this.tagItems.forEach(element => {
+                    this.showItems1 = [];
+                    selectedTags.forEach(element => {
                         if (element["TAG_CATEGORY"] != "industry" && element["TAG_CATEGORY"] != "cap") {
-                            this.showItems.push(element);
+                            this.showItems1.push(element);
                         }
-                    })
+                    });
+                    this.showItems2 = [];
+                    unselectedTags.forEach(element => {
+                        if (element["TAG_CATEGORY"] != "industry" && element["TAG_CATEGORY"] != "cap") {
+                            this.showItems2.push(element);
+                        }
+                    });
                     this.tagType = "danger";
                     break;
             }
