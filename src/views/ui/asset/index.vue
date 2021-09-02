@@ -24,7 +24,6 @@
                             <sui-button basic color="blue" content="新建" @click.native="createRoomModel" icon="add blue" />
                             <!-- <sui-button content="修改" icon="edit yellow" />
                  <sui-button content="删除" icon="delete red" /> -->
-                            <sui-button basic color="green" content="导出" v-on:click="exportToExcel" icon="file green" />
                         </div>
                     </sui-grid-column>
                 </sui-grid-row>
@@ -43,6 +42,9 @@
                                 <el-button @click.native.prevent="deleteRow(scope.$index, tableData)" type="text" size="small">
                                     查看文件
                                 </el-button>
+                                <el-button @click.native.prevent="recommendList(props.row)" type="text" size="small">
+                                    推荐
+                                </el-button>
                                 <el-button @click.native.prevent="openTagDialog(props.row)" type="text" size="small">
                                     标签
                                 </el-button>
@@ -56,7 +58,7 @@
                         </span>
                         <span v-if="props.column.field == 'TAGS'">
                             <div class="tag-group">
-                                <el-tag class="tag" v-for="item in props.row.tags" :key="item.TAG_NAME" :type="warning" effect="dark">
+                                <el-tag class="tag" v-for="item in props.row.tags" :key="item.TAG_NAME" type="warning" effect="dark">
                                     {{ item.TAG_NAME }}
                                 </el-tag>
                             </div>
@@ -67,35 +69,46 @@
                     </template>
                 </vue-good-table>
             </div>
-            <!-- <el-table :data="localData" style="width: 100%">
-                <el-table-column prop="POLICY_ID" label="政策id" width="180">
-                </el-table-column>
-                <el-table-column prop="POLICY_TITLE" label="政策标题" width="180">
-                </el-table-column>
-                <el-table-column prop="POLICY_URL" label="政策文件">
-                </el-table-column>
-                <el-table-column prop="CREATED_AT" label="创建时间">
-                </el-table-column>
-                <el-table-column prop="UPDATED_AT" label="更新时间">
-                </el-table-column>
-                <el-table-column fixed="right" label="操作" width="220">
-                    <template slot-scope="scope">
-                        <el-button @click.native.prevent="deleteRow(scope.$index, tableData)" type="text" size="small">
-                            查看文件
-                        </el-button>
-                        <el-button @click.native.prevent="changePolicy(scope.row)" type="text" size="small">
-                            修改
-                        </el-button>
-                        <el-button @click.native.prevent="deletePolicy(scope.row)" type="text" size="small">
-                            删除
-                        </el-button>
-                    </template>
-                </el-table-column>
-            </el-table> -->
         </div>
+        <el-dialog title="公司列表" :visible.sync="dialogTableVisible">
+            <el-row v-show="!showReview">
+                <el-col :span="12">
+                    <div class="grid-content bg-purple">
+                        <el-table :data="recommendDataList.data" ref="multipleTable" style="width: 100%" @selection-change="handleSelectionChangeR">
+                            <el-table-column type="selection" width="55"> </el-table-column>
+                            <el-table-column property="COMPANY_NAME" label="公司名称" width="200"></el-table-column>
+                            <el-table-column property="SORT" label="推荐指数" width="200"><template slot-scope="scope">
+                                    <el-rate v-model="scope.row.SORT" disabled show-score text-color="#ff9900" score-template="{value} 分">
+                                    </el-rate>
+                                </template></el-table-column>
+                        </el-table>
+                    </div>
+                </el-col>
+                <el-col :span="12">
+                    <div class="grid-content bg-purple-light">
+                        <div class="grid-content bg-purple">
+                            <el-table :data="companyList" ref="multipleTable" style="width: 100%" @selection-change="handleSelectionChange">
+                                <el-table-column type="selection" width="55"> </el-table-column>
+                                <el-table-column property="COMPANY_NAME" label="公司名称" width="200"></el-table-column>
+                            </el-table>
+                        </div>
+                    </div>
+                </el-col>
+            </el-row>
+            <div v-show="showReview">
+                <el-table :data="recommendReviewList" style="width: 100%">
+                    <el-table-column property="COMPANY_NAME" label="公司名称" width="200"></el-table-column>
+                </el-table>
+            </div>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="dialogTableVisible = false">取消</el-button>
+                <el-button type="primary" @click="showReviewTable">reiew</el-button>
+                <el-button type="primary" @click="notifyCompany">推送</el-button>
+            </span>
+        </el-dialog>
 
         <el-dialog title="标签" :visible.sync="tagDialogVisible" width="90%">
-            <el-steps :active="active" :finish-status="success">
+            <el-steps :active="active">
                 <el-step title="大行业"></el-step>
                 <el-step title="小行业"></el-step>
                 <el-step title="其他"></el-step>
@@ -146,22 +159,6 @@
                 </sui-modal-actions>
             </sui-modal>
         </div>
-        <div>
-            <sui-modal v-model="exportData.open" class="modal2">
-                <sui-modal-header style="border-bottom:0;">导出选择</sui-modal-header>
-                <sui-modal-content scrolling>
-                    <export-form :filterString="filterString" :singleRoom="filterString" ref="FormExport" mode1="room"></export-form>
-                </sui-modal-content>
-                <sui-modal-actions>
-                    <sui-button basic color="red" @click.native="closeModalExport">
-                        取消
-                    </sui-button>
-                    <sui-button basic color="blue" @click.native="openExportUrl">
-                        提交
-                    </sui-button>
-                </sui-modal-actions>
-            </sui-modal>
-        </div>
     </div>
 </wl-container>
 </template>
@@ -175,15 +172,14 @@ import dialogBar from "@/components/MDialog";
 import {
     formatDate
 } from "@/util/time";
-import ExportForm from "@/components/export_form";
 import policyForm from "@/components/policyForm";
 import constants from "@/util/constants";
 //import Pagination from 'vue-pagination-2';
 
-import global from "@/global/index";
-import {
-    localGet
-} from "@/util/storage"; // 导入存储函数
+// import global from "@/global/index";
+// import {
+//     localGet
+// } from "@/util/storage"; // 导入存储函数
 
 import {
     notifySomething,
@@ -197,27 +193,30 @@ import {
     updatePolicyApi,
     postPolicyApi,
     deletePolicyApi,
-    addPolicyTagApi
+    addPolicyTagApi,
+    getRecommendCompanysApi,
+    getCompanysApi,
+    postRecommendListApi
+
     //createRoomApi,
 } from "@/api/roomDataAPI";
 export default {
-    name: "MyVuetable",
+    name: "policyVue",
     props: ["kind"],
     components: {
         //  Pagination,
         VueGoodTable,
         "dialog-bar": dialogBar,
         "policy-form": policyForm,
-        "export-form": ExportForm,
     },
     data() {
         return {
+            recommendDataList: [],
             tagItems: [],
             showItems: [],
             tagType: "success",
             active: 1,
-
-            tagDialogVisible: true,
+            tagDialogVisible: false,
             paginationOptions: {
                 enabled: true,
                 nextLabel: "下一页",
@@ -274,20 +273,78 @@ export default {
             selectedPolicy: {
                 tags: []
             },
+            dialogTableVisible: false,
             buildingImage: {
                 open: false,
                 notification: "",
             },
+            multipleSelection: [],
+            multipleSelectionR: [],
             deleteTarget: "",
             loading: true,
+            companyList: [],
             localData: [],
-            ComponentKey: 1,
-            buildingForm: {
-                open: false,
-            },
+            showReview: false,
+            recommendReviewList: []
         };
     },
     methods: {
+
+        notifyCompany() {
+            var payload = [];
+            if (this.recommendReviewList.length > 0) {
+                this.recommendReviewList.map((one) => {
+                    payload.push({
+                        "USER_ID": one.USER_ID /*USER_ID <NVARCHAR(36)>*/ ,
+                        "RECOMMENDED_ID": this.selectedPolicy.POLICY_ID /*RECOMMENDED_ID <NVARCHAR(36)>*/ ,
+                        "TYPE": "PO" /*TYPE <NVARCHAR(2)>*/ ,
+                        "STATUS": false /*STATUS <BOOLEAN>*/ ,
+                        "COMMENT": " " /*COMMENT <NVARCHAR(500)>*/ ,
+                        "CREATED_AT": new Date() /*CREATED_AT <TIMESTAMP>*/ ,
+                        "UPDATED_AT": new Date() /*UPDATED_AT <TIMESTAMP>*/
+                    })
+                })
+                postRecommendListApi(payload).then((result) => {
+                    console.log(result);
+                })
+
+            }
+
+            console.log(this.recommendReviewList);
+        },
+        showReviewTable() {
+
+            this.recommendReviewList = this.multipleSelectionR.concat(this.multipleSelection);
+            this.showReview = true;
+
+        },
+        handleSelectionChangeR(val) {
+            this.multipleSelectionR = val;
+        },
+        handleSelectionChange(val) {
+            this.multipleSelection = val;
+        },
+        recommendList(data) {
+            // console.log(data.POLICY_ID);
+            this.loading = true;
+            //
+            this.selectedPolicy = data;
+            this.recommendReviewList = []
+            this.showReview = false;
+            getCompanysApi().then((result1) => {
+                this.companyList = result1.data;
+                //  console.log(this.companyList);
+                getRecommendCompanysApi(data).then((result) => {
+                    //  console.log(result);
+                    this.loading = false;
+                    this.recommendDataList = result.data;
+                    this.recommendDataList.data.map(one => one.SORT = parseFloat(one.SORT).toFixed(2) * 10)
+                    this.dialogTableVisible = true;
+
+                })
+            })
+
+        },
 
         addTag(data, index) {
             const payload = {
@@ -296,7 +353,7 @@ export default {
             }
             var context = this;
             addPolicyTagApi(payload).then((result) => {
-                console.log(result);
+                //(result);
                 if (result.data == constants.OK) {
                     context.showItems.splice(index, 1);
                     context.selectedPolicy.tags.push(data);
@@ -395,45 +452,6 @@ export default {
                 });
             }
         },
-        exportToExcel() {
-            this.exportData.open = true;
-        },
-        openExportUrl() {
-            let local_auth = localGet(global.project_key, true);
-            console.log(local_auth);
-            if (this.$refs.FormExport.toDataList.length == 0) {
-                if (this.$refs.FormExport.filterString.kind == 0) {
-                    window.open(constants.exportroom + "?token=" + local_auth);
-                } else {
-                    window.open(
-                        constants.exportroom +
-                        "?token=" +
-                        local_auth +
-                        "&kind=" +
-                        this.$refs.FormExport.filterString.kind
-                    );
-                }
-            } else {
-                var idlist = this.$refs.FormExport.toDataList.toString();
-                window.open(
-                    constants.exportroom +
-                    "?token=" +
-                    local_auth +
-                    "&kind=" +
-                    this.$refs.FormExport.filterString.kind +
-                    "&idlist=" +
-                    "[" +
-                    idlist +
-                    "]"
-                );
-            }
-            this.closeModalExport();
-        },
-        closeModalExport() {
-            this.$refs.FormExport.toData = [];
-            this.$refs.FormExport.fromData = [];
-            this.exportData.open = false;
-        },
         deletePolicy(data) {
             this.sendVal = true;
             console.log(data);
@@ -456,33 +474,6 @@ export default {
                         one.CREATED_AT = formatDate(new Date(one.CREATED_AT));
                         one.UPDATED_AT = formatDate(new Date(one.UPDATED_AT));
                     });
-                    //this.localData = data.data.data;
-                    // if (data.data.code == 0) {
-                    //     this.loading = false;
-                    //     this.localData = data.data.data
-                    //     this.localData.data.map((one) => {
-                    //         one.owner = parseInt(one.owner);
-                    //         one.zhuguandanwei = parseInt(one.zhuguandanwei);
-                    //         switch (one.kind) {
-                    //             case 2:
-                    //                 one.kindText = "经营性"
-                    //                 one.kindShow = true;
-                    //                 break;
-                    //             case 1:
-                    //                 one.kindText = "办公性"
-                    //                 one.kindShow = false;
-                    //                 break;
-
-                    //             default:
-                    //                 break;
-                    //         }
-
-                    //     })
-                    // } else if (data.data.code == 2) {
-                    //     notifySomething("重复登陆 请重新登陆", constants.GENERALERROR, constants.typeError);
-                    //     goToLogin();
-                    //     this.$router.push("/login");
-                    // }
                 })
                 .catch(function () {
                     this.loading = false;
@@ -620,7 +611,7 @@ export default {
 
         queryTagsApi(["TYPE=PO"]).then((data) => {
             this.tagItems = data.data;
-            console.log(this.tagItems)
+            //console.log(this.tagItems)
             this.showItems = [];
             this.tagItems.forEach(element => {
                 if (element["TAG_CATEGORY"] == "industry") {

@@ -12,6 +12,10 @@ function registerUserApi(data) {
 function getTagsApi() {
   return generalGetRequest(constants.tagsApi);
 }
+
+function getCompanysApi() {
+  return generalGetRequest(constants.getCompanysApi);
+}
 function updateTagsApi(data) {
   data = {
     data: data,
@@ -29,6 +33,12 @@ function postTagsApi(data) {
     data: data,
   };
   return generalRequet(data, constants.tagsApi);
+}
+function postRecommendListApi(data) {
+  data = {
+    data: data,
+  };
+  return generalRequet(data, constants.postRecommendList);
 }
 
 function queryTagsApi(type) {
@@ -71,7 +81,10 @@ function deletePolicyTagApi(data)
       return generalRequet(data, constants.deletePolicyTageApi);
 }
 
-
+function getRecommendCompanysApi(data)
+{
+      return generalGetRequest(constants.recommendPolicyApi+"/"+data.POLICY_ID);
+}
 function getRoomDataApi(data) {
   return generalRequet(data, constants.roomGetAPI);
 }
@@ -803,5 +816,8 @@ export {
   deleteTagsApi,
   registerUserApi,
   deletePolicyTagApi,
-  addPolicyTagApi
+  addPolicyTagApi,
+  getRecommendCompanysApi,
+  getCompanysApi,
+  postRecommendListApi
 };

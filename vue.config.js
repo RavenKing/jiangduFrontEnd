@@ -73,6 +73,16 @@ module.exports = {
           "^/api": ''
         }
       },
+      "/recommendApi": {
+        // target: `http://127.0.0.1:${port}/mock`,
+        target: 'https://restfulapi-appreciative-sable-jl.cfapps.eu10.hana.ondemand.com',
+        // target: 'https://corp-support.cn',
+        changeOrigin: true,
+        secure: false,
+        pathRewrite: {
+          "^/recommendApi": '/'
+        }
+      },
       "/test": {
         // target: `http://127.0.0.1:${port}/mock`,
       //  target: 'https://jiangdubackend.cfapps.us10.hana.ondemand.com',

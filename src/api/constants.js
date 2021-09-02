@@ -1,5 +1,6 @@
 const hostname= "/api";
 const jiangduPre ="/test"
+const recommendApi ="/recommendApi"
 const constantsJinhui = {
     renameBuildingApi:"/renamebuilding",
     getroomunitinfo:"/getroomunitinfo",
@@ -14,6 +15,9 @@ const constantsJinhui = {
     tagsApi:jiangduPre+"/tags",
     policyApi:jiangduPre+"/policys",
     roomGetAPI:hostname+"/policys",
+    getCompanysApi:jiangduPre+"/users/getCompanyInfo",
+    postRecommendList:jiangduPre+"/recommendLists",
+    recommendPolicyApi:recommendApi+"/recommendCompany",
 
 
 
