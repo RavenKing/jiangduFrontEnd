@@ -1,6 +1,5 @@
 import Vue from "vue";
 import App from "./App.vue";
-import Antd from 'ant-design-vue';
 import router from "./router";
 import store from "./store";
 import ElementUI from 'element-ui';
@@ -13,7 +12,6 @@ import 'semantic-ui-css/semantic.min.css';
 import Notifications from 'vue-notification';
 Vue.use(SuiVue);
 Vue.use(ElementUI);
-Vue.use(Antd)
 
 //Install BootstrapVue
 // Vue.use(BootstrapVue)

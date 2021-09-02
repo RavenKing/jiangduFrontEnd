@@ -51,6 +51,7 @@ export default {
             console.log(this.singleEntry);
             var context = this;
             this.fullscreenLoading = true;
+            // eslint-disable-next-line no-prototype-builtins
             if (this.singleEntry.hasOwnProperty("password1")) {
                 delete this.singleEntry.password1;
             }

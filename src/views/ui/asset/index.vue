@@ -107,62 +107,58 @@
             </span>
         </el-dialog>
 
-        <<<<<<< HEAD <el-dialog title="标签" :visible.sync="tagDialogVisible" width="90%">
+        <el-dialog title="标签" :visible.sync="tagDialogVisible" width="90%" :before-close="refreshRooms">
             <el-steps :active="active">
-                =======
-                <el-dialog title="标签" :visible.sync="tagDialogVisible" width="90%" :before-close="refreshRooms">
-                    <el-steps :active="active" :finish-status="success">
-                        >>>>>>> 12bf6d3a5a2d40fe582f3c5e537f50b50f0c7797
-                        <el-step title="大行业"></el-step>
-                        <el-step title="小行业"></el-step>
-                        <el-step title="其他"></el-step>
-                    </el-steps>
-                    <el-button style="margin-top: 12px; margin-bottom: 12px" @click="next">下一步</el-button>
-                    <div class="tag-group">
-                        <span class="tag-group__title" style="font-size: 25px;">已打标签</span>
-                        <div style>
-                            <el-tag class="tableTag" v-for="(item,index) in showItems1" :key="item.TAG_ID" :type="tagType" effect="dark" closable @close="deleteTag(item,index)">
-                                {{ item.TAG_NAME }}
-                            </el-tag>
-                        </div>
-                    </div>
-                    <div class="tag-group">
-                        <span class="tag-group__title" style="font-size: 25px;">标签列表</span>
-                        <div style>
-                            <el-tag class="tableTag" v-for="(item,index) in showItems2" :key="item.TAG_ID" :type="tagType" effect="dark" @click="addTag(item,index)">
-                                {{ item.TAG_NAME }}
-                            </el-tag>
-                        </div>
-                    </div>
+                <el-step title="大行业"></el-step>
+                <el-step title="小行业"></el-step>
+                <el-step title="其他"></el-step>
+            </el-steps>
+            <el-button style="margin-top: 12px; margin-bottom: 12px" @click="next">下一步</el-button>
+            <div class="tag-group">
+                <span class="tag-group__title" style="font-size: 25px;">已打标签</span>
+                <div style>
+                    <el-tag class="tableTag" v-for="(item,index) in showItems1" :key="item.TAG_ID" :type="tagType" effect="dark" closable @close="deleteTag(item,index)">
+                        {{ item.TAG_NAME }}
+                    </el-tag>
+                </div>
+            </div>
+            <div class="tag-group">
+                <span class="tag-group__title" style="font-size: 25px;">标签列表</span>
+                <div style>
+                    <el-tag class="tableTag" v-for="(item,index) in showItems2" :key="item.TAG_ID" :type="tagType" effect="dark" @click="addTag(item,index)">
+                        {{ item.TAG_NAME }}
+                    </el-tag>
+                </div>
+            </div>
 
-                    <span slot="footer" class="dialog-footer">
-                        <el-button @click="tagDialogVisible = false">取消</el-button>
-                        <el-button type="primary" @click="tagDialogVisible = false">保存</el-button>
-                    </span>
-                </el-dialog>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="tagDialogVisible = false">取消</el-button>
+                <el-button type="primary" @click="tagDialogVisible = false">保存</el-button>
+            </span>
+        </el-dialog>
 
-                <dialog-bar v-model="sendVal" type="danger" title="是否要删除" :content="deleteTarget.text" v-on:cancel="clickCancel()" @danger="clickConfirmDelete()" @confirm="clickConfirmDelete()" dangerText="确认删除"></dialog-bar>
+        <dialog-bar v-model="sendVal" type="danger" title="是否要删除" :content="deleteTarget.text" v-on:cancel="clickCancel()" @danger="clickConfirmDelete()" @confirm="clickConfirmDelete()" dangerText="确认删除"></dialog-bar>
 
-                <div>
-                    <sui-modal class="modal2" v-model="open">
-                        <sui-modal-header style="border-bottom:0; margin-bottom:-15px;">{{
+        <div>
+            <sui-modal class="modal2" v-model="open">
+                <sui-modal-header style="border-bottom:0; margin-bottom:-15px;">{{
             modelTitle
           }}</sui-modal-header>
-                        <sui-modal-content>
-                            <sui-segment>
-                                <policy-form :singleRoom="selectedPolicy"></policy-form>
-                            </sui-segment>
-                        </sui-modal-content>
-                        <sui-modal-actions>
-                            <sui-button basic color="red" @click.native="closeModal">
-                                取消
-                            </sui-button>
-                            <sui-button v-if="modalMode !== 'check'" basic color="blue" @click.native="toggle">
-                                提交
-                            </sui-button>
-                        </sui-modal-actions>
-                    </sui-modal>
-                </div>
+                <sui-modal-content>
+                    <sui-segment>
+                        <policy-form :singleRoom="selectedPolicy"></policy-form>
+                    </sui-segment>
+                </sui-modal-content>
+                <sui-modal-actions>
+                    <sui-button basic color="red" @click.native="closeModal">
+                        取消
+                    </sui-button>
+                    <sui-button v-if="modalMode !== 'check'" basic color="blue" @click.native="toggle">
+                        提交
+                    </sui-button>
+                </sui-modal-actions>
+            </sui-modal>
+        </div>
     </div>
 </wl-container>
 </template>
@@ -563,8 +559,6 @@ export default {
 
         // open emodify room
         changePolicy(data) {
-            console.log(data);
-            // eslint-disable-next-line no-prototype-builtins
             if (
                 // eslint-disable-next-line no-prototype-builtins
                 data.hasOwnProperty("vgt_id") ||
