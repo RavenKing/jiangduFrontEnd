@@ -708,6 +708,11 @@ export default {
 </script>
 
 <style>
+.el-tag--dark {
+    background-color: #4BA6E6;
+    border-color: #6AABDD;
+    color: #fff;
+}
 .tableTag {
     margin-left: 5px;
     margin-bottom: 1%;
