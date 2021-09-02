@@ -94,7 +94,7 @@
             </el-table> -->
         </div>
 
-        <el-dialog title="标签" :visible.sync="tagDialogVisible" width="90%">
+        <el-dialog title="标签" :visible.sync="tagDialogVisible" width="90%" :before-close="refreshRooms">
             <el-steps :active="active" :finish-status="success">
                 <el-step title="大行业"></el-step>
                 <el-step title="小行业"></el-step>
@@ -319,8 +319,13 @@ export default {
             deletePolicyTagApi(payload).then((result) => {
                 console.log(result)
                 if (result.data == constants.OK) {
-                    context.selectedPolicy.tags.splice(index, 1);
+                    let name = this.showItems1[index].TAG_NAME;
                     context.showItems1.splice(index, 1);
+                    for (let i = 0; i < context.selectedPolicy.tags.length; i++) {
+                        if (context.selectedPolicy.tags[i].TAG_NAME == name)
+                            context.selectedPolicy.tags.splice(i, 1);
+                    }
+                    context.showItems2.push(data);
                 }
             })
             // delete the item in tags.
