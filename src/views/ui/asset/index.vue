@@ -85,6 +85,7 @@
                     </div>
                 </el-col>
                 <el-col :span="12">
+                    <model-select :options="companyNameList" v-model="item" placeholder="搜索公司"></model-select>
                     <div class="grid-content bg-purple-light">
                         <div class="grid-content bg-purple">
                             <el-table :data="companyList" ref="multipleTable" style="width: 100%" @selection-change="handleSelectionChange">
@@ -164,6 +165,9 @@
 </template>
 
 <script>
+import {
+    ModelSelect
+} from 'vue-search-select'
 import "vue-good-table/dist/vue-good-table.css";
 import {
     VueGoodTable
@@ -205,12 +209,17 @@ export default {
     props: ["kind"],
     components: {
         //  Pagination,
+        ModelSelect,
         VueGoodTable,
         "dialog-bar": dialogBar,
         "policy-form": policyForm,
     },
     data() {
         return {
+            item: {
+                value: '',
+                text: ''
+            },
             recommendDataList: [],
             tagItems: [],
             // 展示某种类型的selected tag
@@ -286,13 +295,21 @@ export default {
             deleteTarget: "",
             loading: true,
             companyList: [],
+            companyNameList: [],
             localData: [],
             showReview: false,
             recommendReviewList: []
         };
     },
     methods: {
-
+        reset() {
+            this.item = {}
+        },
+        selectFromParentComponent1() {
+            // select option from parent component
+            // this.item = this.options[0]
+            this.item = this.companyNameList[0]
+        },
         notifyCompany() {
             var payload = [];
             if (this.recommendReviewList.length > 0) {
@@ -336,7 +353,13 @@ export default {
             this.showReview = false;
             getCompanysApi().then((result1) => {
                 this.companyList = result1.data;
-                //  console.log(this.companyList);
+                this.companyList.forEach((element, index) => {
+                    this.companyNameList.push({
+                        value: index,
+                        text: element.COMPANY_NAME
+                    });
+                });
+                console.log(this.companyNameList);
                 getRecommendCompanysApi(data).then((result) => {
                     //  console.log(result);
                     this.loading = false;
@@ -701,6 +724,7 @@ export default {
     border-color: #6AABDD;
     color: #fff;
 }
+
 .tableTag {
     margin-left: 5px;
     margin-bottom: 1%;
