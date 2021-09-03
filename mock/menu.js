@@ -51,7 +51,7 @@ const menus = [{
         icon:"globe icon"
       },
       {
-        id: "3-11",
+        id: "3-12",
         title: "黑白名单",
         name: "黑白名单管理",
         url: "/ui/blacklists",

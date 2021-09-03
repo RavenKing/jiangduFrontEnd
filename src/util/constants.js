@@ -17,6 +17,7 @@ const constantsJinhui = {
     FENPEISUCCESS:"分配成功",
     FENPEIFAILED:"分配失败",
     FEIPEICREATEFAILED:"分配单位失败错误代码：",
+    notifyCompany:"推送成功",
     STATUSNEW:1,
     typeRoomPatrol:'Patrol',
     typeRoomRent:'Rent',

@@ -45,8 +45,8 @@ function queryTagsApi(type) {
   return queryGetRequest(type, constants.tagsApi);
 }
 
-function getPolicysApi() {
-  return generalGetRequest(constants.policyApi);
+function getPolicysApi(data) {
+  return generalRequet(data,constants.policyApi);
 }
 function updatePolicyApi(data) {
   data = {

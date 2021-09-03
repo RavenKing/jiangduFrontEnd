@@ -74,8 +74,8 @@
             <el-row v-show="!showReview">
                 <el-col :span="12">
                     <div class="grid-content bg-purple">
-                        <el-table :data="recommendDataList.data" ref="multipleTable" style="width: 100%" @selection-change="handleSelectionChangeR">
-                            <el-table-column type="selection" width="55"> </el-table-column>
+                        <el-table max-height="500px" :data="recommendDataList.data" ref="multipleTableRecommend" style="width: 100%" @selection-change="handleSelectionChangeR">
+                            <el-table-column property="selected" type="selection" width="55"> </el-table-column>
                             <el-table-column property="COMPANY_NAME" label="公司名称" width="200"></el-table-column>
                             <el-table-column property="SORT" label="推荐指数" width="200"><template slot-scope="scope">
                                     <el-rate v-model="scope.row.SORT" disabled show-score text-color="#ff9900" score-template="{value} 分">
@@ -85,10 +85,10 @@
                     </div>
                 </el-col>
                 <el-col :span="12">
-                    <model-select :options="companyNameList" v-model="item" placeholder="搜索公司" @input="onSelect"></model-select>
                     <div class="grid-content bg-purple-light">
                         <div class="grid-content bg-purple">
-                            <el-table :data="companyList" ref="multipleTable" style="width: 100%" @selection-change="handleSelectionChange">
+                            <el-input v-model="item" size="mini" placeholder="Type to search" @input="handleSearch" />
+                            <el-table max-height="500px" @filter-change="filterChange" :data="companySelect" ref="multipleTable" style="width: 100%" @selection-change="handleSelectionChange">
                                 <el-table-column type="selection" width="55"> </el-table-column>
                                 <el-table-column property="COMPANY_NAME" label="公司名称" width="200"></el-table-column>
                             </el-table>
@@ -103,9 +103,9 @@
             </div>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogTableVisible = false">取消</el-button>
-                <el-button type="primary" @click="showReviewTable"  v-show="!showReview">reiew</el-button>
+                <el-button type="primary" @click="showReviewTable" v-show="!showReview">reiew</el-button>
                 <el-button type="primary" @click="notifyCompany" v-show="showReview" :disabled="recommendReviewList.length==0">推送</el-button>
-                <el-button type="primary" @click="showReview = false" v-show="showReview">上一步</el-button>
+                <el-button type="primary" @click="prevNotify" v-show="showReview">上一步</el-button>
             </span>
         </el-dialog>
 
@@ -166,9 +166,9 @@
 </template>
 
 <script>
-import {
-    ModelSelect
-} from 'vue-search-select'
+// import {
+//     ModelSelect
+// } from 'vue-search-select'
 import "vue-good-table/dist/vue-good-table.css";
 import {
     VueGoodTable
@@ -210,20 +210,16 @@ export default {
     props: ["kind"],
     components: {
         //  Pagination,
-        ModelSelect,
+        //"model-select": ModelSelect,
         VueGoodTable,
         "dialog-bar": dialogBar,
         "policy-form": policyForm,
     },
     data() {
         return {
-            item: {
-                value: '',
-                text: ''
-            },
-            lastSelectItem: {},
             recommendDataList: [],
             tagItems: [],
+            item: "",
             // 展示某种类型的selected tag
             showItems1: [],
             // 展示某种类型的unselected tag
@@ -267,7 +263,7 @@ export default {
                     //  type: 'percentage',
                 },
             ],
-
+            companySelect: [],
             page: 0,
             componentAssignListkey: 1,
             sendVal: false,
@@ -297,18 +293,27 @@ export default {
             deleteTarget: "",
             loading: true,
             companyList: [],
-            companyNameList: [],
             localData: [],
             showReview: false,
             recommendReviewList: []
         };
     },
     methods: {
-        onSelect(item) {
-            this.item = item;
+        handleSearch() {
+            this.companySelect = this.companyList.filter(data => data.COMPANY_NAME.includes(this.item))
         },
-        reset() {
-            this.item = {}
+
+        filterChange() {
+
+            console.log("change")
+        },
+        prevNotify() {
+            //   this.$refs.multipleTable.toggleRowSelection(this.recommendReviewList, true);
+            this.showReview = false
+            //            this.$refs.multipleTable.toggleRowSelection(this.recommendReviewList,true);
+        },
+        handleOnInput(data) {
+            console.log(data)
         },
         notifyCompany() {
             var payload = [];
@@ -325,18 +330,16 @@ export default {
                     })
                 })
                 postRecommendListApi(payload).then((result) => {
-                    console.log(result);
+                    if (result.data == constants.OK) {
+                        this.dialogTableVisible = false;
+                        notifySomething(constants.notifyCompany, constants.notifyCompany, constants.typeSuccess);
+                    }
                 })
-
             }
-
-            console.log(this.recommendReviewList);
         },
         showReviewTable() {
-
             this.recommendReviewList = this.multipleSelectionR.concat(this.multipleSelection);
             this.showReview = true;
-
         },
         handleSelectionChangeR(val) {
             this.multipleSelectionR = val;
@@ -347,19 +350,16 @@ export default {
         recommendList(data) {
             // console.log(data.POLICY_ID);
             this.loading = true;
-            //
             this.selectedPolicy = data;
             this.recommendReviewList = []
             this.showReview = false;
             getCompanysApi().then((result1) => {
                 this.companyList = result1.data;
-                this.companyList.forEach((element, index) => {
-                    this.companyNameList.push({
-                        value: index,
-                        text: element.COMPANY_NAME
-                    });
-                });
-                console.log(this.companyNameList);
+                this.companyList.map(one => {
+                    one.selected = true;
+                    this.companySelect = this.companyList;
+                })
+                //  console.log(this.companyList);
                 getRecommendCompanysApi(data).then((result) => {
                     //  console.log(result);
                     this.loading = false;
@@ -509,12 +509,10 @@ export default {
 
         onSearch() {
             var payload = {
-                name: this.filterString.name,
-                page: 1,
+                data: {
+                    searchString: this.filterString.name,
+                }
             };
-            if (this.filterString.kind) {
-                payload.kind = this.filterString.kind;
-            }
             this.refreshRooms(payload);
         },
 
@@ -524,10 +522,7 @@ export default {
                 this.deleteTarget.POLICY_ID = this.deleteTarget.id;
                 deletePolicyApi(this.deleteTarget).then((result) => {
                     if (result.data == constants.OK) {
-                        this.refreshRooms({
-                            page: 1,
-                            kind: 1,
-                        });
+                        this.refreshRooms();
                         notifySomething(
                             "删除政策成功",
                             "删除政策成功",
@@ -555,9 +550,12 @@ export default {
         },
         refreshRooms(payload) {
             this.loading = true;
-            // console.log(payload);
-            payload = [];
-            getPolicysApi()
+            if (!payload) {
+                payload = {}
+            }
+            console.log(payload);
+
+            getPolicysApi(payload)
                 .then((data) => {
                     this.localData = data.data;
                     console.log(this.localData);
@@ -576,10 +574,6 @@ export default {
                     );
                 });
         },
-        // assignRentRoom(rowData){
-        //     console.log(rowData);
-        // },
-
         // open emodify room
         changePolicy(data) {
             if (
@@ -710,10 +704,7 @@ export default {
             })
         });
 
-        this.refreshRooms({
-            page: 1,
-            kind: 1,
-        });
+        this.refreshRooms();
     },
 };
 </script>
