@@ -102,7 +102,7 @@
             </div>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogTableVisible = false">取消</el-button>
-                <el-button type="primary" @click="showReviewTable"  v-show="!showReview">reiew</el-button>
+                <el-button type="primary" @click="showReviewTable"  v-show="!   showReview">reiew</el-button>
                 <el-button type="primary" @click="notifyCompany" v-show="showReview" :disabled="recommendReviewList.length==0">推送</el-button>
                 <el-button type="primary" @click="showReview = false" v-show="showReview">上一步</el-button>
             </span>

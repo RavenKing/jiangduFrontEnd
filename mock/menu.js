@@ -50,6 +50,13 @@ const menus = [{
         url: "/ui/tags",
         icon:"globe icon"
       },
+      {
+        id: "3-11",
+        title: "黑白名单",
+        name: "黑白名单管理",
+        url: "/ui/blacklists",
+        icon:"globe icon"
+      },
       // {
       //   id: "3-3",
       //   title: "BIM三维模型",
