@@ -1,4 +1,4 @@
-x
+/* eslint-disable vue/html-indent */ /* eslint-disable vue/html-indent */
 <template lang="html">
 <wl-container>
     <div>
@@ -13,22 +13,17 @@ x
                     <sui-grid-column :width="12">
                         <sui-form>
                             <sui-form-fields inline>
-                                <!-- <sui-form-field>
-                                    <sui-dropdown placeholder="房屋类型" selection :options="options" v-model="filterString.kind" />
-                                </sui-form-field> -->
                                 <sui-form-field>
-                                    <input type="text" placeholder="标签文件" v-model="filterString.name" />
+                                    <input v-model="filterString.name" type="text" placeholder="搜索" />
                                 </sui-form-field>
                                 <sui-button basic color="blue" content="查询" @click.prevent="onSearch" />
                             </sui-form-fields>
                         </sui-form>
                     </sui-grid-column>
-                    <sui-grid-column :width="4" style="padding-right:0">
+                    <sui-grid-column :width="4" style="padding-right:10px">
                         <div style="float:right;">
-                            <sui-button basic color="blue" content="新建" @click.native="createRoomModel" icon="add blue" />
-                            <!-- <sui-button content="修改" icon="edit yellow" />
-                 <sui-button content="删除" icon="delete red" /> -->
-                            <sui-button basic color="green" content="导出" v-on:click="exportToExcel" icon="file green" />
+                            <sui-button basic color="blue" content="新建" icon="add blue" @click.native="createRoomModel" />
+                            <sui-button basic color="green" content="导出" icon="file green" @click="exportToExcel" />
                         </div>
                     </sui-grid-column>
                 </sui-grid-row>
@@ -37,18 +32,14 @@ x
 
         <div>
             <div>
-                <vue-good-table :columns="columns" :rows="localData" :sort-options="{
-              enabled: true,
-              multipleColumns: true,
-              initialSortBy: [{ field: 'CREATED_AT', type: 'desc' }],
-            }" :pagination-options="paginationOptions">
+                <vue-good-table :columns="columns" :rows="showData" :pagination-options="paginationOptions">
                     <template slot="table-row" slot-scope="props">
                         <span v-if="props.column.field == 'action'">
                             <span>
-                                <el-button @click.native.prevent="changeTag(props.row)" type="text" size="small">
+                                <el-button type="text" size="small" @click.native.prevent="changeTag(props.row)">
                                     修改
                                 </el-button>
-                                <el-button @click.native.prevent="deleteTag(props.row)" type="text" size="small">
+                                <el-button type="text" size="small" @click.native.prevent="deleteTag(props.row)">
                                     删除
                                 </el-button>
                             </span>
@@ -60,16 +51,17 @@ x
                 </vue-good-table>
             </div>
         </div>
-        <dialog-bar v-model="sendVal" type="danger" title="是否要删除" :content="deleteTarget.text" v-on:cancel="clickCancel()" @danger="clickConfirmDelete()" @confirm="clickConfirmDelete()" dangerText="确认删除"></dialog-bar>
+
+        <dialog-bar v-model="sendVal" type="danger" title="是否要删除" :content="deleteTarget.text" danger-text="确认删除" @cancel="clickCancel()" @danger="clickConfirmDelete()" @confirm="clickConfirmDelete()" />
 
         <div>
-            <sui-modal class="modal2" v-model="open">
-                <sui-modal-header style="border-bottom:0; margin-bottom:-15px;">{{
-            modelTitle
-          }}</sui-modal-header>
+            <sui-modal v-model="open" class="modal2">
+                <sui-modal-header style="border-bottom:0; margin-bottom:-15px;">
+                    {{ modelTitle }}
+                </sui-modal-header>
                 <sui-modal-content>
                     <sui-segment>
-                        <tag-form :singleRoom="selectedTag"></tag-form>
+                        <blackList-form :single-room="balckListItem" />
                     </sui-segment>
                 </sui-modal-content>
                 <sui-modal-actions>
@@ -82,11 +74,14 @@ x
                 </sui-modal-actions>
             </sui-modal>
         </div>
+
         <div>
             <sui-modal v-model="exportData.open" class="modal2">
-                <sui-modal-header style="border-bottom:0;">导出选择</sui-modal-header>
+                <sui-modal-header style="border-bottom:0;">
+                    导出选择
+                </sui-modal-header>
                 <sui-modal-content scrolling>
-                    <export-form :filterString="filterString" :singleRoom="filterString" ref="FormExport" mode1="room"></export-form>
+                    <export-form ref="FormExport" :filter-string="filterString" :single-room="filterString" mode1="room" />
                 </sui-modal-content>
                 <sui-modal-actions>
                     <sui-button basic color="red" @click.native="closeModalExport">
@@ -115,35 +110,29 @@ import FieldsDef from "./FieldsDef.js";
 import FieldsDefList from "./FieldsDefList.js";
 import FieldsUnit from "./FieldsUnit.js";
 import ExportForm from "@/components/export_form";
-import tagForm from "@/components/tagForm";
+import blackListForm from "@/components/blackListForm";
 import constants from "@/util/constants";
-//import Pagination from 'vue-pagination-2';
-
 import global from "@/global/index";
 import {
-    localGet
+    localGet,
 } from "@/util/storage"; // 导入存储函数
-
 import {
     notifySomething,
-    //  goToLogin
 } from "@/util/utils";
 import {
-    getTagsApi,
-    updateTagsApi,
-    postTagsApi,
-    deleteTagsApi,
+    updateBlackListApi,
+    getUserApi,
 } from "@/api/roomDataAPI";
+
 export default {
-    name: "MyVuetable",
-    props: ["kind"],
+    name: "blackListPage",
     components: {
-        //  Pagination,
         VueGoodTable,
         "dialog-bar": dialogBar,
-        "tag-form": tagForm,
+        "blackList-form": blackListForm,
         "export-form": ExportForm,
     },
+    props: ["kind"],
     data() {
         return {
             paginationOptions: {
@@ -166,19 +155,16 @@ export default {
                 },
                 {
                     label: "评论",
-                    field: "COMMENT",
+                    field: "COMMENTS",
                     sortable: false,
-                    //  type: 'percentage',
                 },
 
                 {
                     label: "操作",
                     field: "action",
                     sortable: false,
-                    //  type: 'percentage',
                 },
             ],
-
             page: 0,
             options: [{
                     text: "办公性",
@@ -204,7 +190,7 @@ export default {
                 kind: 1,
                 page: 1,
             },
-            selectedTag: {},
+            balckListItem: {},
             buildingImage: {
                 open: false,
                 notification: "",
@@ -212,6 +198,7 @@ export default {
             deleteTarget: "",
             loading: true,
             localData: [],
+            showData: [],
             selectedRoom: {
                 roomname: "",
                 area: "奉贤区",
@@ -227,17 +214,12 @@ export default {
         };
     },
 
-    //     juji: data.assign.juji,
-    // fujuji: data.assign.fujuji,
-    // chuji: data.assign.chuji,
-    // fuchuji: data.assign.fuchuji,
-    // keji: data.assign.keji,
-    // fukeji: data.assign.fukeji,
-    // keyuan: data.assign.keyuan,
-    // qita: data.assign.qita,
-    // roomname: data.assign.roomname,
-    // beizhu: data.assign.beizhu,
-    // roomnumber: data.assign.roomnumber
+    created() {
+        this.refreshRooms({
+            page: 1,
+            kind: 1,
+        });
+    },
 
     methods: {
         onSearch() {
@@ -253,29 +235,28 @@ export default {
 
         clickConfirmDelete() {
             this.loading = true;
-            if (this.deleteTarget.type == "tag") {
-                this.deleteTarget.TAG_ID = this.deleteTarget.id;
-                deleteTagsApi(this.deleteTarget).then((result) => {
-                    if (result.data == constants.OK) {
-                        this.refreshRooms({
-                            page: 1,
-                            kind: 1,
-                        });
-                        notifySomething(
-                            "删除标签成功",
-                            "删除标签成功",
-                            constants.typeSuccess
-                        );
-                    } else if (result.data.code == 3) {
-                        notifySomething(
-                            constants.GENERALERROR,
-                            "删除标签失败",
-                            constants.typeError
-                        );
-                    }
-                    this.loading = false;
-                });
-            }
+            this.deleteTarget.COMMENTS = "";
+            this.deleteTarget.STATUS = "";
+            updateBlackListApi(this.deleteTarget).then((result) => {
+                if (result.data == constants.OK) {
+                    this.refreshRooms({
+                        page: 1,
+                        kind: 1,
+                    });
+                    notifySomething(
+                        "删除标签成功",
+                        "删除标签成功",
+                        constants.typeSuccess
+                    );
+                } else if (result.data.code == 3) {
+                    notifySomething(
+                        constants.GENERALERROR,
+                        "删除标签失败",
+                        constants.typeError
+                    );
+                }
+                this.loading = false;
+            });
         },
         exportToExcel() {
             this.exportData.open = true;
@@ -320,16 +301,15 @@ export default {
             this.sendVal = true;
             console.log(data);
             this.deleteTarget = {
-                text: "是否要删除" + data.TAG_NAME + "(ID: " + data.TAG_ID + ")?",
-                id: data.TAG_ID,
-                type: "tag",
+                text: "是否要将" + data.COMPANY_NAME + "从" + data.STATUS + "列表删除?",
+                USER_ID: data.USER_ID,
             };
         },
         refreshRooms(payload) {
             this.loading = true;
             console.log(payload);
             payload = [];
-            getTagsApi()
+            getUserApi()
                 .then((data) => {
                     this.localData = data.data;
                     console.log(this.localData);
@@ -338,33 +318,13 @@ export default {
                         one.CREATED_AT = formatDate(new Date(one.CREATED_AT));
                         one.UPDATED_AT = formatDate(new Date(one.UPDATED_AT));
                     });
-                    //this.localData = data.data.data;
-                    // if (data.data.code == 0) {
-                    //     this.loading = false;
-                    //     this.localData = data.data.data
-                    //     this.localData.data.map((one) => {
-                    //         one.owner = parseInt(one.owner);
-                    //         one.zhuguandanwei = parseInt(one.zhuguandanwei);
-                    //         switch (one.kind) {
-                    //             case 2:
-                    //                 one.kindText = "经营性"
-                    //                 one.kindShow = true;
-                    //                 break;
-                    //             case 1:
-                    //                 one.kindText = "办公性"
-                    //                 one.kindShow = false;
-                    //                 break;
-
-                    //             default:
-                    //                 break;
-                    //         }
-
-                    //     })
-                    // } else if (data.data.code == 2) {
-                    //     notifySomething("重复登陆 请重新登陆", constants.GENERALERROR, constants.typeError);
-                    //     goToLogin();
-                    //     this.$router.push("/login");
-                    // }
+                    this.showData = [];
+                    this.localData.forEach(element => {
+                        if (element.STATUS != null && element.STATUS != "") {
+                            this.showData.push(element);
+                        }
+                    });
+                    console.log(showData);
                 })
                 .catch(function () {
                     this.loading = false;
@@ -375,23 +335,20 @@ export default {
                     );
                 });
         },
-        // assignRentRoom(rowData){
-        //     console.log(rowData);
-        // },
 
         // open emodify room
         changeTag(data) {
             console.log(data);
-            // eslint-disable-next-line no-prototype-builtins
             if (
                 // eslint-disable-next-line no-prototype-builtins
-                data.hasOwnProperty("vgt_id") || data.hasOwnProperty("originalIndex")
+                data.hasOwnProperty("vgt_id") ||
+                data.hasOwnProperty("originalIndex")
             ) {
                 delete data.vgt_id;
                 delete data.originalIndex;
             }
-            this.selectedTag = data;
-            this.modelTitle = "修改标签";
+            this.balckListItem = data;
+            this.modelTitle = "修改黑/白名单";
             this.modalMode = "edit";
             this.open = true;
         },
@@ -399,16 +356,13 @@ export default {
         //open create
         createRoomModel() {
             // show create Model
-            this.modelTitle = "上传标签";
+            this.modelTitle = "添加黑/白名单";
             this.modalMode = "create";
             this.open = true;
-            this.selectedTag = {
-                TAG_ID: "",
-                TAG_NAME: "",
-                TAG_VALUE: "",
-                TYPE: "",
-                DESCRIPTION: "",
-                TAG_CATEGORY: "",
+            this.balckListItem = {
+                "USER_ID": "",
+                "COMMENTS": "",
+                "STATUS": ""
             };
             this.selectedRoom = {
                 room_id: "",
@@ -443,14 +397,11 @@ export default {
                 formdata.usage = null;
             }
             var context = this;
-            //kind=1 means 自由房屋创建和编辑
-            //this.selectedRoom.kind = 1;
             if (this.modalMode == "create") {
-                this.selectedTag.CREATED_AT = new Date();
-                this.selectedTag.UPDATED_AT = new Date();
-                // this.selectedTag.TAG_URL = " ";
-                this.selectedTag.USER_ID_USER_ID = "2200";
-                postTagsApi(this.selectedTag)
+                this.balckListItem.CREATED_AT = new Date();
+                this.balckListItem.UPDATED_AT = new Date();
+                this.balckListItem.USER_ID_USER_ID = "2200";
+                updateBlackListApi(this.balckListItem)
                     .then((result) => {
                         context.loading = false;
                         if (result.data == constants.OK) {
@@ -477,24 +428,18 @@ export default {
                         );
                     });
             } else if (this.modalMode == "edit") {
-                updateTagsApi(this.selectedTag)
+                updateBlackListApi(this.balckListItem)
                     .then((result) => {
                         if (result.data == constants.OK) {
                             this.closeModal();
                             this.$notify({
                                 group: "foo",
-                                title: "更新标签成功",
-                                text: "更新标签成功",
+                                title: "更新成功",
+                                text: "更新成功",
                                 type: "success",
                             });
-                        } else if (result.data.code == 3) {
-                            notifySomething(
-                                "更新标签失败",
-                                "该房屋已有分配房间，无法更改房屋性质",
-                                "error"
-                            );
                         } else {
-                            notifySomething("更新自有房屋失败", "更新自有房屋失败", "error");
+                            notifySomething("更新失败", "更新失败", "error");
                         }
                         this.loading = false;
                     })
@@ -512,11 +457,6 @@ export default {
 
         closeModal: function () {
             this.open = false;
-            // /this.assignForm.open = false;
-            //this.buildingForm.open = false;
-            //  this.buildingFloorForm.open = false;
-            //    this.buildingImage.open = false;
-            //this.assignList.open = false;
             var payload = {
                 name: this.filterString.name,
                 page: 1,
@@ -526,13 +466,6 @@ export default {
             }
             this.refreshRooms(payload);
         },
-    },
-
-    created() {
-        this.refreshRooms({
-            page: 1,
-            kind: 1,
-        });
     },
 };
 </script>

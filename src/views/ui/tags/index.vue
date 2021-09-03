@@ -1,4 +1,3 @@
-x
 <template lang="html">
 <wl-container>
     <div>

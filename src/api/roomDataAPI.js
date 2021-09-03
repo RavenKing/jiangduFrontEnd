@@ -9,6 +9,15 @@ function registerUserApi(data) {
   };
   return generalRequet(data, constants.userApi);
 }
+function getUserApi() {
+  return generalGetRequest(constants.userApi);
+}
+function updateBlackListApi(data) {
+  data = {
+    data: data,
+  };
+  return generalPutRequest(data, constants.blacklistApi);
+}
 function getTagsApi() {
   return generalGetRequest(constants.tagsApi);
 }
@@ -66,24 +75,21 @@ function postPolicyApi(data) {
   };
   return generalRequet(data, constants.policyApi);
 }
-function addPolicyTagApi(data)
-{
-    data = {
-        data: data,
-      };
-      return generalRequet(data, constants.addTageApi);
+function addPolicyTagApi(data) {
+  data = {
+    data: data,
+  };
+  return generalRequet(data, constants.addTageApi);
 }
-function deletePolicyTagApi(data)
-{
-    data = {
-        data: data,
-      };
-      return generalRequet(data, constants.deletePolicyTageApi);
+function deletePolicyTagApi(data) {
+  data = {
+    data: data,
+  };
+  return generalRequet(data, constants.deletePolicyTageApi);
 }
 
-function getRecommendCompanysApi(data)
-{
-      return generalGetRequest(constants.recommendPolicyApi+"/"+data.POLICY_ID);
+function getRecommendCompanysApi(data) {
+  return generalGetRequest(constants.recommendPolicyApi + "/" + data.POLICY_ID);
 }
 function getRoomDataApi(data) {
   return generalRequet(data, constants.roomGetAPI);
@@ -99,12 +105,6 @@ function updateRoomApi(data) {
 }
 function createRoomApi(data) {
   let local_auth = localGet(global.project_key, true);
-  //console.log(local_auth);
-
-  // //console.log(local_auth);
-  // // const newFormData = {
-  // //     "token": local_auth
-  // // }
   data.token = local_auth;
   return request({
     url: constants.roomCreateAPI,
@@ -819,5 +819,7 @@ export {
   addPolicyTagApi,
   getRecommendCompanysApi,
   getCompanysApi,
-  postRecommendListApi
+  postRecommendListApi,
+  getUserApi,
+  updateBlackListApi,
 };

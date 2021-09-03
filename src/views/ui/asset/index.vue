@@ -168,7 +168,7 @@
 <script>
 import {
     ModelSelect
-} from 'vue-search-select'
+} from 'vue-search-select';
 import "vue-good-table/dist/vue-good-table.css";
 import {
     VueGoodTable
@@ -358,8 +358,7 @@ export default {
                         value: index,
                         text: element.COMPANY_NAME
                     });
-                });
-                console.log(this.companyNameList);
+                })
                 getRecommendCompanysApi(data).then((result) => {
                     //  console.log(result);
                     this.loading = false;
