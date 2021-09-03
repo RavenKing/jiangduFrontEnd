@@ -4,7 +4,7 @@
         <sui-form-fields>
             <sui-form-field style="width:50%;">
                 <label>企业名称</label>
-                <model-select :options="companyNameList" v-model="singleRoom.COMPANY_NAME" placeholder="搜索公司" @input="onSelect"></model-select>
+                <model-select :options="companyNameList" v-model="singleRoom.COMPANY_NAME" :placeholder="singleRoom.COMPANY_NAME" @input="onSelect"></model-select>
             </sui-form-field>
             <sui-form-field style="width:50%;">
                 <label>黑白名单</label>
