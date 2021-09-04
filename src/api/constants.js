@@ -18,8 +18,8 @@ const constantsJinhui = {
     getCompanysApi:jiangduPre+"/users/getCompanyInfo",
     postRecommendList:jiangduPre+"/recommendLists",
     recommendPolicyApi:recommendApi+"/recommendCompany",
-
-
+    historicalPolicyCompanyApi:jiangduPre+"/historical/latest/policy/companies",
+    talentsApi:jiangduPre+"/talents",
 
 
 

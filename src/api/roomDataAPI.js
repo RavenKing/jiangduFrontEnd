@@ -9,12 +9,23 @@ function registerUserApi(data) {
   };
   return generalRequet(data, constants.userApi);
 }
+
+function getHistoricalApi()
+{
+  var data = {
+  };
+  return generalRequet(data, constants.historicalPolicyCompanyApi);
+}
 function getTagsApi() {
   return generalGetRequest(constants.tagsApi);
 }
 
 function getCompanysApi() {
   return generalGetRequest(constants.getCompanysApi);
+}
+
+function getTalentsApi() {
+  return generalGetRequest(constants.talentsApi);
 }
 function updateTagsApi(data) {
   data = {
@@ -819,5 +830,7 @@ export {
   addPolicyTagApi,
   getRecommendCompanysApi,
   getCompanysApi,
-  postRecommendListApi
+  postRecommendListApi,
+  getHistoricalApi,
+  getTalentsApi
 };

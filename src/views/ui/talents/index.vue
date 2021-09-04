@@ -36,9 +36,6 @@
                     <template slot="table-row" slot-scope="props">
                         <span v-if="props.column.field == 'action'">
                             <span>
-                                <el-button @click.native.prevent="deleteRow(scope.$index, tableData)" type="text" size="small">
-                                    查看文件
-                                </el-button>
                                 <el-button @click.native.prevent="recommendList(props.row)" type="text" size="small">
                                     推荐
                                 </el-button>
@@ -201,7 +198,7 @@ import {
     //  goToLogin
 } from "@/util/utils";
 import {
-    getPolicysApi,
+    getTalentsApi,
     queryTagsApi,
     //getRoomDataApi,
     deletePolicyTagApi,
@@ -246,14 +243,22 @@ export default {
                 perPage: 10,
             },
             columns: [{
-                    label: "政策标题",
-                    field: "POLICY_TITLE",
+                    label: "名字",
+                    field: "TALENT_NAME",
                     sortable: false,
                 },
                 {
-                    label: "标签",
-                    field: "TAGS",
+                    label: "性别",
+                    field: "SEX",
                     sortable: false,
+                    formatFn: value => {
+                        if (value == 0) {
+                            return "男"
+                        } else {
+                            return "女"
+                        }
+                    },
+
                     //  type: 'date',
                 },
                 {
@@ -352,7 +357,7 @@ export default {
         showReviewTable() {
             this.recommendReviewList = this.multipleSelectionR.concat(this.multipleSelection);
             this.recommendReviewList = this.recommendReviewList.concat(this.multipleSelectionH);
-            this.recommendReviewList = this.getUniqueArray(this.recommendReviewList,["USER_ID"])
+            this.recommendReviewList = this.getUniqueArray(this.recommendReviewList, ["USER_ID"])
             this.showReview = true;
         },
         handleSelectionChangeH(val) {
@@ -575,10 +580,9 @@ export default {
             }
             console.log(payload);
 
-            getPolicysApi(payload)
+            getTalentsApi(payload)
                 .then((data) => {
                     this.localData = data.data;
-                    console.log(this.localData);
                     this.loading = false;
                     this.localData.map((one) => {
                         one.CREATED_AT = formatDate(new Date(one.CREATED_AT));

@@ -26,7 +26,7 @@ const menus = [{
         id: "3-8",
         title: "人才管理",
         name: "人才管理",
-        url: "/ui/rentroom",
+        url: "/ui/talents",
         icon:"building icon"
       },
       {
