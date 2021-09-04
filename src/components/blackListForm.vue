@@ -3,64 +3,51 @@
     <sui-form>
         <sui-form-fields>
             <sui-form-field style="width:50%;">
-                <label>标签名</label>
-                <sui-input placeholder="标签名" v-model="singleRoom.TAG_NAME" />
+                <label>企业名称</label>
+                <model-select :options="companyNameList" v-model="singleRoom.COMPANY_NAME" :placeholder="singleRoom.COMPANY_NAME" @input="onSelect"></model-select>
             </sui-form-field>
             <sui-form-field style="width:50%;">
-                <label>标签值</label>
-                <sui-input placeholder="标签值" v-model="singleRoom.TAG_VALUE" />
-            </sui-form-field>
-        </sui-form-fields>
-        <sui-form-fields>
-            <sui-form-field style="width:50%;">
-                <label>标签类型</label>
-                <sui-dropdown placeholder="标签类型" selection :options="options" v-model="singleRoom.TYPE" />
-            </sui-form-field>
-
-            <sui-form-field style="width:50%;">
-                <label>标签种类</label>
-                <sui-input placeholder="标签种类" v-model="singleRoom.TAG_CATEGORY" />
+                <label>黑白名单</label>
+                <sui-dropdown v-model="singleRoom.STATUS" placeholder="黑白名单" selection :options="options" />
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields>
             <sui-form-field style="width:100%;">
-                <label>标签描述</label>
-                <textarea placeholder="标签描述" v-model="singleRoom.DESCRIPTION" />
+                <label>描述</label>
+                <textarea v-model="singleRoom.COMMENTS" placeholder="描述" />
                 </sui-form-field>
         </sui-form-fields>
     </sui-form>
-</div>
+  </div>
 </template>
 
 <script>
 import * as lang from "vuejs-datepicker/src/locale";
+import {
+    ModelSelect
+} from 'vue-search-select';
+import {
+    getCompanysApi,
+} from "@/api/roomDataAPI";
 
 export default {
+    name: "FormCreate",
     props: ["singleRoom"],
-    name: "form-create",
-
+    components: {
+        'model-select': ModelSelect,
+    },
     data() {
         return {
+            localData: [],
+            companyNameList: [],
             current: null,
             options: [{
-                    text: "人才",
-                    value: "TA",
+                    text: "黑名单",
+                    value: "黑名单",
                 },
                 {
-                    text: "科技",
-                    value: "TE",
-                },
-                {
-                    text: "资产",
-                    value: "AS",
-                },
-                {
-                    text: "金融",
-                    value: "FI",
-                },
-                {
-                    text: "政策",
-                    value: "PO",
+                    text: "白名单",
+                    value: "白名单",
                 },
             ],
             fileList: [],
@@ -72,7 +59,21 @@ export default {
             testDate: Date.now(),
         };
     },
+    created() {
+        getCompanysApi().then((result) => {
+            this.localData = result.data;
+            result.data.forEach((element, index) => {
+                this.companyNameList.push({
+                    value: index,
+                    text: element.COMPANY_NAME
+                });
+            });
+        })
+    },
     methods: {
+        onSelect(item) {
+            this.singleRoom.USER_ID = this.localData[item].USER_ID;
+        },
         changeZhuguan() {
             console.log("change");
             if (this.singleRoom.isunimanage == 1) {
@@ -83,7 +84,6 @@ export default {
             }
         },
     },
-    created() {},
 };
 </script>
 

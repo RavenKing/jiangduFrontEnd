@@ -10,7 +10,7 @@ const constantsJinhui = {
     LoginURL:hostname+"/login",
     deletePolicyTageApi:jiangduPre+"/policys/deleteTags",
     addTageApi:jiangduPre+"/policys/policyTags",
-            // new jiangdu 
+    blacklistApi:jiangduPre+"/users/updateStatus",
     userApi:jiangduPre+"/users",
     tagsApi:jiangduPre+"/tags",
     policyApi:jiangduPre+"/policys",

@@ -155,7 +155,7 @@
           }}</sui-modal-header>
                 <sui-modal-content>
                     <sui-segment>
-                        <policy-form :singleRoom="selectedPolicy"></policy-form>
+                        <talent-form :singleRoom="selectedPolicy"></talent-form>
                     </sui-segment>
                 </sui-modal-content>
                 <sui-modal-actions>
@@ -184,7 +184,7 @@ import dialogBar from "@/components/MDialog";
 import {
     formatDate
 } from "@/util/time";
-import policyForm from "@/components/policyForm";
+import talentForm from "@/components/talentForm";
 import constants from "@/util/constants";
 //import Pagination from 'vue-pagination-2';
 
@@ -221,7 +221,7 @@ export default {
         //"model-select": ModelSelect,
         VueGoodTable,
         "dialog-bar": dialogBar,
-        "policy-form": policyForm,
+        "talent-form": talentForm,
     },
     data() {
         return {
@@ -439,6 +439,9 @@ export default {
             this.tagDialogVisible = true;
             this.selectedPolicy = data;
             let selectedTags = this.selectedPolicy.tags;
+            if (!selectedTags) {
+                selectedTags = [];
+            }
             let unselectedTags = [];
             for (let i = 0; i < this.tagItems.length; i++) {
                 let isSelected = false;
@@ -717,7 +720,7 @@ export default {
     },
     created() {
 
-        queryTagsApi(["TYPE=PO"]).then((data) => {
+        queryTagsApi(["TYPE=TA"]).then((data) => {
             this.tagItems = data.data;
             //console.log(this.tagItems)
             this.showItems = [];

@@ -176,9 +176,7 @@
 </template>
 
 <script>
-// import {
-//     ModelSelect
-// } from 'vue-search-select'
+
 import "vue-good-table/dist/vue-good-table.css";
 import {
     VueGoodTable
@@ -189,12 +187,6 @@ import {
 } from "@/util/time";
 import policyForm from "@/components/policyForm";
 import constants from "@/util/constants";
-//import Pagination from 'vue-pagination-2';
-
-// import global from "@/global/index";
-// import {
-//     localGet
-// } from "@/util/storage"; // 导入存储函数
 
 import {
     notifySomething,
@@ -379,14 +371,11 @@ export default {
                     one.selected = true;
                     this.companySelect = this.companyList;
                 })
-                //  console.log(this.companyList);
                 getRecommendCompanysApi(data).then((result) => {
-                    //  console.log(result);
                     this.loading = false;
                     this.recommendDataList = result.data;
                     this.recommendDataList.data.map(one => one.SORT = (parseFloat(one.SORT).toFixed(2) * 10).toFixed(2))
                     this.dialogTableVisible = true;
-
                 })
             })
 
@@ -459,10 +448,8 @@ export default {
                 }
             });
         },
-
         next() {
             if (this.active++ > 2) this.active = 1;
-
             let selectedTags = this.selectedPolicy.tags;
             let unselectedTags = [];
             for (let i = 0; i < this.tagItems.length; i++) {
@@ -573,8 +560,6 @@ export default {
             if (!payload) {
                 payload = {}
             }
-            console.log(payload);
-
             getPolicysApi(payload)
                 .then((data) => {
                     this.localData = data.data;
