@@ -11,7 +11,7 @@ const menus = [{
       id: "3-2",
       title: "政策管理",
       name: "政策管理",
-      url: "/ui/asset",
+      url: "/ui/policy",
       icon:"keyboard icon",
       params:{kind:1}
     },{
@@ -33,7 +33,14 @@ const menus = [{
         id: "3-9",
         title: "金融慧企管理",
         name: "金融慧企管理",
-        url: "/ui/rentAssign",
+        url: "/ui/fin",
+        icon:"building icon"
+      },
+      {
+        id: "3-19",
+        title: "设备管理",
+        name: "设备管理",
+        url: "/ui/asset",
         icon:"building icon"
       },
       // {

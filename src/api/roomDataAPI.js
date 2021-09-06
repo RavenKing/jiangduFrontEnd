@@ -104,7 +104,66 @@ function getFinTagApi(data) {
   };
   return generalRequest(data, constants.getFinTagApi);
 }
+/***
+ * asset
+ * 
+ */
 
+ function getAssetApi(data) {
+  data = {
+    data: data,
+  };
+  return generalRequest(data, constants.assetApi);
+}
+
+
+function postAssetApi(data){
+  data = {
+    data: data,
+  };
+  return generalRequest(data, constants.postAssetApi);
+  
+}
+
+
+function updateAssetApi(data) {
+  data = {
+    data: data,
+  };
+  return generalPutRequest(data, constants.assetApi);
+}
+function deleteAssetApi(data) {
+  data = {
+    data: data,
+  };
+  return generalDeleteRequest(data, constants.assetApi);
+}
+
+
+function deleteAssetTagApi(data) {
+  data = {
+    data: data,
+  };
+  return generalRequest(data, constants.deleteAssetTagApi);
+}
+function addAssetTagApi(data) {
+  data = {
+    data: data,
+  };
+  return generalRequest(data, constants.addAssetTagApi);
+}
+function getAssetTagApi(data) {
+  data = {
+    data: data,
+  };
+  return generalRequest(data, constants.getAssetTagApi);
+}
+
+
+
+/** recommend list
+ * 
+ */
 function postRecommendListApi(data) {
   data = {
     data: data,
@@ -892,5 +951,12 @@ export {
   deleteFinApi,
   deleteFinTagApi,
   addFinTagApi,
-  getFinTagApi
+  getFinTagApi,
+  getAssetApi,
+  postAssetApi,
+  updateAssetApi,
+  deleteAssetApi,
+  deleteAssetTagApi,
+  addAssetTagApi,
+  getAssetTagApi
 };

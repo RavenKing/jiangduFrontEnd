@@ -25,6 +25,11 @@ const constantsJinhui = {
     addFinTagApi:jiangduPre+"/fins/addTags",
     deleteFinTagApi:jiangduPre+"/fins/deleteTags",
     getFinTagApi:jiangduPre+"/fins/finTags",
+    assetApi:jiangduPre+"/assets",
+    postAssetApi:jiangduPre+"/assets/add",
+    addAssetTagApi:jiangduPre+"/assets/addTags",
+    deleteAssetTagApi:jiangduPre+"/assets/deleteTags",
+    getAssetTagApi:jiangduPre+"/assets/assetTags",
 
 
 

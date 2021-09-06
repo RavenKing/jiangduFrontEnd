@@ -192,20 +192,20 @@ import {
     //  goToLogin
 } from "@/util/utils";
 import {
-    getAssetApi,
+    getFinApi,
     queryTagsApi,
     //getRoomDataApi,
-    deleteAssetTagApi,
-    updateAssetApi,
-    postAssetApi,
-    deleteAssetApi,
-    addAssetTagApi,
+    deleteFinTagApi,
+    updateFinApi,
+    postFinApi,
+    deleteFinApi,
+    addFinTagApi,
     getRecommendCompanysApi,
     getCompanysApi,
     postRecommendListApi,
     getHistoricalApi,
-    getAssetTagApi
-    //getAssetApi
+    getFinTagApi
+    //getFinApi
 
     //createRoomApi,
 } from "@/api/roomDataAPI";
@@ -239,19 +239,19 @@ export default {
                 perPage: 10,
             },
             columns: [{
-                    label: "设备名",
-                    field: "ASSET_NAME",
+                    label: "金融产品名",
+                    field: "NAME",
                     sortable: false,
                 },
                 {
-                    label: "设备国家",
-                    field: "ASSET_COUNTRY",
+                    label: "金融代码",
+                    field: "FIN_CODE",
                     sortable: false,
                     //  type: 'date',
                 },
                 {
-                    label: "制造商",
-                    field: "MAKER",
+                    label: "银行名",
+                    field: "BANK_NAME",
                     sortable: false,
                     //  type: 'date',
                 },
@@ -262,12 +262,17 @@ export default {
                     //  type: 'date',
                 },
                 {
-                    label: "设备数目",
-                    field: "ASSET_COUNT",
+                    label: "适用时间",
+                    field: "FIN_TIME",
                     sortable: false,
                     //  type: 'date',
                 },
-                
+                {
+                    label: "利率范围",
+                    field: "RATE_RANGE",
+                    sortable: false,
+                    //  type: 'date',
+                },
                 {
                     label: "创建时间",
                     field: "CREATED_AT",
@@ -345,7 +350,7 @@ export default {
                 this.recommendReviewList.map((one) => {
                     payload.push({
                         "USER_ID": one.USER_ID /*USER_ID <NVARCHAR(36)>*/ ,
-                        "RECOMMENDED_ID": this.selectedPolicy.ASSET_ID /*RECOMMENDED_ID <NVARCHAR(36)>*/ ,
+                        "RECOMMENDED_ID": this.selectedPolicy.FIN_ID /*RECOMMENDED_ID <NVARCHAR(36)>*/ ,
                         "TYPE": this.docType /*TYPE <NVARCHAR(2)>*/ ,
                         "STATUS": false /*STATUS <BOOLEAN>*/ ,
                         "COMMENT": " " /*COMMENT <NVARCHAR(500)>*/ ,
@@ -378,7 +383,7 @@ export default {
             this.multipleSelection = val;
         },
         recommendList(data) {
-            // console.log(data.ASSET_ID);
+            // console.log(data.FIN_ID);
             this.loading = true;
             this.selectedPolicy = data;
             this.recommendReviewList = []
@@ -404,11 +409,11 @@ export default {
 
         addTag(data, index) {
             const payload = {
-                ASSET_ID_ASSET_ID: this.selectedPolicy.ASSET_ID,
+                FIN_ID_FIN_ID: this.selectedPolicy.FIN_ID,
                 TAG_ID_TAG_ID: data.TAG_ID
             }
             var context = this;
-            addAssetTagApi(payload).then((result) => {
+            addFinTagApi(payload).then((result) => {
                 //(result);
                 if (result.data == constants.OK) {
                     context.showItems2.splice(index, 1);
@@ -421,11 +426,11 @@ export default {
             console.log(data);
             //delete tag 
             const payload = {
-                ASSET_ID_ASSET_ID: this.selectedPolicy.ASSET_ID,
+                FIN_ID_FIN_ID: this.selectedPolicy.FIN_ID,
                 TAG_ID_TAG_ID: data.TAG_ID
             }
             var context = this;
-            deleteAssetTagApi(payload).then((result) => {
+            deleteFinTagApi(payload).then((result) => {
                 console.log(result)
                 if (result.data == constants.OK) {
                     let name = this.showItems1[index].TAG_NAME;
@@ -444,7 +449,7 @@ export default {
             this.loading = true;
             this.selectedPolicy = data;
             this.selectedPolicy.tags = []
-            getAssetTagApi(this.selectedPolicy).then((result) => {
+            getFinTagApi(this.selectedPolicy).then((result) => {
                 this.loading = false;
                 this.tagDialogVisible = true;
                 this.selectedPolicy.tags = result.data;
@@ -556,8 +561,8 @@ export default {
         clickConfirmDelete() {
             this.loading = true;
             if (this.deleteTarget.type == "fin") {
-                this.deleteTarget.ASSET_ID = this.deleteTarget.id;
-                deleteAssetApi(this.deleteTarget).then((result) => {
+                this.deleteTarget.FIN_ID = this.deleteTarget.id;
+                deleteFinApi(this.deleteTarget).then((result) => {
                     if (result.data == constants.OK) {
                         this.refreshRooms();
                         notifySomething(
@@ -580,8 +585,8 @@ export default {
             this.sendVal = true;
             console.log(data);
             this.deleteTarget = {
-                text: "是否要删除" + data.NAME + "(ID: " + data.ASSET_ID + ")?",
-                id: data.ASSET_ID,
+                text: "是否要删除" + data.NAME + "(ID: " + data.FIN_ID + ")?",
+                id: data.FIN_ID,
                 type: "fin",
             };
         },
@@ -591,7 +596,7 @@ export default {
                 payload = {}
             }
             var context = this;
-            getAssetApi(payload)
+            getFinApi(payload)
                 .then((data) => {
                     this.localData = data.data;
                     console.log(this.localData);
@@ -637,7 +642,7 @@ export default {
             this.modalMode = "create";
             this.open = true;
             this.selectedPolicy = {
-                "ASSET_ID": "",
+                "FIN_ID": "",
                 "LOGO_URL": "1",
                 "FIN_CODE": "",
                 "NAME": "",
@@ -674,7 +679,7 @@ export default {
             if (this.modalMode == "create") {
                 this.selectedPolicy.CREATED_AT = new Date();
                 this.selectedPolicy.UPDATED_AT = new Date();
-                postAssetApi(this.selectedPolicy)
+                postFinApi(this.selectedPolicy)
                     .then((result) => {
                         context.loading = false;
                         if (result.data == constants.OK) {
@@ -704,7 +709,7 @@ export default {
                 //upate Policy APi
                 delete this.selectedPolicy.FIN_TIME;
                 delete this.selectedPolicy.RATE_RANGE;
-                updateAssetApi(this.selectedPolicy)
+                updateFinApi(this.selectedPolicy)
                     .then((result) => {
                         if (result.data == constants.OK) {
                             this.closeModal();
