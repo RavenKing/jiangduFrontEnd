@@ -20,6 +20,11 @@ const constantsJinhui = {
     recommendPolicyApi:recommendApi+"/recommendCompany",
     historicalPolicyCompanyApi:jiangduPre+"/historical/latest/policy/companies",
     talentsApi:jiangduPre+"/talents",
+    finApi:jiangduPre+"/fins",
+    postFinApi:jiangduPre+"/fins/add",
+    addFinTagApi:jiangduPre+"/fins/addTags",
+    deleteFinTagApi:jiangduPre+"/fins/deleteTags",
+    getFinTagApi:jiangduPre+"/fins/finTags",
 
 
 

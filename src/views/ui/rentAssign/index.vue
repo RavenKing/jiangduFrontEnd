@@ -6,216 +6,167 @@
                 <sui-loader content="正在加载" />
             </sui-dimmer>
         </div>
-
-        <div class="filterBiaoDan" style="padding-left:15px;">
+        <div class="filterBiaoDan" style="padding-left:15px;margin:0;">
             <sui-grid>
                 <sui-grid-row>
                     <sui-grid-column :width="12">
                         <sui-form>
                             <sui-form-fields inline>
                                 <sui-form-field>
-                                    <sui-dropdown placeholder="年份" selection :options="yearOptions" v-model="filterString.year" />
+                                    <input type="text" placeholder="政策文件" v-model="filterString.name" />
                                 </sui-form-field>
-                                <sui-button basic color="blue" content="搜索" @click.prevent="onSearch" />
+                                <sui-button basic color="blue" content="查询" @click.prevent="onSearch" />
                             </sui-form-fields>
                         </sui-form>
                     </sui-grid-column>
                     <sui-grid-column :width="4" style="padding-right:0">
                         <div style="float:right;">
-                            <sui-button basic color="blue" content="新建" @click.native="createChuju" icon="add blue" />
-                            <sui-button basic color="green" content="导出" v-on:click="exportToExcel" icon="file green" />
-
-                            <!-- <sui-button content="修改" icon="edit yellow" />
-                 <sui-button content="删除" icon="delete red" /> -->
+                            <sui-button basic color="blue" content="新建" @click.native="createRoomModel" icon="add blue" />
                         </div>
                     </sui-grid-column>
                 </sui-grid-row>
             </sui-grid>
         </div>
+        <div>
+            <div>
+                <vue-good-table :columns="columns" :rows="localData" :sort-options="{
+              enabled: true,
+              initialSortBy: { field: 'CREATED_AT', type: 'desc' },
+            }" :pagination-options="paginationOptions">
+                    <template slot="table-row" slot-scope="props">
+                        <span v-if="props.column.field == 'action'">
+                            <span>
+                                <el-button @click.native.prevent="deleteRow(scope.$index, tableData)" type="text" size="small">
+                                    查看文件
+                                </el-button>
+                                <el-button @click.native.prevent="recommendList(props.row)" type="text" size="small">
+                                    推荐
+                                </el-button>
+                                <el-button @click.native.prevent="openTagDialog(props.row)" type="text" size="small">
+                                    标签
+                                </el-button>
+                                <el-button @click.native.prevent="changePolicy(props.row)" type="text" size="small">
+                                    修改
+                                </el-button>
+                                <el-button @click.native.prevent="deletePolicy(props.row)" type="text" size="small">
+                                    删除
+                                </el-button>
+                            </span>
+                        </span>
+                        <span v-if="props.column.field == 'TAGS'">
+                            <div class="tag-group">
+                                <el-tag class="tag" v-for="item in props.row.tags" :key="item.TAG_NAME" type="warning" effect="dark">
+                                    {{ item.TAG_NAME }}
+                                </el-tag>
+                            </div>
+                        </span>
+                        <span v-else>
+                            {{ props.formattedRow[props.column.field] }}
+                        </span>
+                    </template>
+                </vue-good-table>
+            </div>
+        </div>
+        <el-dialog title="公司列表" :visible.sync="dialogTableVisible">
+            <el-row v-show="!showReview">
+                <el-col :span="12">
+                    推荐列表
+                    <div class="grid-content bg-purple">
+                        <el-table max-height="500px" :data="recommendDataList.data" ref="multipleTableRecommend" style="width: 100%" @selection-change="handleSelectionChangeR">
+                            <el-table-column property="selected" type="selection" width="55"> </el-table-column>
+                            <el-table-column property="COMPANY_NAME" label="公司名称" width="200"></el-table-column>
+                            <el-table-column property="SORT" label="推荐指数" width="200"><template slot-scope="scope">
+                                    <el-rate v-model="scope.row.SORT" disabled show-score text-color="#ff9900" score-template="{value} 分">
+                                    </el-rate>
+                                </template></el-table-column>
+                        </el-table>
+                    </div>
+                </el-col>
+                <el-col :span="6">
+                    公司列表
+                    <div class="grid-content bg-purple-light">
+                        <div class="grid-content bg-purple">
+                            <el-input v-model="item" size="mini" placeholder="Type to search" @input="handleSearch" />
+                            <el-table max-height="500px" @filter-change="filterChange" :data="companySelect" ref="multipleTable" style="width: 100%" @selection-change="handleSelectionChange">
+                                <el-table-column type="selection" width="55"> </el-table-column>
+                                <el-table-column property="COMPANY_NAME" label="公司名称" width="200"></el-table-column>
+                            </el-table>
+                        </div>
+                    </div>
+                </el-col>
+                <el-col :span="6">
+                    <div class="grid-content bg-purple-light">
+                        常用公司列表
+                        <div class="grid-content bg-purple">
+                            <el-table max-height="500px" @filter-change="filterChange" :data="offenUsedCompanys" ref="multipleTable" style="width: 100%" @selection-change="handleSelectionChangeH">
+                                <el-table-column type="selection" width="55"> </el-table-column>
+                                <el-table-column property="COMPANY_NAME" label="公司名称" width="200"></el-table-column>
+                            </el-table>
+                        </div>
+                    </div>
+                </el-col>
+            </el-row>
+            <div v-show="showReview">
+                <el-table :data="recommendReviewList" style="width: 100%">
+                    <el-table-column property="COMPANY_NAME" label="公司名称" width="200"></el-table-column>
+                </el-table>
+            </div>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="dialogTableVisible = false">取消</el-button>
+                <el-button type="primary" @click="showReviewTable" v-show="!showReview">reiew</el-button>
+                <el-button type="primary" @click="notifyCompany" v-show="showReview" :disabled="recommendReviewList.length==0">推送</el-button>
+                <el-button type="primary" @click="prevNotify" v-show="showReview">上一步</el-button>
+            </span>
+        </el-dialog>
 
-        <div class="vue2Table">
-            <vuetable :key="componentKey" ref="vuetable" :api-mode="false" :data="localData" :fields="fields" :sort-order="sortOrder" data-path="data" pagination-path="" >
-                <div slot="time" slot-scope="props">
-                    {{props.rowData.starttime}} 到 {{props.rowData.endtime}}
-                </div>
-                <div slot="statusText" slot-scope="props">
-                    <el-tag :type="props.rowData.status==2?'success':'danger'">
-                        {{props.rowData.statusText}}
+        <el-dialog title="标签" :visible.sync="tagDialogVisible" width="90%" :before-close="refreshRooms">
+            <el-steps :active="active">
+                <el-step title="企业规模"></el-step>
+                <el-step title="企业类型"></el-step>
+                <el-step title="其他"></el-step>
+            </el-steps>
+            <el-button style="margin-top: 12px; margin-bottom: 12px" @click="next">下一步</el-button>
+            <div class="tag-group">
+                <span class="tag-group__title" style="font-size: 25px;">已打标签</span>
+                <div style>
+                    <el-tag class="tableTag" v-for="(item,index) in showItems1" :key="item.TAG_ID" :type="tagType" effect="dark" closable @close="deleteTag(item,index)">
+                        {{ item.TAG_NAME }}
                     </el-tag>
                 </div>
-                <div slot="action" slot-scope="props">
-                    <sui-button text="编辑" basic color="blue" v-on:click="editWeixiuShenqing(props.rowData)" size="tiny"> 编辑</sui-button>
-                    <sui-button text="删除" basic color="red" v-on:click="handleDelete(props.rowData)" size="tiny">删除</sui-button>
+            </div>
+            <div class="tag-group">
+                <span class="tag-group__title" style="font-size: 25px;">标签列表</span>
+                <div style>
+                    <el-tag class="tableTag" v-for="(item,index) in showItems2" :key="item.TAG_ID" :type="tagType" effect="dark" @click="addTag(item,index)">
+                        {{ item.TAG_NAME }}
+                    </el-tag>
                 </div>
-            </vuetable>
-        </div>
-        <div>
-            <sui-modal v-model="exportData.open" class="modal2">
-                <sui-modal-header style="border-bottom:0;">导出选择</sui-modal-header>
-                <sui-modal-content scrolling style="min-height:240px!important">
-                    <export-form :filterString="filterString" :singleRoom="filterString" ref='FormExport' mode1="chuzu"></export-form>
+            </div>
 
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="tagDialogVisible = false">取消</el-button>
+                <el-button type="primary" @click="tagDialogVisible = false">保存</el-button>
+            </span>
+        </el-dialog>
+
+        <dialog-bar v-model="sendVal" type="danger" title="是否要删除" :content="deleteTarget.text" v-on:cancel="clickCancel()" @danger="clickConfirmDelete()" @confirm="clickConfirmDelete()" dangerText="确认删除"></dialog-bar>
+
+        <div>
+            <sui-modal class="modal2" v-model="open">
+                <sui-modal-header style="border-bottom:0; margin-bottom:-15px;">{{
+            modelTitle
+          }}</sui-modal-header>
+                <sui-modal-content>
+                    <sui-segment>
+                        <policy-form :singleRoom="selectedPolicy"></policy-form>
+                    </sui-segment>
                 </sui-modal-content>
                 <sui-modal-actions>
-                    <sui-button basic color="red" @click.native="closeModalExport">
+                    <sui-button basic color="red" @click.native="closeModal">
                         取消
                     </sui-button>
-                    <sui-button basic color="blue" @click.native="openExportUrl">
+                    <sui-button v-if="modalMode !== 'check'" basic color="blue" @click.native="toggle">
                         提交
-                    </sui-button>
-                </sui-modal-actions>
-            </sui-modal>
-        </div>
-        <dialog-bar ref="dialog" :singleTime="deleteTarget" v-model="sendVal" type="danger" title="确认" :content="deleteTarget.text" v-on:cancel="clickCancel()" @danger="clickConfirmDelete()" @confirm="clickConfirmDelete()" :dangerText="deleteTarget.dangerText">
-        </dialog-bar>
-        <div>
-            <sui-modal class="modal2" v-model="weixiuForm.open">
-                <sui-modal-header style="border-bottom:0;">
-                    <div style="float:left;">{{modelTitle}}</div>
-                </sui-modal-header>
-                <sui-modal-content scrolling style="height:600px!important">
-                    <sui-tab :menu="{ attached: false }" :active-index.sync="activeIndex">
-                        <sui-tab-pane title="基本信息">
-                            <sui-segment>
-                                <weixiu-form :singleEntry="selectedWeixiu" ref="weixiuForm" :options="options" :mode="modalMode"> </weixiu-form>
-                            </sui-segment>
-                        </sui-tab-pane>
-                        <sui-tab-pane title="巡查记录" :disabled="modalMode=='create'">
-                            <sui-dimmer :active="loading" inverted>
-                                <sui-loader content="正在加载" />
-                            </sui-dimmer>
-                            <div v-show="newXuncha.open">
-                                <sui-form>
-                                    <sui-form-fields inline v-show="false">
-                                        <sui-form-field required>
-                                            <model-select style="width:100%" :options="options" v-model="selectedWeixiu.room_id" :isDisabled="true">
-                                            </model-select>
-                                        </sui-form-field>
-                                        <sui-form-field required>
-                                            <model-select style="width:100%" :options="unitoptions" v-model="selectedWeixiu.unit_id" :isDisabled="true">
-                                            </model-select>
-                                        </sui-form-field>
-                                    </sui-form-fields>
-                                    <sui-form-fields inline>
-                                        <label>巡查人</label>
-                                        <sui-form-field required>
-                                            <sui-input placeholder="巡查人" v-model="newXuncha.name" />
-                                        </sui-form-field>
-                                        <label>备注</label>
-                                        <sui-form-field required>
-                                            <sui-input placeholder="备注" v-model="newXuncha.memo" />
-                                        </sui-form-field>
-                                        <sui-button basic color="blue" icon="add" content="添加" @click.prevent="createPatrol()" />
-                                    </sui-form-fields>
-                                </sui-form>
-                            </div>
-                            <div class="vue2Table">
-                                <vuetable ref="vuetable" :api-mode="false" :data="selectedWeixiu.patrol" :fields="fieldsPatrol" data-path="data">
-                                    <div slot="action" slot-scope="props">
-                                        <sui-button basic color="red" content="删除" v-on:click="deleteRoomPatrol(props.rowData)" size="tiny" />
-                                    </div>
-                                </vuetable>
-                            </div>
-                        </sui-tab-pane>
-                        <sui-tab-pane title="租金收缴" :disabled="modalMode=='create'">
-                            <div>
-                                <sui-dimmer :active="loading" inverted>
-                                    <sui-loader content="正在加载" />
-                                </sui-dimmer>
-                            </div>
-
-                            <sui-form>
-                                <sui-form-fields inline>
-                                    <sui-form-field required>
-                                        <datepicker placeholder="收缴时间" style="width:100%" :value="rentOne.enter_date" v-model="rentOne.enter_date" :language="lang['zh']"></datepicker>
-                                    </sui-form-field>
-                                    <sui-form-field required>
-                                        <datepicker placeholder="预警时间" style="width:100%" :value="rentOne.next_time" v-model="rentOne.next_time" :language="lang['zh']"></datepicker>
-                                    </sui-form-field>
-                                    <sui-form-field required>
-                                        <datepicker placeholder="租金起始年月" style="width:100%" :value="rentOne.fromtime" v-model="rentOne.fromtime" :language="lang['zh']"></datepicker>
-                                    </sui-form-field>
-                                    <sui-form-field required>
-                                        <datepicker placeholder="结束年月" style="width:100%" :value="rentOne.totime" v-model="rentOne.totime" :language="lang['zh']"></datepicker>
-                                    </sui-form-field>
-                                    <sui-form-field required>
-                                        <sui-input placeholder="金额" v-model="rentOne.amt" type="number" />
-                                    </sui-form-field>
-                                    <sui-button basic color="blue" content="添加" @click.prevent="createZujinShangjiao()" size="tiny" />
-                                </sui-form-fields>
-                            </sui-form>
-                            <vuetable ref="vuetable" :api-mode="false" :data="selectedWeixiu.rentInfo" :fields="fieldsRent" data-path="data">
-                                <div slot="billing_status" slot-scope="props">
-                                    <sui-label color="green" v-show=" props.rowData.billing_status == '1'">
-                                        已开票
-                                    </sui-label>
-                                    <sui-label color="red" v-show=" props.rowData.billing_status == '0'">
-                                        未开票
-                                    </sui-label>
-
-                                </div>
-                                <div slot="action" slot-scope="props">
-                                    <sui-button basic color="blue" content="开票" v-on:click="openKaipiao(props.rowData)" size="tiny" />
-                                    <sui-button basic color="red" content="删除" v-on:click="deleteRent(props.rowData)" size="tiny" />
-                                </div>
-                            </vuetable>
-                        </sui-tab-pane>
-                        <sui-tab-pane title="资料上传" :disabled="modalMode=='create'">
-                            <sui-form-fields inline>
-                                <el-upload ref="upload" class="upload-demo" :on-change="uploadZiliaoFileNew" :file-list="fileList">
-                                    <el-button size="small" type="primary">点击上传</el-button>
-                                </el-upload>
-                            </sui-form-fields>
-                            <div is="sui-divider" horizontal>
-                                <h4 is="sui-header">
-                                    <i class="tag icon"></i>
-                                    已上传文档
-                                </h4>
-                            </div>
-                            <div>
-                                <sui-list key="213123">
-                                    <sui-list-item v-for="(link,index) in selectedWeixiu.ziliaoList" :key="link[0]">
-                                        <a type="primary" :href="link.fileURL" target="_blank">{{index+1}}{{link.fileName}}</a>
-                                    </sui-list-item>
-                                </sui-list>
-                            </div>
-                        </sui-tab-pane>
-                    </sui-tab>
-                </sui-modal-content>
-
-                <sui-modal-actions>
-                    <sui-button basic color="red" @click.native="closeWeiXiuForm">
-                        取消
-                    </sui-button>
-                    <sui-button basic color="blue" @click.native="createShenbao">
-                        保存
-                    </sui-button>
-                    <!-- <sui-button v-show="role==1&&modalMode=='edit'" color="green" v-on:click="approveContract(selectedWeixiu)">同意</sui-button>
-                    <sui-button v-show="role==1&&modalMode=='edit'" basic color="red" v-on:click="rejectContract(selectedWeixiu)">拒绝</sui-button> -->
-                </sui-modal-actions>
-            </sui-modal>
-        </div>
-        <div>
-            <sui-modal class="modal2" v-model="kaipiao.open">
-                <sui-modal-header style="border-bottom:0; margin-bottom:-15px;">开票</sui-modal-header>
-                <sui-modal-content image style="min-height: 400px !important;">
-                    <sui-form>
-                        <sui-form-fields inline>
-                            <sui-form-field required>
-                                <datepicker placeholder="开票时间" style="width:100%" :value="kaipiao.billing_date" v-model="kaipiao.billing_date" :language="lang['zh']"></datepicker>
-                            </sui-form-field>
-                            <sui-form-field required>
-                                <sui-input placeholder="税费金额" v-model="kaipiao.tax_amt" type="number" />
-                            </sui-form-field>
-                        </sui-form-fields>
-                    </sui-form>
-                </sui-modal-content>
-                <sui-modal-actions>
-                    <sui-button basic color="red" @click.native="closeKaipiao">
-                        取消
-                    </sui-button>
-                    <sui-button v-if="modalMode !== 'check'" basic color="blue" @click.native="createKaipiao">
-                        开票
                     </sui-button>
                 </sui-modal-actions>
             </sui-modal>
@@ -225,572 +176,523 @@
 </template>
 
 <script>
+import "vue-good-table/dist/vue-good-table.css";
 import {
-    fromShitFormat,
-    toShitFormat
+    VueGoodTable
+} from "vue-good-table";
+import dialogBar from "@/components/MDialog";
+import {
+    formatDate
 } from "@/util/time";
-import dialogBar from "@/components/MDialogNewV";
-import Vuetable from "vuetable-2/src/components/Vuetable";
-import FieldsDef from "./FieldsDef.js";
+import policyForm from "@/components/finForm";
 import constants from "@/util/constants";
-import Fields2 from "./fields2.js";
-import FieldHetong from "./fieldsHetong.js";
-import FieldsRent from "./FieldsRent.js";
-import WeiXiuForm from "@/components/rentAssignForm";
-import * as lang from "vuejs-datepicker/src/locale";
-import Datepicker from "vuejs-datepicker";
 
 import {
-    uploadZiliaoFileApi, // getFileOSSApi
-    //getRentRoomContractListApi
-} from "@/api/utilApi";
-import {
-    localGet
-} from "@/util/storage";
-import store from "@/store";
-import {
-    notifySomething
+    notifySomething,
+    //  goToLogin
 } from "@/util/utils";
-import FieldsPatrol from "./FieldsPatrol.js";
-import global from "@/global/index";
 import {
-    listLoanAssignmentApi,
-    createLoanAssignmentApi,
-    editLoanAssignmentApi,
-    deleteLoanAssignmentApi,
-    listloanassignmentbyidr,
-    listPatrolApi,
-    getUnitApi,
-    createPatrolApi,
-    getRoomDataApi,
-    deletePatrolApi,
-} from "@/api/roomDataAPI";
-import ExportForm from "@/components/export_form";
+    getFinApi,
+    queryTagsApi,
+    //getRoomDataApi,
+    deleteFinTagApi,
+    updateFinApi,
+    postFinApi,
+    deleteFinApi,
+    addFinTagApi,
+    getRecommendCompanysApi,
+    getCompanysApi,
+    postRecommendListApi,
+    getHistoricalApi,
+    getFinTagApi
+    //getFinApi
 
-import {
-    ModelSelect
-} from "vue-search-select";
-import {
-    getroombyid,
-    addrentApi,
-    listrentApi,
-    delrentApi,
-    createKaipiaoApi,
-} from "@/api/weixiuAPI";
+    //createRoomApi,
+} from "@/api/roomDataAPI";
 export default {
-    name: "MyVuetable",
+    name: "policyVue",
+    props: ["kind"],
     components: {
+        //  Pagination,
+        //"model-select": ModelSelect,
+        VueGoodTable,
         "dialog-bar": dialogBar,
-        Vuetable,
-        Datepicker,
-        "weixiu-form": WeiXiuForm,
-        "model-select": ModelSelect,
-        "export-form": ExportForm,
+        "policy-form": policyForm,
     },
     data() {
         return {
-            exportData: {
-                open: false,
+            recommendDataList: [],
+            tagItems: [],
+            item: "",
+            // 展示某种类型的selected tag
+            showItems1: [],
+            // 展示某种类型的unselected tag
+            showItems2: [],
+            tagType: "success",
+            active: 1,
+            tagDialogVisible: false,
+            paginationOptions: {
+                enabled: true,
+                nextLabel: "下一页",
+                prevLabel: "上一页",
+                rowsPerPageLabel: "每页条目",
+                perPage: 10,
             },
-            yearOptions: [{
-                    text: "2020",
-                    value: 2020,
+            columns: [{
+                    label: "金融产品名",
+                    field: "NAME",
+                    sortable: false,
                 },
                 {
-                    text: "2021",
-                    value: 2021,
+                    label: "金融代码",
+                    field: "FIN_CODE",
+                    sortable: false,
+                    //  type: 'date',
                 },
                 {
-                    text: "2022",
-                    value: 2022,
+                    label: "银行名",
+                    field: "BANK_NAME",
+                    sortable: false,
+                    //  type: 'date',
                 },
                 {
-                    text: "2023",
-                    value: 2023,
+                    label: "状态",
+                    field: "STATUS",
+                    sortable: false,
+                    //  type: 'date',
                 },
                 {
-                    text: "2024",
-                    value: 2024,
+                    label: "适用时间",
+                    field: "FIN_TIME",
+                    sortable: false,
+                    //  type: 'date',
+                },
+                {
+                    label: "利率范围",
+                    field: "RATE_RANGE",
+                    sortable: false,
+                    //  type: 'date',
+                },
+                {
+                    label: "创建时间",
+                    field: "CREATED_AT",
+                    //  type: 'date',
+                },
+                {
+                    label: "更新时间",
+                    field: "UPDATED_AT",
+                    sortable: false,
+                    //  type: 'percentage',
+                },
+                {
+                    label: "操作",
+                    field: "action",
+                    sortable: false,
+                    //  type: 'percentage',
                 },
             ],
-            fieldsPatrol: FieldsPatrol,
-            unitoptions: [],
-            newXuncha: {
-                open: true,
-            },
-            activeIndex: 1,
-            fieldsRent: FieldsRent,
-            lang: lang,
-            hetongdata: [],
-            hetongComponentKey: 1,
-            componentKey: 1,
-            currentStep: 1,
+            companySelect: [],
+            page: 0,
             sendVal: false,
             modelTitle: "",
             modalMode: "create",
             open: false,
             filterString: {
-                year: 2021,
-                status: 0,
-                manager_kind: 0,
+                name: ""
             },
-            weixiuList: [],
-            value: [],
-            role: 2,
-            weixiuForm: {
-                open: false,
+            selectedPolicy: {
+                tags: []
             },
-            fileList: [],
-            selectedWeixiu: {
-                ziliaoList: []
-            },
-            deleteTarget: {},
+            offenUsedCompanys: [],
+            dialogTableVisible: false,
+            multipleSelection: [],
+            multipleSelectionR: [],
+            multipleSelectionH: [],
+            deleteTarget: "",
             loading: true,
+            companyList: [],
             localData: [],
-            fields: FieldsDef,
-            fields2: Fields2,
-            hetongFields: FieldHetong,
-            sortOrder: [{}],
-            steps: [],
-            weixiuhetong: {},
-            rentOne: {},
-            kaipiao: {
-                open: false,
-            },
-            ziliaoList: [],
-            uploadCount: 0,
-            contractForm: {
-                open: false,
-                title: "createForm",
-                room_id: "",
-                amt: 0,
-                owner: "",
-                rentunit: "",
-                starttime: "",
-                endtime: "",
-                unitoptions: [],
-                options: [],
-            },
+            showReview: false,
+            recommendReviewList: [],
+            docType: "FI"
+
         };
     },
-
     methods: {
-        uploadZiliaoFileNew: function (e) {
-            this.uploadZiliaoFile(e, this.fileList, "common");
+        getUniqueArray(arr, keyProps) {
+            return Object.values(
+                arr.reduce((uniqueMap, entry) => {
+                    const key = keyProps.map((k) => entry[k]).join('|')
+                    if (!(key in uniqueMap)) uniqueMap[key] = entry
+                    return uniqueMap
+                }, {}),
+            )
         },
-        uploadZiliaoFile(e, fileList, mode) {
-            if (this.uploadCount == 1) {
-                this.uploadCount = 0;
-                return;
-            }
-            this.uploadCount++;
-            fileList.push(e.raw);
-            let formData = new FormData();
-            this.loading = true;
-            var context = this;
-            //  this.buildingImage.open = false;
-            if (e.raw != undefined) {
-                formData.append("ossfile", e.raw);
-                uploadZiliaoFileApi(formData)
-                    .then((result) => {
-                        context.loading = false;
-                        if (result.data.code == 0) {
-                            if (mode == "common") {
-                                context.ziliaoList.push({
-                                    url: result.data.data,
-                                    fileName: e.name,
-                                    type: "图纸",
-                                });
-                            } else if (mode == "chanzheng") {
-                                context.chanzhenZiLiao.push({
-                                    url: result.data.data,
-                                    fileName: e.name,
-                                    type: "产证",
-                                });
-                            } else {
-                                context.fileList.push({
-                                    url: result.data.data,
-                                    fileName: e.name,
-                                    type: "其他",
-                                });
-                            }
-                        }
+        handleSearch() {
+            this.companySelect = this.companyList.filter(data => data.COMPANY_NAME.includes(this.item))
+        },
+
+        filterChange() {
+
+            console.log("change")
+        },
+        prevNotify() {
+            //   this.$refs.multipleTable.toggleRowSelection(this.recommendReviewList, true);
+            this.showReview = false
+            //            this.$refs.multipleTable.toggleRowSelection(this.recommendReviewList,true);
+        },
+        handleOnInput(data) {
+            console.log(data)
+        },
+        notifyCompany() {
+            var payload = [];
+            if (this.recommendReviewList.length > 0) {
+                this.recommendReviewList.map((one) => {
+                    payload.push({
+                        "USER_ID": one.USER_ID /*USER_ID <NVARCHAR(36)>*/ ,
+                        "RECOMMENDED_ID": this.selectedPolicy.FIN_ID /*RECOMMENDED_ID <NVARCHAR(36)>*/ ,
+                        "TYPE": this.docType /*TYPE <NVARCHAR(2)>*/ ,
+                        "STATUS": false /*STATUS <BOOLEAN>*/ ,
+                        "COMMENT": " " /*COMMENT <NVARCHAR(500)>*/ ,
+                        "CREATED_AT": new Date() /*CREATED_AT <TIMESTAMP>*/ ,
+                        "UPDATED_AT": new Date() /*UPDATED_AT <TIMESTAMP>*/
                     })
-                    .catch(function () {
-                        context.loading = false;
-                        notifySomething(
-                            constants.GENERALERROR,
-                            constants.GENERALERROR,
-                            constants.typeError
-                        );
-                    });
+                })
+                postRecommendListApi(payload).then((result) => {
+                    if (result.data == constants.OK) {
+                        this.dialogTableVisible = false;
+                        notifySomething(constants.notifyCompany, constants.notifyCompany, constants.typeSuccess);
+                    }
+                })
             }
         },
-        onSearch() {
-            this.refresh({
-                year: this.filterString.year,
-            });
+
+        showReviewTable() {
+            this.recommendReviewList = this.multipleSelectionR.concat(this.multipleSelection);
+            this.recommendReviewList = this.recommendReviewList.concat(this.multipleSelectionH);
+            this.recommendReviewList = this.getUniqueArray(this.recommendReviewList, ["USER_ID"])
+            this.showReview = true;
         },
-        closeModalExport() {
-            this.exportData.open = false;
+        handleSelectionChangeH(val) {
+            this.multipleSelectionH = val;
         },
-        exportToExcel() {
-            this.exportData.open = true;
+        handleSelectionChangeR(val) {
+            this.multipleSelectionR = val;
         },
-        openExportUrl() {
-            let local_auth = localGet(global.project_key, true);
-            console.log(constants.exportcontract);
-            let urlString = "";
-            if (this.filterString.status == 0) {
-                urlString =
-                    constants.exportcontract +
-                    "?token=" +
-                    local_auth +
-                    "&year=" +
-                    this.filterString.year;
-            } else {
-                urlString =
-                    constants.exportcontract +
-                    "?token=" +
-                    local_auth +
-                    "&year=" +
-                    this.filterString.year +
-                    "&status=" +
-                    this.filterString.status;
+        handleSelectionChange(val) {
+            this.multipleSelection = val;
+        },
+        recommendList(data) {
+            // console.log(data.FIN_ID);
+            this.loading = true;
+            this.selectedPolicy = data;
+            this.recommendReviewList = []
+            this.showReview = false;
+            getHistoricalApi().then((company) => {
+                this.offenUsedCompanys = company.data;
+            })
+            getCompanysApi().then((result1) => {
+                this.companyList = result1.data;
+                this.companyList.map(one => {
+                    one.selected = true;
+                    this.companySelect = this.companyList;
+                })
+                getRecommendCompanysApi(data).then((result) => {
+                    this.loading = false;
+                    this.recommendDataList = result.data;
+                    this.recommendDataList.data.map(one => one.SORT = (parseFloat(one.SORT).toFixed(2) * 10).toFixed(2))
+                    this.dialogTableVisible = true;
+                })
+            })
+
+        },
+
+        addTag(data, index) {
+            const payload = {
+                FIN_ID_FIN_ID: this.selectedPolicy.FIN_ID,
+                TAG_ID_TAG_ID: data.TAG_ID
             }
-            if (this.filterString.manager_kind != 0)
-                urlString += "&manager_kind=" + this.filterString.manager_kind;
-            // }
-            window.open(urlString);
-            this.closeModalExport();
-        },
-        createKaipiao() {
-            this.kaipiao.billing_date = toShitFormat(this.kaipiao.billing_date);
-            createKaipiaoApi(this.kaipiao).then((result) => {
-                this.closeKaipiao();
-                if (result.data.code == 0) {
-                    this.refreshRent();
-                    notifySomething(
-                        constants.CREATESUCCESS,
-                        constants.CREATESUCCESS,
-                        constants.typeSuccess
-                    );
-                } else {
-                    notifySomething(
-                        constants.GENERALERROR,
-                        constants.GENERALERROR,
-                        constants.typeError
-                    );
+            var context = this;
+            addFinTagApi(payload).then((result) => {
+                //(result);
+                if (result.data == constants.OK) {
+                    context.showItems2.splice(index, 1);
+                    context.selectedPolicy.tags.push(data);
+                    context.showItems1.push(data);
                 }
             });
         },
-
-        closeKaipiao() {
-            this.kaipiao.open = false;
-        },
-        openKaipiao(data) {
+        deleteTag(data, index) {
             console.log(data);
-            this.kaipiao.billing_date = fromShitFormat(data.billing_date);
-            this.kaipiao.tax_amt = data.tax_amt;
-            this.kaipiao.open = true;
-            this.kaipiao.id = data.id;
-            // this.kaipiao
-        },
-        //
-        createZujinShangjiao() {
-            this.loading = true;
-            this.rentOne.cid = this.selectedWeixiu.id;
-            this.rentOne.billing_status = 0;
-            this.rentOne.tax_amt = 0;
-            this.rentOne.amt = parseInt(this.rentOne.amt);
-            this.rentOne.enter_date = toShitFormat(this.rentOne.enter_date);
-            this.rentOne.next_time = toShitFormat(this.rentOne.next_time);
-            this.rentOne.fromtime = toShitFormat(this.rentOne.fromtime);
-            this.rentOne.totime = toShitFormat(this.rentOne.totime);
-            addrentApi(this.rentOne).then((result) => {
-                if (result.data.code == 0) {
-                    this.refreshRent();
-                    //   this.newXuncha.open = false;
-                    notifySomething(
-                        constants.CREATESUCCESS,
-                        constants.CREATESUCCESS,
-                        constants.typeSuccess
-                    );
+            //delete tag 
+            const payload = {
+                FIN_ID_FIN_ID: this.selectedPolicy.FIN_ID,
+                TAG_ID_TAG_ID: data.TAG_ID
+            }
+            var context = this;
+            deleteFinTagApi(payload).then((result) => {
+                console.log(result)
+                if (result.data == constants.OK) {
+                    let name = this.showItems1[index].TAG_NAME;
+                    context.showItems1.splice(index, 1);
+                    for (let i = 0; i < context.selectedPolicy.tags.length; i++) {
+                        if (context.selectedPolicy.tags[i].TAG_NAME == name)
+                            context.selectedPolicy.tags.splice(i, 1);
+                    }
+                    context.showItems2.push(data);
                 }
-            });
+            })
+            // delete the item in tags.
         },
-        refreshRent() {
-            this.loading = true;
-            listrentApi({
-                cid: this.selectedWeixiu.id,
-            }).then((result) => {
-                if (result.data.code == 0) {
-                    this.selectedWeixiu.rentInfo = result.data.data;
-                    this.selectedWeixiu.rentInfo.map((one) => {
-                        one.fromtime = fromShitFormat(one.fromtime);
-                        one.totime = fromShitFormat(one.totime);
-                        one.enter_date = fromShitFormat(one.enter_date);
-                        one.next_time = fromShitFormat(one.next_time);
-                    });
-                    this.loading = false;
-                    this.openWeiXiuForm("edit");
-                } else {
-                    this.loading = false;
-                    notifySomething(
-                        constants.GENERALERROR,
-                        constants.GENERALERROR,
-                        constants.typeError
-                    );
+        // open tag dialog
+        openTagDialog(data) {
+            this.tagDialogVisible = true;
+            this.loading=true;
+            this.selectedPolicy = data;
+            this.selectedPolicy.tags = []
+            getFinTagApi(this.selectedPolicy).then((result) => {
+                this.loading=false;
+                this.selectedPolicy.tags = result.data;
+                let selectedTags = this.selectedPolicy.tags;
+                // get all related tags
+                let unselectedTags = [];
+                for (let i = 0; i < this.tagItems.length; i++) {
+                    let isSelected = false;
+                    for (let j = 0; j < selectedTags.length; j++) {
+                        if (this.tagItems[i].TAG_NAME == selectedTags[j].TAG_NAME) {
+                            isSelected = true;
+                            break;
+                        }
+                    }
+                    if (!isSelected)
+                        unselectedTags.push(this.tagItems[i]);
                 }
-            });
-        },
-
-        getUnit() {
-            this.unitoptions = [];
-            if (store.getters.unit.unitBasic.length > 0) {
-                this.unitoptions = store.getters.unit.unitBasic;
-            } else {
-                getUnitApi().then((data) => {
-                    var res_data = data.data.data;
-                    for (var i = res_data.length - 1; i >= 0; i--) {
-                        this.unitoptions.push({
-                            text: res_data[i]["name"],
-                            value: res_data[i]["id"],
-                        });
+                this.showItems1 = [];
+                selectedTags.forEach(element => {
+                    if (element["TAG_CATEGORY"] == "company_size") {
+                        this.showItems1.push(element);
                     }
                 });
-            }
+                this.showItems2 = [];
+                unselectedTags.forEach(element => {
+                    if (element["TAG_CATEGORY"] == "company_size") {
+                        this.showItems2.push(element);
+                    }
+                });
+
+            })
+
         },
-        deleteRent(data) {
-            this.sendVal = true;
-            this.deleteTarget = {
-                text: "是否要删除" + data.enter_date,
-                id: data.id,
-                type: constants.typeRoomRent,
-                room_type: 1,
-            };
-        },
-        deleteRoomPatrol(data) {
-            this.sendVal = true;
-            this.deleteTarget = {
-                text: "是否要删除" + data.created_by,
-                id: data.id,
-                type: constants.typeRoomPatrol,
-                room_type: 1,
-            };
-        },
-        showPatrol(data) {
-            console.log(data);
-            this.newXuncha.open = true;
-            this.newXuncha.unit_id = data.unit_id;
-        },
-        createPatrol() {
-            this.newXuncha.room_type = 2;
-            this.newXuncha.room_id = this.selectedWeixiu.room_id;
-            this.newXuncha.unit_id = this.selectedWeixiu.unit_id;
-            //this.newXuncha.unit_id = this.selectedRoom.unit_id
-            if (!this.newXuncha.name) {
-                notifySomething(
-                    constants.GENERALERROR,
-                    constants.GENERALERROR,
-                    constants.typeError
-                );
-                return;
-            }
-            createPatrolApi(this.newXuncha).then((result) => {
-                if (result.data.code == 0) {
-                    this.refreshPatrol();
-                    //   this.newXuncha.open = false;
-                    notifySomething(
-                        constants.CREATESUCCESS,
-                        constants.CREATESUCCESS,
-                        constants.typeSuccess
-                    );
+        next() {
+            if (this.active++ > 2) this.active = 1;
+            let selectedTags = this.selectedPolicy.tags;
+            let unselectedTags = [];
+            for (let i = 0; i < this.tagItems.length; i++) {
+                let isSelected = false;
+                for (let j = 0; j < selectedTags.length; j++) {
+                    if (this.tagItems[i].TAG_NAME == selectedTags[j].TAG_NAME) {
+                        isSelected = true;
+                        break;
+                    }
                 }
-            });
-        },
-        refreshPatrol() {
-            this.loading = true;
-            listPatrolApi({
-                room_id: this.selectedWeixiu.room_id,
-                room_type: 2,
-                type: 2,
-            }).then((result) => {
-                if (result.data.code == 0) {
-                    this.loading = false;
-                    this.selectedWeixiu.patrol = result.data.data;
-                } else {
-                    this.loading = false;
-                    notifySomething(
-                        constants.GENERALERROR,
-                        constants.GENERALERROR,
-                        constants.typeError
-                    );
-                }
-            });
+                if (!isSelected)
+                    unselectedTags.push(this.tagItems[i]);
+            }
+
+            switch (this.active) {
+                case 1:
+                    this.showItems1 = [];
+                    selectedTags.forEach(element => {
+                        if (element["TAG_CATEGORY"] == "company_size") {
+                            this.showItems1.push(element);
+                        }
+                    });
+                    this.showItems2 = [];
+                    unselectedTags.forEach(element => {
+                        if (element["TAG_CATEGORY"] == "company_size") {
+                            this.showItems2.push(element);
+                        }
+                    });
+                    this.tagType = "success";
+                    // this.showItems = this.tagItems.filter(tagFilter("industry"))
+                    break;
+                case 2:
+                    this.showItems1 = [];
+                    selectedTags.forEach(element => {
+                        if (element["TAG_CATEGORY"] == "company_type") {
+                            this.showItems1.push(element);
+                        }
+                    });
+                    this.showItems2 = [];
+                    unselectedTags.forEach(element => {
+                        if (element["TAG_CATEGORY"] == "company_type") {
+                            this.showItems2.push(element);
+                        }
+                    });
+                    this.tagType = "warning";
+                    break;
+                case 3:
+                    this.showItems1 = [];
+                    selectedTags.forEach(element => {
+                        if (element["TAG_CATEGORY"] != "company_size" && element["TAG_CATEGORY"] != "company_type") {
+                            this.showItems1.push(element);
+                        }
+                    });
+                    this.showItems2 = [];
+                    unselectedTags.forEach(element => {
+                        if (element["TAG_CATEGORY"] != "company_size" && element["TAG_CATEGORY"] != "company_type") {
+                            this.showItems2.push(element);
+                        }
+                    });
+                    this.tagType = "danger";
+                    break;
+            }
         },
 
-        handleDelete(props) {
-            console.log(props);
-            this.deleteTarget.text = "是否要删除" + props.roomname + "?";
-            this.deleteTarget.id = props.id;
-            this.deleteTarget.type = "loan";
-            this.sendVal = true;
+        onSearch() {
+            var payload = {
+                data: {
+                    searchString: this.filterString.name,
+                }
+            };
+            this.refreshRooms(payload);
         },
+
         clickConfirmDelete() {
-            var context = this;
-
-            if (this.deleteTarget.type == constants.typeRoomPatrol) {
-                deletePatrolApi(this.deleteTarget).then((result) => {
-                    if (result.data.code == 0) {
-                        this.refreshPatrol();
+            this.loading = true;
+            if (this.deleteTarget.type == "fin") {
+                this.deleteTarget.FIN_ID = this.deleteTarget.id;
+                deleteFinApi(this.deleteTarget).then((result) => {
+                    if (result.data == constants.OK) {
+                        this.refreshRooms();
                         notifySomething(
-                            constants.DELETESUCCESS,
-                            constants.DELETESUCCESS,
+                            "删除政策成功",
+                            "删除政策成功",
                             constants.typeSuccess
                         );
-                    } else {
+                    } else if (result.data.code == 3) {
                         notifySomething(
-                            constants.DELETEFAILED,
-                            constants.DELETEFAILED,
+                            constants.GENERALERROR,
+                            "删除政策失败",
                             constants.typeError
                         );
                     }
+                    this.loading = false;
                 });
-            } else if (this.deleteTarget.type == constants.typeRoomRent) {
-                this.loading = true;
-                this.deleteTarget.reason = this.$refs.dialog.commentData;
-                delrentApi(this.deleteTarget)
-                    .then((result) => {
-                        //context.loading = false;
-                        if (result.data.code == 0) {
-                            this.refreshRent();
-                            context.closeComfirmDialog();
-                            //context.closeWeiXiuForm();
-                            context.$notify({
-                                group: "foo",
-                                title: "已经删除",
-                                text: "已经删除",
-                                type: "success",
-                            });
-                        } else {
-                            notifySomething(
-                                constants.GENERALERROR,
-                                constants.GENERALERROR,
-                                constants.typeError
-                            );
-                        }
-                    })
-                    .catch(function () {
-                        context.loading = false;
-                        notifySomething(
-                            constants.GENERALERROR,
-                            constants.GENERALERROR,
-                            constants.typeError
-                        );
-                    });
-            } else {
-                this.loading = true;
-                // var context = this;
-                this.deleteTarget.reason = this.$refs.dialog.commentData;
-                deleteLoanAssignmentApi(this.deleteTarget)
-                    .then((result) => {
-                        context.loading = false;
-                        if (result.data.code == 0) {
-                            this.refresh();
-                            context.closeComfirmDialog();
-                            context.closeWeiXiuForm();
-                            context.$notify({
-                                group: "foo",
-                                title: "出租已经删除",
-                                text: "出租已经删除",
-                                type: "success",
-                            });
-                        } else {
-                            notifySomething(
-                                constants.GENERALERROR,
-                                constants.GENERALERROR,
-                                constants.typeError
-                            );
-                        }
-                    })
-                    .catch(function () {
-                        context.loading = false;
-                        notifySomething(
-                            constants.GENERALERROR,
-                            constants.GENERALERROR,
-                            constants.typeError
-                        );
-                    });
             }
         },
-        openComfirmDialog() {
+        deletePolicy(data) {
             this.sendVal = true;
+            console.log(data);
+            this.deleteTarget = {
+                text: "是否要删除" + data.NAME + "(ID: " + data.FIN_ID + ")?",
+                id: data.FIN_ID,
+                type: "fin",
+            };
         },
-        closeComfirmDialog() {
-            this.sendVal = false;
-            this.refresh();
-            //  this.refresh();
-        },
-        editWeixiuShenqing(props) {
-            var context = this;
-            context.options = [];
-            getRoomDataApi({
-                kind: 2,
-                //   extract: 1
-            }).then((data) => {
-                //this.localData = data.data.data;
-                context.getUnit();
-                context.selectedWeixiu = props;
-                context.loading = true;
-                context.refreshRent();
-                context.refreshPatrol();
-                context.modelTitle = "编辑";
-                //  context.loading = true;
-                data.data.data.map((one) => {
-                    context.options.push({
-                        text: one.address,
-                        value: one.id,
-                    });
-                });
-            });
-        },
-        closeHetongModal() {
-            this.open = false;
-        },
-        createShenbao() {
-            var context = this;
-            if (
-                this.selectedWeixiu.rent_start == "NaNNaNNaN" ||
-                this.selectedWeixiu.rent_end == "NaNNaNNaN" ||
-                this.selectedWeixiu.is_borrow == null
-            ) {
-                return;
-            }
+        refreshRooms(payload) {
             this.loading = true;
+            if (!payload) {
+                payload = {}
+            }
+            var context = this;
+            getFinApi(payload)
+                .then((data) => {
+                    this.localData = data.data;
+                    console.log(this.localData);
+                    this.loading = false;
+                    this.localData.map((one) => {
+                        one.FIN_TIME = formatDate(new Date(one.FIN_START_DATE)) + " - " + formatDate(new Date(one.FIN_END_DATE));
+                        one.RATE_RANGE = one.RATE_LOW + " - " + one.RATE_HIGH;
+                        one.CREATED_AT = formatDate(new Date(one.CREATED_AT));
+                        one.UPDATED_AT = formatDate(new Date(one.UPDATED_AT));
+                    });
+                })
+                .catch(function () {
+                    context.loading = false;
+                    notifySomething(
+                        constants.GENERALERROR,
+                        constants.GENERALERROR,
+                        constants.typeError
+                    );
+                });
+        },
+        // open emodify room
+        changePolicy(data) {
+            if (
+                // eslint-disable-next-line no-prototype-builtins
+                data.hasOwnProperty("vgt_id") ||
+                // eslint-disable-next-line no-prototype-builtins
+                data.hasOwnProperty("originalIndex")
 
-            this.selectedWeixiu.ziliaolist = JSON.stringify(this.ziliaoList);
-            this.selectedWeixiu.rent_start = toShitFormat(
-                this.selectedWeixiu.rent_start
-            );
-            this.selectedWeixiu.rent_end = toShitFormat(this.selectedWeixiu.rent_end);
+            ) {
+                delete data.vgt_id;
+                delete data.originalIndex;
+            }
+            this.selectedPolicy = data;
+            this.modelTitle = "修改金融产品";
+            this.modalMode = "edit";
+            this.open = true;
+        },
+
+        //open create
+        createRoomModel() {
+            // show create Model
+            this.modelTitle = "新建金融产品";
+            this.modalMode = "create";
+            this.open = true;
+            this.selectedPolicy = {
+                "FIN_ID": "",
+                "LOGO_URL": "1",
+                "FIN_CODE": "",
+                "NAME": "",
+                "DESCRIPTION": "1",
+                "WORKFLOW_URL": "1",
+                "URL": "1",
+                "APPLY_URL": "1",
+                "BANK_NAME": "",
+                "BANK_ID": "",
+                "STATUS": "1",
+                "FIN_START_DATE": "",
+                "FIN_END_DATE": "",
+                "CREATED_AT": "",
+                "UPDATED_AT": "",
+                "USER_ID_USER_ID": "1",
+                "USER_NAME": "1",
+                "RATE_LOW": "",
+                "RATE_HIGH": "",
+                "LOAN_QUOTA": "",
+                "LOAN_DATE_LOW": 1,
+                "LOAN_DATE_HIGH": 5,
+                "CHARGE_METHOD": "",
+                "REPAY_METHOD": "",
+                "TARGET": "",
+                "FIN_TYPE": "1",
+                "PRODUCT_TYPE": "",
+                "LOAN_TYPE": ""
+            };
+        },
+        toggle() {
+            this.loading = true;
+            var context = this;
+            //kind=1 means 自由房屋创建和编辑
             if (this.modalMode == "create") {
-                createLoanAssignmentApi(this.selectedWeixiu)
+                this.selectedPolicy.CREATED_AT = new Date();
+                this.selectedPolicy.UPDATED_AT = new Date();
+                postFinApi(this.selectedPolicy)
                     .then((result) => {
-                        if (result.data.code == 0) {
-                            this.loading = false;
-                            this.closeWeiXiuForm();
-                            this.refresh();
+                        context.loading = false;
+                        if (result.data == constants.OK) {
+                            this.closeModal();
                             notifySomething(
-                                constants.CREATESUCCESS,
-                                constants.CREATESUCCESS,
+                                "政策上传成功",
+                                "政策上传成功",
                                 constants.typeSuccess
                             );
-                        } else if (result.data.code == 3) {
-                            this.loading = false;
+                        } else {
                             notifySomething(
                                 constants.GENERALERROR,
-                                "该房屋这段时间已出租",
+                                constants.GENERALERROR,
                                 constants.typeError
                             );
                         }
@@ -804,23 +706,32 @@ export default {
                         );
                     });
             } else if (this.modalMode == "edit") {
-                editLoanAssignmentApi(this.selectedWeixiu)
+                //upate Policy APi
+                delete this.selectedPolicy.FIN_TIME;
+                delete this.selectedPolicy.RATE_RANGE;
+                updateFinApi(this.selectedPolicy)
                     .then((result) => {
-                        if (result.data.code == 0) {
-                            this.loading = false;
-                            this.closeWeiXiuForm();
-                            this.refresh();
-                            notifySomething("编辑成功", "编辑成功", constants.typeSuccess);
+                        if (result.data == constants.OK) {
+                            this.closeModal();
+                            this.$notify({
+                                group: "foo",
+                                title: "更新政策成功",
+                                text: "更新政策成功",
+                                type: "success",
+                            });
                         } else if (result.data.code == 3) {
-                            this.loading = false;
                             notifySomething(
-                                constants.GENERALERROR,
-                                "该房屋这段时间已出租",
-                                constants.typeError
+                                "更新政策失败",
+                                "该房屋已有分配房间，无法更改房屋性质",
+                                "error"
                             );
+                        } else {
+                            notifySomething("更新自有房屋失败", "更新自有房屋失败", "error");
                         }
+                        this.loading = false;
                     })
-                    .catch(function () {
+                    .catch(function (err) {
+                        console.log(err);
                         context.loading = false;
                         notifySomething(
                             constants.GENERALERROR,
@@ -830,301 +741,102 @@ export default {
                     });
             }
         },
-        refresh(param) {
-            if (param == undefined) {
-                param = {
-                    year: new Date().getFullYear(),
-                };
-            }
-            this.role = localGet("role");
-            this.loading = true;
-            var context = this;
-            let params = {
-                year: param.year,
+        closeModal: function () {
+            this.open = false;
+            // /this.assignForm.open = false;
+            //this.buildingForm.open = false;
+            //  this.buildingFloorForm.open = false;
+            //    this.buildingImage.open = false;
+            //this.assignList.open = false;
+            var payload = {
+                name: this.filterString.name,
+                page: 1,
             };
-            if (param.page) {
-                //     params.page = param.page;
+            if (this.filterString.kind) {
+                payload.kind = this.filterString.kind;
             }
-            // if (this.role == 1) {
-            //     params = {
-            //         status: constants.STATUSNEW
-            //     }
-            // }
-            listLoanAssignmentApi(params)
-                .then((data) => {
-                    //this.localData = data.data.data;
-                    this.loading = false;
-                    //  var context = this;
-                    this.localData = {
-                        total: 16,
-                        per_page: 5,
-                        current_page: 1,
-                        last_page: 4,
-                        next_page_url: "data.data.data?page=2",
-                        prev_page_url: null,
-                        from: 1,
-                        to: 5,
-                        data: data.data.data,
-                    };
-                    this.localData.data.map((one) => {
-                        let unitBasics = store.getters.unit.unitBasic;
-                        if (unitBasics.length > 0) {
-                            unitBasics.map((unit) => {
-                                if (unit.value == one.unit_id) {
-                                    one.unit_name = unit.text;
-                                }
-                            });
-                        }
-
-                        // one.ziliaoListData = JSON.parse(one.url);
-                        //one.ziliaoList = [];
-                        // one.ziliaoListData.map((one1) => {
-                        //     var newOne = {
-                        //         fileURL: constants.fileURL + one1
-                        //     }
-                        //     one.ziliaoList.push(newOne);
-                        // })
-
-                        one.starttime = one.rent_start;
-                        one.endtime = one.rent_end;
-                        one.rent_time = one.starttime + "-" + one.endtime;
-                        if (one.next_time == null || new Date(one.next_time) > new Date()) {
-                            one.nextTimeStatus = "normal";
-                        } else {
-                            one.nextTimeStatus = "error";
-                        }
-
-                        if (one.ziliaolist == "") {
-                            this.ziliaoList = [];
-                            one.ziliaoList = [];
-                        } else {
-                            this.ziliaoList = JSON.parse(one.ziliaolist);
-                            one.ziliaoList = this.ziliaoList;
-                            one.ziliaoList.map((one) => one.fileURL = constants.fileURL + one.url)
-                        }
-                        // getroombyid(one).then((result) => {
-                        //     console.log(result);
-                        //     if (result.data.code == 0) {
-                        //         one.roomname = result.data.data.roomname;
-                        //         one.address = result.data.data.address;
-                        //         one.zhuguandanwei = result.data.data.zhuguandanwei;
-                        //         if (context.unitoptions.length > 0) {
-                        //             context.unitoptions.map((one1) => {
-                        //                 if (one1.value == result.data.data.zhuguandanwei) {
-                        //                     one.zhuguandanwei = one1.text;
-                        //                 }
-                        //             })
-                        //         }
-
-                        //         one.quanshuzhengming = result.data.data.quanshuzhengming;
-                        //         one.certid = result.data.data.certid;
-                        //         if (result.data.data.inaccount) {
-                        //             one.inaccount = "有"
-                        //         } else {
-                        //             one.inaccount = "无"
-                        //         }
-                        //         context.componentKey++;
-                        //     }
-                        // }).catch(function () {
-                        //     context.loading = false;
-                        //     notifySomething(constants.GENERALERROR, constants.GENERALERROR, constants.typeError);
-                        // });
-                        switch (one.status) {
-                            case 1:
-                                one.statusText = constants.NEW;
-                                break;
-                            case 2:
-                                one.statusText = constants.PASS;
-                                break;
-                            case 3:
-                                one.statusText = constants.FAIL;
-                                break;
-                            default:
-                                break;
-                        }
-                    });
-                })
-                .catch(function () {
-                    context.loading = false;
-                    notifySomething(
-                        constants.GENERALERROR,
-                        constants.GENERALERROR,
-                        constants.typeError
-                    );
-                });
-        },
-
-        createChuju() {
-            var context = this;
-            this.loading = true;
-            getRoomDataApi({
-                kind: 2,
-                //   extract: 1
-            }).then((data) => {
-                //this.localData = data.data.data;
-                data.data.data.map((one) => {
-                    context.options.push({
-                        text: one.address,
-                        value: one.id,
-                    });
-                });
-
-                context.loading = false;
-                context.openWeiXiuForm("create");
-            });
-        },
-        openWeiXiuForm(mode) {
-            this.activeIndex = 0;
-            if (mode == "edit") {
-                this.modelTitle = "编辑";
-                this.modalMode = "edit";
-            } else {
-                this.modelTitle = "创建";
-                this.selectedWeixiu = {
-                    room_id: "1",
-                };
-                this.modalMode = "create";
-            }
-            this.weixiuForm.open = true;
-        },
-        closeWeiXiuForm() {
-            this.weixiuForm.open = false;
-        },
-
-        onPaginationData() {
-            //   this.$refs.pagination.setPaginationData(paginationData);
-            //   this.$refs.paginationInfo.setPaginationData(paginationData);
-        },
-        onChangePage(page) {
-            this.$refs.vuetable.changePage(page);
-        },
-        getDataById(data) {
-            listloanassignmentbyidr(data).then((data) => {
-                //this.localData = data.data.data;
-                this.loading = false;
-                this.localData = {
-                    total: 16,
-                    per_page: 5,
-                    current_page: 1,
-                    last_page: 4,
-                    next_page_url: "data.data.data?page=2",
-                    prev_page_url: null,
-                    from: 1,
-                    to: 5,
-                    data: data.data.data,
-                };
-                this.localData.data.map((one) => {
-                    var unitBasics = store.getters.unit.unitBasic;
-                    if (unitBasics.length > 0) {
-                        unitBasics.map((unit) => {
-                            if (unit.value == one.unit_id) {
-                                one.unit_name = unit.text;
-                            }
-                        });
-                    }
-                    one.starttime = fromShitFormat(one.rent_start);
-                    one.endtime = fromShitFormat(one.rent_end);
-                    one.rent_time = one.starttime + "-" + one.endtime;
-                    getroombyid(one)
-                        .then((result) => {
-                            console.log(result);
-                            if (result.data.code == 0) {
-                                one.roomname = result.data.data.roomname;
-                                one.address = result.data.data.address;
-                                this.componentKey++;
-                            }
-                        })
-                        .catch(function () {
-                            this.loading = false;
-                            notifySomething(
-                                constants.GENERALERROR,
-                                constants.GENERALERROR,
-                                constants.typeError
-                            );
-                        });
-                    switch (one.status) {
-                        case 1:
-                            one.statusText = constants.NEW;
-                            break;
-                        case 2:
-                            one.statusText = constants.PASS;
-                            break;
-                        case 3:
-                            one.statusText = constants.FAIL;
-                            break;
-                        default:
-                            break;
-                    }
-                });
-            });
+            this.refreshRooms(payload);
         },
     },
     created() {
-        if (store.getters.unit.unitBasic.length > 0) {
-            this.unitoptions = store.getters.unit.unitBasic;
-        }
-        var context = this;
-        context.options = [];
-        getRoomDataApi({
-            kind: 2,
-            // extract: 1
-        }).then((data) => {
-            //this.localData = data.data.data;
-            data.data.data.map((one) => {
-                context.options.push({
-                    text: one.address,
-                    value: one.id,
-                });
-            });
+
+        queryTagsApi(["TYPE=FI"]).then((data) => {
+            this.tagItems = data.data;
+            //console.log(this.tagItems)
         });
 
-        let uri = window.location.href.split("?");
-        let getVars = {};
-        if (uri.length == 2) {
-            let vars = uri[1].split("&");
-            let tmp = "";
-            vars.forEach(function (v) {
-                tmp = v.split("=");
-                if (tmp.length == 2) getVars[tmp[0]] = tmp[1];
-            });
-            console.log(getVars);
-            if (getVars.room_id) {
-                this.getDataById(getVars);
-                return;
-            }
-        } else {
-            this.refresh({
-                page: 1,
-            });
-        }
+        this.refreshRooms();
     },
 };
 </script>
 
 <style>
+.el-tag--dark {
+    background-color: #4BA6E6;
+    border-color: #6AABDD;
+    color: #fff;
+}
+
+.tableTag {
+    margin-left: 5px;
+    margin-bottom: 1%;
+    border-radius: 10px;
+}
+
+.tag {
+    margin-left: 5px;
+    margin-bottom: 1%;
+    border-radius: 10px;
+}
+
 .ui.positive.button {
     background-color: #75adbf !important;
+}
+
+.imageForm {
+    display: block;
+    width: 100%;
+}
+
+.wl-viewer {
+    height: 90%;
+    width: 90%;
+    margin: 4% auto 0;
+}
+
+.imageModal {
+    height: 500px;
 }
 
 .ui.modal {
     top: auto;
     left: auto;
     height: auto !important;
+    max-height: 900px !important;
 }
 
-.ui.modal>.content {
-    padding: 15px 15px 15px 15px;
+.ui.modal>.actions {
+    background: rgb(249, 250, 251);
+    border-bottom-left-radius: 0.285714rem;
+    border-bottom-right-radius: 0.285714rem;
+    padding: 1rem;
+    border-top: 1px solid rgba(34, 36, 38, 0.15);
+    text-align: center;
+}
+
+.ui.modal .content {
+    padding: 15px;
     box-sizing: border-box;
     max-height: none !important;
 }
 
-.map {
-    width: 100%;
-    height: 400px;
-}
-
 .ui.table {
     font-size: 13px;
+}
+
+.louBackground {
+    background-size: cover;
+    background-image: url("../../../../public/lou.png");
 }
 
 .ui.table thead th {
@@ -1141,27 +853,153 @@ export default {
     border-left: none;
 }
 
-.modal2 {
-    min-height: 600px !important;
-}
-
 .ui.blue.table {
     border-top: 0px !important;
 }
 
 .filterBiaoDan {
-    margin: 10px;
+    margin: 0 0 15px 0;
 }
 
-.vue2Table {
-    /* margin: 20px; */
+.buttonBuildingFloor {
+    margin: 10px;
 }
 
 .pagination {
     margin-top: 1rem;
 }
 
+.modalStep {
+    /* height: 500px; */
+}
+
+.tabNew {
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
 .vuetable-head-wrapper table.vuetable th.sortable {
     cursor: pointer;
+}
+
+.ui.text.menu {
+    background-color: transparent;
+    border: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    font-weight: 1000;
+    color: black;
+}
+
+.thTextcenter {
+    text-align: center !important;
+    border-bottom: 0px !important;
+}
+
+.ui.text.menu .active.item {
+    background-color: transparent;
+    border: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    font-weight: 1000;
+    color: #75adbf;
+}
+
+.yello {
+    background-color: #e6a23c;
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+}
+
+.purple {
+    background-color: purple;
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+}
+
+.redBand {
+    background-color: red;
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+}
+
+.yewuyongfang {
+    background-color: blue;
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+}
+
+.lvse {
+    background-color: rgb(0, 255, 200);
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+}
+
+.baise {
+    background-color: white;
+    border: 1px;
+    height: 10px;
+    display: inline-block;
+    width: 10px;
+    border-color: black;
+    border-style: solid;
+}
+
+.reversed {
+    background-color: rgb(10, 10, 10);
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+}
+
+.displayInline {
+    display: inline;
+}
+
+.buttonblueFun {
+    margin-top: 20px !important;
+    font-size: 10px !important;
+}
+
+.hiddenUpload {
+    box-shadow: 0 0 0 1px #1678c2 inset !important;
+    color: #1678c2 !important;
+    cursor: pointer;
+    display: inline-block;
+    min-height: 1em;
+    outline: 0;
+    border: none;
+    vertical-align: baseline;
+    background: #e0e1e2 none;
+    font-family: Lato, "Helvetica Neue", Arial, Helvetica, sans-serif;
+    margin: 0 0.25em 0 0;
+    padding: 0.78571429em 1.5em 0.78571429em;
+    text-transform: none;
+    text-shadow: none;
+    font-weight: 700;
+    line-height: 1em;
+    font-style: normal;
+    text-align: center;
+    text-decoration: none;
+}
+
+.ui.modal .scrolling.content {
+    overflow: auto;
+    max-height: 500px !important;
+}
+
+.el-header {
+    background-color: #b3c0d1;
+    color: #333;
+    line-height: 60px;
+}
+
+.el-aside {
+    color: #333;
 }
 </style>

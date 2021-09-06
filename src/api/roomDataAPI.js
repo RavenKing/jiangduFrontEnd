@@ -7,14 +7,14 @@ function registerUserApi(data) {
   data = {
     data: data,
   };
-  return generalRequet(data, constants.userApi);
+  return generalRequest(data, constants.userApi);
 }
 
 function getHistoricalApi()
 {
   var data = {
   };
-  return generalRequet(data, constants.historicalPolicyCompanyApi);
+  return generalRequest(data, constants.historicalPolicyCompanyApi);
 }
 function getUserApi() {
   return generalGetRequest(constants.userApi);
@@ -52,13 +52,64 @@ function postTagsApi(data) {
   data = {
     data: data,
   };
-  return generalRequet(data, constants.tagsApi);
+  return generalRequest(data, constants.tagsApi);
 }
+
+function getFinApi(data) {
+  data = {
+    data: data,
+  };
+  return generalRequest(data, constants.finApi);
+}
+
+
+function postFinApi(data){
+  data = {
+    data: data,
+  };
+  return generalRequest(data, constants.postFinApi);
+  
+}
+
+
+function updateFinApi(data) {
+  data = {
+    data: data,
+  };
+  return generalPutRequest(data, constants.finApi);
+}
+function deleteFinApi(data) {
+  data = {
+    data: data,
+  };
+  return generalDeleteRequest(data, constants.finApi);
+}
+
+
+function deleteFinTagApi(data) {
+  data = {
+    data: data,
+  };
+  return generalRequest(data, constants.deleteFinTagApi);
+}
+function addFinTagApi(data) {
+  data = {
+    data: data,
+  };
+  return generalRequest(data, constants.addFinTagApi);
+}
+function getFinTagApi(data) {
+  data = {
+    data: data,
+  };
+  return generalRequest(data, constants.getFinTagApi);
+}
+
 function postRecommendListApi(data) {
   data = {
     data: data,
   };
-  return generalRequet(data, constants.postRecommendList);
+  return generalRequest(data, constants.postRecommendList);
 }
 
 function queryTagsApi(type) {
@@ -66,7 +117,7 @@ function queryTagsApi(type) {
 }
 
 function getPolicysApi(data) {
-  return generalRequet(data,constants.policyApi);
+  return generalRequest(data,constants.policyApi);
 }
 function updatePolicyApi(data) {
   data = {
@@ -84,26 +135,26 @@ function postPolicyApi(data) {
   data = {
     data: data,
   };
-  return generalRequet(data, constants.policyApi);
+  return generalRequest(data, constants.policyApi);
 }
 function addPolicyTagApi(data) {
   data = {
     data: data,
   };
-  return generalRequet(data, constants.addTageApi);
+  return generalRequest(data, constants.addTageApi);
 }
 function deletePolicyTagApi(data) {
   data = {
     data: data,
   };
-  return generalRequet(data, constants.deletePolicyTageApi);
+  return generalRequest(data, constants.deletePolicyTageApi);
 }
 
 function getRecommendCompanysApi(data) {
   return generalGetRequest(constants.recommendPolicyApi + "/" + data.POLICY_ID);
 }
 function getRoomDataApi(data) {
-  return generalRequet(data, constants.roomGetAPI);
+  return generalRequest(data, constants.roomGetAPI);
 }
 function updateRoomApi(data) {
   let local_auth = localGet(global.project_key, true);
@@ -142,7 +193,7 @@ function deleteBuildingApi(data) {
   });
 }
 function getRentRoomDataApi(data) {
-  return generalRequet(data, constants.rentRoomGetAPI);
+  return generalRequest(data, constants.rentRoomGetAPI);
 }
 function createRentRoomApi(data) {
   let local_auth = localGet(global.project_key, true);
@@ -472,33 +523,33 @@ function delleaderroomApi(data) {
 }
 
 function assignRentAssignmentApi(data) {
-  return generalRequet(data, constants.createAssignmentRentApi);
+  return generalRequest(data, constants.createAssignmentRentApi);
 }
 function listRentRoomAssignmentApi(data) {
-  return generalRequet(data, constants.listRentRoomAssignmentApi);
+  return generalRequest(data, constants.listRentRoomAssignmentApi);
 }
 
 // function deleteRentRoomAssignmentApi(data)
 // {
-//     return generalRequet(data,constants.deleteRentRoomAssignmentApi)
+//     return generalRequest(data,constants.deleteRentRoomAssignmentApi)
 // }
 function listLoanAssignmentApi(data) {
-  return generalRequet(data, constants.listLoanAssignmentApi);
+  return generalRequest(data, constants.listLoanAssignmentApi);
 }
 function deleteLoanAssignmentApi(data) {
-  return generalRequet(data, constants.deleteLoanAssignmentApi);
+  return generalRequest(data, constants.deleteLoanAssignmentApi);
 }
 function createLoanAssignmentApi(data) {
-  return generalRequet(data, constants.createLoanAssignmentApi);
+  return generalRequest(data, constants.createLoanAssignmentApi);
 }
 function editLoanAssignmentApi(data) {
-  return generalRequet(data, constants.editLoanAssignmentApi);
+  return generalRequest(data, constants.editLoanAssignmentApi);
 }
 
 function changeRoomTypeApi(data) {
-  return generalRequet(data, constants.changeRoomTypeApi);
+  return generalRequest(data, constants.changeRoomTypeApi);
 }
-function generalRequet(data, apiName) {
+function generalRequest(data, apiName) {
   let local_auth = localGet(global.project_key, true);
   data.token = local_auth;
   return request({
@@ -554,29 +605,29 @@ function generalDeleteRequest(data, apiName) {
   });
 }
 function createLeaderAssignApi(data) {
-  return generalRequet(data, constants.createLeaderAssignApi);
+  return generalRequest(data, constants.createLeaderAssignApi);
 }
 
 function editRentContractDetailApi(data) {
-  return generalRequet(data, constants.editRentContractDetailApi);
+  return generalRequest(data, constants.editRentContractDetailApi);
 }
 function editRentContractApi(data) {
-  return generalRequet(data, constants.editRentContractApi);
+  return generalRequest(data, constants.editRentContractApi);
 }
 function listPatrolApi(data) {
-  return generalRequet(data, constants.listPatrolApi);
+  return generalRequest(data, constants.listPatrolApi);
 }
 
 function createPatrolApi(data) {
-  return generalRequet(data, constants.createPatrolApi);
+  return generalRequest(data, constants.createPatrolApi);
 }
 
 function editPatrolApi(data) {
-  return generalRequet(data, constants.editPatrolApi);
+  return generalRequest(data, constants.editPatrolApi);
 }
 
 function deletePatrolApi(data) {
-  return generalRequet(data, constants.deletePatrolApi);
+  return generalRequest(data, constants.deletePatrolApi);
 }
 
 /*20200801*/
@@ -709,34 +760,34 @@ function exportroomApi() {
 }
 
 function listloanassignmentbyidr(data) {
-  return generalRequet(data, constants.listloanassignmentbyidr);
+  return generalRequest(data, constants.listloanassignmentbyidr);
 }
 function getFloorById(data) {
-  return generalRequet(data, constants.getFloorByIdApi);
+  return generalRequest(data, constants.getFloorByIdApi);
 }
 function assignRoomDetailApi(data) {
-  return generalRequet(data, constants.assignRoomDetail);
+  return generalRequest(data, constants.assignRoomDetail);
 }
 function getRoomStatApi(data) {
-  return generalRequet(data, constants.getRoomStatApi);
+  return generalRequest(data, constants.getRoomStatApi);
 }
 function getCurrentAssignApi(data) {
-  return generalRequet(data, constants.getCurrentAssignApi);
+  return generalRequest(data, constants.getCurrentAssignApi);
 }
 function deleteFloorApi(data) {
-  return generalRequet(data, constants.deleteFloorApi);
+  return generalRequest(data, constants.deleteFloorApi);
 }
 function getroomunitinfo(data) {
-  return generalRequet(data, constants.getroomunitinfo);
+  return generalRequest(data, constants.getroomunitinfo);
 }
 function renamefloorApi(data) {
-  return generalRequet(data, constants.renameFloorApi);
+  return generalRequest(data, constants.renameFloorApi);
 }
 function searchunitApi(data) {
-  return generalRequet(data, constants.searchunit);
+  return generalRequest(data, constants.searchunit);
 }
 function renameBuildingApi(data) {
-  return generalRequet(data, "/renamebuilding");
+  return generalRequest(data, "/renamebuilding");
 }
 
 export {
@@ -835,4 +886,11 @@ export {
   getTalentsApi,
   getUserApi,
   updateBlackListApi,
+  getFinApi,
+  postFinApi,
+  updateFinApi,
+  deleteFinApi,
+  deleteFinTagApi,
+  addFinTagApi,
+  getFinTagApi
 };
