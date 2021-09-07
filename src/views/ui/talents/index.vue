@@ -29,10 +29,7 @@
         </div>
         <div>
             <div>
-                <vue-good-table :columns="columns" :rows="localData" :sort-options="{
-              enabled: true,
-              initialSortBy: { field: 'CREATED_AT', type: 'desc' },
-            }" :pagination-options="paginationOptions">
+                <vue-good-table :columns="columns" :rows="localData" :sort-options="{enabled: true,initialSortBy: { field: 'CREATED_AT', type: 'desc' }}" :pagination-options="paginationOptions">
                     <template slot="table-row" slot-scope="props">
                         <span v-if="props.column.field == 'action'">
                             <span>
@@ -118,7 +115,7 @@
 
         <el-dialog title="标签" :visible.sync="tagDialogVisible" width="90%" :before-close="refreshRooms">
             <el-steps :active="active">
-                <el-step title="大行业"></el-step>
+                <el-step title="学科"></el-step>
                 <el-step title="小行业"></el-step>
                 <el-step title="其他"></el-step>
             </el-steps>
@@ -198,9 +195,10 @@ import {
     //  goToLogin
 } from "@/util/utils";
 import {
-    getTalentsApi,
     queryTagsApi,
-    //getRoomDataApi,
+    getTalentsApi,
+    getTalentTagsApi,
+    getAllTalentTagsApi,
     deletePolicyTagApi,
     updatePolicyApi,
     postPolicyApi,
@@ -258,8 +256,6 @@ export default {
                             return "女"
                         }
                     },
-
-                    //  type: 'date',
                 },
                 {
                     label: "创建时间",
@@ -391,7 +387,6 @@ export default {
                     this.recommendDataList = result.data;
                     this.recommendDataList.data.map(one => one.SORT = (parseFloat(one.SORT).toFixed(2) * 10).toFixed(2))
                     this.dialogTableVisible = true;
-
                 })
             })
 
@@ -438,6 +433,13 @@ export default {
         openTagDialog(data) {
             this.tagDialogVisible = true;
             this.selectedPolicy = data;
+            getTalentTagsApi({
+                "data": {
+                    "TALENT_ID_TALENT_ID": data.TALENT_ID_TALENT_ID
+                }
+            }).then((result) => {
+                this.selectedPolicy.tags = result.data;
+            })
             let selectedTags = this.selectedPolicy.tags;
             if (!selectedTags) {
                 selectedTags = [];
@@ -456,13 +458,13 @@ export default {
             }
             this.showItems1 = [];
             selectedTags.forEach(element => {
-                if (element["TAG_CATEGORY"] == "industry") {
+                if (element["TAG_CATEGORY"] == "discipline") {
                     this.showItems1.push(element);
                 }
             });
             this.showItems2 = [];
             unselectedTags.forEach(element => {
-                if (element["TAG_CATEGORY"] == "industry") {
+                if (element["TAG_CATEGORY"] == "discipline") {
                     this.showItems2.push(element);
                 }
             });
@@ -470,7 +472,7 @@ export default {
 
         next() {
             if (this.active++ > 2) this.active = 1;
-
+            let temp = this.active;
             let selectedTags = this.selectedPolicy.tags;
             let unselectedTags = [];
             for (let i = 0; i < this.tagItems.length; i++) {
@@ -489,29 +491,28 @@ export default {
                 case 1:
                     this.showItems1 = [];
                     selectedTags.forEach(element => {
-                        if (element["TAG_CATEGORY"] == "industry") {
+                        if (element["TAG_CATEGORY"] == "discipline") {
                             this.showItems1.push(element);
                         }
                     });
                     this.showItems2 = [];
                     unselectedTags.forEach(element => {
-                        if (element["TAG_CATEGORY"] == "industry") {
+                        if (element["TAG_CATEGORY"] == "discipline") {
                             this.showItems2.push(element);
                         }
                     });
                     this.tagType = "success";
-                    // this.showItems = this.tagItems.filter(tagFilter("industry"))
                     break;
                 case 2:
                     this.showItems1 = [];
                     selectedTags.forEach(element => {
-                        if (element["TAG_CATEGORY"] == "cap") {
+                        if (element["TAG_CATEGORY"] == "highest_education") {
                             this.showItems1.push(element);
                         }
                     });
                     this.showItems2 = [];
                     unselectedTags.forEach(element => {
-                        if (element["TAG_CATEGORY"] == "cap") {
+                        if (element["TAG_CATEGORY"] == "highest_education") {
                             this.showItems2.push(element);
                         }
                     });
@@ -520,13 +521,13 @@ export default {
                 case 3:
                     this.showItems1 = [];
                     selectedTags.forEach(element => {
-                        if (element["TAG_CATEGORY"] != "industry" && element["TAG_CATEGORY"] != "cap") {
+                        if (element["TAG_CATEGORY"] != "discipline" && element["TAG_CATEGORY"] != "highest_education") {
                             this.showItems1.push(element);
                         }
                     });
                     this.showItems2 = [];
                     unselectedTags.forEach(element => {
-                        if (element["TAG_CATEGORY"] != "industry" && element["TAG_CATEGORY"] != "cap") {
+                        if (element["TAG_CATEGORY"] != "discipline" && element["TAG_CATEGORY"] != "highest_education") {
                             this.showItems2.push(element);
                         }
                     });
@@ -722,15 +723,14 @@ export default {
 
         queryTagsApi(["TYPE=TA"]).then((data) => {
             this.tagItems = data.data;
-            //console.log(this.tagItems)
+
             this.showItems = [];
             this.tagItems.forEach(element => {
-                if (element["TAG_CATEGORY"] == "industry") {
+                if (element["TAG_CATEGORY"] == "discipline") {
                     this.showItems.push(element);
                 }
             })
         });
-
         this.refreshRooms();
     },
 };

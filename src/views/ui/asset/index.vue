@@ -509,7 +509,6 @@ export default {
                         }
                     });
                     this.tagType = "success";
-                    // this.showItems = this.tagItems.filter(tagFilter("industry"))
                     break;
                 case 2:
                     this.showItems1 = [];

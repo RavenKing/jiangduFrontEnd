@@ -36,6 +36,18 @@ function getCompanysApi() {
 function getTalentsApi() {
   return generalGetRequest(constants.talentsApi);
 }
+function getTalentTagsApi(data) {
+  return generalRequest(data, constants.talentTagsApi);
+}
+function getAllTalentTagsApi(data) {
+  return generalRequest(data, constants.allTalentTagsApi);
+}
+function addTalentTagsApi(data) {
+  return generalRequest(data, constants.talentTagsApi);
+}
+function deleteTalentTagsApi(data) {
+  return generalRequest(data, constants.talentTagsApi);
+}
 function updateTagsApi(data) {
   data = {
     data: data,
@@ -176,6 +188,9 @@ function queryTagsApi(type) {
 }
 
 function getPolicysApi(data) {
+  data = {
+    data: data,
+  };
   return generalRequest(data,constants.policyApi);
 }
 function updatePolicyApi(data) {
@@ -958,5 +973,9 @@ export {
   deleteAssetApi,
   deleteAssetTagApi,
   addAssetTagApi,
-  getAssetTagApi
+  getAssetTagApi,
+  getTalentTagsApi,
+  addTalentTagsApi,
+  deleteTalentTagsApi,
+  getAllTalentTagsApi,
 };
