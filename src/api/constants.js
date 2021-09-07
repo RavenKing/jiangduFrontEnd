@@ -32,6 +32,8 @@ const constantsJinhui = {
     getAssetTagApi:jiangduPre+"/assets/assetTags",
     talentTagsApi:jiangduPre+"/talents/tags",
     allTalentTagsApi:jiangduPre+"/talents/allTags",
+    addTalentTagApi:jiangduPre+"/talents/addTags",
+    deleteTalentTagApi:jiangduPre+"/talents/deleteTags",
 
 
 

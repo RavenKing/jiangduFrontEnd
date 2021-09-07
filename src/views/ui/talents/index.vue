@@ -116,7 +116,7 @@
         <el-dialog title="标签" :visible.sync="tagDialogVisible" width="90%" :before-close="refreshRooms">
             <el-steps :active="active">
                 <el-step title="学科"></el-step>
-                <el-step title="小行业"></el-step>
+                <el-step title="最高学历"></el-step>
                 <el-step title="其他"></el-step>
             </el-steps>
             <el-button style="margin-top: 12px; margin-bottom: 12px" @click="next">下一步</el-button>
@@ -198,18 +198,16 @@ import {
     queryTagsApi,
     getTalentsApi,
     getTalentTagsApi,
-    getAllTalentTagsApi,
-    deletePolicyTagApi,
+    addTalentTagsApi,
+    deleteTalentTagsApi,
     updatePolicyApi,
     postPolicyApi,
     deletePolicyApi,
-    addPolicyTagApi,
     getRecommendCompanysApi,
     getCompanysApi,
     postRecommendListApi,
     getHistoricalApi
 
-    //createRoomApi,
 } from "@/api/roomDataAPI";
 export default {
     name: "policyVue",
@@ -394,11 +392,11 @@ export default {
 
         addTag(data, index) {
             const payload = {
-                POLICY_ID_POLICY_ID: this.selectedPolicy.POLICY_ID,
+                TALENT_ID_TALENT_ID: this.selectedPolicy.TALENT_ID,
                 TAG_ID_TAG_ID: data.TAG_ID
             }
             var context = this;
-            addPolicyTagApi(payload).then((result) => {
+            addTalentTagsApi(payload).then((result) => {
                 //(result);
                 if (result.data == constants.OK) {
                     context.showItems2.splice(index, 1);
@@ -411,11 +409,11 @@ export default {
             console.log(data);
             //delete tag 
             const payload = {
-                POLICY_ID_POLICY_ID: this.selectedPolicy.POLICY_ID,
+                TALENT_ID_TALENT_ID: this.selectedPolicy.TALENT_ID,
                 TAG_ID_TAG_ID: data.TAG_ID
             }
             var context = this;
-            deletePolicyTagApi(payload).then((result) => {
+            deleteTalentTagsApi(payload).then((result) => {
                 console.log(result)
                 if (result.data == constants.OK) {
                     let name = this.showItems1[index].TAG_NAME;
@@ -431,48 +429,46 @@ export default {
         },
         // open tag dialog
         openTagDialog(data) {
-            this.tagDialogVisible = true;
+            this.loading = true;
             this.selectedPolicy = data;
+            this.selectedPolicy.tags = []
             getTalentTagsApi({
-                "data": {
-                    "TALENT_ID_TALENT_ID": data.TALENT_ID_TALENT_ID
-                }
+                "TALENT_ID_TALENT_ID": data.TALENT_ID
             }).then((result) => {
+                this.loading = false;
+                this.tagDialogVisible = true;
                 this.selectedPolicy.tags = result.data;
-            })
-            let selectedTags = this.selectedPolicy.tags;
-            if (!selectedTags) {
-                selectedTags = [];
-            }
-            let unselectedTags = [];
-            for (let i = 0; i < this.tagItems.length; i++) {
-                let isSelected = false;
-                for (let j = 0; j < selectedTags.length; j++) {
-                    if (this.tagItems[i].TAG_NAME == selectedTags[j].TAG_NAME) {
-                        isSelected = true;
-                        break;
+                let selectedTags = this.selectedPolicy.tags;
+                let unselectedTags = [];
+                for (let i = 0; i < this.tagItems.length; i++) {
+                    let isSelected = false;
+                    for (let j = 0; j < selectedTags.length; j++) {
+                        if (this.tagItems[i].TAG_NAME == selectedTags[j].TAG_NAME) {
+                            isSelected = true;
+                            break;
+                        }
                     }
+                    if (!isSelected)
+                        unselectedTags.push(this.tagItems[i]);
                 }
-                if (!isSelected)
-                    unselectedTags.push(this.tagItems[i]);
-            }
-            this.showItems1 = [];
-            selectedTags.forEach(element => {
-                if (element["TAG_CATEGORY"] == "discipline") {
-                    this.showItems1.push(element);
-                }
-            });
-            this.showItems2 = [];
-            unselectedTags.forEach(element => {
-                if (element["TAG_CATEGORY"] == "discipline") {
-                    this.showItems2.push(element);
-                }
-            });
+                this.showItems1 = [];
+                selectedTags.forEach(element => {
+                    if (element["TAG_CATEGORY"] == "discipline") {
+                        this.showItems1.push(element);
+                    }
+                });
+                this.showItems2 = [];
+                unselectedTags.forEach(element => {
+                    if (element["TAG_CATEGORY"] == "discipline") {
+                        this.showItems2.push(element);
+                    }
+                });
+            })
+
         },
 
         next() {
             if (this.active++ > 2) this.active = 1;
-            let temp = this.active;
             let selectedTags = this.selectedPolicy.tags;
             let unselectedTags = [];
             for (let i = 0; i < this.tagItems.length; i++) {
@@ -504,6 +500,7 @@ export default {
                     this.tagType = "success";
                     break;
                 case 2:
+                    console.log("Start");
                     this.showItems1 = [];
                     selectedTags.forEach(element => {
                         if (element["TAG_CATEGORY"] == "highest_education") {
@@ -517,8 +514,10 @@ export default {
                         }
                     });
                     this.tagType = "warning";
+                    console.log("Finish");
                     break;
                 case 3:
+                    console.log("Start2");
                     this.showItems1 = [];
                     selectedTags.forEach(element => {
                         if (element["TAG_CATEGORY"] != "discipline" && element["TAG_CATEGORY"] != "highest_education") {
@@ -532,6 +531,7 @@ export default {
                         }
                     });
                     this.tagType = "danger";
+                    console.log("Finish2");
                     break;
             }
         },

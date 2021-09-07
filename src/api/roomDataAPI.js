@@ -10,10 +10,8 @@ function registerUserApi(data) {
   return generalRequest(data, constants.userApi);
 }
 
-function getHistoricalApi()
-{
-  var data = {
-  };
+function getHistoricalApi() {
+  var data = {};
   return generalRequest(data, constants.historicalPolicyCompanyApi);
 }
 function getUserApi() {
@@ -37,16 +35,28 @@ function getTalentsApi() {
   return generalGetRequest(constants.talentsApi);
 }
 function getTalentTagsApi(data) {
+  data = {
+    data: data,
+  };
   return generalRequest(data, constants.talentTagsApi);
 }
 function getAllTalentTagsApi(data) {
+  data = {
+    data: data,
+  };
   return generalRequest(data, constants.allTalentTagsApi);
 }
 function addTalentTagsApi(data) {
-  return generalRequest(data, constants.talentTagsApi);
+  data = {
+    data: data,
+  };
+  return generalRequest(data, constants.addTalentTagApi);
 }
 function deleteTalentTagsApi(data) {
-  return generalRequest(data, constants.talentTagsApi);
+  data = {
+    data: data,
+  };
+  return generalRequest(data, constants.deleteTalentTagApi);
 }
 function updateTagsApi(data) {
   data = {
@@ -74,15 +84,12 @@ function getFinApi(data) {
   return generalRequest(data, constants.finApi);
 }
 
-
-function postFinApi(data){
+function postFinApi(data) {
   data = {
     data: data,
   };
   return generalRequest(data, constants.postFinApi);
-  
 }
-
 
 function updateFinApi(data) {
   data = {
@@ -96,7 +103,6 @@ function deleteFinApi(data) {
   };
   return generalDeleteRequest(data, constants.finApi);
 }
-
 
 function deleteFinTagApi(data) {
   data = {
@@ -118,25 +124,22 @@ function getFinTagApi(data) {
 }
 /***
  * asset
- * 
+ *
  */
 
- function getAssetApi(data) {
+function getAssetApi(data) {
   data = {
     data: data,
   };
   return generalRequest(data, constants.assetApi);
 }
 
-
-function postAssetApi(data){
+function postAssetApi(data) {
   data = {
     data: data,
   };
   return generalRequest(data, constants.postAssetApi);
-  
 }
-
 
 function updateAssetApi(data) {
   data = {
@@ -150,7 +153,6 @@ function deleteAssetApi(data) {
   };
   return generalDeleteRequest(data, constants.assetApi);
 }
-
 
 function deleteAssetTagApi(data) {
   data = {
@@ -171,10 +173,8 @@ function getAssetTagApi(data) {
   return generalRequest(data, constants.getAssetTagApi);
 }
 
-
-
 /** recommend list
- * 
+ *
  */
 function postRecommendListApi(data) {
   data = {
@@ -191,7 +191,7 @@ function getPolicysApi(data) {
   data = {
     data: data,
   };
-  return generalRequest(data,constants.policyApi);
+  return generalRequest(data, constants.policyApi);
 }
 function updatePolicyApi(data) {
   data = {
