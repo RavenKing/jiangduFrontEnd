@@ -209,7 +209,7 @@ function postPolicyApi(data) {
   data = {
     data: data,
   };
-  return generalRequest(data, constants.policyApi);
+  return generalRequest(data, constants.addPolicyApi);
 }
 function addPolicyTagApi(data) {
   data = {

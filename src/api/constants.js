@@ -14,6 +14,7 @@ const constantsJinhui = {
     userApi:jiangduPre+"/users",
     tagsApi:jiangduPre+"/tags",
     policyApi:jiangduPre+"/policys",
+    addPolicyApi:jiangduPre+"/policys/add",
     roomGetAPI:hostname+"/policys",
     getCompanysApi:jiangduPre+"/users/getCompanyInfo",
     postRecommendList:jiangduPre+"/recommendLists",
