@@ -2,8 +2,6 @@ import request from "./_request";
 import constants from "./constants";
 import global from "@/global/index";
 import Axios from "axios";
-
-
 import {
     localGet
 } from "@/util/storage"; // 导入存储函数
@@ -77,10 +75,49 @@ function updateFloorInfoApi(formData)
   });
 return http.post(constants.updateFloorApi,formData);
 }
+
+
+function generalRequest(data, apiName) {
+    let local_auth = localGet(global.project_key, true);
+    data.token = local_auth;
+    return request({
+      url: apiName,
+      method: "post",
+      data: data,
+    });
+  }
+
+  function generalPutRequest(data, apiName) {
+    //   let local_auth = localGet(global.project_key, true);
+    return request({
+      url: apiName,
+      method: "put",
+      data: data,
+    });
+  }
+  function generalDeleteRequest(data, apiName) {
+    //   let local_auth = localGet(global.project_key, true);
+    return request({
+      url: apiName,
+      method: "delete",
+      data: data,
+    });
+  }
+  function generalGetRequest(apiName) {
+    //   let local_auth = localGet(global.project_key, true);
+    return request({
+      url: apiName,
+      method: "get",
+    });
+  }
 export {
     getMapLonAndLat,
     uploadFileApi,
     getFileOSSApi,
     uploadZiliaoFileApi,
-    updateFloorInfoApi
+    updateFloorInfoApi,
+    generalRequest,
+    generalPutRequest,
+    generalDeleteRequest,
+    generalGetRequest
     }

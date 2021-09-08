@@ -4,7 +4,7 @@
         <sui-form-fields>
             <sui-form-field style="width:50%;">
                 <label>金融产品</label>
-                <sui-input placeholder="金融产品" v-model="singleRoom.NAME"  />
+                <sui-input placeholder="金融产品" v-model="singleRoom.NAME" />
             </sui-form-field>
             <sui-form-field style="width:50%;">
                 <label>金融产品代码</label>
@@ -14,7 +14,7 @@
         <sui-form-fields>
             <sui-form-field style="width:50%;">
                 <label>银行名</label>
-                <sui-input placeholder="银行名字" v-model="singleRoom.BANK_NAME"  />
+                <sui-input placeholder="银行名字" v-model="singleRoom.BANK_NAME" />
             </sui-form-field>
             <sui-form-field style="width:50%;">
                 <label>银行ID</label>
@@ -24,7 +24,7 @@
         <sui-form-fields>
             <sui-form-field style="width:50%;">
                 <label>利率(下限)</label>
-                <sui-input placeholder="利率(下限)" v-model="singleRoom.RATE_LOW"  />
+                <sui-input placeholder="利率(下限)" v-model="singleRoom.RATE_LOW" />
             </sui-form-field>
             <sui-form-field style="width:50%;">
                 <label>利率(上限)</label>
@@ -34,11 +34,11 @@
         <sui-form-fields>
             <sui-form-field style="width:33.33%;">
                 <label>贷款金额</label>
-                <sui-input placeholder="贷款金额" v-model="singleRoom.LOAN_QUOTA"  />
+                <sui-input placeholder="贷款金额" v-model="singleRoom.LOAN_QUOTA" />
             </sui-form-field>
             <sui-form-field style="width:33.33%;">
                 <label>贷款时限(下限)</label>
-                <sui-input placeholder="贷款时限(下限)" v-model="singleRoom.LOAN_DATE_LOW"  />
+                <sui-input placeholder="贷款时限(下限)" v-model="singleRoom.LOAN_DATE_LOW" />
             </sui-form-field>
             <sui-form-field style="width:33.33%;">
                 <label>贷款时限(上限)</label>
@@ -48,11 +48,11 @@
         <sui-form-fields>
             <sui-form-field style="width:33.33%;">
                 <label>担保方式</label>
-                <sui-input placeholder="贷款金额" v-model="singleRoom.CHARGE_METHOD"  />
+                <sui-dropdown placeholder="担保方式" selection :options="chargeMethod" v-model="singleRoom.CHARGE_METHOD" />
             </sui-form-field>
             <sui-form-field style="width:33.33%;">
                 <label>还款方式</label>
-                <sui-input placeholder="贷款时限(下限)" v-model="singleRoom.REPAY_METHOD"  />
+                <sui-input placeholder="贷款时限(下限)" v-model="singleRoom.REPAY_METHOD" />
             </sui-form-field>
             <sui-form-field style="width:33.33%;">
                 <label>适用对象</label>
@@ -62,12 +62,17 @@
         <sui-form-fields>
             <sui-form-field style="width:33.33%;">
                 <label>产品类型</label>
-                <sui-input placeholder="产品类型" v-model="singleRoom.PRODUCT_TYPE"  />
+                <sui-input placeholder="产品类型" v-model="singleRoom.PRODUCT_TYPE" />
             </sui-form-field>
             <sui-form-field style="width:33.33%;">
                 <label>融资类型</label>
                 <sui-input placeholder="融资类型" v-model="singleRoom.LOAN_TYPE" />
             </sui-form-field>
+            <sui-form-field style="width:33.33%;">
+                <label>状态</label>
+                <sui-dropdown placeholder="状态" selection :options="finStatus" v-model="singleRoom.STATUS" />
+            </sui-form-field>
+
         </sui-form-fields>
         <sui-form-fields>
             <sui-form-field style="width:50%;">
@@ -91,7 +96,7 @@
 <script>
 import * as lang from "vuejs-datepicker/src/locale";
 import Datepicker from 'vuejs-datepicker';
-
+import constants from "@/util/constants";
 export default {
     components: {
         //  Pagination,
@@ -105,7 +110,8 @@ export default {
         return {
             fileList: [],
             checkZhuguan: false,
-            unitOptions: [],
+            finStatus: constants.FIN_STATUS,
+            chargeMethod:constants.FIN_CHARGE_METHOD,
             lang: lang,
             disabled: false,
             zoomlevel: 14,

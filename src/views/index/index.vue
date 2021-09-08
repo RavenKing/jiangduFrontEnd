@@ -46,7 +46,6 @@
     </sui-segments>
     <div style="padding-bottom:10px;">
         <sui-segments>
-            <todo-list />
         </sui-segments>
     </div>
 </wl-container>

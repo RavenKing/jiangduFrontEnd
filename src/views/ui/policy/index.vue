@@ -55,7 +55,7 @@
                         </span>
                         <span v-if="props.column.field == 'TAGS'">
                             <div class="tag-group">
-                                <el-tag class="tag" v-for="item in props.row.tags" :key="item.TAG_NAME" type="warning" effect="dark">
+                                <el-tag class="tag" v-for="item in props.row.tags" :key="item.TAG_ID" type="warning" effect="dark">
                                     {{ item.TAG_NAME }}
                                 </el-tag>
                             </div>
@@ -709,7 +709,7 @@ export default {
             })
         });
 
-        this.refreshRooms();
+        this.refreshRooms({});
     },
 };
 </script>

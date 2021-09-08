@@ -36,9 +36,6 @@
                     <template slot="table-row" slot-scope="props">
                         <span v-if="props.column.field == 'action'">
                             <span>
-                                <el-button @click.native.prevent="deleteRow(scope.$index, tableData)" type="text" size="small">
-                                    查看文件
-                                </el-button>
                                 <el-button @click.native.prevent="recommendList(props.row)" type="text" size="small">
                                     推荐
                                 </el-button>
@@ -158,7 +155,7 @@
           }}</sui-modal-header>
                 <sui-modal-content>
                     <sui-segment>
-                        <policy-form :singleRoom="selectedPolicy"></policy-form>
+                        <asset-form :singleRoom="selectedPolicy"></asset-form>
                     </sui-segment>
                 </sui-modal-content>
                 <sui-modal-actions>
@@ -184,7 +181,7 @@ import dialogBar from "@/components/MDialog";
 import {
     formatDate
 } from "@/util/time";
-import policyForm from "@/components/finForm";
+import assetForm from "@/components/assetForm";
 import constants from "@/util/constants";
 
 import {
@@ -217,7 +214,7 @@ export default {
         //"model-select": ModelSelect,
         VueGoodTable,
         "dialog-bar": dialogBar,
-        "policy-form": policyForm,
+        "asset-form": assetForm,
     },
     data() {
         return {
@@ -509,6 +506,7 @@ export default {
                         }
                     });
                     this.tagType = "success";
+                    // this.showItems = this.tagItems.filter(tagFilter("industry"))
                     break;
                 case 2:
                     this.showItems1 = [];
@@ -596,10 +594,10 @@ export default {
                     console.log(this.localData);
                     this.loading = false;
                     this.localData.map((one) => {
-                        one.FIN_TIME = formatDate(new Date(one.FIN_START_DATE)) + " - " + formatDate(new Date(one.FIN_END_DATE));
-                        one.RATE_RANGE = one.RATE_LOW + " - " + one.RATE_HIGH;
-                        one.CREATED_AT = formatDate(new Date(one.CREATED_AT));
-                        one.UPDATED_AT = formatDate(new Date(one.UPDATED_AT));
+                      //  one.FIN_TIME = formatDate(new Date(one.FIN_START_DATE)) + " - " + formatDate(new Date(one.FIN_END_DATE));
+                       // one.RATE_RANGE = one.RATE_LOW + " - " + one.RATE_HIGH;
+                        one.CREATED_AT = formatDate((one.CREATED_AT));
+                        one.UPDATED_AT = formatDate((one.UPDATED_AT));
                     });
                 })
                 .catch(function () {
@@ -754,7 +752,7 @@ export default {
     },
     created() {
 
-        queryTagsApi(["TYPE=FI"]).then((data) => {
+        queryTagsApi(["TYPE=AS"]).then((data) => {
             this.tagItems = data.data;
             //console.log(this.tagItems)
         });

@@ -113,7 +113,7 @@
             </span>
         </el-dialog>
 
-        <el-dialog title="标签" :visible.sync="tagDialogVisible" width="90%" :before-close="refreshRooms">
+        <el-dialog title="标签" :visible.sync="tagDialogVisible" width="90%" >
             <el-steps :active="active">
                 <el-step title="学科"></el-step>
                 <el-step title="最高学历"></el-step>

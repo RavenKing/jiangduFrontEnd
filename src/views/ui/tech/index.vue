@@ -66,7 +66,7 @@
         </div>
         <el-dialog title="公司列表" :visible.sync="dialogTableVisible">
             <el-row v-show="!showReview">
-                <el-col :span="10">
+                <el-col :span="12">
                     推荐列表
                     <div class="grid-content bg-purple">
                         <el-table max-height="500px" :data="recommendDataList.data" ref="multipleTableRecommend" style="width: 100%" @selection-change="handleSelectionChangeR">
@@ -79,14 +79,14 @@
                         </el-table>
                     </div>
                 </el-col>
-                <el-col :span="8">
+                <el-col :span="6">
                     公司列表
                     <div class="grid-content bg-purple-light">
                         <div class="grid-content bg-purple">
                             <el-input v-model="item" size="mini" placeholder="Type to search" @input="handleSearch" />
                             <el-table max-height="500px" @filter-change="filterChange" :data="companySelect" ref="multipleTable" style="width: 100%" @selection-change="handleSelectionChange">
                                 <el-table-column type="selection" width="55"> </el-table-column>
-                                <el-table-column property="COMPANY_NAME" label="公司名称" width="250"></el-table-column>
+                                <el-table-column property="COMPANY_NAME" label="公司名称" width="200"></el-table-column>
                             </el-table>
                         </div>
                     </div>
@@ -189,25 +189,26 @@ import {
     //  goToLogin
 } from "@/util/utils";
 import {
-    getFinApi,
+
     queryTagsApi,
     //getRoomDataApi,
-    deleteFinTagApi,
-    updateFinApi,
-    postFinApi,
-    deleteFinApi,
-    addFinTagApi,
+    getRecommendCompanysApi,
     getCompanysApi,
     postRecommendListApi,
     getHistoricalApi,
-    getFinTagApi
-    //getFinApi
+    //getTechApi
 
     //createRoomApi,
 } from "@/api/roomDataAPI";
 import {
-    getRecommendFiCompanysApi
-} from "@/api/recommendApi"
+    getTechApi,
+    deleteTechTagApi,
+    updateTechApi,
+    postTechApi,
+    deleteTechApi,
+    addTechTagApi,
+    getTechTagApi
+} from "@/api/techApi.js";
 export default {
     name: "policyVue",
     props: ["kind"],
@@ -238,19 +239,19 @@ export default {
                 perPage: 10,
             },
             columns: [{
-                    label: "金融产品名",
+                    label: "专利名",
                     field: "NAME",
                     sortable: false,
                 },
                 {
-                    label: "金融代码",
-                    field: "FIN_CODE",
+                    label: "专利申请国家",
+                    field: "PATENT_APPLICATION_COUNTRY",
                     sortable: false,
                     //  type: 'date',
                 },
                 {
-                    label: "银行名",
-                    field: "BANK_NAME",
+                    label: "类型",
+                    field: "TYPE",
                     sortable: false,
                     //  type: 'date',
                 },
@@ -261,17 +262,12 @@ export default {
                     //  type: 'date',
                 },
                 {
-                    label: "适用时间",
-                    field: "FIN_TIME",
+                    label: "设备数目",
+                    field: "ASSET_COUNT",
                     sortable: false,
                     //  type: 'date',
                 },
-                {
-                    label: "利率范围",
-                    field: "RATE_RANGE",
-                    sortable: false,
-                    //  type: 'date',
-                },
+
                 {
                     label: "创建时间",
                     field: "CREATED_AT",
@@ -349,7 +345,7 @@ export default {
                 this.recommendReviewList.map((one) => {
                     payload.push({
                         "USER_ID": one.USER_ID /*USER_ID <NVARCHAR(36)>*/ ,
-                        "RECOMMENDED_ID": this.selectedPolicy.FIN_ID /*RECOMMENDED_ID <NVARCHAR(36)>*/ ,
+                        "RECOMMENDED_ID": this.selectedPolicy.TECH_ID /*RECOMMENDED_ID <NVARCHAR(36)>*/ ,
                         "TYPE": this.docType /*TYPE <NVARCHAR(2)>*/ ,
                         "STATUS": false /*STATUS <BOOLEAN>*/ ,
                         "COMMENT": " " /*COMMENT <NVARCHAR(500)>*/ ,
@@ -382,7 +378,7 @@ export default {
             this.multipleSelection = val;
         },
         recommendList(data) {
-            // console.log(data.FIN_ID);
+            // console.log(data.TECH_ID);
             this.loading = true;
             this.selectedPolicy = data;
             this.recommendReviewList = []
@@ -396,14 +392,10 @@ export default {
                     one.selected = true;
                     this.companySelect = this.companyList;
                 })
-                getRecommendFiCompanysApi(data).then((result) => {
+                getRecommendCompanysApi(data).then((result) => {
                     this.loading = false;
                     this.recommendDataList = result.data;
-                    if (this.recommendDataList.data.length > 0) {
-                        this.recommendDataList.data.map(one => one.SORT = (parseFloat(one.SORT).toFixed(2) * 10).toFixed(2))
-                    } else {
-                        this.recommendDataList.data = [];
-                    }
+                    this.recommendDataList.data.map(one => one.SORT = (parseFloat(one.SORT).toFixed(2) * 10).toFixed(2))
                     this.dialogTableVisible = true;
                 })
             })
@@ -412,11 +404,11 @@ export default {
 
         addTag(data, index) {
             const payload = {
-                FIN_ID_FIN_ID: this.selectedPolicy.FIN_ID,
+                TECH_ID_TECH_ID: this.selectedPolicy.TECH_ID,
                 TAG_ID_TAG_ID: data.TAG_ID
             }
             var context = this;
-            addFinTagApi(payload).then((result) => {
+            addTechTagApi(payload).then((result) => {
                 //(result);
                 if (result.data == constants.OK) {
                     context.showItems2.splice(index, 1);
@@ -429,11 +421,11 @@ export default {
             console.log(data);
             //delete tag 
             const payload = {
-                FIN_ID_FIN_ID: this.selectedPolicy.FIN_ID,
+                TECH_ID_TECH_ID: this.selectedPolicy.TECH_ID,
                 TAG_ID_TAG_ID: data.TAG_ID
             }
             var context = this;
-            deleteFinTagApi(payload).then((result) => {
+            deleteTechTagApi(payload).then((result) => {
                 console.log(result)
                 if (result.data == constants.OK) {
                     let name = this.showItems1[index].TAG_NAME;
@@ -450,10 +442,9 @@ export default {
         // open tag dialog
         openTagDialog(data) {
             this.loading = true;
-            this.active = 1;
             this.selectedPolicy = data;
             this.selectedPolicy.tags = []
-            getFinTagApi(this.selectedPolicy).then((result) => {
+            getTechTagApi(this.selectedPolicy).then((result) => {
                 this.loading = false;
                 this.tagDialogVisible = true;
                 this.selectedPolicy.tags = result.data;
@@ -518,7 +509,6 @@ export default {
                         }
                     });
                     this.tagType = "success";
-                    // this.showItems = this.tagItems.filter(tagFilter("industry"))
                     break;
                 case 2:
                     this.showItems1 = [];
@@ -565,8 +555,8 @@ export default {
         clickConfirmDelete() {
             this.loading = true;
             if (this.deleteTarget.type == "fin") {
-                this.deleteTarget.FIN_ID = this.deleteTarget.id;
-                deleteFinApi(this.deleteTarget).then((result) => {
+                this.deleteTarget.TECH_ID = this.deleteTarget.id;
+                deleteTechApi(this.deleteTarget).then((result) => {
                     if (result.data == constants.OK) {
                         this.refreshRooms();
                         notifySomething(
@@ -589,8 +579,8 @@ export default {
             this.sendVal = true;
             console.log(data);
             this.deleteTarget = {
-                text: "是否要删除" + data.NAME + "(ID: " + data.FIN_ID + ")?",
-                id: data.FIN_ID,
+                text: "是否要删除" + data.NAME + "(ID: " + data.TECH_ID + ")?",
+                id: data.TECH_ID,
                 type: "fin",
             };
         },
@@ -600,7 +590,7 @@ export default {
                 payload = {}
             }
             var context = this;
-            getFinApi(payload)
+            getTechApi(payload)
                 .then((data) => {
                     this.localData = data.data;
                     console.log(this.localData);
@@ -642,11 +632,11 @@ export default {
         //open create
         createRoomModel() {
             // show create Model
-            this.modelTitle = "新建金融产品";
+            this.modelTitle = "新建专利产品";
             this.modalMode = "create";
             this.open = true;
             this.selectedPolicy = {
-                "FIN_ID": "",
+                "TECH_ID": "",
                 "LOGO_URL": "1",
                 "FIN_CODE": "",
                 "NAME": "",
@@ -683,7 +673,7 @@ export default {
             if (this.modalMode == "create") {
                 this.selectedPolicy.CREATED_AT = new Date();
                 this.selectedPolicy.UPDATED_AT = new Date();
-                postFinApi(this.selectedPolicy)
+                postTechApi(this.selectedPolicy)
                     .then((result) => {
                         context.loading = false;
                         if (result.data == constants.OK) {
@@ -713,7 +703,7 @@ export default {
                 //upate Policy APi
                 delete this.selectedPolicy.FIN_TIME;
                 delete this.selectedPolicy.RATE_RANGE;
-                updateFinApi(this.selectedPolicy)
+                updateTechApi(this.selectedPolicy)
                     .then((result) => {
                         if (result.data == constants.OK) {
                             this.closeModal();
@@ -764,7 +754,7 @@ export default {
     },
     created() {
 
-        queryTagsApi(["TYPE=FI"]).then((data) => {
+        queryTagsApi(["TYPE=TE"]).then((data) => {
             this.tagItems = data.data;
             //console.log(this.tagItems)
         });

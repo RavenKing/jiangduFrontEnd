@@ -18,7 +18,7 @@ const menus = [{
       id: "4-2",
       title: "科技管理",
       name: "科技管理",
-      url: "/ui/asset2",
+      url: "/ui/tech",
       icon:"keyboard icon",
       params:{kind:2}
     },
