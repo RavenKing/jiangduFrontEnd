@@ -155,7 +155,7 @@
           }}</sui-modal-header>
                 <sui-modal-content>
                     <sui-segment>
-                        <policy-form :singleRoom="selectedPolicy"></policy-form>
+                        <tech-form :singleRoom="selectedPolicy"></tech-form>
                     </sui-segment>
                 </sui-modal-content>
                 <sui-modal-actions>
@@ -181,7 +181,7 @@ import dialogBar from "@/components/MDialog";
 import {
     formatDate
 } from "@/util/time";
-import policyForm from "@/components/finForm";
+import techform from "@/components/techform";
 import constants from "@/util/constants";
 
 import {
@@ -217,7 +217,7 @@ export default {
         //"model-select": ModelSelect,
         VueGoodTable,
         "dialog-bar": dialogBar,
-        "policy-form": policyForm,
+        "tech-form": techform,
     },
     data() {
         return {

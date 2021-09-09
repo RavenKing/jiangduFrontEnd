@@ -58,6 +58,24 @@ function deleteTalentTagsApi(data) {
   };
   return generalRequest(data, constants.deleteTalentTagApi);
 }
+function updateTalentApi(data) {
+  data = {
+    data: data,
+  };
+  return generalPutRequest(data, constants.talentsApi);
+}
+function deleteTalentApi(data) {
+  data = {
+    data: data,
+  };
+  return generalDeleteRequest(data, constants.talentsApi);
+}
+function postTalentApi(data) {
+  data = {
+    data: data,
+  };
+  return generalRequest(data, constants.talentsApi);
+}
 function updateTagsApi(data) {
   data = {
     data: data,
@@ -978,4 +996,7 @@ export {
   addTalentTagsApi,
   deleteTalentTagsApi,
   getAllTalentTagsApi,
+  postTalentApi,
+  updateTalentApi,
+  deleteTalentApi,
 };

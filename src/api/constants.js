@@ -20,7 +20,6 @@ const constantsJinhui = {
     recommendPolicyApi: recommendApi + "/recommendCompany",
     historicalPolicyCompanyApi: jiangduPre + "/historical/latest/policy/companies",
     talentsApi: jiangduPre + "/talents",
-
     recommendFinApi:recommendApi+"/reFICompany",
     finApi: jiangduPre + "/fins",
     postFinApi: jiangduPre + "/fins/add",
@@ -42,28 +41,6 @@ const constantsJinhui = {
     addTechTagApi: jiangduPre + "/techs/addTags",
     deleteTechTagApi: jiangduPre + "/techs/deleteTags",
     getTechTagApi: jiangduPre + "/techs/techTags",
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     roomCreateAPI: hostname + '/createroom',
     updateRoomAPI: hostname + '/editroom',
