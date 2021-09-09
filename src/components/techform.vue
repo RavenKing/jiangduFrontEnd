@@ -1,20 +1,22 @@
 <template lang="html">
 <div>
     <sui-form>
+
         <sui-form-fields>
             <sui-form-field style="width:50%;">
                 <label>专利名</label>
                 <sui-input placeholder="专利名" v-model="singleRoom.NAME" />
             </sui-form-field>
             <sui-form-field style="width:50%;">
-                <label>name</label>
-                <sui-input placeholder="username" v-model="singleRoom.USER_NAME" />
+                <label>Username</label>
+                <sui-input placeholder="Username" v-model="singleRoom.USER_NAME" />
             </sui-form-field>
             <sui-form-field style="width:50%;">
                 <label>专利申请国家</label>
                 <sui-dropdown placeholder="专利申请国家" selection :options="ageOptions" v-model="singleRoom.PATENT_APPLICATION_COUNTRY" />
             </sui-form-field>
         </sui-form-fields>
+
         <sui-form-fields>
             <sui-form-field style="width:50%;">
                 <label>状态</label>
@@ -25,12 +27,22 @@
                 <sui-dropdown placeholder="类型" selection :options="heOptions" v-model="singleRoom.TYPE" />
             </sui-form-field>
         </sui-form-fields>
+
+        <sui-form-fields>
+            <sui-form-field>
+                <template>
+                <country-selector v-model="selected" width="260"></country-selector>
+                </template>
+            </sui-form-field>
+        </sui-form-fields>
+
         <sui-form-fields>
             <sui-form-field style="width:100%;">
                 <label>专利描述</label>
                 <textarea placeholder="专利描述" v-model="singleRoom.DESCRIPTION" />
                 </sui-form-field>
       </sui-form-fields>
+      
     </sui-form>
     <el-upload
       class="upload-demo"
@@ -50,13 +62,19 @@
 
 <script>
 import * as lang from "vuejs-datepicker/src/locale";
-
+import CountrySelector from 'vue-country-selector';
 export default {
     props: ["singleRoom"],
     name: "form-create",
+components: {
 
+        "country-selector": CountrySelector,
+    },
     data() {
         return {
+            selected: null,
+            country: "",
+            region: "",
             heOptions: [{
                 text: "专利",
                 value: "专利",
@@ -119,6 +137,7 @@ export default {
     position: relative;
     overflow: hidden;
 }
+
 .el-upload-dragger {
     background-color: #fff;
     border: 1px dashed #fff;

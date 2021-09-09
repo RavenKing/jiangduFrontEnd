@@ -11,9 +11,10 @@ import 'vue-search-select/dist/VueSearchSelect.css';
 import SuiVue from 'semantic-ui-vue';
 import 'semantic-ui-css/semantic.min.css';
 import Notifications from 'vue-notification';
+// import stylesheet
+// import 'vue-country-selector/dist/countryselect.css';
 Vue.use(SuiVue);
 Vue.use(ElementUI);
-
 //Install BootstrapVue
 // Vue.use(BootstrapVue)
 // //Optionally install the BootstrapVue icon components plugin

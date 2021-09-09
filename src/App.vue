@@ -12,6 +12,7 @@
 </template>
 
 <style lang="scss">
+
 @import '~@/assets/css/clear.css';
 @import '~@/style/animate/transition.scss';
 
