@@ -747,19 +747,8 @@ export default {
         },
         closeModal: function () {
             this.open = false;
-            // /this.assignForm.open = false;
-            //this.buildingForm.open = false;
-            //  this.buildingFloorForm.open = false;
-            //    this.buildingImage.open = false;
-            //this.assignList.open = false;
-            var payload = {
-                name: this.filterString.name,
-                page: 1,
-            };
-            if (this.filterString.kind) {
-                payload.kind = this.filterString.kind;
-            }
-            this.refreshRooms(payload);
+
+            this.refreshRooms();
         },
     },
     created() {

@@ -58,6 +58,82 @@ const constantsJinhui = {
             text: "一般保证",
             value: "一般保证"
         }
+    ],
+    T_SEX: [{
+        text: "男",
+        value: "0"
+    }, {
+        text: "女",
+        value: "1"
+    }],
+    T_AGE: [{
+            text: "18-25",
+            value: 0
+        },
+        {
+            text: "25-35",
+            value: 1
+        },
+        {
+            text: "35-45",
+            value: 2
+        }, {
+            text: "45以上",
+            value: 3
+        }
+    ],
+    T_WORK_YEAR: [{
+            text: "不限",
+            value: 0
+        }, {
+            text: "1年以内",
+            value: 1
+        },
+        {
+            text: "1-3年",
+            value: 2
+        },
+        {
+            text: "3-5年",
+            value: 3
+        },
+        {
+            text: "5-10年",
+            value: 4
+        },
+        {
+            text: "10年以上",
+            value: 5
+        }
+    ],
+    T_EDUCATION: [{
+            text: "不限",
+            value: 0
+        },
+        {
+            text: "中专/中技",
+            value: 1
+        },
+        {
+            text: "高中",
+            value: 2
+        },
+        {
+            text: "大专",
+            value: 3
+        },
+        {
+            text: "本科",
+            value: 4
+        },
+        {
+            text: "硕士",
+            value: 4
+        },
+        {
+            text: "博士",
+            value: 4
+        }
     ]
 
 }
