@@ -7,6 +7,10 @@
                 <sui-input placeholder="专利名" v-model="singleRoom.NAME" />
             </sui-form-field>
             <sui-form-field style="width:50%;">
+                <label>name</label>
+                <sui-input placeholder="username" v-model="singleRoom.USER_NAME" />
+            </sui-form-field>
+            <sui-form-field style="width:50%;">
                 <label>专利申请国家</label>
                 <sui-dropdown placeholder="专利申请国家" selection :options="ageOptions" v-model="singleRoom.PATENT_APPLICATION_COUNTRY" />
             </sui-form-field>
@@ -17,8 +21,8 @@
                 <sui-dropdown placeholder="状态" selection :options="options" v-model="singleRoom.STATUS" />
             </sui-form-field>
             <sui-form-field style="width:50%;">
-                <label>学历</label>
-                <sui-dropdown placeholder="学历" selection :options="heOptions" v-model="singleRoom.DEGREE" />
+                <label>类型</label>
+                <sui-dropdown placeholder="类型" selection :options="heOptions" v-model="singleRoom.TYPE" />
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields>
@@ -55,24 +59,24 @@ export default {
         return {
             heOptions: [{
                 text: "专利",
-                value: 0,
+                value: "专利",
             }, ],
             ageOptions: [{
                     text: "国内",
-                    value: 0,
+                    value: "国内",
                 },
                 {
                     text: "国际",
-                    value: 1,
+                    value: "国际",
                 },
             ],
             options: [{
                     text: "启用",
-                    value: "0",
+                    value: "启用",
                 },
                 {
-                    text: "禁止",
-                    value: "1",
+                    text: "禁用",
+                    value: "禁用",
                 },
             ],
             fileList: [],
