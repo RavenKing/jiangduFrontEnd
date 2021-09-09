@@ -13,7 +13,7 @@
                         <sui-form>
                             <sui-form-fields inline>
                                 <sui-form-field>
-                                    <input type="text" placeholder="政策文件" v-model="filterString.name" />
+                                    <input type="text" placeholder="设备文件" v-model="filterString.name" />
                                 </sui-form-field>
                                 <sui-button basic color="blue" content="查询" @click.prevent="onSearch" />
                             </sui-form-fields>
@@ -558,14 +558,14 @@ export default {
                     if (result.data == constants.OK) {
                         this.refreshRooms();
                         notifySomething(
-                            "删除政策成功",
-                            "删除政策成功",
+                            "删除设备成功",
+                            "删除设备成功",
                             constants.typeSuccess
                         );
                     } else if (result.data.code == 3) {
                         notifySomething(
                             constants.GENERALERROR,
-                            "删除政策失败",
+                            "删除设备失败",
                             constants.typeError
                         );
                     }
@@ -622,7 +622,7 @@ export default {
                 delete data.originalIndex;
             }
             this.selectedPolicy = data;
-            this.modelTitle = "修改金融产品";
+            this.modelTitle = "修改设备";
             this.modalMode = "edit";
             this.open = true;
         },
@@ -630,7 +630,7 @@ export default {
         //open create
         createRoomModel() {
             // show create Model
-            this.modelTitle = "新建金融产品";
+            this.modelTitle = "新建设备";
             this.modalMode = "create";
             this.open = true;
             this.selectedPolicy = {
@@ -677,8 +677,8 @@ export default {
                         if (result.data == constants.OK) {
                             this.closeModal();
                             notifySomething(
-                                "政策上传成功",
-                                "政策上传成功",
+                                "设备上传成功",
+                                "设备上传成功",
                                 constants.typeSuccess
                             );
                         } else {
@@ -707,13 +707,13 @@ export default {
                             this.closeModal();
                             this.$notify({
                                 group: "foo",
-                                title: "更新政策成功",
-                                text: "更新政策成功",
+                                title: "更新设备成功",
+                                text: "更新设备成功",
                                 type: "success",
                             });
                         } else if (result.data.code == 3) {
                             notifySomething(
-                                "更新政策失败",
+                                "更新设备失败",
                                 "该房屋已有分配房间，无法更改房屋性质",
                                 "error"
                             );
