@@ -13,7 +13,7 @@
                         <sui-form>
                             <sui-form-fields inline>
                                 <sui-form-field>
-                                    <input type="text" placeholder="政策文件" v-model="filterString.name" />
+                                    <input type="text" placeholder="人才文件" v-model="filterString.name" />
                                 </sui-form-field>
                                 <sui-button basic color="blue" content="查询" @click.prevent="onSearch" />
                             </sui-form-fields>
@@ -39,10 +39,10 @@
                                 <el-button @click.native.prevent="openTagDialog(props.row)" type="text" size="small">
                                     标签
                                 </el-button>
-                                <el-button @click.native.prevent="changePolicy(props.row)" type="text" size="small">
+                                <el-button @click.native.prevent="changeTalent(props.row)" type="text" size="small">
                                     修改
                                 </el-button>
-                                <el-button @click.native.prevent="deletePolicy(props.row)" type="text" size="small">
+                                <el-button @click.native.prevent="deleteTalent(props.row)" type="text" size="small">
                                     删除
                                 </el-button>
                             </span>
@@ -152,7 +152,7 @@
           }}</sui-modal-header>
                 <sui-modal-content>
                     <sui-segment>
-                        <talent-form :singleRoom="selectedPolicy"></talent-form>
+                        <talent-form :singleRoom="selectedTalent"></talent-form>
                     </sui-segment>
                 </sui-modal-content>
                 <sui-modal-actions>
@@ -200,9 +200,9 @@ import {
     getTalentTagsApi,
     addTalentTagsApi,
     deleteTalentTagsApi,
-    updatePolicyApi,
-    postPolicyApi,
-    deletePolicyApi,
+    updateTalentApi,
+    postTalentApi,
+    deleteTalentApi,
     getRecommendCompanysApi,
     getCompanysApi,
     postRecommendListApi,
@@ -210,7 +210,7 @@ import {
 
 } from "@/api/roomDataAPI";
 export default {
-    name: "policyVue",
+    name: "talentVue",
     props: ["kind"],
     components: {
         //  Pagination,
@@ -282,7 +282,7 @@ export default {
             filterString: {
                 name: ""
             },
-            selectedPolicy: {
+            selectedTalent: {
                 tags: []
             },
             offenUsedCompanys: [],
@@ -331,7 +331,7 @@ export default {
                 this.recommendReviewList.map((one) => {
                     payload.push({
                         "USER_ID": one.USER_ID /*USER_ID <NVARCHAR(36)>*/ ,
-                        "RECOMMENDED_ID": this.selectedPolicy.POLICY_ID /*RECOMMENDED_ID <NVARCHAR(36)>*/ ,
+                        "RECOMMENDED_ID": this.selectedTalent.TALENT_ID /*RECOMMENDED_ID <NVARCHAR(36)>*/ ,
                         "TYPE": "PO" /*TYPE <NVARCHAR(2)>*/ ,
                         "STATUS": false /*STATUS <BOOLEAN>*/ ,
                         "COMMENT": " " /*COMMENT <NVARCHAR(500)>*/ ,
@@ -364,9 +364,9 @@ export default {
             this.multipleSelection = val;
         },
         recommendList(data) {
-            // console.log(data.POLICY_ID);
+            // console.log(data.TALENT_ID);
             this.loading = true;
-            this.selectedPolicy = data;
+            this.selectedTalent = data;
             this.recommendReviewList = []
             this.showReview = false;
             getHistoricalApi().then((company) => {
@@ -392,7 +392,7 @@ export default {
 
         addTag(data, index) {
             const payload = {
-                TALENT_ID_TALENT_ID: this.selectedPolicy.TALENT_ID,
+                TALENT_ID_TALENT_ID: this.selectedTalent.TALENT_ID,
                 TAG_ID_TAG_ID: data.TAG_ID
             }
             var context = this;
@@ -400,7 +400,7 @@ export default {
                 //(result);
                 if (result.data == constants.OK) {
                     context.showItems2.splice(index, 1);
-                    context.selectedPolicy.tags.push(data);
+                    context.selectedTalent.tags.push(data);
                     context.showItems1.push(data);
                 }
             });
@@ -409,7 +409,7 @@ export default {
             console.log(data);
             //delete tag 
             const payload = {
-                TALENT_ID_TALENT_ID: this.selectedPolicy.TALENT_ID,
+                TALENT_ID_TALENT_ID: this.selectedTalent.TALENT_ID,
                 TAG_ID_TAG_ID: data.TAG_ID
             }
             var context = this;
@@ -418,9 +418,9 @@ export default {
                 if (result.data == constants.OK) {
                     let name = this.showItems1[index].TAG_NAME;
                     context.showItems1.splice(index, 1);
-                    for (let i = 0; i < context.selectedPolicy.tags.length; i++) {
-                        if (context.selectedPolicy.tags[i].TAG_NAME == name)
-                            context.selectedPolicy.tags.splice(i, 1);
+                    for (let i = 0; i < context.selectedTalent.tags.length; i++) {
+                        if (context.selectedTalent.tags[i].TAG_NAME == name)
+                            context.selectedTalent.tags.splice(i, 1);
                     }
                     context.showItems2.push(data);
                 }
@@ -430,15 +430,15 @@ export default {
         // open tag dialog
         openTagDialog(data) {
             this.loading = true;
-            this.selectedPolicy = data;
-            this.selectedPolicy.tags = []
+            this.selectedTalent = data;
+            this.selectedTalent.tags = []
             getTalentTagsApi({
                 "TALENT_ID_TALENT_ID": data.TALENT_ID
             }).then((result) => {
                 this.loading = false;
                 this.tagDialogVisible = true;
-                this.selectedPolicy.tags = result.data;
-                let selectedTags = this.selectedPolicy.tags;
+                this.selectedTalent.tags = result.data;
+                let selectedTags = this.selectedTalent.tags;
                 let unselectedTags = [];
                 for (let i = 0; i < this.tagItems.length; i++) {
                     let isSelected = false;
@@ -469,7 +469,7 @@ export default {
 
         next() {
             if (this.active++ > 2) this.active = 1;
-            let selectedTags = this.selectedPolicy.tags;
+            let selectedTags = this.selectedTalent.tags;
             let unselectedTags = [];
             for (let i = 0; i < this.tagItems.length; i++) {
                 let isSelected = false;
@@ -547,34 +547,33 @@ export default {
 
         clickConfirmDelete() {
             this.loading = true;
-            if (this.deleteTarget.type == "policy") {
-                this.deleteTarget.POLICY_ID = this.deleteTarget.id;
-                deletePolicyApi(this.deleteTarget).then((result) => {
+
+                this.deleteTarget.TALENT_ID = this.deleteTarget.id;
+                deleteTalentApi(this.deleteTarget).then((result) => {
                     if (result.data == constants.OK) {
                         this.refreshRooms();
                         notifySomething(
-                            "删除政策成功",
-                            "删除政策成功",
+                            "删除人才成功",
+                            "删除人才成功",
                             constants.typeSuccess
                         );
                     } else if (result.data.code == 3) {
                         notifySomething(
                             constants.GENERALERROR,
-                            "删除政策失败",
+                            "删除人才失败",
                             constants.typeError
                         );
                     }
                     this.loading = false;
                 });
-            }
+
         },
-        deletePolicy(data) {
+        deleteTalent(data) {
             this.sendVal = true;
             console.log(data);
             this.deleteTarget = {
-                text: "是否要删除" + data.POLICY_TITLE + "(ID: " + data.POLICY_ID + ")?",
-                id: data.POLICY_ID,
-                type: "policy",
+                text: "是否要删除" + data.TALENT_NAME + "(ID: " + data.TALENT_ID + ")?",
+                id: data.TALENT_ID,
             };
         },
         refreshRooms(payload) {
@@ -603,7 +602,7 @@ export default {
                 });
         },
         // open emodify room
-        changePolicy(data) {
+        changeTalent(data) {
             if (
                 // eslint-disable-next-line no-prototype-builtins
                 data.hasOwnProperty("vgt_id") ||
@@ -614,8 +613,8 @@ export default {
                 delete data.vgt_id;
                 delete data.originalIndex;
             }
-            this.selectedPolicy = data;
-            this.modelTitle = "修改政策";
+            this.selectedTalent = data;
+            this.modelTitle = "修改人才";
             this.modalMode = "edit";
             this.open = true;
         },
@@ -623,13 +622,13 @@ export default {
         //open create
         createRoomModel() {
             // show create Model
-            this.modelTitle = "上传政策";
+            this.modelTitle = "上传人才";
             this.modalMode = "create";
             this.open = true;
-            this.selectedPolicy = {
-                POLICY_ID: "",
-                POLICY_TITLE: "",
-                CDATA: "",
+            this.selectedTalent = {
+                TALENT_ID: "",
+                TALENT_NAME: "",
+                // CDATA: "",
             };
         },
         toggle() {
@@ -637,18 +636,16 @@ export default {
             var context = this;
             //kind=1 means 自由房屋创建和编辑
             if (this.modalMode == "create") {
-                this.selectedPolicy.CREATED_AT = new Date();
-                this.selectedPolicy.UPDATED_AT = new Date();
-                this.selectedPolicy.POLICY_URL = " ";
-                this.selectedPolicy.USER_USER_ID = "2200";
-                postPolicyApi(this.selectedPolicy)
+                this.selectedTalent.CREATED_AT = new Date();
+                this.selectedTalent.UPDATED_AT = new Date();
+                postTalentApi(this.selectedTalent)
                     .then((result) => {
                         context.loading = false;
                         if (result.data == constants.OK) {
                             this.closeModal();
                             notifySomething(
-                                "政策上传成功",
-                                "政策上传成功",
+                                "人才上传成功",
+                                "人才上传成功",
                                 constants.typeSuccess
                             );
                         } else {
@@ -668,20 +665,20 @@ export default {
                         );
                     });
             } else if (this.modalMode == "edit") {
-                //upate Policy APi
-                updatePolicyApi(this.selectedPolicy)
+                //upate Talent APi
+                updateTalentApi(this.selectedTalent)
                     .then((result) => {
                         if (result.data == constants.OK) {
                             this.closeModal();
                             this.$notify({
                                 group: "foo",
-                                title: "更新政策成功",
-                                text: "更新政策成功",
+                                title: "更新人才成功",
+                                text: "更新人才成功",
                                 type: "success",
                             });
                         } else if (result.data.code == 3) {
                             notifySomething(
-                                "更新政策失败",
+                                "更新人才失败",
                                 "该房屋已有分配房间，无法更改房屋性质",
                                 "error"
                             );

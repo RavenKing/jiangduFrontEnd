@@ -18,7 +18,7 @@
             </sui-form-field>
             <sui-form-field style="width:50%;">
                 <label>学历</label>
-                <sui-dropdown placeholder="学历" selection :options="heOptions" v-model="singleRoom.HIGHEST_EDUCATION" />
+                <sui-dropdown placeholder="学历" selection :options="heOptions" v-model="singleRoom.DEGREE" />
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields>
@@ -28,7 +28,7 @@
             </sui-form-field>
             <sui-form-field style="width:50%;">
                 <label>工作年限</label>
-                <sui-dropdown placeholder="工作年限" selection :options="wyOptions" v-model="singleRoom.WORK_YEARS" />
+                <sui-dropdown placeholder="工作年限" selection :options="wyOptions" v-model="singleRoom.CAREER_YEAR" />
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields>
