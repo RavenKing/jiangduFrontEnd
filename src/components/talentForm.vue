@@ -8,13 +8,13 @@
             </sui-form-field>
             <sui-form-field style="width:50%;">
                 <label>年龄</label>
-                <sui-dropdown placeholder="Gender" selection :options="ageOptions" v-model="singleRoom.AGE" />
+                <sui-dropdown placeholder="年龄" selection :options="ageOptions" v-model="singleRoom.AGE" />
             </sui-form-field>
         </sui-form-fields>
         <sui-form-fields>
             <sui-form-field style="width:50%;">
                 <label>性别</label>
-                <sui-dropdown placeholder="Gender" selection :options="options" v-model="singleRoom.SEX" />
+                <sui-dropdown placeholder="性别" selection :options="options" v-model="singleRoom.SEX" />
             </sui-form-field>
             <sui-form-field style="width:50%;">
                 <label>学历</label>
@@ -40,7 +40,7 @@
     </sui-form>
     <el-upload class="upload-demo" drag action="https://jsonplaceholder.typicode.com/posts/"  :file-list="fileList" multiple>
         <i class="el-icon-upload"></i>
-        <div class="el-upload__text"> <em>点击上传简历</em></div>
+        <div class="el-upload__text"> <em>点击上传文件</em></div>
         <div class="el-upload__tip" slot="tip">jpg/png files with a size less than 500kb</div>
     </el-upload>
 </div>

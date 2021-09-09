@@ -13,7 +13,7 @@
                         <sui-form>
                             <sui-form-fields inline>
                                 <sui-form-field>
-                                    <input type="text" placeholder="政策文件" v-model="filterString.name" />
+                                    <input type="text" placeholder="专利文件" v-model="filterString.name" />
                                 </sui-form-field>
                                 <sui-button basic color="blue" content="查询" @click.prevent="onSearch" />
                             </sui-form-fields>
@@ -554,20 +554,20 @@ export default {
 
         clickConfirmDelete() {
             this.loading = true;
-            if (this.deleteTarget.type == "fin") {
+            if (this.deleteTarget.type == "tech") {
                 this.deleteTarget.TECH_ID = this.deleteTarget.id;
                 deleteTechApi(this.deleteTarget).then((result) => {
                     if (result.data == constants.OK) {
                         this.refreshRooms();
                         notifySomething(
-                            "删除政策成功",
-                            "删除政策成功",
+                            "删除专利成功",
+                            "删除专利成功",
                             constants.typeSuccess
                         );
                     } else if (result.data.code == 3) {
                         notifySomething(
                             constants.GENERALERROR,
-                            "删除政策失败",
+                            "删除专利失败",
                             constants.typeError
                         );
                     }
@@ -581,7 +581,7 @@ export default {
             this.deleteTarget = {
                 text: "是否要删除" + data.NAME + "(ID: " + data.TECH_ID + ")?",
                 id: data.TECH_ID,
-                type: "fin",
+                type: "tech",
             };
         },
         refreshRooms(payload) {
@@ -596,8 +596,6 @@ export default {
                     console.log(this.localData);
                     this.loading = false;
                     this.localData.map((one) => {
-                        one.FIN_TIME = formatDate(new Date(one.FIN_START_DATE)) + " - " + formatDate(new Date(one.FIN_END_DATE));
-                        one.RATE_RANGE = one.RATE_LOW + " - " + one.RATE_HIGH;
                         one.CREATED_AT = formatDate(new Date(one.CREATED_AT));
                         one.UPDATED_AT = formatDate(new Date(one.UPDATED_AT));
                     });
@@ -636,34 +634,55 @@ export default {
             this.modalMode = "create";
             this.open = true;
             this.selectedPolicy = {
-                "TECH_ID": "",
-                "LOGO_URL": "1",
-                "FIN_CODE": "",
-                "NAME": "",
-                "DESCRIPTION": "1",
-                "WORKFLOW_URL": "1",
-                "URL": "1",
-                "APPLY_URL": "1",
-                "BANK_NAME": "",
-                "BANK_ID": "",
-                "STATUS": "1",
-                "FIN_START_DATE": "",
-                "FIN_END_DATE": "",
-                "CREATED_AT": "",
-                "UPDATED_AT": "",
-                "USER_ID_USER_ID": "1",
-                "USER_NAME": "1",
-                "RATE_LOW": "",
-                "RATE_HIGH": "",
-                "LOAN_QUOTA": "",
-                "LOAN_DATE_LOW": 1,
-                "LOAN_DATE_HIGH": 5,
-                "CHARGE_METHOD": "",
-                "REPAY_METHOD": "",
-                "TARGET": "",
-                "FIN_TYPE": "1",
-                "PRODUCT_TYPE": "",
-                "LOAN_TYPE": ""
+                "TECH_CODE": "2",
+                "NAME": "专利2",
+                "DESCRIPTION": "专利描述2",
+                "DESCRIPTION_PIC_URL": " ",
+                "TYPE": "专利",
+                "PATENT_APPLICATION_COUNTRY": "国内",
+                "PATENT_APPLICATION_CODE": " ",
+                "PATENT_APPLICATION_DATE": " ",
+                "PATENT_AUTHORIZATION_STATE": " ",
+                "PATENT_AUTHORIZATION_CODE": " ",
+                "PATENT_AUTHORIZATION_DATE": " ",
+                "PATENT_APPLICANT": " ",
+                "PATENT_INVENTOR": " ",
+                "TRADEMARK_AVATAR": " ",
+                "TRADEMARK_REGISTERATION_CODE": " ",
+                "TRADEMARK_REGISTERATION_DATE": " ",
+                "TRADEMARK_REGISTERATION_EXPIRE_DATE": " ",
+                "TRADEMARK_APPLICANT": " ",
+                "COPYRIGHT_TYPE": " ",
+                "COPYRIGHT_REGISTERATION_CODE": " ",
+                "COPYRIGHT_REGISTERATION_DATE": " ",
+                "COPYRIGHT_FINISHED_DATE": " ",
+                "COPYRIGHT_PUBLISHED_DATE": " ",
+                "COPYRIGHT_VERSION_CODE": " ",
+                "COPYRIGHT_CLASSIFICATION_CODE": " ",
+                "COPYRIGHT_AUTHORIZATION_DATE": " ",
+                "QUALIFICATION_CODE": " ",
+                "QUALIFICATION_STATUS": " ",
+                "QUALIFICATION_DATE": " ",
+                "QUALIFICATION_EXPIRE_DATE": " ",
+                "CONTACT_NAME": " ",
+                "PHONE": " ",
+                "EMAIL": " ",
+                "DEPARTMENT": " ",
+                "COMPANY_CODE_COMPANY_CODE": " ",
+                "COMPANY_NAME": " ",
+                "STATUS": "启用",
+                "CREATED_AT": "1970-01-01",
+                "UPDATED_AT": "1970-01-01",
+                "USER_ID_USER_ID": " ",
+                "USER_NAME": "张三",
+                "AREA": " ",
+                "NEW_INDUSTRY": " ",
+                "TARGET_PRICE": " ",
+                "QUANSHU_AREA": " ",
+                "IPC_CATEGORY": " ",
+                "PATENT_CATEGORY": " ",
+                "PCT": true,
+                "HEZUO_TYPE": " "
             };
         },
         toggle() {
@@ -679,8 +698,8 @@ export default {
                         if (result.data == constants.OK) {
                             this.closeModal();
                             notifySomething(
-                                "政策上传成功",
-                                "政策上传成功",
+                                "专利上传成功",
+                                "专利上传成功",
                                 constants.typeSuccess
                             );
                         } else {
@@ -700,8 +719,6 @@ export default {
                         );
                     });
             } else if (this.modalMode == "edit") {
-                //upate Policy APi
-                delete this.selectedPolicy.FIN_TIME;
                 delete this.selectedPolicy.RATE_RANGE;
                 updateTechApi(this.selectedPolicy)
                     .then((result) => {
@@ -709,13 +726,13 @@ export default {
                             this.closeModal();
                             this.$notify({
                                 group: "foo",
-                                title: "更新政策成功",
-                                text: "更新政策成功",
+                                title: "更新专利成功",
+                                text: "更新专利成功",
                                 type: "success",
                             });
                         } else if (result.data.code == 3) {
                             notifySomething(
-                                "更新政策失败",
+                                "更新专利失败",
                                 "该房屋已有分配房间，无法更改房屋性质",
                                 "error"
                             );
