@@ -70,10 +70,10 @@ const constantsJinhui = {
     ],
     T_SEX: [{
         text: "男",
-        value: "0"
+        value: 0
     }, {
         text: "女",
-        value: "1"
+        value: 1
     }],
     T_AGE: [{
             text: "18-25",
