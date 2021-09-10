@@ -185,6 +185,9 @@ import assetForm from "@/components/assetForm";
 import constants from "@/util/constants";
 
 import {
+    getRecommendASCompanysApi
+} from "@/api/recommendApi"
+import {
     notifySomething,
     //  goToLogin
 } from "@/util/utils";
@@ -197,7 +200,6 @@ import {
     postAssetApi,
     deleteAssetApi,
     addAssetTagApi,
-    getRecommendCompanysApi,
     getCompanysApi,
     postRecommendListApi,
     getHistoricalApi,
@@ -389,7 +391,7 @@ export default {
                     one.selected = true;
                     this.companySelect = this.companyList;
                 })
-                getRecommendCompanysApi(data).then((result) => {
+                getRecommendASCompanysApi(data).then((result) => {
                     this.loading = false;
                     this.recommendDataList = result.data;
                     this.recommendDataList.data.map(one => one.SORT = (parseFloat(one.SORT).toFixed(2) * 10).toFixed(2))

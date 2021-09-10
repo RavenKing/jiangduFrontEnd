@@ -38,6 +38,15 @@ const constantsJinhui = {
             value: "禁用"
         }
     ],
+    AS_STATUS:[
+        {
+            text: "已上架",
+            value: "已上架"
+        },
+        {
+            text: "已下架",
+            value: "已下架"
+        }],
     FIN_CHARGE_METHOD: [{
             text: "质押",
             value: "质押"

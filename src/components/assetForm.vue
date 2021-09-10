@@ -18,7 +18,7 @@
         <sui-form-fields>
             <sui-form-field style="width:50%;">
                 <label>状态</label>
-                <sui-input placeholder="状态" v-model="singleRoom.STATUS" />
+                <sui-dropdown placeholder="状态"  selection :options="statusOptions" v-model="singleRoom.STATUS" />
             </sui-form-field>
             <sui-form-field style="width:50%;">
                 <label>资产数目</label>
@@ -42,6 +42,7 @@
 
 <script>
 import * as lang from "vuejs-datepicker/src/locale";
+import constants from "@/util/constants";
 
 export default {
     props: ['singleRoom'],
@@ -52,6 +53,7 @@ export default {
             fileList: [],
             checkZhuguan: false,
             unitOptions: [],
+            statusOptions:constants.AS_STATUS,
             lang: lang,
             disabled: false,
             zoomlevel: 14,
@@ -103,3 +105,4 @@ export default {
     overflow: hidden;
 }
 </style>
+    

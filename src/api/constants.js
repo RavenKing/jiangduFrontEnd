@@ -27,6 +27,7 @@ const constantsJinhui = {
     deleteFinTagApi: jiangduPre + "/fins/deleteTags",
     getFinTagApi: jiangduPre + "/fins/finTags",
     assetApi: jiangduPre + "/assets",
+    recommendASApi:recommendApi+"/reASCompany",
     postAssetApi: jiangduPre + "/assets/add",
     addAssetTagApi: jiangduPre + "/assets/addTags",
     deleteAssetTagApi: jiangduPre + "/assets/deleteTags",
@@ -41,6 +42,9 @@ const constantsJinhui = {
     addTechTagApi: jiangduPre + "/techs/addTags",
     deleteTechTagApi: jiangduPre + "/techs/deleteTags",
     getTechTagApi: jiangduPre + "/techs/techTags",
+    recommendTECHApi:recommendApi+"/reTECHCompany",
+
+
 
     roomCreateAPI: hostname + '/createroom',
     updateRoomAPI: hostname + '/editroom',

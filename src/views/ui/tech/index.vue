@@ -192,7 +192,6 @@ import {
 
     queryTagsApi,
     //getRoomDataApi,
-    getRecommendCompanysApi,
     getCompanysApi,
     postRecommendListApi,
     getHistoricalApi,
@@ -200,6 +199,10 @@ import {
 
     //createRoomApi,
 } from "@/api/roomDataAPI";
+
+import {
+    getRecommendTECHCompanysApi
+} from "@/api/recommendApi"
 import {
     getTechApi,
     deleteTechTagApi,
@@ -392,7 +395,7 @@ export default {
                     one.selected = true;
                     this.companySelect = this.companyList;
                 })
-                getRecommendCompanysApi(data).then((result) => {
+                getRecommendTECHCompanysApi(data).then((result) => {
                     this.loading = false;
                     this.recommendDataList = result.data;
                     this.recommendDataList.data.map(one => one.SORT = (parseFloat(one.SORT).toFixed(2) * 10).toFixed(2))
