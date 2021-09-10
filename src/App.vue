@@ -6,12 +6,13 @@
     </div>
     <!-- 网站默认脚部信息 -->
     <footer class="wlui-footer">
-      Copyright@2021 www.xxx.cn All Rights Reserved
+      Copyright@2021 SAP All Rights Reserved
     </footer>
 </div>
 </template>
 
 <style lang="scss">
+
 @import '~@/assets/css/clear.css';
 @import '~@/style/animate/transition.scss';
 

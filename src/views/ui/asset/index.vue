@@ -70,7 +70,8 @@
                     推荐列表
                     <div class="grid-content bg-purple">
                         <el-table max-height="500px" :data="recommendDataList.data" ref="multipleTableRecommend" style="width: 100%" @selection-change="handleSelectionChangeR">
-                            <el-table-column property="selected" type="selection" width="55"> </el-table-column>
+                            <el-table-column property="selected" type="selection" width="55">
+                            </el-table-column>
                             <el-table-column property="COMPANY_NAME" label="公司名称" width="200"></el-table-column>
                             <el-table-column property="SORT" label="推荐指数" width="200"><template slot-scope="scope">
                                     <el-rate v-model="scope.row.SORT" disabled show-score text-color="#ff9900" score-template="{value} 分">
@@ -85,7 +86,8 @@
                         <div class="grid-content bg-purple">
                             <el-input v-model="item" size="mini" placeholder="Type to search" @input="handleSearch" />
                             <el-table max-height="500px" @filter-change="filterChange" :data="companySelect" ref="multipleTable" style="width: 100%" @selection-change="handleSelectionChange">
-                                <el-table-column type="selection" width="55"> </el-table-column>
+                                <el-table-column type="selection" width="55">
+                                </el-table-column>
                                 <el-table-column property="COMPANY_NAME" label="公司名称" width="200"></el-table-column>
                             </el-table>
                         </div>
@@ -96,7 +98,8 @@
                         常用公司列表
                         <div class="grid-content bg-purple">
                             <el-table max-height="500px" @filter-change="filterChange" :data="offenUsedCompanys" ref="multipleTable" style="width: 100%" @selection-change="handleSelectionChangeH">
-                                <el-table-column type="selection" width="55"> </el-table-column>
+                                <el-table-column type="selection" width="55">
+                                </el-table-column>
                                 <el-table-column property="COMPANY_NAME" label="公司名称" width="200"></el-table-column>
                             </el-table>
                         </div>
@@ -111,7 +114,7 @@
             <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogTableVisible = false">取消</el-button>
                 <el-button type="primary" @click="showReviewTable" v-show="!showReview">reiew</el-button>
-                <el-button type="primary" @click="notifyCompany" v-show="showReview" :disabled="recommendReviewList.length==0">推送</el-button>
+                <el-button type="primary" @click="notifyCompany" v-show="showReview" :disabled="recommendReviewList.length == 0">推送</el-button>
                 <el-button type="primary" @click="prevNotify" v-show="showReview">上一步</el-button>
             </span>
         </el-dialog>
@@ -126,7 +129,7 @@
             <div class="tag-group">
                 <span class="tag-group__title" style="font-size: 25px;">已打标签</span>
                 <div style>
-                    <el-tag class="tableTag" v-for="(item,index) in showItems1" :key="item.TAG_ID" :type="tagType" effect="dark" closable @close="deleteTag(item,index)">
+                    <el-tag class="tableTag" v-for="(item, index) in showItems1" :key="item.TAG_ID" :type="tagType" effect="dark" closable @close="deleteTag(item, index)">
                         {{ item.TAG_NAME }}
                     </el-tag>
                 </div>
@@ -134,7 +137,7 @@
             <div class="tag-group">
                 <span class="tag-group__title" style="font-size: 25px;">标签列表</span>
                 <div style>
-                    <el-tag class="tableTag" v-for="(item,index) in showItems2" :key="item.TAG_ID" :type="tagType" effect="dark" @click="addTag(item,index)">
+                    <el-tag class="tableTag" v-for="(item, index) in showItems2" :key="item.TAG_ID" :type="tagType" effect="dark" @click="addTag(item, index)">
                         {{ item.TAG_NAME }}
                     </el-tag>
                 </div>
@@ -203,7 +206,7 @@ import {
     getCompanysApi,
     postRecommendListApi,
     getHistoricalApi,
-    getAssetTagApi
+    getAssetTagApi,
     //getAssetApi
 
     //createRoomApi,
@@ -266,7 +269,7 @@ export default {
                     sortable: false,
                     //  type: 'date',
                 },
-                
+
                 {
                     label: "创建时间",
                     field: "CREATED_AT",
@@ -292,10 +295,10 @@ export default {
             modalMode: "create",
             open: false,
             filterString: {
-                name: ""
+                name: "",
             },
             selectedPolicy: {
-                tags: []
+                tags: [],
             },
             offenUsedCompanys: [],
             dialogTableVisible: false,
@@ -308,63 +311,74 @@ export default {
             localData: [],
             showReview: false,
             recommendReviewList: [],
-            docType: "FI"
-
+            docType: "FI",
         };
     },
     methods: {
         getUniqueArray(arr, keyProps) {
             return Object.values(
                 arr.reduce((uniqueMap, entry) => {
-                    const key = keyProps.map((k) => entry[k]).join('|')
-                    if (!(key in uniqueMap)) uniqueMap[key] = entry
-                    return uniqueMap
-                }, {}),
-            )
+                    const key = keyProps.map((k) => entry[k]).join("|");
+                    if (!(key in uniqueMap)) uniqueMap[key] = entry;
+                    return uniqueMap;
+                }, {})
+            );
         },
         handleSearch() {
-            this.companySelect = this.companyList.filter(data => data.COMPANY_NAME.includes(this.item))
+            this.companySelect = this.companyList.filter((data) =>
+                data.COMPANY_NAME.includes(this.item)
+            );
         },
 
         filterChange() {
-
-            console.log("change")
+            console.log("change");
         },
         prevNotify() {
             //   this.$refs.multipleTable.toggleRowSelection(this.recommendReviewList, true);
-            this.showReview = false
+            this.showReview = false;
             //            this.$refs.multipleTable.toggleRowSelection(this.recommendReviewList,true);
         },
         handleOnInput(data) {
-            console.log(data)
+            console.log(data);
         },
         notifyCompany() {
             var payload = [];
             if (this.recommendReviewList.length > 0) {
                 this.recommendReviewList.map((one) => {
                     payload.push({
-                        "USER_ID": one.USER_ID /*USER_ID <NVARCHAR(36)>*/ ,
-                        "RECOMMENDED_ID": this.selectedPolicy.ASSET_ID /*RECOMMENDED_ID <NVARCHAR(36)>*/ ,
-                        "TYPE": this.docType /*TYPE <NVARCHAR(2)>*/ ,
-                        "STATUS": false /*STATUS <BOOLEAN>*/ ,
-                        "COMMENT": " " /*COMMENT <NVARCHAR(500)>*/ ,
-                        "CREATED_AT": new Date() /*CREATED_AT <TIMESTAMP>*/ ,
-                        "UPDATED_AT": new Date() /*UPDATED_AT <TIMESTAMP>*/
-                    })
-                })
+                        USER_ID: one.USER_ID /*USER_ID <NVARCHAR(36)>*/ ,
+                        RECOMMENDED_ID: this.selectedPolicy
+                            .ASSET_ID /*RECOMMENDED_ID <NVARCHAR(36)>*/ ,
+                        TYPE: this.docType /*TYPE <NVARCHAR(2)>*/ ,
+                        STATUS: false /*STATUS <BOOLEAN>*/ ,
+                        COMMENT: " " /*COMMENT <NVARCHAR(500)>*/ ,
+                        CREATED_AT: new Date() /*CREATED_AT <TIMESTAMP>*/ ,
+                        UPDATED_AT: new Date() /*UPDATED_AT <TIMESTAMP>*/ ,
+                    });
+                });
                 postRecommendListApi(payload).then((result) => {
                     if (result.data == constants.OK) {
                         this.dialogTableVisible = false;
-                        notifySomething(constants.notifyCompany, constants.notifyCompany, constants.typeSuccess);
+                        notifySomething(
+                            constants.notifyCompany,
+                            constants.notifyCompany,
+                            constants.typeSuccess
+                        );
                     }
-                })
+                });
             }
         },
 
         showReviewTable() {
-            this.recommendReviewList = this.multipleSelectionR.concat(this.multipleSelection);
-            this.recommendReviewList = this.recommendReviewList.concat(this.multipleSelectionH);
-            this.recommendReviewList = this.getUniqueArray(this.recommendReviewList, ["USER_ID"])
+            this.recommendReviewList = this.multipleSelectionR.concat(
+                this.multipleSelection
+            );
+            this.recommendReviewList = this.recommendReviewList.concat(
+                this.multipleSelectionH
+            );
+            this.recommendReviewList = this.getUniqueArray(this.recommendReviewList, [
+                "USER_ID",
+            ]);
             this.showReview = true;
         },
         handleSelectionChangeH(val) {
@@ -398,14 +412,13 @@ export default {
                     this.dialogTableVisible = true;
                 })
             })
-
         },
 
         addTag(data, index) {
             const payload = {
                 ASSET_ID_ASSET_ID: this.selectedPolicy.ASSET_ID,
-                TAG_ID_TAG_ID: data.TAG_ID
-            }
+                TAG_ID_TAG_ID: data.TAG_ID,
+            };
             var context = this;
             addAssetTagApi(payload).then((result) => {
                 //(result);
@@ -418,14 +431,14 @@ export default {
         },
         deleteTag(data, index) {
             console.log(data);
-            //delete tag 
+            //delete tag
             const payload = {
                 ASSET_ID_ASSET_ID: this.selectedPolicy.ASSET_ID,
-                TAG_ID_TAG_ID: data.TAG_ID
-            }
+                TAG_ID_TAG_ID: data.TAG_ID,
+            };
             var context = this;
             deleteAssetTagApi(payload).then((result) => {
-                console.log(result)
+                console.log(result);
                 if (result.data == constants.OK) {
                     let name = this.showItems1[index].TAG_NAME;
                     context.showItems1.splice(index, 1);
@@ -435,14 +448,14 @@ export default {
                     }
                     context.showItems2.push(data);
                 }
-            })
+            });
             // delete the item in tags.
         },
         // open tag dialog
         openTagDialog(data) {
             this.loading = true;
             this.selectedPolicy = data;
-            this.selectedPolicy.tags = []
+            this.selectedPolicy.tags = [];
             getAssetTagApi(this.selectedPolicy).then((result) => {
                 this.loading = false;
                 this.tagDialogVisible = true;
@@ -458,24 +471,21 @@ export default {
                             break;
                         }
                     }
-                    if (!isSelected)
-                        unselectedTags.push(this.tagItems[i]);
+                    if (!isSelected) unselectedTags.push(this.tagItems[i]);
                 }
                 this.showItems1 = [];
-                selectedTags.forEach(element => {
+                selectedTags.forEach((element) => {
                     if (element["TAG_CATEGORY"] == "company_size") {
                         this.showItems1.push(element);
                     }
                 });
                 this.showItems2 = [];
-                unselectedTags.forEach(element => {
+                unselectedTags.forEach((element) => {
                     if (element["TAG_CATEGORY"] == "company_size") {
                         this.showItems2.push(element);
                     }
                 });
-
-            })
-
+            });
         },
         next() {
             if (this.active++ > 2) this.active = 1;
@@ -489,20 +499,19 @@ export default {
                         break;
                     }
                 }
-                if (!isSelected)
-                    unselectedTags.push(this.tagItems[i]);
+                if (!isSelected) unselectedTags.push(this.tagItems[i]);
             }
 
             switch (this.active) {
                 case 1:
                     this.showItems1 = [];
-                    selectedTags.forEach(element => {
+                    selectedTags.forEach((element) => {
                         if (element["TAG_CATEGORY"] == "company_size") {
                             this.showItems1.push(element);
                         }
                     });
                     this.showItems2 = [];
-                    unselectedTags.forEach(element => {
+                    unselectedTags.forEach((element) => {
                         if (element["TAG_CATEGORY"] == "company_size") {
                             this.showItems2.push(element);
                         }
@@ -512,13 +521,13 @@ export default {
                     break;
                 case 2:
                     this.showItems1 = [];
-                    selectedTags.forEach(element => {
+                    selectedTags.forEach((element) => {
                         if (element["TAG_CATEGORY"] == "company_type") {
                             this.showItems1.push(element);
                         }
                     });
                     this.showItems2 = [];
-                    unselectedTags.forEach(element => {
+                    unselectedTags.forEach((element) => {
                         if (element["TAG_CATEGORY"] == "company_type") {
                             this.showItems2.push(element);
                         }
@@ -527,14 +536,20 @@ export default {
                     break;
                 case 3:
                     this.showItems1 = [];
-                    selectedTags.forEach(element => {
-                        if (element["TAG_CATEGORY"] != "company_size" && element["TAG_CATEGORY"] != "company_type") {
+                    selectedTags.forEach((element) => {
+                        if (
+                            element["TAG_CATEGORY"] != "company_size" &&
+                            element["TAG_CATEGORY"] != "company_type"
+                        ) {
                             this.showItems1.push(element);
                         }
                     });
                     this.showItems2 = [];
-                    unselectedTags.forEach(element => {
-                        if (element["TAG_CATEGORY"] != "company_size" && element["TAG_CATEGORY"] != "company_type") {
+                    unselectedTags.forEach((element) => {
+                        if (
+                            element["TAG_CATEGORY"] != "company_size" &&
+                            element["TAG_CATEGORY"] != "company_type"
+                        ) {
                             this.showItems2.push(element);
                         }
                     });
@@ -547,7 +562,7 @@ export default {
             var payload = {
                 data: {
                     searchString: this.filterString.name,
-                }
+                },
             };
             this.refreshRooms(payload);
         },
@@ -587,7 +602,7 @@ export default {
         refreshRooms(payload) {
             this.loading = true;
             if (!payload) {
-                payload = {}
+                payload = {};
             }
             var context = this;
             getAssetApi(payload)
@@ -596,10 +611,10 @@ export default {
                     console.log(this.localData);
                     this.loading = false;
                     this.localData.map((one) => {
-                      //  one.FIN_TIME = formatDate(new Date(one.FIN_START_DATE)) + " - " + formatDate(new Date(one.FIN_END_DATE));
-                       // one.RATE_RANGE = one.RATE_LOW + " - " + one.RATE_HIGH;
-                        one.CREATED_AT = formatDate((one.CREATED_AT));
-                        one.UPDATED_AT = formatDate((one.UPDATED_AT));
+                        //  one.FIN_TIME = formatDate(new Date(one.FIN_START_DATE)) + " - " + formatDate(new Date(one.FIN_END_DATE));
+                        // one.RATE_RANGE = one.RATE_LOW + " - " + one.RATE_HIGH;
+                        one.CREATED_AT = formatDate(one.CREATED_AT);
+                        one.UPDATED_AT = formatDate(one.UPDATED_AT);
                     });
                 })
                 .catch(function () {
@@ -618,7 +633,6 @@ export default {
                 data.hasOwnProperty("vgt_id") ||
                 // eslint-disable-next-line no-prototype-builtins
                 data.hasOwnProperty("originalIndex")
-
             ) {
                 delete data.vgt_id;
                 delete data.originalIndex;
@@ -636,34 +650,34 @@ export default {
             this.modalMode = "create";
             this.open = true;
             this.selectedPolicy = {
-                "ASSET_ID": "",
-                "LOGO_URL": "1",
-                "FIN_CODE": "",
-                "NAME": "",
-                "DESCRIPTION": "1",
-                "WORKFLOW_URL": "1",
-                "URL": "1",
-                "APPLY_URL": "1",
-                "BANK_NAME": "",
-                "BANK_ID": "",
-                "STATUS": "1",
-                "FIN_START_DATE": "",
-                "FIN_END_DATE": "",
-                "CREATED_AT": "",
-                "UPDATED_AT": "",
-                "USER_ID_USER_ID": "1",
-                "USER_NAME": "1",
-                "RATE_LOW": "",
-                "RATE_HIGH": "",
-                "LOAN_QUOTA": "",
-                "LOAN_DATE_LOW": 1,
-                "LOAN_DATE_HIGH": 5,
-                "CHARGE_METHOD": "",
-                "REPAY_METHOD": "",
-                "TARGET": "",
-                "FIN_TYPE": "1",
-                "PRODUCT_TYPE": "",
-                "LOAN_TYPE": ""
+                ASSET_ID: "",
+                LOGO_URL: "1",
+                FIN_CODE: "",
+                NAME: "",
+                DESCRIPTION: "1",
+                WORKFLOW_URL: "1",
+                URL: "1",
+                APPLY_URL: "1",
+                BANK_NAME: "",
+                BANK_ID: "",
+                STATUS: "1",
+                FIN_START_DATE: "",
+                FIN_END_DATE: "",
+                CREATED_AT: "",
+                UPDATED_AT: "",
+                USER_ID_USER_ID: "1",
+                USER_NAME: "1",
+                RATE_LOW: "",
+                RATE_HIGH: "",
+                LOAN_QUOTA: "",
+                LOAN_DATE_LOW: 1,
+                LOAN_DATE_HIGH: 5,
+                CHARGE_METHOD: "",
+                REPAY_METHOD: "",
+                TARGET: "",
+                FIN_TYPE: "1",
+                PRODUCT_TYPE: "",
+                LOAN_TYPE: "",
             };
         },
         toggle() {
@@ -753,7 +767,6 @@ export default {
         },
     },
     created() {
-
         queryTagsApi(["TYPE=AS"]).then((data) => {
             this.tagItems = data.data;
             //console.log(this.tagItems)
@@ -766,8 +779,8 @@ export default {
 
 <style>
 .el-tag--dark {
-    background-color: #4BA6E6;
-    border-color: #6AABDD;
+    background-color: #4ba6e6;
+    border-color: #6aabdd;
     color: #fff;
 }
 
