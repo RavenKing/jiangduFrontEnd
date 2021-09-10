@@ -11,8 +11,16 @@ import 'vue-search-select/dist/VueSearchSelect.css';
 import SuiVue from 'semantic-ui-vue';
 import 'semantic-ui-css/semantic.min.css';
 import Notifications from 'vue-notification';
+import vueCountryRegionSelect from 'vue-country-region-select'
+import VueI18n from 'vue-i18n'
+import VuCountryIntl from 'vue-country-intl';
+// import css
+import 'vue-country-intl/lib/vue-country-intl.css'
+// Global registration component
+Vue.component(VuCountryIntl.name, VuCountryIntl);
+Vue.use(VueI18n)
+Vue.use(vueCountryRegionSelect)
 // import stylesheet
-// import 'vue-country-selector/dist/countryselect.css';
 Vue.use(SuiVue);
 Vue.use(ElementUI);
 //Install BootstrapVue
@@ -60,8 +68,11 @@ mockXHR();
 // 导入鉴权系统
 import AUTH from '@/auth'
 AUTH();
-
+const i18n = new VueI18n({
+  locale: 'zh', // 设置语言环境
+});
 new Vue({
+  i18n,
   router,
   store,
   render: h => h(App)

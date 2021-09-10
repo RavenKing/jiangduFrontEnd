@@ -13,7 +13,9 @@
             </sui-form-field>
             <sui-form-field style="width:50%;">
                 <label>专利申请国家</label>
-                <sui-dropdown placeholder="专利申请国家" selection :options="ageOptions" v-model="singleRoom.PATENT_APPLICATION_COUNTRY" />
+                <template>
+                    <vue-country-intl v-model="singleRoom.PATENT_APPLICATION_COUNTRY" useChinese=true type = "country"></vue-country-intl>
+                </template>
             </sui-form-field>
         </sui-form-fields>
 
@@ -26,14 +28,6 @@
                 <label>类型</label>
                 <sui-dropdown placeholder="类型" selection :options="heOptions" v-model="singleRoom.TYPE" />
             </sui-form-field>
-        </sui-form-fields>
-
-        <sui-form-fields>
-            <!-- <sui-form-field> -->
-                <template>
-                <country-selector v-model="selected" width="260"></country-selector>
-                </template>
-            <!-- </sui-form-field> -->
         </sui-form-fields>
 
         <sui-form-fields>
@@ -62,32 +56,17 @@
 
 <script>
 import * as lang from "vuejs-datepicker/src/locale";
-import CountrySelector from 'vue-country-selector';
 export default {
     props: ["singleRoom"],
     name: "form-create",
-components: {
-
-        "country-selector": CountrySelector,
-    },
     data() {
         return {
-            selected: null,
-            country: "",
-            region: "",
+            country: '',
+            region: '',
             heOptions: [{
                 text: "专利",
                 value: "专利",
             }, ],
-            ageOptions: [{
-                    text: "国内",
-                    value: "国内",
-                },
-                {
-                    text: "国际",
-                    value: "国际",
-                },
-            ],
             options: [{
                     text: "启用",
                     value: "启用",
