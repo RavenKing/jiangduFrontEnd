@@ -29,11 +29,11 @@
         </sui-form-fields>
 
         <sui-form-fields>
-            <sui-form-field>
+            <!-- <sui-form-field> -->
                 <template>
                 <country-selector v-model="selected" width="260"></country-selector>
                 </template>
-            </sui-form-field>
+            <!-- </sui-form-field> -->
         </sui-form-fields>
 
         <sui-form-fields>
