@@ -57,6 +57,9 @@
                                 </el-tag>
                             </div>
                         </span>
+                        <span v-if="props.column.field == 'AVATAR'">
+                            <img :src="props.row.AVATAR" height="100" width="100">
+                        </span>
                         <span v-else>
                             {{ props.formattedRow[props.column.field] }}
                         </span>
@@ -237,6 +240,11 @@ export default {
                 perPage: 10,
             },
             columns: [{
+                    label: "图片",
+                    field: "AVATAR",
+                    sortable: false,
+                },
+                {
                     label: "金融产品名",
                     field: "NAME",
                     sortable: false,

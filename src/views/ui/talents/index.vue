@@ -55,7 +55,7 @@
                             </div>
                         </span>
                         <span v-if="props.column.field == 'AVATAR'">
-                             <img :src="props.row.AVATAR">
+                            <img :src="props.row.AVATAR" height="100" width="100">
                         </span>
                         <span v-else>
                             {{ props.formattedRow[props.column.field] }}
@@ -116,7 +116,7 @@
             </span>
         </el-dialog>
 
-        <el-dialog title="标签" :visible.sync="tagDialogVisible" width="90%" >
+        <el-dialog title="标签" :visible.sync="tagDialogVisible" width="90%">
             <el-steps :active="active">
                 <el-step title="学科"></el-step>
                 <el-step title="最高学历"></el-step>
@@ -241,6 +241,11 @@ export default {
                 perPage: 10,
             },
             columns: [{
+                    label: "图片",
+                    field: "AVATAR",
+                    sortable: false,
+                },
+                {
                     label: "名字",
                     field: "TALENT_NAME",
                     sortable: false,
@@ -266,12 +271,6 @@ export default {
                     label: "更新时间",
                     field: "UPDATED_AT",
                     sortable: true,
-                    //  type: 'percentage',
-                },
-                {
-                    label: "图片",
-                    field: "AVATAR",
-                    sortable: false,
                     //  type: 'percentage',
                 },
                 {
@@ -304,7 +303,7 @@ export default {
             localData: [],
             showReview: false,
             recommendReviewList: [],
-            docType:"TA"
+            docType: "TA"
         };
     },
     methods: {
@@ -439,7 +438,7 @@ export default {
         openTagDialog(data) {
             this.loading = true;
             this.selectedTalent = data;
-            this.active=1;
+            this.active = 1;
             this.selectedTalent.tags = []
             getTalentTagsApi({
                 "TALENT_ID_TALENT_ID": data.TALENT_ID
@@ -557,24 +556,24 @@ export default {
         clickConfirmDelete() {
             this.loading = true;
 
-                this.deleteTarget.TALENT_ID = this.deleteTarget.id;
-                deleteTalentApi(this.deleteTarget).then((result) => {
-                    if (result.data == constants.OK) {
-                        this.refreshRooms();
-                        notifySomething(
-                            "删除人才成功",
-                            "删除人才成功",
-                            constants.typeSuccess
-                        );
-                    } else if (result.data.code == 3) {
-                        notifySomething(
-                            constants.GENERALERROR,
-                            "删除人才失败",
-                            constants.typeError
-                        );
-                    }
-                    this.loading = false;
-                });
+            this.deleteTarget.TALENT_ID = this.deleteTarget.id;
+            deleteTalentApi(this.deleteTarget).then((result) => {
+                if (result.data == constants.OK) {
+                    this.refreshRooms();
+                    notifySomething(
+                        "删除人才成功",
+                        "删除人才成功",
+                        constants.typeSuccess
+                    );
+                } else if (result.data.code == 3) {
+                    notifySomething(
+                        constants.GENERALERROR,
+                        "删除人才失败",
+                        constants.typeError
+                    );
+                }
+                this.loading = false;
+            });
 
         },
         deleteTalent(data) {
