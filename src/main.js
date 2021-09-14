@@ -11,7 +11,6 @@ import 'vue-search-select/dist/VueSearchSelect.css';
 import SuiVue from 'semantic-ui-vue';
 import 'semantic-ui-css/semantic.min.css';
 import Notifications from 'vue-notification';
-import vueCountryRegionSelect from 'vue-country-region-select'
 import VueI18n from 'vue-i18n'
 import VuCountryIntl from 'vue-country-intl';
 // import css
@@ -21,7 +20,6 @@ Vue.component('country-flag', CountryFlag)
 // Global registration component
 Vue.component(VuCountryIntl.name, VuCountryIntl);
 Vue.use(VueI18n)
-Vue.use(vueCountryRegionSelect)
 // import stylesheet
 Vue.use(SuiVue);
 Vue.use(ElementUI);
