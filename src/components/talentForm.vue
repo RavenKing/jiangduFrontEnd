@@ -33,8 +33,8 @@
         </sui-form-fields>
         <sui-form-fields>
             <sui-form-field style="width:100%;">
-                <label>政策内容</label>
-                <textarea placeholder="政策内容" v-model="singleRoom.CDATA" />
+                <label>简介</label>
+                <textarea placeholder="简介"/>
                 </sui-form-field>
         </sui-form-fields>
     </sui-form>

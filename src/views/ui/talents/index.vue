@@ -142,7 +142,6 @@
 
             <span slot="footer" class="dialog-footer">
                 <el-button @click="tagDialogVisible = false">取消</el-button>
-                <el-button type="primary" @click="tagDialogVisible = false">保存</el-button>
             </span>
         </el-dialog>
 
@@ -266,7 +265,7 @@ export default {
                 {
                     label: "更新时间",
                     field: "UPDATED_AT",
-                    sortable: false,
+                    sortable: true,
                     //  type: 'percentage',
                 },
                 {
@@ -305,7 +304,7 @@ export default {
             localData: [],
             showReview: false,
             recommendReviewList: [],
-
+            docType:"TA"
         };
     },
     methods: {
@@ -341,7 +340,7 @@ export default {
                     payload.push({
                         "USER_ID": one.USER_ID /*USER_ID <NVARCHAR(36)>*/ ,
                         "RECOMMENDED_ID": this.selectedTalent.TALENT_ID /*RECOMMENDED_ID <NVARCHAR(36)>*/ ,
-                        "TYPE": "PO" /*TYPE <NVARCHAR(2)>*/ ,
+                        "TYPE": this.docType /*TYPE <NVARCHAR(2)>*/ ,
                         "STATUS": false /*STATUS <BOOLEAN>*/ ,
                         "COMMENT": " " /*COMMENT <NVARCHAR(500)>*/ ,
                         "CREATED_AT": new Date() /*CREATED_AT <TIMESTAMP>*/ ,
@@ -440,6 +439,7 @@ export default {
         openTagDialog(data) {
             this.loading = true;
             this.selectedTalent = data;
+            this.active=1;
             this.selectedTalent.tags = []
             getTalentTagsApi({
                 "TALENT_ID_TALENT_ID": data.TALENT_ID
@@ -674,7 +674,8 @@ export default {
                         );
                     });
             } else if (this.modalMode == "edit") {
-                //upate Talent APi
+                //upate Talent APi                
+                this.selectedTalent.UPDATED_AT = new Date();
                 updateTalentApi(this.selectedTalent)
                     .then((result) => {
                         if (result.data == constants.OK) {

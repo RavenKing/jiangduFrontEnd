@@ -229,6 +229,12 @@ function postPolicyApi(data) {
   };
   return generalRequest(data, constants.addPolicyApi);
 }
+function getPolicyTagsApi(data) {
+  data = {
+    data: data,
+  };
+  return generalRequest(data, constants.policyTagsApi);
+}
 function addPolicyTagApi(data) {
   data = {
     data: data,
@@ -959,6 +965,7 @@ export {
   searchunitApi,
   changeRoomTypeApi,
   //jiangdu
+  getPolicyTagsApi,
   queryTagsApi,
   getPolicysApi,
   postPolicyApi,
