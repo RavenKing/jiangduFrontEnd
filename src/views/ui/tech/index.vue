@@ -118,8 +118,8 @@
 
         <el-dialog title="标签" :visible.sync="tagDialogVisible" width="90%" :before-close="refreshRooms">
             <el-steps :active="active">
-                <el-step title="企业规模"></el-step>
-                <el-step title="企业类型"></el-step>
+                <el-step title="大行业"></el-step>
+                <el-step title="小行业"></el-step>
                 <el-step title="其他"></el-step>
             </el-steps>
             <el-button style="margin-top: 12px; margin-bottom: 12px" @click="next">下一步</el-button>
@@ -142,7 +142,6 @@
 
             <span slot="footer" class="dialog-footer">
                 <el-button @click="tagDialogVisible = false">取消</el-button>
-                <el-button type="primary" @click="tagDialogVisible = false">保存</el-button>
             </span>
         </el-dialog>
 
@@ -300,6 +299,10 @@ export default {
             },
             selectedPolicy: {
                 tags: []
+            },
+            tagControl:{
+                tag1:"industry",
+                tag2:"cap"
             },
             offenUsedCompanys: [],
             dialogTableVisible: false,
@@ -467,13 +470,13 @@ export default {
                 }
                 this.showItems1 = [];
                 selectedTags.forEach(element => {
-                    if (element["TAG_CATEGORY"] == "company_size") {
+                    if (element["TAG_CATEGORY"] == this.tagControl.tag1) {
                         this.showItems1.push(element);
                     }
                 });
                 this.showItems2 = [];
                 unselectedTags.forEach(element => {
-                    if (element["TAG_CATEGORY"] == "company_size") {
+                    if (element["TAG_CATEGORY"] == this.tagControl.tag1) {
                         this.showItems2.push(element);
                     }
                 });
@@ -501,13 +504,13 @@ export default {
                 case 1:
                     this.showItems1 = [];
                     selectedTags.forEach(element => {
-                        if (element["TAG_CATEGORY"] == "company_size") {
+                        if (element["TAG_CATEGORY"] == this.tagControl.tag1) {
                             this.showItems1.push(element);
                         }
                     });
                     this.showItems2 = [];
                     unselectedTags.forEach(element => {
-                        if (element["TAG_CATEGORY"] == "company_size") {
+                        if (element["TAG_CATEGORY"] == this.tagControl.tag1) {
                             this.showItems2.push(element);
                         }
                     });
@@ -516,13 +519,13 @@ export default {
                 case 2:
                     this.showItems1 = [];
                     selectedTags.forEach(element => {
-                        if (element["TAG_CATEGORY"] == "company_type") {
+                        if (element["TAG_CATEGORY"] == this.tagControl.tag2) {
                             this.showItems1.push(element);
                         }
                     });
                     this.showItems2 = [];
                     unselectedTags.forEach(element => {
-                        if (element["TAG_CATEGORY"] == "company_type") {
+                        if (element["TAG_CATEGORY"] == this.tagControl.tag2) {
                             this.showItems2.push(element);
                         }
                     });
@@ -531,13 +534,13 @@ export default {
                 case 3:
                     this.showItems1 = [];
                     selectedTags.forEach(element => {
-                        if (element["TAG_CATEGORY"] != "company_size" && element["TAG_CATEGORY"] != "company_type") {
+                        if (element["TAG_CATEGORY"] != this.tagControl.tag1 && element["TAG_CATEGORY"] != this.tagControl.tag2) {
                             this.showItems1.push(element);
                         }
                     });
                     this.showItems2 = [];
                     unselectedTags.forEach(element => {
-                        if (element["TAG_CATEGORY"] != "company_size" && element["TAG_CATEGORY"] != "company_type") {
+                        if (element["TAG_CATEGORY"] != this.tagControl.tag1 && element["TAG_CATEGORY"] != this.tagControl.tag2) {
                             this.showItems2.push(element);
                         }
                     });
@@ -596,7 +599,6 @@ export default {
             getTechApi(payload)
                 .then((data) => {
                     this.localData = data.data;
-                    console.log(this.localData);
                     this.loading = false;
                     this.localData.map((one) => {
                         one.CREATED_AT = formatDate(new Date(one.CREATED_AT));
@@ -722,7 +724,7 @@ export default {
                         );
                     });
             } else if (this.modalMode == "edit") {
-                delete this.selectedPolicy.RATE_RANGE;
+                delete this.selectedPolicy.tags;
                 updateTechApi(this.selectedPolicy)
                     .then((result) => {
                         if (result.data == constants.OK) {
@@ -757,19 +759,7 @@ export default {
         },
         closeModal: function () {
             this.open = false;
-            // /this.assignForm.open = false;
-            //this.buildingForm.open = false;
-            //  this.buildingFloorForm.open = false;
-            //    this.buildingImage.open = false;
-            //this.assignList.open = false;
-            var payload = {
-                name: this.filterString.name,
-                page: 1,
-            };
-            if (this.filterString.kind) {
-                payload.kind = this.filterString.kind;
-            }
-            this.refreshRooms(payload);
+            this.refreshRooms();
         },
     },
     created() {
