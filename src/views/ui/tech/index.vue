@@ -50,12 +50,15 @@
                                 </el-button>
                             </span>
                         </span>
-                        <span v-if="props.column.field == 'TAGS'">
+                        <!-- <span v-if="props.column.field == 'TAGS'">
                             <div class="tag-group">
                                 <el-tag class="tag" v-for="item in props.row.tags" :key="item.TAG_NAME" type="warning" effect="dark">
                                     {{ item.TAG_NAME }}
                                 </el-tag>
                             </div>
+                        </span> -->
+                        <span v-if="props.column.field == 'PATENT_APPLICATION_COUNTRY'">
+                            <country-flag :country=props.row.PATENT_APPLICATION_COUNTRY size='normal' />
                         </span>
                         <span v-else>
                             {{ props.formattedRow[props.column.field] }}
@@ -300,9 +303,9 @@ export default {
             selectedPolicy: {
                 tags: []
             },
-            tagControl:{
-                tag1:"industry",
-                tag2:"cap"
+            tagControl: {
+                tag1: "industry",
+                tag2: "cap"
             },
             offenUsedCompanys: [],
             dialogTableVisible: false,

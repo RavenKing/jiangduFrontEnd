@@ -16,6 +16,8 @@ import VueI18n from 'vue-i18n'
 import VuCountryIntl from 'vue-country-intl';
 // import css
 import 'vue-country-intl/lib/vue-country-intl.css'
+import CountryFlag from 'vue-country-flag'
+Vue.component('country-flag', CountryFlag)
 // Global registration component
 Vue.component(VuCountryIntl.name, VuCountryIntl);
 Vue.use(VueI18n)
