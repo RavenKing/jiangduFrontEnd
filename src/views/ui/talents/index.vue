@@ -54,6 +54,9 @@
                                 </el-tag>
                             </div>
                         </span>
+                        <span v-if="props.column.field == 'AVATAR'">
+                             <img :src="props.row.AVATAR">
+                        </span>
                         <span v-else>
                             {{ props.formattedRow[props.column.field] }}
                         </span>
@@ -263,6 +266,12 @@ export default {
                 {
                     label: "更新时间",
                     field: "UPDATED_AT",
+                    sortable: false,
+                    //  type: 'percentage',
+                },
+                {
+                    label: "图片",
+                    field: "AVATAR",
                     sortable: false,
                     //  type: 'percentage',
                 },
