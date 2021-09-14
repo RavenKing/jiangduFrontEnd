@@ -318,7 +318,7 @@ export default {
             localData: [],
             showReview: false,
             recommendReviewList: [],
-            docType: "FI"
+            docType: "TE"
 
         };
     },

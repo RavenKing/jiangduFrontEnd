@@ -145,7 +145,6 @@
 
             <span slot="footer" class="dialog-footer">
                 <el-button @click="tagDialogVisible = false">取消</el-button>
-                <el-button type="primary" @click="tagDialogVisible = false">保存</el-button>
             </span>
         </el-dialog>
 
@@ -176,7 +175,6 @@
 </template>
 
 <script>
-
 import "vue-good-table/dist/vue-good-table.css";
 import {
     VueGoodTable
@@ -204,7 +202,8 @@ import {
     getRecommendCompanysApi,
     getCompanysApi,
     postRecommendListApi,
-    getHistoricalApi
+    getHistoricalApi,
+    getPolicyTagsApi
 
     //createRoomApi,
 } from "@/api/roomDataAPI";
@@ -241,12 +240,6 @@ export default {
                     label: "政策标题",
                     field: "POLICY_TITLE",
                     sortable: false,
-                },
-                {
-                    label: "标签",
-                    field: "TAGS",
-                    sortable: false,
-                    //  type: 'date',
                 },
                 {
                     label: "创建时间",
@@ -344,7 +337,7 @@ export default {
         showReviewTable() {
             this.recommendReviewList = this.multipleSelectionR.concat(this.multipleSelection);
             this.recommendReviewList = this.recommendReviewList.concat(this.multipleSelectionH);
-            this.recommendReviewList = this.getUniqueArray(this.recommendReviewList,["USER_ID"])
+            this.recommendReviewList = this.getUniqueArray(this.recommendReviewList, ["USER_ID"])
             this.showReview = true;
         },
         handleSelectionChangeH(val) {
@@ -420,33 +413,43 @@ export default {
         },
         // open tag dialog
         openTagDialog(data) {
-            this.tagDialogVisible = true;
+            this.loading = true;
             this.selectedPolicy = data;
-            let selectedTags = this.selectedPolicy.tags;
-            let unselectedTags = [];
-            for (let i = 0; i < this.tagItems.length; i++) {
-                let isSelected = false;
-                for (let j = 0; j < selectedTags.length; j++) {
-                    if (this.tagItems[i].TAG_NAME == selectedTags[j].TAG_NAME) {
-                        isSelected = true;
-                        break;
+            this.active = 1;
+            this.selectedPolicy.tags = []
+            getPolicyTagsApi({
+                "POLICY_ID_POLICY_ID": data.POLICY_ID
+            }).then((result) => {
+                this.loading = false;
+                this.tagDialogVisible = true;
+                this.selectedPolicy.tags = result.data;
+                let selectedTags = this.selectedPolicy.tags;
+                let unselectedTags = [];
+                for (let i = 0; i < this.tagItems.length; i++) {
+                    let isSelected = false;
+                    for (let j = 0; j < selectedTags.length; j++) {
+                        if (this.tagItems[i].TAG_NAME == selectedTags[j].TAG_NAME) {
+                            isSelected = true;
+                            break;
+                        }
                     }
+                    if (!isSelected)
+                        unselectedTags.push(this.tagItems[i]);
                 }
-                if (!isSelected)
-                    unselectedTags.push(this.tagItems[i]);
-            }
-            this.showItems1 = [];
-            selectedTags.forEach(element => {
-                if (element["TAG_CATEGORY"] == "industry") {
-                    this.showItems1.push(element);
-                }
-            });
-            this.showItems2 = [];
-            unselectedTags.forEach(element => {
-                if (element["TAG_CATEGORY"] == "industry") {
-                    this.showItems2.push(element);
-                }
-            });
+                this.showItems1 = [];
+                selectedTags.forEach(element => {
+                    if (element["TAG_CATEGORY"] == "industry") {
+                        this.showItems1.push(element);
+                    }
+                });
+                this.showItems2 = [];
+                unselectedTags.forEach(element => {
+                    if (element["TAG_CATEGORY"] == "industry") {
+                        this.showItems2.push(element);
+                    }
+                });
+            })
+
         },
         next() {
             if (this.active++ > 2) this.active = 1;

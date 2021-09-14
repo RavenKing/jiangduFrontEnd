@@ -295,7 +295,7 @@ export default {
             localData: [],
             showReview: false,
             recommendReviewList: [],
-
+            docType:"TA"
         };
     },
     methods: {
@@ -331,7 +331,7 @@ export default {
                     payload.push({
                         "USER_ID": one.USER_ID /*USER_ID <NVARCHAR(36)>*/ ,
                         "RECOMMENDED_ID": this.selectedTalent.TALENT_ID /*RECOMMENDED_ID <NVARCHAR(36)>*/ ,
-                        "TYPE": "PO" /*TYPE <NVARCHAR(2)>*/ ,
+                        "TYPE": this.docType /*TYPE <NVARCHAR(2)>*/ ,
                         "STATUS": false /*STATUS <BOOLEAN>*/ ,
                         "COMMENT": " " /*COMMENT <NVARCHAR(500)>*/ ,
                         "CREATED_AT": new Date() /*CREATED_AT <TIMESTAMP>*/ ,

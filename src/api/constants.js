@@ -9,11 +9,12 @@ const constantsJinhui = {
     //deleteRoomAssignDetail:""
     LoginURL: hostname + "/login",
     deletePolicyTageApi: jiangduPre + "/policys/deleteTags",
-    addTageApi: jiangduPre + "/policys/policyTags",
+    addTageApi: jiangduPre + "/policys/addTags",
     blacklistApi: jiangduPre + "/users/updateStatus",
     userApi: jiangduPre + "/users",
     tagsApi: jiangduPre + "/tags",
     policyApi: jiangduPre + "/policys",
+    policyTagsApi:jiangduPre+"/policys/policyTags",
     roomGetAPI: hostname + "/policys",
     getCompanysApi: jiangduPre + "/users/getCompanyInfo",
     postRecommendList: jiangduPre + "/recommendLists",
