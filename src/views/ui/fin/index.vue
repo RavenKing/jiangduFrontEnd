@@ -58,7 +58,7 @@
                             </div>
                         </span>
                         <span v-if="props.column.field == 'AVATAR'">
-                            <img :src="props.row.AVATAR" height="100" width="100">
+                            <img :src="props.row.AVATAR" height="50" width="50">
                         </span>
                         <span v-else>
                             {{ props.formattedRow[props.column.field] }}
