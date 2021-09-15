@@ -40,12 +40,6 @@ function getTalentTagsApi(data) {
   };
   return generalRequest(data, constants.talentTagsApi);
 }
-function getAllTalentTagsApi(data) {
-  data = {
-    data: data,
-  };
-  return generalRequest(data, constants.allTalentTagsApi);
-}
 function addTalentTagsApi(data) {
   data = {
     data: data,
@@ -1002,7 +996,6 @@ export {
   getTalentTagsApi,
   addTalentTagsApi,
   deleteTalentTagsApi,
-  getAllTalentTagsApi,
   postTalentApi,
   updateTalentApi,
   deleteTalentApi,
