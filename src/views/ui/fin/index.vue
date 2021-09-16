@@ -13,7 +13,7 @@
                         <sui-form>
                             <sui-form-fields inline>
                                 <sui-form-field>
-                                    <input type="text" placeholder="政策文件" v-model="filterString.name" />
+                                    <input type="text" placeholder="金融产品" v-model="filterString.name" />
                                 </sui-form-field>
                                 <sui-button basic color="blue" content="查询" @click.prevent="onSearch" />
                             </sui-form-fields>
@@ -56,6 +56,9 @@
                                     {{ item.TAG_NAME }}
                                 </el-tag>
                             </div>
+                        </span>
+                        <span v-if="props.column.field == 'AVATAR'">
+                            <img :src="props.row.AVATAR" height="50" width="50">
                         </span>
                         <span v-else>
                             {{ props.formattedRow[props.column.field] }}
@@ -142,7 +145,6 @@
 
             <span slot="footer" class="dialog-footer">
                 <el-button @click="tagDialogVisible = false">取消</el-button>
-                <el-button type="primary" @click="tagDialogVisible = false">保存</el-button>
             </span>
         </el-dialog>
 
@@ -238,6 +240,11 @@ export default {
                 perPage: 10,
             },
             columns: [{
+                    label: "图片",
+                    field: "AVATAR",
+                    sortable: false,
+                },
+                {
                     label: "金融产品名",
                     field: "NAME",
                     sortable: false,
@@ -554,11 +561,12 @@ export default {
         },
 
         onSearch() {
-            var payload = {
-                data: {
-                    searchString: this.filterString.name,
-                }
-            };
+            var payload = {}
+            if (this.filterString.name) {
+                payload = {
+                    NAME: this.filterString.name,
+                };
+            }
             this.refreshRooms(payload);
         },
 

@@ -40,12 +40,6 @@ function getTalentTagsApi(data) {
   };
   return generalRequest(data, constants.talentTagsApi);
 }
-function getAllTalentTagsApi(data) {
-  data = {
-    data: data,
-  };
-  return generalRequest(data, constants.allTalentTagsApi);
-}
 function addTalentTagsApi(data) {
   data = {
     data: data,
@@ -228,6 +222,12 @@ function postPolicyApi(data) {
     data: data,
   };
   return generalRequest(data, constants.addPolicyApi);
+}
+function getPolicyTagsApi(data) {
+  data = {
+    data: data,
+  };
+  return generalRequest(data, constants.policyTagsApi);
 }
 function addPolicyTagApi(data) {
   data = {
@@ -959,6 +959,7 @@ export {
   searchunitApi,
   changeRoomTypeApi,
   //jiangdu
+  getPolicyTagsApi,
   queryTagsApi,
   getPolicysApi,
   postPolicyApi,
@@ -995,7 +996,6 @@ export {
   getTalentTagsApi,
   addTalentTagsApi,
   deleteTalentTagsApi,
-  getAllTalentTagsApi,
   postTalentApi,
   updateTalentApi,
   deleteTalentApi,

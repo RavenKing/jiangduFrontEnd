@@ -9,11 +9,12 @@ const constantsJinhui = {
     //deleteRoomAssignDetail:""
     LoginURL: jiangduPre + "/users/login",
     deletePolicyTageApi: jiangduPre + "/policys/deleteTags",
-    addTageApi: jiangduPre + "/policys/policyTags",
+    addTageApi: jiangduPre + "/policys/addTags",
     blacklistApi: jiangduPre + "/users/updateStatus",
     userApi: jiangduPre + "/users/register",
     tagsApi: jiangduPre + "/tags",
     policyApi: jiangduPre + "/policys",
+    policyTagsApi:jiangduPre+"/policys/policyTags",
     roomGetAPI: hostname + "/policys",
     getCompanysApi: jiangduPre + "/users/getCompanyInfo",
     postRecommendList: jiangduPre + "/recommendLists",
@@ -33,18 +34,14 @@ const constantsJinhui = {
     deleteAssetTagApi: jiangduPre + "/assets/deleteTags",
     getAssetTagApi: jiangduPre + "/assets/assetTags",
     talentTagsApi: jiangduPre + "/talents/tags",
-    allTalentTagsApi: jiangduPre + "/talents/allTags",
     addTalentTagApi: jiangduPre + "/talents/addTags",
     deleteTalentTagApi: jiangduPre + "/talents/deleteTags",
     /// tech
     techApi: jiangduPre + "/techs",
-    postTechApi: jiangduPre + "/techs/add",
     addTechTagApi: jiangduPre + "/techs/addTags",
     deleteTechTagApi: jiangduPre + "/techs/deleteTags",
     getTechTagApi: jiangduPre + "/techs/techTags",
     recommendTECHApi:recommendApi+"/reTECHCompany",
-
-
 
     roomCreateAPI: hostname + '/createroom',
     updateRoomAPI: hostname + '/editroom',

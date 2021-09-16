@@ -13,7 +13,7 @@
                         <sui-form>
                             <sui-form-fields inline>
                                 <sui-form-field>
-                                    <input type="text" placeholder="设备文件" v-model="filterString.name" />
+                                    <input type="text" placeholder="设备名" v-model="filterString.ASSET_NAME" />
                                 </sui-form-field>
                                 <sui-button basic color="blue" content="查询" @click.prevent="onSearch" />
                             </sui-form-fields>
@@ -311,7 +311,7 @@ export default {
             localData: [],
             showReview: false,
             recommendReviewList: [],
-            docType: "FI",
+            docType: "AS",
         };
     },
     methods: {
@@ -560,9 +560,9 @@ export default {
 
         onSearch() {
             var payload = {
-                data: {
-                    searchString: this.filterString.name,
-                },
+
+                ASSET_NAME: this.filterString.ASSET_NAME,
+
             };
             this.refreshRooms(payload);
         },
@@ -613,8 +613,8 @@ export default {
                     this.localData.map((one) => {
                         //  one.FIN_TIME = formatDate(new Date(one.FIN_START_DATE)) + " - " + formatDate(new Date(one.FIN_END_DATE));
                         // one.RATE_RANGE = one.RATE_LOW + " - " + one.RATE_HIGH;
-                        one.CREATED_AT = formatDate(one.CREATED_AT);
-                        one.UPDATED_AT = formatDate(one.UPDATED_AT);
+                        one.CREATED_AT = formatDate(new Date(one.CREATED_AT));
+                        one.UPDATED_AT = formatDate(new Date(one.UPDATED_AT));
                     });
                 })
                 .catch(function () {
@@ -714,9 +714,8 @@ export default {
                         );
                     });
             } else if (this.modalMode == "edit") {
-                //upate Policy APi
-                delete this.selectedPolicy.FIN_TIME;
-                delete this.selectedPolicy.RATE_RANGE;
+                //upate Policy APi                
+                this.selectedPolicy.UPDATED_AT = new Date();
                 updateAssetApi(this.selectedPolicy)
                     .then((result) => {
                         if (result.data == constants.OK) {
@@ -751,17 +750,9 @@ export default {
         },
         closeModal: function () {
             this.open = false;
-            // /this.assignForm.open = false;
-            //this.buildingForm.open = false;
-            //  this.buildingFloorForm.open = false;
-            //    this.buildingImage.open = false;
-            //this.assignList.open = false;
-            var payload = {
-                name: this.filterString.name,
-                page: 1,
-            };
-            if (this.filterString.kind) {
-                payload.kind = this.filterString.kind;
+            var payload = {};
+            if (this.filterString.ASSET_NAME) {
+                payload.ASSET_NAME = this.filterString.ASSET_NAME;
             }
             this.refreshRooms(payload);
         },

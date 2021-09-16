@@ -14,7 +14,7 @@
             <sui-form-field style="width:50%;">
                 <label>专利申请国家</label>
                 <template>
-                    <vue-country-intl v-model="singleRoom.PATENT_APPLICATION_COUNTRY" useChinese=true type = "country"></vue-country-intl>
+                    <vue-country-intl v-model="singleRoom.PATENT_APPLICATION_COUNTRY" :useChinese="true" type = "country"></vue-country-intl>
                 </template>
             </sui-form-field>
         </sui-form-fields>

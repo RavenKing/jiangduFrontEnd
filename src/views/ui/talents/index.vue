@@ -54,6 +54,9 @@
                                 </el-tag>
                             </div>
                         </span>
+                        <span v-if="props.column.field == 'AVATAR'">
+                            <img :src="props.row.AVATAR" height="50" width="50">
+                        </span>
                         <span v-else>
                             {{ props.formattedRow[props.column.field] }}
                         </span>
@@ -113,7 +116,7 @@
             </span>
         </el-dialog>
 
-        <el-dialog title="标签" :visible.sync="tagDialogVisible" width="90%" >
+        <el-dialog title="标签" :visible.sync="tagDialogVisible" width="90%">
             <el-steps :active="active">
                 <el-step title="学科"></el-step>
                 <el-step title="最高学历"></el-step>
@@ -139,7 +142,6 @@
 
             <span slot="footer" class="dialog-footer">
                 <el-button @click="tagDialogVisible = false">取消</el-button>
-                <el-button type="primary" @click="tagDialogVisible = false">保存</el-button>
             </span>
         </el-dialog>
 
@@ -239,6 +241,11 @@ export default {
                 perPage: 10,
             },
             columns: [{
+                    label: "图片",
+                    field: "AVATAR",
+                    sortable: false,
+                },
+                {
                     label: "名字",
                     field: "TALENT_NAME",
                     sortable: false,
@@ -263,7 +270,7 @@ export default {
                 {
                     label: "更新时间",
                     field: "UPDATED_AT",
-                    sortable: false,
+                    sortable: true,
                     //  type: 'percentage',
                 },
                 {
@@ -296,7 +303,7 @@ export default {
             localData: [],
             showReview: false,
             recommendReviewList: [],
-
+            docType: "TA"
         };
     },
     methods: {
@@ -332,7 +339,7 @@ export default {
                     payload.push({
                         "USER_ID": one.USER_ID /*USER_ID <NVARCHAR(36)>*/ ,
                         "RECOMMENDED_ID": this.selectedTalent.TALENT_ID /*RECOMMENDED_ID <NVARCHAR(36)>*/ ,
-                        "TYPE": "PO" /*TYPE <NVARCHAR(2)>*/ ,
+                        "TYPE": this.docType /*TYPE <NVARCHAR(2)>*/ ,
                         "STATUS": false /*STATUS <BOOLEAN>*/ ,
                         "COMMENT": " " /*COMMENT <NVARCHAR(500)>*/ ,
                         "CREATED_AT": new Date() /*CREATED_AT <TIMESTAMP>*/ ,
@@ -431,6 +438,7 @@ export default {
         openTagDialog(data) {
             this.loading = true;
             this.selectedTalent = data;
+            this.active = 1;
             this.selectedTalent.tags = []
             getTalentTagsApi({
                 "TALENT_ID_TALENT_ID": data.TALENT_ID
@@ -548,24 +556,24 @@ export default {
         clickConfirmDelete() {
             this.loading = true;
 
-                this.deleteTarget.TALENT_ID = this.deleteTarget.id;
-                deleteTalentApi(this.deleteTarget).then((result) => {
-                    if (result.data == constants.OK) {
-                        this.refreshRooms();
-                        notifySomething(
-                            "删除人才成功",
-                            "删除人才成功",
-                            constants.typeSuccess
-                        );
-                    } else if (result.data.code == 3) {
-                        notifySomething(
-                            constants.GENERALERROR,
-                            "删除人才失败",
-                            constants.typeError
-                        );
-                    }
-                    this.loading = false;
-                });
+            this.deleteTarget.TALENT_ID = this.deleteTarget.id;
+            deleteTalentApi(this.deleteTarget).then((result) => {
+                if (result.data == constants.OK) {
+                    this.refreshRooms();
+                    notifySomething(
+                        "删除人才成功",
+                        "删除人才成功",
+                        constants.typeSuccess
+                    );
+                } else if (result.data.code == 3) {
+                    notifySomething(
+                        constants.GENERALERROR,
+                        "删除人才失败",
+                        constants.typeError
+                    );
+                }
+                this.loading = false;
+            });
 
         },
         deleteTalent(data) {
@@ -665,7 +673,8 @@ export default {
                         );
                     });
             } else if (this.modalMode == "edit") {
-                //upate Talent APi
+                //upate Talent APi                
+                this.selectedTalent.UPDATED_AT = new Date();
                 updateTalentApi(this.selectedTalent)
                     .then((result) => {
                         if (result.data == constants.OK) {
