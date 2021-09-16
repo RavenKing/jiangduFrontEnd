@@ -1,12 +1,14 @@
 import Axios from "axios";
 
 // 定义axios配置 
+const token = localStorage.getItem('token')
 const http = Axios.create({
   baseURL: '/', // api的base_url
   //withCredentials: true, // 开启跨域身份凭证
   method: "post",
   headers: {
-    "Content-Type": "application/json;charset=UTF-8"
+    "Content-Type": "application/json;charset=UTF-8",
+    'token':token
   },
   timeout: 50000 // request timeout
 });

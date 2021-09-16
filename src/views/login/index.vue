@@ -20,20 +20,20 @@
         <div class="login-form-content">
             <h2 class="login-form-title">用户登陆</h2>
             <el-form :model="login_form" :rules="login_rules" class="login-box" ref="login-form" @keyup.enter.native="submitLogin('login-form')">
-                <el-form-item prop="act">
+                <el-form-item prop="USER_NAME">
                     <div class="ipt-box">
                         <label class="item-label">
                             <i class="iconfont icon-yonghu1"></i>
                         </label>
-                        <input class="item-ipt" type="text" v-model="login_form.act" placeholder="请输入账号" />
+                        <input class="item-ipt" type="text" v-model="login_form.USER_NAME" placeholder="请输入账号" />
                     </div>
                 </el-form-item>
-                <el-form-item prop="pass">
+                <el-form-item prop="PASSWORD">
                     <div class="ipt-box">
                         <label class="item-label">
                             <i class="iconfont icon-password1"></i>
                         </label>
-                        <input class="item-ipt" type="password" v-model="login_form.pass" placeholder="请输入密码" />
+                        <input class="item-ipt" type="password" v-model="login_form.PASSWORD" placeholder="请输入密码" />
                     </div>
                 </el-form-item>
                 <el-form-item>
@@ -57,6 +57,10 @@ import {
     localSet
 } from "@/util/storage";
 import RegisterForm from "@/components/registerForm";
+import {
+    notifySomething,
+    //  goToLogin
+} from "@/util/utils";
 
 export default {
     components: {
@@ -100,17 +104,17 @@ export default {
             drawer: false,
             loading: false,
             login_form: {
-                act: "admin",
-                pass: "123456",
+                USER_NAME: "",
+                PASSWORD: "",
                 // code: "v9am"
             }, // 登录表单
             login_rules: {
-                act: [{
+                USER_NAME: [{
                     required: true,
                     message: "请输入账号",
-                    trigger: "blur"
+                    trigger: "blmessageur"
                 }],
-                pass: [{
+                PASSWORD: [{
                     required: true,
                     message: "请输入密码",
                     trigger: "blur"
@@ -128,20 +132,36 @@ export default {
             this.$refs[formName].validate(valid => {
                 this.loading = false;
                 if (valid) {
-                    loginApi(this.login_form).then(({
+                    loginApi({data:this.login_form}).then(({
                         data
                     }) => {
                         if (data.code === 0) {
-                            localSet(this.GLOBAL.project_key, data.data.token);
-                            console.log(data.data);
-                            localSet("role", data.data.role);
-                            localSet("unit_id", data.data.unit_id);
-                            localSet("username", this.login_form.act);
+                            // localSet(this.GLOBAL.project_key, data.data.token);
+                            // localSet("role", data.data.role);
+                            localSet("USER_ID", data.USER_ID);
+                            localSet("USER_NAME", data.USER_NAME);
+                            localSet('TOKEN',data.token)
+                            localSet('LEVEL',data.LEVEL)
                             this.setToken(data.data);
+                            notifySomething(
+                                "登录成功",
+                                 "登录成功",
+                                "success"
+                            );
+                            // window.location.history('/index')
+                            console.log(this.$router);
                             this.$router.push("/index");
+                        } else {
+                            notifySomething(
+                                "登录失败",
+                                "登录失败",
+                                "error"
+                            );
                         }
                     });
                 } else {
+                    // alert("登路失败")
+                     notifySomething("登录失败", "登录失败", "error");
                     return false;
                 }
             });

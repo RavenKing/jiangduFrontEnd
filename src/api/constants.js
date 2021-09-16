@@ -7,11 +7,11 @@ const constantsJinhui = {
     deleteFloorApi: "/removebuildingfloor",
     getCurrentAssignApi: "/getcurrentassign",
     //deleteRoomAssignDetail:""
-    LoginURL: hostname + "/login",
+    LoginURL: jiangduPre + "/users/login",
     deletePolicyTageApi: jiangduPre + "/policys/deleteTags",
     addTageApi: jiangduPre + "/policys/policyTags",
     blacklistApi: jiangduPre + "/users/updateStatus",
-    userApi: jiangduPre + "/users",
+    userApi: jiangduPre + "/users/register",
     tagsApi: jiangduPre + "/tags",
     policyApi: jiangduPre + "/policys",
     roomGetAPI: hostname + "/policys",
