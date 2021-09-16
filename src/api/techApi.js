@@ -1,18 +1,15 @@
 import constants from "./constants";
-import { generalRequest,generalPutRequest,generalDeleteRequest} from "./utilApi"; // 导入存储函数
+import { generalRequest,generalPutRequest,generalDeleteRequest, generalGetRequest} from "./utilApi"; // 导入存储函数
 // 登录接口
 function getTechApi(data) {
-    data = {
-      data: data,
-    };
-    return generalRequest(data, constants.techApi);
+    return generalGetRequest(constants.techApi);
   }
   
   function postTechApi(data) {
     data = {
       data: data,
     };
-    return generalRequest(data, constants.postTechApi);
+    return generalRequest(data, constants.techApi);
   }
   
   function updateTechApi(data) {
@@ -32,7 +29,7 @@ function getTechApi(data) {
     data = {
       data: data,
     };
-    return generalRequest(data, constants.deleteTechTagApi);
+    return generalDeleteRequest(data, constants.deleteTechTagApi);
   }
   function addTechTagApi(data) {
     data = {

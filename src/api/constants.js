@@ -38,7 +38,6 @@ const constantsJinhui = {
     deleteTalentTagApi: jiangduPre + "/talents/deleteTags",
     /// tech
     techApi: jiangduPre + "/techs",
-    postTechApi: jiangduPre + "/techs/add",
     addTechTagApi: jiangduPre + "/techs/addTags",
     deleteTechTagApi: jiangduPre + "/techs/deleteTags",
     getTechTagApi: jiangduPre + "/techs/techTags",
