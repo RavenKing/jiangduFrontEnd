@@ -191,15 +191,10 @@ import {
     //  goToLogin
 } from "@/util/utils";
 import {
-
     queryTagsApi,
-    //getRoomDataApi,
     getCompanysApi,
     postRecommendListApi,
     getHistoricalApi,
-    //getTechApi
-
-    //createRoomApi,
 } from "@/api/roomDataAPI";
 
 import {

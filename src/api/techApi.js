@@ -1,7 +1,7 @@
 import constants from "./constants";
 import { generalRequest,generalPutRequest,generalDeleteRequest, generalGetRequest} from "./utilApi"; // 导入存储函数
 // 登录接口
-function getTechApi(data) {
+function getTechApi() {
     return generalGetRequest(constants.techApi);
   }
   
